@@ -1,5 +1,4 @@
 def call(hashMap = [:]){
-  // Fetching named parameters
   def config = [:]
   hashMap.resolveStrategy = Closure.DELEGATE_FIRST
   hashMap.delegate = config
@@ -11,7 +10,6 @@ def call(hashMap = [:]){
   def dockerCommand = ''
   def output = ''
 
-  // Defining if docekr is available on the machine
   try{
     log(
       message: 'Checking if docker is available',
@@ -34,17 +32,14 @@ def call(hashMap = [:]){
       message: 'Launching foodcritic',
       output:  debug
     )
-    // Launch foodcritic
     output = command("${dockerCommand} foodcritic ${options} ./").trim()
   }catch(error){
     log(
       message: 'Foodcritic failed throwing the error',
       output:  debug
     )
-    // Send command output as error
     error(output)
   }
-  // Return output
   log(
     message: 'Foodcritic was succesfull, returning output',
     output:  debug
