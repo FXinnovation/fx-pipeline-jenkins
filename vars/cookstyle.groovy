@@ -1,22 +1,26 @@
-def call(
-  Boolean debug      = false,
-  String dockerImage = 'fxinnovation/chefdk:latest',
-  String options     = '-D --force-default-config'
-){
+def call(hashMap){
+  def config [:]
+  hashMap.resolveStrategy = Closure.DELEGATE_FIRST
+  hashMap.delegate = config
+
+  def debug = config.debug ?: false
+  def dockerImage = config.dockerImage ?: 'fxinnovation/chefdk:latest'
+  def options = config.options ?: '-D --force-default-config'
+
+  def output = ''
+  def dockerCommand = ''
   log(
     message: 'Checking if docker is available',
     output:  debug
   )
-  // Defining if docekr is available on the machine
   try{
     sh 'docker run --rm fxinnovation/chefdk cookstyle --version'
-    def dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
+    dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
     log(
       message: 'Launching cookstyle using docker',
       output:  debug
     )
   }catch(error){
-    def dockerCommand = ''
     log(
       message: 'Launching cookstyle using native cookstyle (must be preinstalled)',
       output:  debug
@@ -27,17 +31,14 @@ def call(
       message: 'Launching cookstyle',
       output:  debug
     )
-    // Launch cookstyle
-    def output = command("${dockerCommand} cookstyle ${options} ./").trim()
+    output = command("${dockerCommand} cookstyle ${options} ./").trim()
   }catch(error){
     log(
       message: 'Cookstyle failed throwing the error',
       output:  debug
     )
-    // Send command output as error
     throw output
   }
-  // Return output
   log(
     message: 'Cookstyle was succesfull, returning output',
     output:  debug
