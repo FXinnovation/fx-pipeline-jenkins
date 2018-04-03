@@ -1,15 +1,20 @@
-def call(
-  Boolean debug      = false,
-  String dockerImage = 'fxinnovation/chefdk:latest',
-  String options     = ''
-){
-  log(
-    message: 'Checking if docker is available',
-    output:  debug
-  )
+def call(hashMap){
+  // Fetching named parameters
+  def config = [:]
+  hashMap.resolveStrategy = Closure.DELEGATE_FIRST
+  hashMap.delegate = config
+
+  def debug       = config.debug ?: false
+  def dockerImage = config.dockerImage ?: 'fxinnovation/chefdk:latest'
+  def options     = config.options ?: ''
+
   // Defining if docekr is available on the machine
   try{
-    sh 'docker run --rm fxinnovation/chefdk foodcritic --version'
+    log(
+      message: 'Checking if docker is available',
+      output:  debug
+    )
+    sh "docker run --rm ${dockerImage} foodcritic --version"
     def dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
     log(
       message: 'Launching foodcritic using docker',
@@ -35,7 +40,7 @@ def call(
       output:  debug
     )
     // Send command output as error
-    throw output
+    throw error
   }
   // Return output
   log(
