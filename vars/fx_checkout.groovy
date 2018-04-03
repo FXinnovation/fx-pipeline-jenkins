@@ -1,4 +1,5 @@
-def call(scm){
+def call(){
+  checkout scm
   def scmInfo.commitId = command('git rev-parse HEAD').trim()
   def scmInfo.branch   = command('echo "${BRANCH_NAME}"').trim()
   try{
