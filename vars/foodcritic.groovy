@@ -1,4 +1,4 @@
-def call(hashMap){
+def call(hashMap [:]){
   // Fetching named parameters
   def config = [:]
   hashMap.resolveStrategy = Closure.DELEGATE_FIRST
