@@ -3,7 +3,7 @@ def call(
   Boolean output = false
 ){
   // If output is true
-  if output {
+  if (output) {
     // Print message
     println(">>>>> ${message}")
   }
