@@ -24,8 +24,8 @@ def call(
       )
       // Defining if docker is available on the machine
       try{
-        sh "docker run --rm ${dockerImage} stove --version"
-        def dockerCommand = "docker run --rm -v \$(pwd):/data -v ${stoveKey}:/secrets/key.pem ${dockerImage}"
+        sh "docker run --rm ${dockerImage} chef exec stove --version"
+        def dockerCommand = "docker run --rm -v \$(pwd):/data -v ${stoveKey}:/secrets/key.pem ${dockerImage} chef exec"
         def keyPath = '/secrets/key.pem'
         log(
           message: 'Launching stove using docker'
