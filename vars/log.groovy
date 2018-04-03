@@ -6,7 +6,7 @@ def call(hashMap){
   def output  = config.output ?: false
   def message = config.message ?: 'No message given'
   // If output is true
-  if (output) {
+  if (output == true) {
     // Print message
     println(">>>>> ${message}")
   }
