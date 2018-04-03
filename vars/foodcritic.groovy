@@ -4,7 +4,7 @@ def call(
   String options     = ''
 ){
   log(
-    message: 'Checking if docker is available'
+    message: 'Checking if docker is available',
     output:  debug
   )
   // Defining if docekr is available on the machine
@@ -12,26 +12,26 @@ def call(
     sh 'docker run --rm fxinnovation/chefdk foodcritic --version'
     def dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
     log(
-      message: 'Launching foodcritic using docker'
+      message: 'Launching foodcritic using docker',
       output:  debug
     )
   }catch(error){
     def dockerCommand = ''
     log(
-      message: 'Launching foodcritic using native foodcritic (must be preinstalled)'
+      message: 'Launching foodcritic using native foodcritic (must be preinstalled)',
       output:  debug
     )
   }
   try{
     log(
-      message: 'Launching foodcritic'
+      message: 'Launching foodcritic',
       output:  debug
     )
     // Launch foodcritic
     def output = command("${dockerCommand} foodcritic ${options} ./").trim()
   }catch(error){
     log(
-      message: 'Foodcritic failed throwing the error'
+      message: 'Foodcritic failed throwing the error',
       output:  debug
     )
     // Send command output as error
@@ -39,7 +39,7 @@ def call(
   }
   // Return output
   log(
-    message: 'Foodcritic was succesfull, returning output'
+    message: 'Foodcritic was succesfull, returning output',
     output:  debug
   )
   return output
