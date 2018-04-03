@@ -1,5 +1,5 @@
 def call(hashMap = [:]){
-  def config [:]
+  def config = [:]
   hashMap.resolveStrategy = Closure.DELEGATE_FIRST
   hashMap.delegate = config
 
