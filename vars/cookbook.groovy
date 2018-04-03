@@ -1,10 +1,4 @@
 def call(body) {
-  def config = [:]
-  body.resolveStrategy = Closure.DELEGATE_FIRST
-  body.delegate = config
-  body()
-
-  def scm = config.scm
   // Setting Job properties
   properties([
     buildDiscarder(
@@ -33,6 +27,7 @@ def call(body) {
       // Enable colored output in Jenkins
       ansiColor('xterm') {
         stage('pre-build'){
+          checkout scm
           scmInfo = fx_checkout scm
           // Generating new temporary key
           sh 'ssh-keygen -t rsa -f /tmp/id_rsa -P \'\''
