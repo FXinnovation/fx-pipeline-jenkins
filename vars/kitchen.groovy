@@ -28,7 +28,7 @@ def call(
       output:  debug
     )
     // Launch kitchen
-    def output = command("${dockerCommand} kitchen ${options}").trim()
+    def output = command("${dockerCommand} kitchen test ${options}").trim()
   }catch(error){
     log(
       message: 'Kitchen failed throwing the error'
@@ -36,6 +36,9 @@ def call(
     )
     // Send command output as error
     throw output
+  }finally{
+    // Making sure kitchen cleans up it's servers once it is done
+    sh "${dockerCommand} kitchen destroy -c 10"
   }
   // Return output
   log(

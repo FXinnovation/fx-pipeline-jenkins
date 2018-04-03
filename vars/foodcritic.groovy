@@ -1,7 +1,7 @@
 def call(
   Boolean debug      = false,
   String dockerImage = 'fxinnovation/chefdk:latest',
-  String options     = '-t \'~FC078\''
+  String options     = ''
 ){
   log(
     message: 'Checking if docker is available'
