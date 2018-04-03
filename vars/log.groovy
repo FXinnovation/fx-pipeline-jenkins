@@ -1,7 +1,7 @@
 def call(hashMap){
   def config = [:]
   hashMap.resolveStrategy = Closure.DELEGATE_FIRST
-  body.delegate = config
+  hashMap.delegate = config
 
   def output  = config.output ?: false
   def message = config.message ?: 'No message given'
