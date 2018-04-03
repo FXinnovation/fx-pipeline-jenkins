@@ -3,9 +3,10 @@ def call(hashMap = [:]){
   hashMap.resolveStrategy = Closure.DELEGATE_FIRST
   hashMap.delegate = config
 
-  def debug       = config.debug ?: false
-  def dockerImage = config.dockerImage ?: 'fxinnovation/chefdk:latest'
-  def options     = config.options ?: '--destroy=always -c 10'
+  def debug         = config.debug ?: false
+  def dockerImage   = config.dockerImage ?: 'fxinnovation/chefdk:latest'
+  def options       = config.options ?: '--destroy=always -c 10'
+  def dockerOptions = config.dockerOptions ?: '-v /tmp:/tmp'
 
   def dockerCommand = ''
   def output = ''
@@ -15,7 +16,7 @@ def call(hashMap = [:]){
   )
   try{
     sh 'docker run --rm fxinnovation/chefdk kitchen --version'
-    dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
+    dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerOptions} ${dockerImage}"
     log(
       message: 'Launching kitchen using docker',
       output:  debug
