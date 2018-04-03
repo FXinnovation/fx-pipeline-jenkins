@@ -4,7 +4,7 @@ def call(
   String options     = '-D --force-default-config'
 ){
   log(
-    message: 'Checking if docker is available'
+    message: 'Checking if docker is available',
     output:  debug
   )
   // Defining if docekr is available on the machine
@@ -12,26 +12,26 @@ def call(
     sh 'docker run --rm fxinnovation/chefdk cookstyle --version'
     def dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
     log(
-      message: 'Launching cookstyle using docker'
+      message: 'Launching cookstyle using docker',
       output:  debug
     )
   }catch(error){
     def dockerCommand = ''
     log(
-      message: 'Launching cookstyle using native cookstyle (must be preinstalled)'
+      message: 'Launching cookstyle using native cookstyle (must be preinstalled)',
       output:  debug
     )
   }
   try{
     log(
-      message: 'Launching cookstyle'
+      message: 'Launching cookstyle',
       output:  debug
     )
     // Launch cookstyle
     def output = command("${dockerCommand} cookstyle ${options} ./").trim()
   }catch(error){
     log(
-      message: 'Cookstyle failed throwing the error'
+      message: 'Cookstyle failed throwing the error',
       output:  debug
     )
     // Send command output as error
@@ -39,7 +39,7 @@ def call(
   }
   // Return output
   log(
-    message: 'Cookstyle was succesfull, returning output'
+    message: 'Cookstyle was succesfull, returning output',
     output:  debug
   )
   return output
