@@ -1,4 +1,4 @@
-def call(scm) {
+def call(body) {
   // Setting Job properties
   properties([
     buildDiscarder(
