@@ -10,7 +10,7 @@ def call(String command){
     )
   }catch(error){
     failed =true
-  }finally(error){
+  }finally{
     // Fetching output of the command and trim it to remove any blank lines
     // and trailing spaces
     def output = sh(
