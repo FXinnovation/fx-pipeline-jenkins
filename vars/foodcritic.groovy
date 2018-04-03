@@ -8,6 +8,8 @@ def call(hashMap){
   def dockerImage = config.dockerImage ?: 'fxinnovation/chefdk:latest'
   def options     = config.options ?: ''
 
+  def dockerCommand = ''
+
   // Defining if docekr is available on the machine
   try{
     log(
@@ -15,13 +17,12 @@ def call(hashMap){
       output:  debug
     )
     sh "docker run --rm ${dockerImage} foodcritic --version"
-    def dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
+    dockerCommand = "docker run --rm -v \$(pwd):/data ${dockerImage}"
     log(
       message: 'Launching foodcritic using docker',
       output:  debug
     )
   }catch(error){
-    def dockerCommand = ''
     log(
       message: 'Launching foodcritic using native foodcritic (must be preinstalled)',
       output:  debug
