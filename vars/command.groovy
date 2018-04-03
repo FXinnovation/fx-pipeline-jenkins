@@ -9,7 +9,7 @@ def call(String command){
       script:       "set -o pipefail && ${command} | tee /tmp/output"
     )
   }catch(error){
-    failed =true
+    failed = true
   }finally{
     // Fetching output of the command and trim it to remove any blank lines
     // and trailing spaces
