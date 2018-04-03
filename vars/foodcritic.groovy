@@ -3,7 +3,6 @@ def call(hashMap){
   def config = [:]
   hashMap.resolveStrategy = Closure.DELEGATE_FIRST
   hashMap.delegate = config
-  hashMap()
 
   def debug       = config.debug ?: false
   def dockerImage = config.dockerImage ?: 'fxinnovation/chefdk:latest'
