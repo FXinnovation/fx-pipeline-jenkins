@@ -37,7 +37,7 @@ def call(hashMap = [:]){
       message: 'Cookstyle failed throwing the error',
       output:  debug
     )
-    throw output
+    error(output)
   }
   log(
     message: 'Cookstyle was succesfull, returning output',

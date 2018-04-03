@@ -24,7 +24,7 @@ def call(String command){
     )
     // If command has an error, throw the output of the command
     if (failed){
-      throw output
+      error(output)
     }
     // Return the output
     return output

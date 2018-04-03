@@ -42,7 +42,7 @@ def call(hashMap = [:]){
       output:  debug
     )
     // Send command output as error
-    throw error
+    error(output)
   }
   // Return output
   log(
