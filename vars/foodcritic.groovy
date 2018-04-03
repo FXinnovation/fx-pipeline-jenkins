@@ -9,6 +9,7 @@ def call(hashMap){
   def options     = config.options ?: ''
 
   def dockerCommand = ''
+  def output = ''
 
   // Defining if docekr is available on the machine
   try{
@@ -34,7 +35,7 @@ def call(hashMap){
       output:  debug
     )
     // Launch foodcritic
-    def output = command("${dockerCommand} foodcritic ${options} ./").trim()
+    output = command("${dockerCommand} foodcritic ${options} ./").trim()
   }catch(error){
     log(
       message: 'Foodcritic failed throwing the error',
