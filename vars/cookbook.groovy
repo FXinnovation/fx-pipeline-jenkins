@@ -1,5 +1,4 @@
-def call(body) {
-  // Setting Job properties
+def call() {
   properties([
     buildDiscarder(
       logRotator(
@@ -14,41 +13,31 @@ def call(body) {
       interval: '1d']])
   ])
 
-  // Setting some variables
   notify      = false
   color       = "GREEN"
   result      = "SUCCESS"
   message     = "Build finished"
   
-  // Call a slave 
   node() {
-    // Encapsulate everythig into a try catch for error handling
     try {
-      // Enable colored output in Jenkins
       ansiColor('xterm') {
         stage('pre-build'){
-          checkout scm
-          scmInfo = fx_checkout scm
-          // Generating new temporary key
+          scmInfo = fx_checkout()
           sh 'ssh-keygen -t rsa -f /tmp/id_rsa -P \'\''
         }
 
-        // Foodcritic stage
         stage ('foodcritic'){
-          output = foodcritic
+          output = foodcritic()
         }
 
-        // Cookstyle stage
         stage ('cookstyle'){
-          output = cookstyle
+          output = cookstyle()
         }
 
-        // Kitchen stage
         stage ('kitchen') {
-          output = kitchen
+          output = kitchen()
         }
 
-        // Stove Stage
         stage ('publish') {
           if (scmInfo.tag != ''){
             output = stove(
@@ -61,20 +50,16 @@ def call(body) {
         }
       }
     }catch(error){
-      // Archive kitchen logs to help debugging in case of failure
       archiveArtifacts(
         allowEmptyArchive: true,
         artifacts: '.kitchen/logs/*.log'
       )
-
-      // Setting notification errors
       notify  = true
       color   = "RED"
       result  = "FAILURE"
       message = output
       throw(error)
     }finally{
-      // Notification stage
       stage('notification'){
         hipchatSend (
           color:        color,
@@ -90,12 +75,10 @@ def call(body) {
         )
       }
 
-      // Result stage
       stage ('result'){
         junit '*_inspec.xml'
       }
 
-      // Cleaning stage
       stage('cleaning'){
         cleanWs()
       }

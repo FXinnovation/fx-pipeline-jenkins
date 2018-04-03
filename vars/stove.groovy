@@ -1,10 +1,18 @@
-def call(
-  String credentialId,
-  Boolean debug        = false,
-  String dockerImage   = 'fxinnovation/chefdk:latest',
-  String options       = '--no-git',
-  String tag           = ''
-){
+def call(hashMap){
+  def config = [:]
+  hashMap.resolveStrategy = Closure.DELEGATE_FIRST
+  hashMap.delegate = config
+
+  def credentialId = config.credentialId
+  def debug        = config.debug ?: false
+  def dockerImage  = config.dockerImage ?: 'fxinnovation/chefdk:latest'
+  def options      = config.options ?: '--no-git'
+  def tag          = config.tag ?: ''
+
+  def dockerCommand = ''
+  def keyPath       = ''
+  def output        = ''
+
   try{
     log(
       message: 'Loading credentials'
@@ -25,15 +33,15 @@ def call(
       // Defining if docker is available on the machine
       try{
         sh "docker run --rm ${dockerImage} chef exec stove --version"
-        def dockerCommand = "docker run --rm -v \$(pwd):/data -v ${stoveKey}:/secrets/key.pem ${dockerImage} chef exec"
-        def keyPath = '/secrets/key.pem'
+        dockerCommand = "docker run --rm -v \$(pwd):/data -v ${stoveKey}:/secrets/key.pem ${dockerImage} chef exec"
+        keyPath = '/secrets/key.pem'
         log(
           message: 'Launching stove using docker'
           output:  debug
         )
       }catch(error){
-        def dockerCommand = ''
-        def keyPath = stoveKey
+        dockerCommand = ''
+        keyPath = stoveKey
         log(
           message: 'Launching stove using native stove (must be preinstalled)'
           output:  debug
@@ -51,7 +59,7 @@ def call(
         output:  debug
       )
       // Launch stove
-      def output = command("${dockerCommand} stove ${options} --username ${stoveUsername} --key ${keyPath} ./").trim()
+      output = command("${dockerCommand} stove ${options} --username ${stoveUsername} --key ${keyPath} ./").trim()
     }
   }catch(error){
     log(
