@@ -27,7 +27,6 @@ def put(config = [:]){
   consul.command(
     command:  "kv put ${key} ${value}",
     httpAddr: httpAddr,
-    dc:       dc
   )
 }
 
@@ -38,7 +37,6 @@ def get(config = [:]){
   output = consul.command(
     command:  "kv put ${key}",
     httpAddr: httpAddr,
-    dc:       dc
   ).trim()
 
   return output
