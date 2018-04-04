@@ -1,12 +1,7 @@
-def consul_command(body){
-  def config = [:]
-  body.resolveStrategy = Closure.DELEGATE_FIRST
-  body.delegate = config
-  body()
-
-  def httpAddr = config.httpAddr ?: 'http://consul:8500'
-  def command  = config.command
-  def version  = config.version ?: 'latest'
+def command(config){
+  def httpAddr    = config.httpAddr ?: 'http://consul:8500'
+  def command     = config.command
+  def version     = config.version ?: 'latest'
   def dockerImage = config.dockerImage ?: 'consul'
 
   def consulCommand = 'consul'
@@ -24,22 +19,22 @@ def consul_command(body){
   return output
 }
 
-def put(Map config){
+def put(config){
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def key      = config.key
   def value    = config.value
 
-  consul.consul_command(
+  consul.command(
     command:  "kv put ${key} ${value}",
     httpAddr: httpAddr,
   )
 }
 
-def get(Map config){
+def get(config){
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def key      = config.key
 
-  output = consul.consul_command(
+  output = consul.command(
     command:  "kv get ${key}",
     httpAddr: httpAddr,
   ).trim()
