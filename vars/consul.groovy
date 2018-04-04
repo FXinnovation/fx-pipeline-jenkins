@@ -1,4 +1,4 @@
-def command(config){
+def execute(config){
   def httpAddr    = config.httpAddr ?: 'http://consul:8500'
   def command     = config.command
   def version     = config.version ?: 'latest'
@@ -24,7 +24,7 @@ def put(config){
   def key      = config.key
   def value    = config.value
 
-  consul.command(
+  consul.execute(
     command:  "kv put ${key} ${value}",
     httpAddr: httpAddr,
   )
@@ -34,7 +34,7 @@ def get(config){
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def key      = config.key
 
-  output = consul.command(
+  output = consul.execute(
     command:  "kv get ${key}",
     httpAddr: httpAddr,
   ).trim()
