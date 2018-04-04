@@ -1,4 +1,4 @@
-def execute(config){
+def execute(Map config){
   def httpAddr    = config.httpAddr ?: 'http://consul:8500'
   def command     = config.command
   def version     = config.version ?: 'latest'
@@ -13,8 +13,7 @@ def execute(config){
     consulCommand = "docker run --rm ${dockerImage}:${version}"
   }catch(error){}
   try{
-    cmd = "${consulCommand} ${command}"
-    output = command(cmd)
+    output = command("${consulCommand} ${command}").trim()
   }catch(error){
     error(output)
   }
