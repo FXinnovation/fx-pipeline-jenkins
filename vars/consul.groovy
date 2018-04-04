@@ -24,7 +24,7 @@ def put(Map config){
   def key      = config.key
   def value    = config.value
 
-  consul_command(
+  consul.consul_command(
     command:  "kv put ${key} ${value}",
     httpAddr: httpAddr,
   )
@@ -34,7 +34,7 @@ def get(Map config){
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def key      = config.key
 
-  output = consul_command(
+  output = consul.consul_command(
     command:  "kv get ${key}",
     httpAddr: httpAddr,
   ).trim()
