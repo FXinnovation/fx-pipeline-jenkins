@@ -10,7 +10,7 @@ def command(config = [:]){
   try{
     sh "docker run --rm ${dockerImage}:${version} --version"
     consulCommand = "docker run --rm ${dockerImage}:${version}"
-  }
+  }catch(error){}
   try{
     output = command("${consulCommand} ${command}")
   }catch(error){
