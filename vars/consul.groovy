@@ -1,4 +1,4 @@
-def command(config = [:]){
+def command(Map config){
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def command  = config.command
   def version  = config.version ?: 'latest'
@@ -19,7 +19,7 @@ def command(config = [:]){
   return output
 }
 
-def put(config = [:]){
+def put(Map config){
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def key      = config.key
   def value    = config.value
@@ -30,7 +30,7 @@ def put(config = [:]){
   )
 }
 
-def get(config = [:]){
+def get(Map config){
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def key      = config.key
 
