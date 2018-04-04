@@ -1,4 +1,9 @@
-def consul_command(Map config){
+def consul_command(body){
+  def config = [:]
+  body.resolveStrategy = Closure.DELEGATE_FIRST
+  body.delegate = config
+  body()
+
   def httpAddr = config.httpAddr ?: 'http://consul:8500'
   def command  = config.command
   def version  = config.version ?: 'latest'
