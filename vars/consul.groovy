@@ -12,7 +12,7 @@ def execute(config){
     consulCommand = "docker run --rm ${dockerImage}:${version}"
   }catch(error){}
   try{
-    output = command("${consulCommand} ${command}")
+    output = command.call("${consulCommand} ${command}")
   }catch(error){
     error(output)
   }
