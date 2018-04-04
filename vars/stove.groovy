@@ -30,7 +30,6 @@ def call(hashMap){
         message: 'Checking if docker is available'
         output:  debug
       )
-      // Defining if docker is available on the machine
       try{
         sh "docker run --rm ${dockerImage} chef exec stove --version"
         dockerCommand = "docker run --rm -v \$(pwd):/data -v ${stoveKey}:/secrets/key.pem ${dockerImage} chef exec"
@@ -58,7 +57,6 @@ def call(hashMap){
         message: 'Launching stove'
         output:  debug
       )
-      // Launch stove
       output = command("${dockerCommand} stove ${options} --username ${stoveUsername} --key ${keyPath} ./").trim()
     }
   }catch(error){
@@ -66,10 +64,8 @@ def call(hashMap){
       message: 'Stove failed throwing the error'
       output:  debug
     )
-    // Send command output as error
     error(output)
   }
-  // Return output
   log(
     message: 'Stove was succesfull, returning output'
     output:  debug
