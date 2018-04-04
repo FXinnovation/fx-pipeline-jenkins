@@ -6,13 +6,15 @@ def execute(config){
 
   def consulCommand = 'consul'
   def output        = ''
+  def cmd = ''
 
   try{
     sh "docker run --rm ${dockerImage}:${version} --version"
     consulCommand = "docker run --rm ${dockerImage}:${version}"
   }catch(error){}
   try{
-    output = command.call("${consulCommand} ${command}")
+    cmd = "${consulCommand} ${command}"
+    output = command(cmd)
   }catch(error){
     error(output)
   }
