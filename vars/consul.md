@@ -56,7 +56,7 @@ The function return a String which will be the output of the command.
 
 ### Example
 ```
-output = consul.put(
+output = consul.get(
   key:   'foo'
 )
 ```
