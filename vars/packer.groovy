@@ -10,12 +10,13 @@ def build(Map config){
   def vars            = config.vars            ?: []
   def varFile         = config.varFile         ?: false
   def dockerImage     = config.dockerImage     ?: 'fxinnovation/packer:latest'
+  def dockerOptions   = config.dockerOptions   ?: ''
   def TemplateFile    = config.templateFile
 
   def packerCommand = 'packer build'
   try{
     sh "docker run --rm ${dockerImage} --version"
-    packerCommand = "docker run --rm -v \$(pwd):/data -w /data ${dockerImage} build"
+    packerCommand = "docker run --rm -v \$(pwd):/data -w /data ${dockerOptions} ${dockerImage} build"
   }catch(error){}
 
   packerCommand = packerCommand + " -color=${color} -on-error=${onError} -parallel=${parallel}"
@@ -50,12 +51,13 @@ def validate(Map config){
   def vars            = config.vars            ?: []
   def varFile         = config.varFile         ?: false
   def dockerImage     = config.dockerImage     ?: 'fxinnovation/packer:latest'
+  def dockerOptions   = config.dockerOptions   ?: ''
   def templateFile    = config.templateFile
 
   def packerCommand = 'packer build'
   try{
     sh "docker run --rm ${dockerImage} --version"
-    packerCommand = "docker run --rm -v \$(pwd):/data -w /data ${dockerImage} validate"
+    packerCommand = "docker run --rm -v \$(pwd):/data -w /data ${dockerOptions} ${dockerImage} validate"
   }catch(error){}
   
   if ( syntaxOnly == true ){

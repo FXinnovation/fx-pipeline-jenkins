@@ -13,6 +13,7 @@ only,         String  # Defaults to false
 vars,         Array   # Defaults to []
 varFile,      String  # Defaults to false
 dockerImage,  String  # Defaults to 'fxinnovation/packer:latest'
+dockerOptions String  # Defaults to ''
 templateFile, String  # Required 
 ```
 ## Output
@@ -47,6 +48,7 @@ parallel,        String,  # Defaults to 'true'
 vars,            Array    # Defaults to []
 varFile,         String,  # Defaults to false
 dockerImage,     String,  # Defaults to 'fxinnovation/packer:latest'
+dockerOptions    String,  # Defaults to ''
 TemplateFile,    String   # Required    
 ```
 ## Output
