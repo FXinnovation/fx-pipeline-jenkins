@@ -121,7 +121,7 @@ backup         String    # Defaults to false
 
 #### Notes
 
-* If you specifiy `plan`, the `directory` input will be ignored. Please take a look at terraform documentation for more information.
+* If you specify `plan`, the `directory` input will be ignored. Please take a look at terraform documentation for more information.
 
 ### Output
 This function returns a String that will be the output of the command.
