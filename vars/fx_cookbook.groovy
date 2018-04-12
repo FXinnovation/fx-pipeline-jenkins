@@ -24,6 +24,7 @@ def call() {
         stage('pre-build'){
           scmInfo = fx_checkout()
           sh 'ssh-keygen -t rsa -f /tmp/id_rsa -P \'\''
+          println("tag: ${scmInfo.tag}")
         }
 
         stage ('foodcritic'){
@@ -57,7 +58,7 @@ def call() {
       notify  = true
       color   = "RED"
       result  = "FAILURE"
-      message = output
+      message = error
       throw(error)
     }finally{
       stage('notification'){
