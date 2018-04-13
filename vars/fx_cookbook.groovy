@@ -57,7 +57,7 @@ def call() {
       notify  = true
       color   = "RED"
       result  = "FAILURE"
-      message = output
+      message = error
       throw(error)
     }finally{
       stage('notification'){

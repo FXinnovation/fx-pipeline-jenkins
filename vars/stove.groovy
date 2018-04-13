@@ -15,7 +15,7 @@ def call(hashMap){
 
   try{
     log(
-      message: 'Loading credentials'
+      message: 'Loading credentials',
       output:  debug
     )
     withCredentials([
@@ -27,7 +27,7 @@ def call(hashMap){
       )
     ]){
       log(
-        message: 'Checking if docker is available'
+        message: 'Checking if docker is available',
         output:  debug
       )
       try{
@@ -35,39 +35,39 @@ def call(hashMap){
         dockerCommand = "docker run --rm -v \$(pwd):/data -v ${stoveKey}:/secrets/key.pem ${dockerImage} chef exec"
         keyPath = '/secrets/key.pem'
         log(
-          message: 'Launching stove using docker'
+          message: 'Launching stove using docker',
           output:  debug
         )
       }catch(error){
         dockerCommand = ''
         keyPath = stoveKey
         log(
-          message: 'Launching stove using native stove (must be preinstalled)'
+          message: 'Launching stove using native stove (must be preinstalled)',
           output:  debug
         )
       }
       log(
-        message: 'Verifying if tag that was passed matches metadata.rb tag'
+        message: 'Verifying if tag that was passed matches metadata.rb tag',
         output:  debug
       )
       if tag != '' {
         sh "cat metadata.rb | grep -E '^version\\s' | grep '${tag}'"
       }
       log(
-        message: 'Launching stove'
+        message: 'Launching stove',
         output:  debug
       )
       output = command("${dockerCommand} stove ${options} --username ${stoveUsername} --key ${keyPath} ./").trim()
     }
   }catch(error){
     log(
-      message: 'Stove failed throwing the error'
+      message: 'Stove failed throwing the error',
       output:  debug
     )
     error(output)
   }
   log(
-    message: 'Stove was succesfull, returning output'
+    message: 'Stove was succesfull, returning output',
     output:  debug
   )
   return output
