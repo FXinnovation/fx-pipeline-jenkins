@@ -24,7 +24,6 @@ def call() {
         stage('pre-build'){
           scmInfo = fx_checkout()
           sh 'ssh-keygen -t rsa -f /tmp/id_rsa -P \'\''
-          println("tag: ${scmInfo.tag}")
         }
 
         stage ('foodcritic'){
