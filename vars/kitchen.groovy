@@ -39,8 +39,6 @@ def call(hashMap = [:]){
       output:  debug
     )
     throw (error)
-  }finally{
-    sh "${dockerCommand} kitchen destroy -c 10"
   }
   log(
     message: 'Kitchen was succesfull, returning output',
