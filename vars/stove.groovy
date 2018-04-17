@@ -1,8 +1,4 @@
-def call(hashMap){
-  def config = [:]
-  hashMap.resolveStrategy = Closure.DELEGATE_FIRST
-  hashMap.delegate = config
-
+def call(config = [:]){
   def credentialId = config.credentialId
   def debug        = config.debug ?: false
   def dockerImage  = config.dockerImage ?: 'fxinnovation/chefdk:latest'
