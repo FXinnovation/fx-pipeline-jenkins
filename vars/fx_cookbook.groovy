@@ -80,7 +80,7 @@ def call() {
       }
 
       stage('cleaning'){
-        command("docker run --rm -v \$(pwd):/data -w /data fxinnovation/chefdk:latest kitchen destroy -c 10")
+        command("docker run --rm -v /tmp:/tmp -v \$(pwd):/data -w /data fxinnovation/chefdk:latest kitchen destroy -c 10")
         cleanWs()
       }
     }
