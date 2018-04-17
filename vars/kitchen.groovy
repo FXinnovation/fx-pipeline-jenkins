@@ -5,7 +5,7 @@ def call(hashMap = [:]){
 
   def debug         = config.debug ?: false
   def dockerImage   = config.dockerImage ?: 'fxinnovation/chefdk:latest'
-  def options       = config.options ?: '--destroy=always -c 10'
+  def options       = config.options ?: '--destroy=always -c 3'
   def dockerOptions = config.dockerOptions ?: '-v /tmp:/tmp'
 
   def dockerCommand = ''
