@@ -1,4 +1,4 @@
-def call(Map config){
+def call(Map config = [:]){
   if ( !config.containsKey('dockerImage') ){
     config.dockerImage = 'fxinnovation/chefdk:latest'
   }
