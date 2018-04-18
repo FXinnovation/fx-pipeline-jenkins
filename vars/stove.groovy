@@ -15,6 +15,9 @@ def call(Map config = [:]){
   def dockerCommand = ''
   def keyPath       = ''
   def output        = ''
+  def stoveKey
+  def stovePassphrase
+  def stoveUsername
 
   try{
     withCredentials([
