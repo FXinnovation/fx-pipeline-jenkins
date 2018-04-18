@@ -39,7 +39,7 @@ def call(Map config = [:]){
 //      output = command("${dockerCommand} stove ${config.options} --username ${stoveUsername} --key ${keyPath} ./").trim()
     }
   }catch(error){
-    error(output)
+    throw error
   }
   return output
 }
