@@ -1,3 +1,4 @@
+// terraform validate
 def validate(Map config = [:]){
   if ( !config.containsKey('checkVariables') ){
     config.checkVariables = 'true'
@@ -31,9 +32,10 @@ def validate(Map config = [:]){
   if ( config.varFile != false ){
     terraformCommand = terraformCommand + " -var-file=${config.varFile}"
   }
-  vars.each{
-    terraformCommand = terraformCommand + " -var '${it}'"
+  for ( var in config.vars ){
+    terraformCommand = terraformCommand + " -var '${var}'"
   }
+
   terraformCommand = terraformCommand + " ${config.directory}"
 
   output = command(terraformCommand)
