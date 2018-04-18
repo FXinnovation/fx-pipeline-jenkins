@@ -22,7 +22,7 @@ def call(Map config = [:]){
   try{
     withCredentials([
       sshUserPrivateKey(
-        credentialId:       config.credentialId,
+        credentialId:       "${config.credentialId}",
         keyFileVariable:    stoveKey,
         passphraseVariable: stovePassphrase,
         usernameVariable:   stoveUsername
