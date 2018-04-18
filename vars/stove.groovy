@@ -19,6 +19,8 @@ def call(Map config = [:]){
   def stovePassphrase
   def stoveUsername
 
+  println config.credentialId
+
   try{
     withCredentials([
       sshUserPrivateKey(
