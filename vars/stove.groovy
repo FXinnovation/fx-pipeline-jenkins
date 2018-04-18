@@ -9,12 +9,12 @@ def call(Map config = [:]){
     error('stove.groovy - The credentialsId parameter must be set')
   }
 
-  def dockerCommand = ''
-  def keyPath       = ''
-  def output        = ''
-  def stoveKey
-  def stovePassphrase
-  def stoveUsername
+  def dockerCommand   = ''
+  def keyPath         = ''
+  def output          = ''
+  def stoveKey        = ''
+  def stovePassphrase = ''
+  def stoveUsername   = ''
 
   try{
     withCredentials([
