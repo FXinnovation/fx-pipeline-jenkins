@@ -36,7 +36,7 @@ def call(Map config = [:]){
         dockerCommand = ''
         keyPath = stoveKey
       }
-      if ( tag != '' ){
+      if ( config.tag != '' ){
         sh "cat metadata.rb | grep -E '^version\\s' | grep '${config.tag}'"
       }
       output = command("${dockerCommand} stove ${config.options} --username ${stoveUsername} --key ${keyPath} ./").trim()
