@@ -1,28 +1,40 @@
-def validate(Map config){
-  def checkVariables = config.checkVariables ?: 'true'
-  def noColor        = config.color          ?: false
-  def vars           = config.vars           ?: []
-  def varFile        = config.varFile        ?: false
-  def directory      = config.directory      ?: './'
-  def dockerImage    = config.dockerImage    ?: 'fxinnovation/terraform:latest'
+def validate(Map config = [:]){
+  if ( !config.containsKey('checkVariables') ){
+    config.checkVariables = 'true'
+  }
+  if ( !config.containsKey('noColor') ){
+    config.noColor = false
+  }
+  if ( !config.containsKey('vars') ){
+    config.vars = []
+  }
+  if ( !config.containsKey('varFile') ){
+    config.varFile = false
+  }
+  if ( !config.containsKey('directory') ){
+    config.directory = './'
+  }
+  if ( !config.containsKey('dockerImage') ){
+    config.dockerImage = 'fxinnovation/terraform:latest'
+  }
 
   def terraformCommand = 'terraform validate'
   try{
-    sh "docker run --rm ${dockerImage} --version"
-    terraformCommand = "docker run --rm -v \$(pwd):/data -w /data ${dockerImage} validate"
+    sh "docker run --rm ${config.dockerImage} --version"
+    terraformCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} validate"
   }catch(error){}
 
-  terraformCommand = terraformCommand + " -check-variables=${checkVariables}"
-  if ( noColor == true ){
+  terraformCommand = terraformCommand + " -check-variables=${config.checkVariables}"
+  if ( config.noColor == true ){
     terraformCommand = terraformCommand + " -no-color"
   }
-  if ( varFile != false ){
-    terraformCommand = terraformCommand + " -var-file=${varFile}"
+  if ( config.varFile != false ){
+    terraformCommand = terraformCommand + " -var-file=${config.varFile}"
   }
   vars.each{
     terraformCommand = terraformCommand + " -var '${it}'"
   }
-  terraformCommand = terraformCommand + " ${directory}"
+  terraformCommand = terraformCommand + " ${config.directory}"
 
   output = command(terraformCommand)
   return output
