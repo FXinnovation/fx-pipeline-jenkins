@@ -16,9 +16,9 @@ def call(Map config = [:]){
   def keyPath       = ''
   def output        = ''
 
-  println dockerImage
-  println options
-  println tag
+  println config.dockerImage
+  println config.options
+  println config.tag
   println config.credentialId
   // try{
   //   withCredentials([
