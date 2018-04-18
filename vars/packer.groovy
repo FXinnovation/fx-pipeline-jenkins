@@ -1,4 +1,7 @@
-def build(Map config){
+def build(Map config = [:]){
+  if ( config.containsKey('templateFile') ){
+    error('packer.groovy - templateFile parameter is mandatory!')
+  }
   def color           = config.color           ?: 'true'
   def debug           = config.debug           ?: false
   def except          = config.except          ?: false
@@ -11,7 +14,7 @@ def build(Map config){
   def varFile         = config.varFile         ?: false
   def dockerImage     = config.dockerImage     ?: 'fxinnovation/packer:latest'
   def dockerOptions   = config.dockerOptions   ?: ''
-  def TemplateFile    = config.templateFile
+  def templateFile    = config.templateFile
 
   def packerCommand = 'packer build'
   try{
@@ -35,8 +38,8 @@ def build(Map config){
   if ( varFile != false ){
     packerCommand = packerCommand + " -var-file=${varFile}"
   }
-  vars.each{
-    packerCommand = packerCommand + " -var '${it}'"
+  for (var in vars){
+    packerCommand = packerCommand + " -var '${var}'"
   }
   packerCommand = packerCommand + " ${templateFile}"
 
@@ -44,7 +47,10 @@ def build(Map config){
   return output
 }
 
-def validate(Map config){
+def validate(Map config = [:]){
+  if ( config.containsKey('templateFile') ){
+    error('packer.groovy - templateFile parameter is mandatory!')
+  }
   def syntaxOnly      = config.syntaxOnly      ?: false
   def except          = config.except          ?: false
   def only            = config.only            ?: false
@@ -72,8 +78,8 @@ def validate(Map config){
   if ( varFile != false ){
     packerCommand = packerCommand + " -var-file=${varFile}"
   }
-  vars.each{
-    packerCommand = packerCommand + " -var '${it}'"
+  for ( var in vars){
+    packerCommand = packerCommand + " -var '${var}'"
   }
   packerCommand = packerCommand + " ${templateFile}"
 
