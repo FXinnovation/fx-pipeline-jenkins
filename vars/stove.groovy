@@ -1,7 +1,16 @@
 def call(Map config){
-  def dockerImage  = config.dockerImage ?: 'fxinnovation/chefdk:latest'
-  def options      = config.options ?: '--no-git'
-  def tag          = config.tag ?: ''
+  if ( !config.containsKey('dockerImage') ){
+    config.dockerImage = 'fxinnovation/chefdk:latest'
+  }
+  if ( !config.containsKey('options') ){
+    config.options = '--no-git'
+  }
+  if ( !config.containsKey('tag') ){
+    config.tag = ''
+  }
+  if ( !config.containsKey('credentialId') ){
+    error('stove.groovy - The credentialId parameter must be set')
+  }
 
   def dockerCommand = ''
   def keyPath       = ''
