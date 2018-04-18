@@ -12,17 +12,14 @@ def call(Map config = [:]){
   def dockerCommand   = ''
   def keyPath         = ''
   def output          = ''
-  def stoveKey        = ''
-  def stovePassphrase = ''
-  def stoveUsername   = ''
 
   try{
     withCredentials([
       sshUserPrivateKey(
         credentialsId:      config.credentialsId,
-        keyFileVariable:    stoveKey,
-        passphraseVariable: stovePassphrase,
-        usernameVariable:   stoveUsername
+        keyFileVariable:    'stoveKey',
+        passphraseVariable: 'stovePassphrase',
+        usernameVariable:   'stoveUsername'
       )
     ]){
       try{
