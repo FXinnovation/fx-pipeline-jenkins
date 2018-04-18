@@ -41,8 +41,7 @@ def call() {
         stage ('publish') {
           if (scmInfo.tag != ''){
             output = stove(
-              credentialsId: 'chef_supermarket',
-              tag:           scmInfo.tag
+              credentialsId: 'chef_supermarket'
             )
           }else{
             println 'Not a tagged version, skipping publish'
