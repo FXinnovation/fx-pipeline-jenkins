@@ -20,7 +20,7 @@ def call(Map config){
         sh "docker run --rm ${dockerImage} chef exec stove --version"
         dockerCommand = "docker run --rm -v \$(pwd):/data -v ${stoveKey}:/secrets/key.pem ${dockerImage} chef exec"
         keyPath = '/secrets/key.pem'
-      }catch(error){
+      }catch(err){
         dockerCommand = ''
         keyPath = stoveKey
       }
