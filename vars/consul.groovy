@@ -1,4 +1,4 @@
-def execute(Map config){
+def execute(Map config = [:]){
   def httpAddr    = config.httpAddr ?: 'http://consul:8500'
   def command     = config.command
   def version     = config.version ?: 'latest'
