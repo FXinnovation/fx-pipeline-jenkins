@@ -5,9 +5,6 @@ def call(Map config = [:]){
   if ( !config.containsKey('options') ){
     config.options = '--no-git'
   }
-  if ( !config.containsKey('tag') ){
-    config.tag = ''
-  }
   if ( !config.containsKey('credentialsId') ){
     error('stove.groovy - The credentialsId parameter must be set')
   }
@@ -35,9 +32,6 @@ def call(Map config = [:]){
       }catch(err){
         dockerCommand = ''
         keyPath = stoveKey
-      }
-      if ( config.tag != '' ){
-        sh "cat metadata.rb | grep -E '^version\\s' | grep '${config.tag}'"
       }
       output = command("${dockerCommand} stove ${config.options} --username ${stoveUsername} --key ${keyPath} ./").trim()
     }

@@ -9,7 +9,6 @@ The function takes a Map in entry that follows the following pattern:
   debug:        Boolean, # Defaults to false
   dockerImage:  String,  # Defaults to 'fxinnovation/chefdk:lastest'
   options:      String,  # Defaults to '-D --force-default-config'
-  tag:          String   # Defaults to ''
 }
 ```
 
@@ -21,7 +20,6 @@ stove(
   credentialId: 'my-secret'
   debug:        false,
   options:      '--some option',
-  dockerImage:  'your/imagehere:tag',
-  tag:          '0.1.0'
+  dockerImage:  'your/imagehere:tag'
 )
 ```
