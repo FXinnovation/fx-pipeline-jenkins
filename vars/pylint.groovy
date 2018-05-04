@@ -1,4 +1,6 @@
 def call(Map config = [:]){
+  File currentScript = new File(getClass().protectionDomain.codeSource.location.path)
+
   if ( !config.containsKey('dockerImage') ){
     config.dockerImage = 'fxinnovation/pythonlinters:latest'
   }
@@ -6,7 +8,7 @@ def call(Map config = [:]){
     config.options = ''
   }
   if ( !config.containsKey('filePattern') ){
-    error('pylint.groovy - filePattern parameter is mandatory')
+    error(currentScript.getName() + ' - filePattern parameter is mandatory')
   }
   
   def output = ''
