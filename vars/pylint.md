@@ -5,7 +5,7 @@ Will execute pylint and return the output.
 The function takes a Map as input that follows the following pattern:
 ```
 {
-  dockerImage: 'fxinnovation/pylint:latest',
+  dockerImage: 'fxinnovation/pythonlinters:latest',
   options:     '',
   filePattern: ''                            # Required
 }

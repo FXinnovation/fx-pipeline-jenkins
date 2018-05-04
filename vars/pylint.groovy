@@ -1,6 +1,6 @@
 def call(Map config = [:]){
   if ( !config.containsKey('dockerImage') ){
-    config.dockerImage = 'fxinnovation/pylint:latest'
+    config.dockerImage = 'fxinnovation/pythonlinters:latest'
   }
   if ( !config.containsKey('options') ){
     config.options = ''
@@ -13,7 +13,7 @@ def call(Map config = [:]){
   def dockerCommand = 'pylint'
   try{
     sh "docker run --rm ${config.dockerImage} --version"
-    dockerCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage}"
+    dockerCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} pylint"
   }catch(error){}
     output = command("${dockerCommand} ${config.options} ${config.filePattern}").trim()
     return output
