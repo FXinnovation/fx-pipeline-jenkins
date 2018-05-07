@@ -10,7 +10,13 @@ def call(Map config = [:]){
   if ( !config.containsKey('filePattern') ){
     error(currentScript.getName() + ' - filePattern parameter is mandatory')
   }
-  
+  if ( !config.containsKey('pylintRepository') ){
+    config.pylintRepository = 'git@bitbucket.org:fxadmin/public-common-configuration-linters.git'
+  }
+
+  sh "git clone ${config.pylintRepository} pylint"
+  sh "cp pylint/.pylintrc ."
+
   def output = ''
   def dockerCommand = 'pylint'
   try{
