@@ -10,12 +10,18 @@ def call(Map config = [:]){
     if ( !config.containsKey('filePattern') ){
         error(currentScript.getName() + ' - filePattern parameter is mandatory')
     }
-    if ( !config.containsKey('pylintRepository') ){
-        config.pylintRepository = 'https://bitbucket.org/fxadmin/public-common-configuration-linters.git'
+    if ( !config.containsKey('linterOptionsRepo') ){
+        config.linterOptionsRepo = 'https://bitbucket.org/fxadmin/public-common-configuration-linters.git'
+    }
+    if ( !config.containsKey('linterOptionsRepoCredentialsId') ){
+        config.linterOptionsRepoCredentialsId = 'temp_bitbucket_credentials'
+    }
+    if ( !config.containsKey('linterOptionsRepoBranchPattern') ){
+        config.linterOptionsRepoBranchPattern = '*/master'
     }
 
     dir('pylint') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, userRemoteConfigs: [[credentialsId: 'temp_bitbucket_credentials', url: "${config.pylintRepository}"]]])
+        checkout([$class: 'GitSCM', branches: [[name: "${config.linterOptionsRepoBranchPattern}"]], doGenerateSubmoduleConfigurations: false, userRemoteConfigs: [[credentialsId: "${config.linterOptionsRepoCredentialsId}", url: "${config.pylintRepository}"]]])
     }
 
     def output = ''
@@ -29,7 +35,6 @@ def call(Map config = [:]){
         println error
     }
 
-    println "${testCommand} ${config.options} ${config.filePattern}"
-    output = command("${testCommand} ${config.options} ${config.filePattern}").trim()
+    output = command("${>testCommand} ${config.options} ${configurationOption} ${config.filePattern}").trim()
     return output
 }

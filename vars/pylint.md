@@ -8,7 +8,9 @@ The function takes a Map as input that follows the following pattern:
   dockerImage: 'fxinnovation/pythonlinters:latest',
   options:     '',
   filePattern: '',                            # Required
-  pylintRepository: 'https://bitbucket.org/fxadmin/public-common-configuration-linters.git'
+  linterOptionsRepo: 'https://bitbucket.org/fxadmin/public-common-configuration-linters.git',
+  linterOptionsRepoCredentialsId: 'temp_bitbucket_credentials',
+  linterOptionsRepoBranchPattern: '*/master'
 ]
 ```
 
