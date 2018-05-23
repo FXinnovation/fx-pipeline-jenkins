@@ -30,11 +30,11 @@ def call(Map config = [:]){
     def testCommand = 'pylint'
     try{
         sh "docker run --rm ${config.dockerImage} --version"
-        testCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} ${dockerCommand} ${configurationOption}"
+        testCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} ${dockerCommand}"
     } catch (error) {
         println error
     }
 
-    output = command("${>testCommand} ${config.options} ${configurationOption} ${config.filePattern}").trim()
+    output = command("${testCommand} ${configurationOption} ${config.options} ${config.filePattern}").trim()
     return output
 }
