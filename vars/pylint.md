@@ -9,7 +9,7 @@ The function takes a Map as input that follows the following pattern:
   options:     '',
   filePattern: '',                            # Required
   linterOptionsRepo: 'https://bitbucket.org/fxadmin/public-common-configuration-linters.git',
-  linterOptionsRepoCredentialsId: 'temp_bitbucket_credentials',
+  linterOptionsRepoCredentialsId: '',         # Required
   linterOptionsRepoBranchPattern: '*/master'
 ]
 ```

@@ -8,13 +8,13 @@ def call(Map config = [:]){
         config.options = ''
     }
     if ( !config.containsKey('filePattern') ){
-        error(currentScript.getName() + ' - filePattern parameter is mandatory')
+        error(currentScript.getName() + ' - filePattern parameter is mandatory.')
     }
     if ( !config.containsKey('linterOptionsRepo') ){
         config.linterOptionsRepo = 'https://bitbucket.org/fxadmin/public-common-configuration-linters.git'
     }
     if ( !config.containsKey('linterOptionsRepoCredentialsId') ){
-        config.linterOptionsRepoCredentialsId = 'temp_bitbucket_credentials'
+        error(currentScript.getName() + ' - linterOptionsRepoCredentialsId parameter is mandatory.')
     }
     if ( !config.containsKey('linterOptionsRepoBranchPattern') ){
         config.linterOptionsRepoBranchPattern = '*/master'
