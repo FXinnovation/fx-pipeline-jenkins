@@ -10,8 +10,8 @@ def call(Map config = [:]){
   }
 
   def output = ''
-  def dockerCommand = 'python -m unittest'
-  def testCommand = 'python -m unittest'
+  def dockerCommand = 'python3 -m unittest'
+  def testCommand = 'python3 -m unittest'
   try {
     sh "docker run --rm ${config.dockerImage} ${dockerCommand} --version"
     testCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} ${dockerCommand}"
