@@ -6,7 +6,7 @@ def call(Map config = [:]){
     config.options = ''
   }
   if (!config.containsKey('filePattern')) {
-    config.options = ''
+    config.filePattern = ''
   }
 
   def output = ''
