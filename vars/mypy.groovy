@@ -18,10 +18,9 @@ def call(Map config = [:]){
     sh "docker run --rm ${config.dockerImage} ${dockerCommand} --version"
     testCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} ${dockerCommand}"
   } catch (error) {
-    println error
+    println "docker was not found. Falling back to the test command ”${testCommand}“"
   }
 
-  println "${testCommand} ${config.options} ${config.filePattern}"
   output = command("${testCommand} ${config.options} ${config.filePattern}").trim()
   return output
 }
