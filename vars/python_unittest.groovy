@@ -1,19 +1,17 @@
 def call(Map config = [:]){
-  File currentScript = new File(getClass().protectionDomain.codeSource.location.path)
-
   if (!config.containsKey('dockerImage')) {
-    config.dockerImage = 'fxinnovation/pythonlinters:latest'
+    config.dockerImage = 'fxinnovation/pythonunittest:latest'
   }
   if (!config.containsKey('options')) {
     config.options = ''
   }
   if (!config.containsKey('filePattern')) {
-    error(currentScript.getName() + ' - filePattern parameter is mandatory')
+    config.filePattern = ''
   }
 
   def output = ''
-  def dockerCommand = 'mypy'
-  def testCommand = 'mypy'
+  def dockerCommand = 'python3 -m unittest'
+  def testCommand = 'python3 -m unittest'
   try {
     sh "docker run --rm ${config.dockerImage} ${dockerCommand} --version"
     testCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} ${dockerCommand}"
