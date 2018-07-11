@@ -6,7 +6,7 @@ def call(Map config = [:]){
     config.options = ''
   }
   if (!config.containsKey('filePattern')) {
-    config.filePattern = ''
+    config.filePattern = 'test.py'
   }
   if (!config.containsKey('testResultFile')) {
     config.testResultFile = 'junit_results.xml'
