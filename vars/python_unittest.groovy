@@ -13,8 +13,8 @@ def call(Map config = [:]){
   }
 
   def output = ''
-  def dockerCommand = "pytest --junitxml ${config.testResultFile}"
-  def testCommand = "pytest --junitxml ${config.testResultFile}"
+  def dockerCommand = "python3 -m pytest --junitxml ${config.testResultFile}"
+  def testCommand = "python3 -m pytest --junitxml ${config.testResultFile}"
   try {
     sh "docker run --rm ${config.dockerImage} ${dockerCommand} --version"
     testCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} ${dockerCommand}"
