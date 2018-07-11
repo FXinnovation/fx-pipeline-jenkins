@@ -6,12 +6,15 @@ def call(Map config = [:]){
     config.options = ''
   }
   if (!config.containsKey('filePattern')) {
-    config.filePattern = ''
+    config.filePattern = 'test.py'
+  }
+  if (!config.containsKey('testResultFile')) {
+    config.testResultFile = 'junit_results.xml'
   }
 
   def output = ''
-  def dockerCommand = 'python3 -m unittest'
-  def testCommand = 'python3 -m unittest'
+  def dockerCommand = "pytest --junitxml ${config.testResultFile}"
+  def testCommand = "pytest --junitxml ${config.testResultFile}"
   try {
     sh "docker run --rm ${config.dockerImage} ${dockerCommand} --version"
     testCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} ${dockerCommand}"
