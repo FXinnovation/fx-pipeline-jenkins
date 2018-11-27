@@ -8,21 +8,6 @@ def call(Map config = [:]){
   if ( !config.containsKey('avatar') ){
     config.avatar = 'https://cdn.iconscout.com/icon/free/png-512/jenkins-4-555576.png'
   }
-  println '###########################'
-  println currentBuild.getBuildCauses()
-  println '###########################'
-  println env.BRANCH_NAME
-  println env.CHANGE_ID
-  println env.CHANGE_URL
-  println env.CHANGE_TITLE
-  println env.CHANGE_AUTHOR
-  println env.CHANGE_AUTHOR_DISPLAY_NAME
-  println env.CHANGE_AUTHOR_EMAIL
-  println env.CHANGE_TARGET
-  println currentBuild.result
-  println currentBuild.currentResult
-  println currentBuild.rawBuild
-  println '###########################'
 
   buildCausers = currentBuild.getBuildCauses()
 
@@ -33,6 +18,12 @@ def call(Map config = [:]){
       notifiedPeople = notifiedPeople + "@" + currentCause.userName.replace(' ','.').toLowerCase() + " "
     }
   }
+  if (notifiedPeople == ""){
+    notifiedPeople = sh(
+      returnStdOut: true
+      script:       "git log -1 --pretty=format:'%an'"
+    ).replace(' ','.').toLowerCase() + " "
+  }
 
   message = """
   Build: *[${env.JOB_NAME}](${env.BUILD_URL}) #${env.BUILD_NUMBER}*
@@ -40,9 +31,6 @@ def call(Map config = [:]){
   Notify: ${notifiedPeople}
   """
 
-  if ( "${env.CHANGE_AUTHOR_EMAIL}" != "null" ){
-    message = message + "\nNotify: @${env.CHANGE_AUTHOR_EMAIL}"
-  }
   if ( config.containsKey('message') ){
     message = message + "\nMessage: ${config.message}"
   }
