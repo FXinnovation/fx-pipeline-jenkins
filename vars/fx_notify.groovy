@@ -11,7 +11,14 @@ def call(Map config = [:]){
   println '###########################'
   println currentBuild.getBuildCauses()
   println '###########################'
-  sh 'env'
+  println env.BRANCH_NAME
+  println env.CHANGE_ID
+  println env.CHANGE_URL
+  println env.CHANGE_TITLE
+  println env.CHANGE_AUTHOR
+  println env.CHANGE_AUTHOR_DISPLAY_NAME
+  println env.CHANGE_AUTHOR_EMAIL
+  println env.CHANGE_TARGET
   println '###########################'
 
   buildCausers = currentBuild.getBuildCauses()
