@@ -9,16 +9,27 @@ def call(Map config = [:]){
     config.avatar = 'https://cdn.iconscout.com/icon/free/png-512/jenkins-4-555576.png'
   }
 
+  buildCausers = currentBuild.getBuildCauses()
+
+  notifiedPeople = ""
+  for (i=0; i < buildCausers.size(); i++){
+    currentCause = buildCausers[i]
+    if (currentCause.userName != null){
+      notifiedPeople = notifiedPeople + "@" + currentCause.userName.replace(' ','.') + " "
+    }
+  }
+
   message = """
   Build: *[${env.JOB_NAME}](${env.BUILD_URL}) #${env.BUILD_NUMBER}*
   Status: *${currentBuild.currentResult}*
+  Notify: ${notifiedPeople}
   """
 
   if ( "${env.CHANGE_AUTHOR_EMAIL}" != "null" ){
     message = message + "\nNotify: @${env.CHANGE_AUTHOR_EMAIL}"
   }
   if ( config.containsKey('message') ){
-    message = message + "\nMessage: `${config.message}`"
+    message = message + "\nMessage: ${config.message}"
   }
 
   rocketSend(
