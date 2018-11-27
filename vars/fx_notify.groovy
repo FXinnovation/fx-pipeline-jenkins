@@ -15,7 +15,7 @@ def call(Map config = [:]){
   for (i=0; i < buildCausers.size(); i++){
     currentCause = buildCausers[i]
     if (currentCause.userName != null){
-      notifiedPeople = notifiedPeople + "@" + currentCause.userName.replace(' ','.') + " "
+      notifiedPeople = notifiedPeople + "@" + currentCause.userName.replace(' ','.').toLowerCase() + " "
     }
   }
 
