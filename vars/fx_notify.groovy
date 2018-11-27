@@ -8,6 +8,11 @@ def call(Map config = [:]){
   if ( !config.containsKey('avatar') ){
     config.avatar = 'https://cdn.iconscout.com/icon/free/png-512/jenkins-4-555576.png'
   }
+  println '###########################'
+  println currentBuild.getBuildCauses()
+  println '###########################'
+  sh 'env'
+  println '###########################'
 
   buildCausers = currentBuild.getBuildCauses()
 
