@@ -19,6 +19,9 @@ def call(Map config = [:]){
   println env.CHANGE_AUTHOR_DISPLAY_NAME
   println env.CHANGE_AUTHOR_EMAIL
   println env.CHANGE_TARGET
+  println currentBuild.result()
+  println currentBuild.currentResult()
+  println currentBuild.rawBuild()
   println '###########################'
 
   buildCausers = currentBuild.getBuildCauses()
