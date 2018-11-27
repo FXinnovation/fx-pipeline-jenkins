@@ -72,6 +72,9 @@ def call() {
           server:       'api.hipchat.com',
           v2enabled:    false
         )
+        fx_notify(
+          message: message
+        )
       }
 
       stage ('result'){
