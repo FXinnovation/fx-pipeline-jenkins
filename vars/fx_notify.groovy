@@ -20,7 +20,7 @@ def call(Map config = [:]){
   }
   if (notifiedPeople == ""){
     notifiedPeople = sh(
-      returnStdOut: true
+      returnStdOut: true,
       script:       "git log -1 --pretty=format:'%an'"
     ).replace(' ','.').toLowerCase() + " "
   }
