@@ -9,7 +9,7 @@ def call(Map config = [:]){
     config.avatar = 'https://cdn.iconscout.com/icon/free/png-512/jenkins-4-555576.png'
   }
   if ( !config.containsKey('status')){
-    if ( currentBuild.result != null ){
+    if ( currentBuild.result != "null" ){
       config.status = currentBuild.result
     }else{
       config.status = currentBuild.currentResult
@@ -37,9 +37,9 @@ def call(Map config = [:]){
   }
 
   message = """
-  Build: *[${env.JOB_NAME}](${env.BUILD_URL}) #${env.BUILD_NUMBER}*
-  Status: *${config.status}*
-  Notify: ${config.notifiedPeople}
+  **Build**: *[${env.JOB_NAME} #${env.BUILD_NUMBER}](${env.BUILD_URL})*
+  **Status**: ${config.status}
+  **Notify**: ${config.notifiedPeople}
   """
 
   if ( config.containsKey('message') ){
