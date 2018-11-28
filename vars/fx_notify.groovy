@@ -25,15 +25,15 @@ def call(Map config = [:]){
   for (i=0; i < buildCausers.size(); i++){
     currentCause = buildCausers[i]
     if (currentCause.userName != null){
-      notifiedPeople = notifiedPeople + "@" + currentCause.userName.replace(' ','.').toLowerCase() + " "
+      config.notifiedPeople = config.notifiedPeople + " @" + currentCause.userName.replace(' ','.').toLowerCase()
       foundCausers = true
     }
   }
   if (!foundCausers){
-    config.notifiedPeople = "@" + sh(
+    config.notifiedPeople = config.notifiedPeople + " @" + sh(
       returnStdout: true,
       script:       "git log -1 --pretty=format:'%an'"
-    ).replace(' ','.').toLowerCase() + " "
+    ).replace(' ','.').toLowerCase()
   }
 
   message = """
