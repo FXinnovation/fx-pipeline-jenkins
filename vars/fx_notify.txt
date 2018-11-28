@@ -1,0 +1,14 @@
+The fx_notify variable allows you to notify build results to the current chat system.
+
+It takes the following parameters:
+
+*failOnError*: defaults to true
+
+*rawMessage*: default to true
+
+*avatar*: defaults to https://cdn.iconscout.com/icon/free/png-512/jenkins-4-555576.png
+
+*status*: defaults to currentBuild.status or currentBuild.currentStatus
+
+*notifiedPeople*: default to userName of buildCausers or last git committer
+

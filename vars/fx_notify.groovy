@@ -8,18 +8,29 @@ def call(Map config = [:]){
   if ( !config.containsKey('avatar') ){
     config.avatar = 'https://cdn.iconscout.com/icon/free/png-512/jenkins-4-555576.png'
   }
+  if ( !config.containsKey('status')){
+    if ( currentBuild.result != null ){
+      config.status = currentBuild.result
+    }else{
+      config.status = currentBuild.currentResult
+    }
+  }
+  if ( !config.containsKey('notifiedPeople')){
+    config.notifiedPeople = ""
+  }
 
   buildCausers = currentBuild.getBuildCauses()
+  foundCausers = false
 
-  notifiedPeople = ""
   for (i=0; i < buildCausers.size(); i++){
     currentCause = buildCausers[i]
     if (currentCause.userName != null){
       notifiedPeople = notifiedPeople + "@" + currentCause.userName.replace(' ','.').toLowerCase() + " "
+      foundCausers = true
     }
   }
-  if (notifiedPeople == ""){
-    notifiedPeople = "@" + sh(
+  if (!foundCausers){
+    config.notifiedPeople = "@" + sh(
       returnStdout: true,
       script:       "git log -1 --pretty=format:'%an'"
     ).replace(' ','.').toLowerCase() + " "
@@ -27,8 +38,8 @@ def call(Map config = [:]){
 
   message = """
   Build: *[${env.JOB_NAME}](${env.BUILD_URL}) #${env.BUILD_NUMBER}*
-  Status: *${currentBuild.currentResult}*
-  Notify: ${notifiedPeople}
+  Status: *${config.status}*
+  Notify: ${config.notifiedPeople}
   """
 
   if ( config.containsKey('message') ){
