@@ -55,8 +55,7 @@ def call() {
       )
       notify  = true
       color   = "RED"
-      currentBuikd.result  = "FAILURE"
-      result = currentBuild.result
+      result  = "FAILURE"
       message = error
       throw(error)
     }finally{
@@ -73,7 +72,9 @@ def call() {
           server:       'api.hipchat.com',
           v2enabled:    false
         )
-        fx_notify()
+        fx_notify(
+          status: result
+        )
       }
 
       stage ('result'){
