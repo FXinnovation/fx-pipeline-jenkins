@@ -55,7 +55,8 @@ def call() {
       )
       notify  = true
       color   = "RED"
-      result  = "FAILURE"
+      currentBuikd.result  = "FAILURE"
+      result = currentBuild.result
       message = error
       throw(error)
     }finally{
