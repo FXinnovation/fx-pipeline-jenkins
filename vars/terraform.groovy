@@ -421,5 +421,5 @@ def call(Map config = [:]){
 
   println "Terraform version is:\n${terraformVersion}"
 
-  sh "${terraformCommand} ${config.subCommand} ${config.optionsString}"
+  sh "${terraformCommand} ${config.subCommand} ${optionsString}"
 }
