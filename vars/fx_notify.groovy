@@ -62,7 +62,7 @@ def call(Map config = [:]){
       text: config.status,
       thumbUrl: '',
       title: "${env.JOB_NAME} #${env.BUILD_NUMBER}",
-      titleLink: '',
+      titleLink: env.BUILD_URL,
       videoUrl: ''
     ]]
   )
