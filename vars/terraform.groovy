@@ -346,7 +346,7 @@ def call(Map config = [:]){
   }
 
   try {
-    sh "docker --version"
+    sh "docker version"
     terraformCommand = "docker run --rm -v \$(pwd):/data -w /data ${dockerImage}"
   } catch(dockerError) {
     println 'Docker is not available, assuming terraform is installed'
