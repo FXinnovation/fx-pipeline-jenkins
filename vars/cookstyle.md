@@ -5,7 +5,6 @@ This call will run cookstyle on your current path. It also returns the result as
 The function takes a Map in entry that follows the following pattern:
 ```
 {
-  debug:       Boolean, # Defaults to false
   dockerImage: String,  # Defaults to 'fxinnovation/chefdk:lastest'
   options:     String   # Defaults to '-D --force-default-config'
 }
@@ -17,7 +16,6 @@ The function outputs a String which is the output of foodcritic. It can be used 
 ## Example
 ```
 cookstyle(
-  debug:       false,
   options:     '--some option'
   dockerImage: 'your/imagehere:tag'
 )
