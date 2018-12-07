@@ -353,5 +353,5 @@ def call(Map config = [:]){
     terraformCommand = 'terraform'
   }
 
-  sh "${dockerCommand} ${config.subCommand} ${config.optionString}"
+  sh "${terraformCommand} ${config.subCommand} ${config.optionString}"
 }
