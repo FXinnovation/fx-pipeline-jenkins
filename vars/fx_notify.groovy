@@ -19,7 +19,7 @@ def call(Map config = [:]){
     config.notifiedPeople = ""
   }
   if ( !config.containsKey('color') ){
-    config.color('#0000FF')
+    config.color = '#0000FF'
   }
 
   buildCausers = currentBuild.getBuildCauses()
