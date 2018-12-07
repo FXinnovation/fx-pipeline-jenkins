@@ -5,8 +5,9 @@ def validate(Map config = [:]){
     'noColor':'',
     'vars':'',
     'varFile':'',
-    'subCommand': '',
-    'dockerImage': ''
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -32,8 +33,9 @@ def init(Map config = [:]){
     'reconfigure':'',
     'upgrade':'',
     'verifyPlugins':'',
-    'subCommand': '',
-    'dockerImage': ''
+    'subCommand':'',
+    'commandTarget':''
+    'dockerImage':''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -59,6 +61,7 @@ def plan(Map config = [:]){
     'vars':'',
     'varFile':'',
     'subCommand': '',
+    'commandTarget':''
     'dockerImage': ''
   ]
   for ( parameter in config ) {
@@ -84,8 +87,9 @@ def apply(Map config = [:]){
     'target':'',
     'vars':'',
     'varFile':'',
-    'subCommand': '',
-    'dockerImage': ''
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -119,7 +123,7 @@ def call(Map config = [:]){
   }
   // backendConfigs
   if ( config.containsKey('backendConfigs') ){
-    if ( !config.backendConfigs instanceof String[] ){
+    if ( !config.backendConfigs instanceof ArrayList ){
       error('terraform - "backendConfigs" parameter must be of type "String[]"')
     }
     for (i=0; i>config.backendConfigs.size(); i++){
@@ -240,7 +244,7 @@ def call(Map config = [:]){
   }
   // pluginDirs
   if ( config.containsKey('pluginDirs') ){
-    if ( !config.pluginDirs instanceof String[] ){
+    if ( !config.pluginDirs instanceof ArrayList ){
       error('terraform - "pluginDirs" parameter must be of type "String[]"')
     }
     for (i=0; i>config.pluginDirs.size(); i++){
@@ -283,7 +287,7 @@ def call(Map config = [:]){
   }
   // targets
   if ( config.containsKey('targets') ){
-    if ( !config.targets instanceof String[] ){
+    if ( !config.targets instanceof ArrayList ){
       error('terraform - "targets" parameter must be of type "String[]"')
     }
     for (i=0; i>config.tartgets.size(); i++){
@@ -308,7 +312,7 @@ def call(Map config = [:]){
   }
   // vars
   if ( config.containsKey('vars') ){
-    if ( config.vars instanceof String[] ){
+    if ( config.vars instanceof ArrayList ){
       for (i=0; i>config.vars.size(); i++){
         optionsString = optionsString + "-var '${config.vars[i]}'"
       }
