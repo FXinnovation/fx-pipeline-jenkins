@@ -4,11 +4,13 @@ def validate(Map config = [:]){
     'checkVariables':'',
     'noColor':'',
     'vars':'',
-    'varFile':''
+    'varFile':'',
+    'subCommand': '',
+    'dockerImage': ''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error('terraform - Parameter "${parameter.key}" is not valid for "validate", please remove it!')
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
     }
   }
   terraform(config)
