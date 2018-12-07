@@ -352,6 +352,7 @@ def call(Map config = [:]){
     println 'Docker is not available, assuming terraform is installed'
     terraformCommand = 'terraform'
   }
+  sh "docker pull ${config.dockerImage}"
 
   sh "${terraformCommand} ${config.subCommand} ${config.optionString}"
 }
