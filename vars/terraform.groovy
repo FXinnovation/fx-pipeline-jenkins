@@ -312,8 +312,8 @@ def call(Map config = [:]){
     }
   }
   if ( config.containsKey('backendConfigs') ){
-    if ( !config.backendConfigs instanceof Array ){
-      error('terraform - "backendConfigs" parameter must be of type "Array"')
+    if ( !config.backendConfigs instanceof String[] ){
+      error('terraform - "backendConfigs" parameter must be of type "String[]"')
     }
     for (i=0; i>config.backendConfigs.size(); i++){
       optionsString = optionsString + "-backend-config=${config.backendConfig[i]} "
@@ -374,8 +374,8 @@ def call(Map config = [:]){
     }
   }
   if ( config.containsKey('pluginDirs') ){
-    if ( !config.pluginDirs instanceof Array ){
-      error('terraform - "backendConfigs" parameter must be of type "Array"')
+    if ( !config.pluginDirs instanceof String[] ){
+      error('terraform - "pluginDirs" parameter must be of type "String[]"')
     }
     for (i=0; i>config.pluginDirs.size(); i++){
       optionsString = optionsString + "-plugin-dir ${config.pluginDirs[i]} "
