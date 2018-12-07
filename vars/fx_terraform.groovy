@@ -58,7 +58,6 @@ def call(Map config = [:]){
                 commandTarget: 'plan.out'
               )
             }catch (error_backup) {
-              // Printing statefiles for recuperation purposes
               archiveArtifacts(
                 allowEmptyArchive: true,
                 artifacts: 'terraform.tfstat*'
