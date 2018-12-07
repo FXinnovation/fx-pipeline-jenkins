@@ -19,8 +19,6 @@ def call(Map config = [:]){
         }
         // Pre-deploy stage
         stage('pre-deploy') {
-          sh 'docker pull fxinnovation/terraform'
-          sh 'gcloud --version && docker --version'
           withCredentials([
             file(
               credentialsId: 'dazzlingwrench-google-service-account', 
@@ -30,6 +28,7 @@ def call(Map config = [:]){
               sh 'cat $account > ./account.json'
             }
           sh 'gsutil cp gs://fxinnovation-platforms/dazzlingwrench/terraform.tfstate ./'
+          terraform.init()
         }
         withCredentials([
           usernamePassword(
@@ -43,32 +42,18 @@ def call(Map config = [:]){
             passwordVariable: 'TF_bitbucket_password'
           )
         ]){
-          stage("test") {
-            message = 'plan: FAILED'
-            sh "docker run --rm -v \$(pwd):/data fxinnovation/terraform init ./"
-            sh(
-              returnStdout: false,
-              script: "docker run --rm \
-                -v \$(pwd):/data \
-                fxinnovation/terraform plan \
-                -out ./plan_file \
-                -var 'k8s_password=${secret}'"
-            )
-            message = 'plan: SUCCESS'
+          stage('validate'){
+            terraform.validate()
+          }
+          stage('plan') {
+            terraform.plan()
           }
         }
         // Deploy stage
         stage("deploy") {
           if(tag_id != commit_id){
             try {
-              sh(
-                returnStdout: false,
-                script: "docker run --rm \
-                  -v \$(pwd):/data \
-                  fxinnovation/terraform apply \
-                  -backup terraform.tfstate.\$(date +%s) \
-                  ./plan_file"
-              )
+              terraform.apply()
             }catch (error_apply){
               try {
                 sh "gsutil cp terraform.tfstat* gs://fxinnovation-platforms/dazzlingwrench/"
