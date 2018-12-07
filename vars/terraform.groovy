@@ -390,7 +390,10 @@ def call(Map config = [:]){
   }
 
   try {
-    sh "docker version"
+    sh(
+      returnStdout: true,
+      script:       "docker version"
+    )
     terraformCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage}"
     sh "docker pull ${config.dockerImage}"
   } catch(dockerError) {
