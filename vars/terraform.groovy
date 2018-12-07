@@ -34,7 +34,7 @@ def init(Map config = [:]){
     'upgrade':'',
     'verifyPlugins':'',
     'subCommand':'',
-    'commandTarget':''
+    'commandTarget':'',
     'dockerImage':''
   ]
   for ( parameter in config ) {
@@ -61,7 +61,7 @@ def plan(Map config = [:]){
     'vars':'',
     'varFile':'',
     'subCommand': '',
-    'commandTarget':''
+    'commandTarget':'',
     'dockerImage': ''
   ]
   for ( parameter in config ) {
