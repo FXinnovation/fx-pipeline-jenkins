@@ -54,6 +54,10 @@ def call(Map config = [:]){
         stage("deploy") {
           if(tag_id != commit_id){
             try {
+              fx_notify(
+                status: 'PENDING'
+              )
+              input 'Do you want to apply this plan ?'
               terraform.apply(
                 commandTarget: 'plan.out'
               )
