@@ -42,50 +42,11 @@
 //   return output
 // }
 // 
-// def init(Map config){
-//   def backend       = config.backend       ?: 'true'
-//   def backendConfig = config.backendConfig ?: false
-//   def fromModule    = config.fromModule    ?: false
-//   def get           = config.get           ?: 'true'
-//   def getPlugins    = config.getPlugins    ?: 'true'
-//   def lock          = config.lock          ?: 'true'
-//   def lockTimeout   = config.locktimeout   ?: '0s'
-//   def noColor       = config.noColor       ?: false
-//   def pluginDirs    = config.pluginDir     ?: []
-//   def reconfigure   = config.reconfigure   ?: false
-//   def upgrade       = config.upgrade       ?: 'false'
-//   def verifyPlugins = config.verifyPlugins ?: 'true'
-//   def directory     = config.directory     ?: './'
-//   def dockerImage   = config.dockerImage    ?: 'fxinnovation/terraform:latest'
-// 
-//   def terraformCommand = 'terraform init'
-//   try{
-//     sh "docker run --rm ${dockerImage} --version"
-//     terraformCommand = "docker run --rm -v \$(pwd):/data -w /data ${dockerImage} plan"
-//   }catch(error){}
-// 
-//   terraformCommand = terraformCommand + "-force-copy -input=false -lock=${lock} -lock-timeout=${lockTimeout} -backend=${backend} -get=${get} -get-plugins=${getPlugins} -upgrade=${upgrade} -verify-plugins=${verifyPlugins}"
-//   if ( backendConfig != false ){
-//     terraformCommand = terraformCommand + " -backend-config='${backendConfig}'"
-//   }
-//   if ( fromModule != false ){
-//     terraformCommand = terraformCommand + " -from-module='${fromModule}'"
-//   }
-//   if ( noColor == true ){
-//     terraformCommand = terraformCommand + ' -no-color'
-//   }
-//   if ( reconfigure == true ){
-//     terraformCommand = terraformCommand + ' -reconfigure'
-//   }
-//   pluginDirs.each{
-//     terraformCommand = terraformCommand + " -plugin-dir '${it}'"
-//   }
-//   terraformCommand = terraformCommand + " ${directory}"
-// 
-//   output = command(terraformCommand)
-//   return output
-// }
-// 
+def init(Map config = [:]){
+  config.subCommand = 'init'
+  terraform(config)
+}
+
 // def plan(Map config){
 //   def noColor        = config.noColor        ?: false
 //   def vars           = config.vars           ?: []
@@ -338,11 +299,110 @@ def call(Map config = [:]){
   if ( !config.containsKey('dockerImage') ){
     config.dockerImage = "fxinnovation/terraform:latest"
   }
-  if ( !config.containsKey('optionString') ){
-    config.optionString = ''
-  }
   if ( !config.containsKey('subCommand') ){
     error('ERROR: The subcommand must be defined!')
+  }
+
+  def optionsString = ''
+  if ( config.containsKey('backend') ){
+    if ( config.backend instanceof Boolean ){
+      optionsString = optionsString + "-backend=${config.backend} "
+    }else{
+      error('terraform - "backend" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('backendConfigs') ){
+    if ( !config.backendConfigs instanceof Array ){
+      error('terraform - "backendConfigs" parameter must be of type "Array"')
+    }
+    for (i=0; i>config.backendConfigs.size(); i++){
+      optionsString = optionsString + "-backend-config=${config.backendConfig[i]} "
+    }
+  }
+  if ( config.containsKey('forceCopy') ){
+    if ( config.forceCopy instanceof Boolean ){
+      if ( config.forceCopy ){
+        optionsString = optionsString + "-force-copy "
+      }
+    }else{
+      error('terraform - "forceCopy" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('fromModule') ){
+    if ( config.fromModule instanceof String) {
+      optionsString = optionsString + "-from-module=${config.fromModule} "
+    }else{
+      error('terraform - "fromModule" parameter must be of type "String"')
+    }
+  }
+  if ( config.containsKey('get') ){
+    if ( config.get instanceof Boolean ){
+      optionsString = optionsString + "-get=${config.get} "
+    }else{
+      error('terraform - "get" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('getPlugins') ){
+    if ( config.getPlugins instanceof Boolean ){
+      optionsString = optionsString + "-get-plugins=${config.getPlugins} "
+    }else{
+      error('terraform - "getPlugins" parameter must be of type "Boolean"')
+    }
+  }
+  optionsString = optionsString + "-input=false "
+  if ( config.containsKey('lock') ){
+    if ( config.lock instanceof Boolean ){
+      optionsString = optionsString + "-lock=${config.lock} "
+    }else{
+      error('terraform - "lock" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('lockTimeout') ){
+    if (config.lockTimeout instanceof String ){
+      optionsString = optionsString + "-lock-timeout=${config.lockTimeout} "
+    }else{
+      error('terraform - "lockTimeout" parameter must be of type "String"')
+    }
+  }
+  if ( config.containsKey('noColor') ){
+    if ( config.noColor instanceof Boolean ){
+      if ( config.noColor ){
+        optionsString = optionsString + "-no-color "
+      }
+    }else{
+      error('terraform - "noColor" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('pluginDirs') ){
+    if ( !config.pluginDirs instanceof Array ){
+      error('terraform - "backendConfigs" parameter must be of type "Array"')
+    }
+    for (i=0; i>config.pluginDirs.size(); i++){
+      optionsString = optionsString + "-plugin-dir ${config.pluginDirs[i]} "
+    }
+  }
+  if ( config.containsKey('reconfigure') ){
+    if ( config.reconfigure instanceof Boolean ){
+      if ( config.reconfigure ){
+        optionsString = optionsString + "-reconfigure "
+      }
+    }else{
+      error('terraform - "reconfigure" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('upgrade') ){
+    if ( config.upgrade instanceof Boolean ){
+      optionsString = optionsString + "-upgrade=${config.upgrade} "
+    }else{
+      error('terraform - "upgrade" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('verifyPlugins') ){
+    if ( config.verifyPlugins instanceof Boolean ){
+      optionsString = optionsString + "-verify-plugins=${config.verifyPlugins} "
+    }else{
+      error('terraform - "verifyPlugins" parameter must be of type "Boolean"')
+    }
   }
 
   try {
@@ -361,5 +421,5 @@ def call(Map config = [:]){
 
   println "Terraform version is:\n${terraformVersion}"
 
-  sh "${terraformCommand} ${config.subCommand} ${config.optionString}"
+  sh "${terraformCommand} ${config.subCommand} ${config.optionsString}"
 }
