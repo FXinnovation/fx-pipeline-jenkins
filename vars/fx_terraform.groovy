@@ -46,14 +46,18 @@ def call(Map config = [:]){
             terraform.validate()
           }
           stage('plan') {
-            terraform.plan()
+            terraform.plan(
+              out: 'plan.out'
+            )
           }
         }
         // Deploy stage
         stage("deploy") {
           if(tag_id != commit_id){
             try {
-              terraform.apply()
+              terraform.apply(
+                commandTarget: 'plan.out'
+              )
             }catch (error_apply){
               try {
                 sh "gsutil cp terraform.tfstat* gs://fxinnovation-platforms/dazzlingwrench/"
