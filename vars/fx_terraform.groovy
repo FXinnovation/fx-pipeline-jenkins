@@ -37,8 +37,8 @@ def call(Map config = [:]){
           ),
           usernamePassword(
             credentialsId: 'jenkins_fxinnovation_bitbucket',
-            usernameVariable: 'bitbucket_username',
-            passwordVariable: 'bitbucket_password'
+            usernameVariable: 'TF_bitbucket_username',
+            passwordVariable: 'TF_bitbucket_password'
           )
         ]){
           stage('validate'){
@@ -59,8 +59,8 @@ def call(Map config = [:]){
                 terraform.apply(
                   commandTarget: 'plan.out',
                   vars: [
-                    "bitbucket_username=${bitbucket_username}",
-                    "bitbucket_password=${bitbucket_password}"
+                    "bitbucket_username=${TF_bitbucket_username}",
+                    "bitbucket_password=${TF_bitbucket_password}"
                   ]
                 )
               }catch (error_backup) {
