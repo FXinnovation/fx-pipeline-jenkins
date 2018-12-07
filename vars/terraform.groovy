@@ -1,47 +1,8 @@
-// terraform validate
-// def validate(Map config = [:]){
-//   if ( !config.containsKey('checkVariables') ){
-//     config.checkVariables = 'true'
-//   }
-//   if ( !config.containsKey('noColor') ){
-//     config.noColor = false
-//   }
-//   if ( !config.containsKey('vars') ){
-//     config.vars = [:]
-//   }
-//   if ( !config.containsKey('varFile') ){
-//     config.varFile = false
-//   }
-//   if ( !config.containsKey('directory') ){
-//     config.directory = './'
-//   }
-//   if ( !config.containsKey('dockerImage') ){
-//     config.dockerImage = 'fxinnovation/terraform:latest'
-//   }
-// 
-//   def terraformCommand = 'terraform validate'
-//   try{
-//     sh "docker run --rm ${config.dockerImage} --version"
-//     terraformCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage} validate"
-//   }catch(error){}
-// 
-//   terraformCommand = terraformCommand + " -check-variables=${config.checkVariables}"
-//   if ( config.noColor == true ){
-//     terraformCommand = terraformCommand + " -no-color"
-//   }
-//   if ( config.varFile != false ){
-//     terraformCommand = terraformCommand + " -var-file=${config.varFile}"
-//   }
-//   for ( var in config.vars ){
-//     terraformCommand = terraformCommand + " -var '${var}'"
-//   }
-// 
-//   terraformCommand = terraformCommand + " ${config.directory}"
-// 
-//   output = command(terraformCommand)
-//   return output
-// }
-// 
+def validate(Map config = [:]){
+  config.subCommand = 'validate'
+  terraform(config)
+}
+
 def init(Map config = [:]){
   config.subCommand = 'init'
   terraform(config)
@@ -402,6 +363,29 @@ def call(Map config = [:]){
       optionsString = optionsString + "-verify-plugins=${config.verifyPlugins} "
     }else{
       error('terraform - "verifyPlugins" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('checkVariables') ){
+    if ( config.checkVariables instanceof Boolean ){
+      optionsString = optionsString + "-chef-variables=${config.checkVariables} "
+    }else{
+      error('terraform - "checkVariables" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('vars') ){
+    if ( config.vars instanceof String[] ){
+      for (i=0; i>config.vars.size(); i++){
+        optionsString = optionsString + "-var '${config.vars[i]}'"
+      }
+    }else{
+      error('terraform - "vars" parameter must be of type "String[]"')
+    }
+  }
+  if ( config.containsKey('varFile') ){
+    if ( config.varFile instanceof String ){
+      optionsString = optionsString + "-var-file=${config.varFile} "
+    }else{
+      error('terraform - "varFile" parameter must be of type "String"')
     }
   }
 
