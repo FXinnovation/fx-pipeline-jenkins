@@ -303,7 +303,7 @@ def call(Map config = [:]){
     error('ERROR: The subcommand must be defined!')
   }
 
-  def optionsString = ''
+  optionsString = ''
   if ( config.containsKey('backend') ){
     if ( config.backend instanceof Boolean ){
       optionsString = optionsString + "-backend=${config.backend} "
