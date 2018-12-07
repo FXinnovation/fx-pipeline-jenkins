@@ -18,6 +18,9 @@ def call(Map config = [:]){
   if ( !config.containsKey('notifiedPeople')){
     config.notifiedPeople = ""
   }
+  if ( !config.containsKey('color') ){
+    config.color('#0000FF')
+  }
 
   buildCausers = currentBuild.getBuildCauses()
   foundCausers = false
@@ -37,8 +40,6 @@ def call(Map config = [:]){
   }
 
   message = """
-  **Build**: *[${env.JOB_NAME} #${env.BUILD_NUMBER}](${env.BUILD_URL})*
-  **Status**: ${config.status}
   **Notify**: ${config.notifiedPeople}
   """
 
@@ -50,6 +51,20 @@ def call(Map config = [:]){
     failOnError: config.failOnError,
     message:     message,
     rawMessage:  config.rawMessage,
-    avatar:      config.avatar
+    avatar:      config.avatar,
+    attachments: [[
+      audioUrl: '',
+      authorIcon: '',
+      authorName: '',
+      color: config.color,
+      imageUrl: '',
+      messageLink: 'https://google.ca',
+      text: config.status,
+      thumbUrl: '',
+      title: "${env.JOB_NAME} #${env.BUILD_NUMBER}",
+      titleLink: '',
+      videoUrl: ''
+    ]]
   )
+
 }
