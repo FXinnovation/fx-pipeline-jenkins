@@ -48,7 +48,6 @@ def call(Map config = [:]){
             terraform.plan(
               out: 'plan.out'
             )
-            sh 'cat plan.out'
           }
         }
         // Deploy stage
