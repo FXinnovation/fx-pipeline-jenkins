@@ -1,5 +1,16 @@
 def validate(Map config = [:]){
   config.subCommand = 'validate'
+  validParameters = [
+    'checkVariables':'',
+    'noColor':'',
+    'vars':'',
+    'varFile':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error('terraform - Parameter "${parameter.key}" is not valid for "validate", please remove it!')
+    }
+  }
   terraform(config)
 }
 
