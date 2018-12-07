@@ -27,7 +27,6 @@ def call(Map config = [:]){
             ]){
               sh 'cat $account > ./account.json'
             }
-          sh 'gsutil cp gs://fxinnovation-platforms/dazzlingwrench/terraform.tfstate ./'
           terraform.init()
         }
         withCredentials([
@@ -58,19 +57,6 @@ def call(Map config = [:]){
               terraform.apply(
                 commandTarget: 'plan.out'
               )
-            }catch (error_apply){
-              try {
-                sh "gsutil cp terraform.tfstat* gs://fxinnovation-platforms/dazzlingwrench/"
-              }catch (error_backup) {
-                sh "cat terraform.tfstat*"
-                throw (error_backup)
-              }
-              // Throw error
-              throw (error_apply)
-            }
-            // Upload statefiles in bucket
-            try {
-              sh 'gsutil cp terraform.tfstat* gs://fxinnovation-platforms/dazzlingwrench/'
             }catch (error_backup) {
               // Printing statefiles for recuperation purposes
               archiveArtifacts(
