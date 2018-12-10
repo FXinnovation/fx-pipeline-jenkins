@@ -46,7 +46,11 @@ def call(Map config = [:]){
           }
           stage('plan') {
             terraform.plan(
-              out: 'plan.out'
+              out: 'plan.out',
+              vars: [
+                "bitbucket_username=${TF_bitbucket_username}",
+                "bitbucket_password=${TF_bitbucket_password}"
+              ]
             )
           }
           stage("deploy") {
@@ -57,11 +61,7 @@ def call(Map config = [:]){
                 )
                 input 'Do you want to apply this plan ?'
                 terraform.apply(
-                  commandTarget: 'plan.out',
-                  vars: [
-                    "bitbucket_username=${TF_bitbucket_username}",
-                    "bitbucket_password=${TF_bitbucket_password}"
-                  ]
+                  commandTarget: 'plan.out'
                 )
               }catch (error_backup) {
                 archiveArtifacts(
