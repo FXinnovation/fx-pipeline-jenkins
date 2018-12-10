@@ -19,7 +19,17 @@ def call(Map config = [:]){
     config.notifiedPeople = ""
   }
   if ( !config.containsKey('color') ){
-    config.color = '#0000FF'
+    switch (config.status){
+      case 'SUCCESS':
+        config.color = '#00FF00'
+        break
+      case 'FAILED':
+        config.color = '#FF0000'
+        break
+      default:
+        config.color = '#0000FF'
+        break
+    }
   }
 
   buildCausers = currentBuild.getBuildCauses()
@@ -40,7 +50,7 @@ def call(Map config = [:]){
   }
 
   message = """
-  **Notify**: ${config.notifiedPeople}
+  ${config.notifiedPeople}
   """
 
   if ( config.containsKey('message') ){
@@ -58,7 +68,7 @@ def call(Map config = [:]){
       authorName: '',
       color: config.color,
       imageUrl: '',
-      messageLink: 'https://google.ca',
+      messageLink: '',
       text: config.status,
       thumbUrl: '',
       title: "${env.JOB_NAME} #${env.BUILD_NUMBER}",
