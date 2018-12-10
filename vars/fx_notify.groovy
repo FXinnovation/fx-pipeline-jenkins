@@ -18,6 +18,19 @@ def call(Map config = [:]){
   if ( !config.containsKey('notifiedPeople')){
     config.notifiedPeople = ""
   }
+  if ( !config.containsKey('color') ){
+    switch (config.status){
+      case 'SUCCESS':
+        config.color = '#00FF00'
+        break
+      case 'FAILURE':
+        config.color = '#FF0000'
+        break
+      default:
+        config.color = '#0000FF'
+        break
+    }
+  }
 
   buildCausers = currentBuild.getBuildCauses()
   foundCausers = false
@@ -37,9 +50,7 @@ def call(Map config = [:]){
   }
 
   message = """
-  **Build**: *[${env.JOB_NAME} #${env.BUILD_NUMBER}](${env.BUILD_URL})*
-  **Status**: ${config.status}
-  **Notify**: ${config.notifiedPeople}
+  ${config.notifiedPeople}
   """
 
   if ( config.containsKey('message') ){
@@ -50,6 +61,20 @@ def call(Map config = [:]){
     failOnError: config.failOnError,
     message:     message,
     rawMessage:  config.rawMessage,
-    avatar:      config.avatar
+    avatar:      config.avatar,
+    attachments: [[
+      audioUrl: '',
+      authorIcon: '',
+      authorName: '',
+      color: config.color,
+      imageUrl: '',
+      messageLink: '',
+      text: config.status,
+      thumbUrl: '',
+      title: "${env.JOB_NAME} #${env.BUILD_NUMBER}",
+      titleLink: env.BUILD_URL,
+      videoUrl: ''
+    ]]
   )
+
 }
