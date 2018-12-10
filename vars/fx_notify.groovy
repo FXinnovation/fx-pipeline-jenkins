@@ -23,7 +23,7 @@ def call(Map config = [:]){
       case 'SUCCESS':
         config.color = '#00FF00'
         break
-      case 'FAILED':
+      case 'FAILURE':
         config.color = '#FF0000'
         break
       default:
