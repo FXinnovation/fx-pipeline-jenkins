@@ -1,0 +1,15 @@
+The *cookstyle* method is a helper to execute a cookstyle command.
+
+By default it will try to use docker to execute cookstyle. The cookstyle helper return the output of the cookstyle command as a String.
+
+Both parameters are optionnal because sane default are set by the moethod but they can be overwritten.
+
+Cookstyle will inspect all files in the current directory including subfolders.
+
+**Usage**
+```
+  cookstyle(
+    dockerImage: String
+    options: String
+  )
+```
