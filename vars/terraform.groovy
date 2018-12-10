@@ -126,7 +126,7 @@ def call(Map config = [:]){
     if ( !config.backendConfigs instanceof ArrayList ){
       error('terraform - "backendConfigs" parameter must be of type "String[]"')
     }
-    for (i=0; i>config.backendConfigs.size(); i++){
+    for (i=0; i<config.backendConfigs.size(); i++){
       optionsString = optionsString + "-backend-config=${config.backendConfig[i]} "
     }
   }
@@ -247,7 +247,7 @@ def call(Map config = [:]){
     if ( !config.pluginDirs instanceof ArrayList ){
       error('terraform - "pluginDirs" parameter must be of type "String[]"')
     }
-    for (i=0; i>config.pluginDirs.size(); i++){
+    for (i=0; i<config.pluginDirs.size(); i++){
       optionsString = optionsString + "-plugin-dir ${config.pluginDirs[i]} "
     }
   }
@@ -290,7 +290,7 @@ def call(Map config = [:]){
     if ( !config.targets instanceof ArrayList ){
       error('terraform - "targets" parameter must be of type "String[]"')
     }
-    for (i=0; i>config.tartgets.size(); i++){
+    for (i=0; i<config.tartgets.size(); i++){
       optionsString = optionsString + "-target ${config.target[i]} "
     }
   }
@@ -313,7 +313,7 @@ def call(Map config = [:]){
   // vars
   if ( config.containsKey('vars') ){
     if ( config.vars instanceof ArrayList ){
-      for (i=0; i>config.vars.size(); i++){
+      for (i=0; i<config.vars.size(); i++){
         optionsString = optionsString + "-var '${config.vars[i]}'"
       }
     }else{
