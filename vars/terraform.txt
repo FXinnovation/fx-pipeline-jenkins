@@ -1,0 +1,81 @@
+The *terraform* variable makes it easier to use terraform in a Jenkins Pipeline.
+
+By default, it will always prefer using terraform inside a docker image. If docker is not present on the Jenkins executor, it will assume you have *terraform* installed. If the docker image is used, it will mount the current directory in the docker container.
+
+All parameters of the methods are optionnal. Some have default values, the others will not be set and thus will default to terraform's default behavior.
+
+The terraform vairable has the following methods:
+**validate**:
+  This method is a helper to call *terraform validate*.
+  ```
+    terraform.validate(
+      checkVariables: Boolean
+      noColor: Boolean
+      vars: ArrayList
+      varFile: String
+      dockerImage: String
+      commandTarget: String
+    )
+  ```
+
+**init**:
+  This method is a helper to call *terraform init*.
+  ```
+    terraform.init(
+      backend: String
+      backendConfigs: ArrayList
+      forceCopy: Boolean
+      fromModule: String
+      get: Boolean
+      getPlugins: Boolean
+      lock: Boolean
+      lockTimeout: String
+      noColor: Boolean
+      pluginsDir: ArrayList
+      reconfigure: Boolean
+      upgrade: Boolean
+      verifyPlugins: Boolean
+      commandTarget: String
+      dockerImage: String
+    )
+  ```
+
+**plan**:
+  This method is a helper to call *terraform plan*.
+  ```
+    terraform.plan(
+      backup: String
+      lock: Boolean
+      lockTimeout: String
+      noColor: Boolean
+      parallelism: Integer
+      refresh: Boolean
+      state: String
+      stateOut: String
+      target: String
+      vars: ArrayList
+      varFile: String
+      dockerImage: String
+      commandTarget: String
+    )
+  ```
+
+**apply**:
+  This method is a helper to call *terraform apply*.
+  ```
+    terraform.apply(
+      backup: Boolean
+      lock: Boolean
+      lockTimeout: String
+      noColor: Boolean
+      parallelism: Integer
+      refresh: Boolean
+      state: String
+      stateOut: String
+      target: String
+      vars: ArrayList
+      varFile: String
+      dockerImage: String
+      commandTarget: String
+    )
+  ```
