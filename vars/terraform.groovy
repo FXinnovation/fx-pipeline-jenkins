@@ -83,7 +83,7 @@ def apply(Map config = [:]){
     'parallelism':'',
     'refresh':'',
     'state':'',
-    'state-out':'',
+    'stateOut':'',
     'target':'',
     'vars':'',
     'varFile':'',
