@@ -44,19 +44,20 @@ The terraform vairable has the following methods:
   This method is a helper to call *terraform plan*.
   ```
     terraform.plan(
-      backup: String
+      destroy: Boolean
       lock: Boolean
       lockTimeout: String
+      moduleDepth: Integer
       noColor: Boolean
+      out: String
       parallelism: Integer
-      refresh: Boolean
+      refresh: Bollean
       state: String
-      stateOut: String
       target: String
       vars: ArrayList
       varFile: String
-      dockerImage: String
       commandTarget: String
+      dockerImage: String
     )
   ```
 
