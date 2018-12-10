@@ -314,7 +314,7 @@ def call(Map config = [:]){
   if ( config.containsKey('vars') ){
     if ( config.vars instanceof ArrayList ){
       for (i=0; i<config.vars.size(); i++){
-        optionsString = optionsString + "-var '${config.vars[i]}'"
+        optionsString = optionsString + "-var \"${config.vars[i]}\" "
       }
     }else{
       error('terraform - "vars" parameter must be of type "String[]"')
