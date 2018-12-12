@@ -48,6 +48,7 @@ def call(Map config = [:]){
             terraform.plan(
               out: 'plan.out',
               parallelism: 1,
+              refresh: false,
               vars: [
                 "bitbucket_username=${TF_bitbucket_username}",
                 "bitbucket_password=${TF_bitbucket_password}"
