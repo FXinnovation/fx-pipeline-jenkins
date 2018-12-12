@@ -141,7 +141,7 @@ def call(Map config = [:]){
   // checkVariables
   if ( config.containsKey('checkVariables') ){
     if ( config.checkVariables instanceof Boolean ){
-      optionsString = optionsString + "-chef-variables=${config.checkVariables} "
+      optionsString = optionsString + "-check-variables=${config.checkVariables} "
     }else{
       error('terraform - "checkVariables" parameter must be of type "Boolean"')
     }
