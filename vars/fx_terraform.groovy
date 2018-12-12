@@ -47,6 +47,7 @@ def call(Map config = [:]){
           stage('plan') {
             terraform.plan(
               out: 'plan.out',
+              parallelism: 1,
               vars: [
                 "bitbucket_username=${TF_bitbucket_username}",
                 "bitbucket_password=${TF_bitbucket_password}"
@@ -61,6 +62,7 @@ def call(Map config = [:]){
                 )
                 input 'Do you want to apply this plan ?'
                 terraform.apply(
+                  parallelism: 1,
                   commandTarget: 'plan.out'
                 )
               }catch (error_backup) {
