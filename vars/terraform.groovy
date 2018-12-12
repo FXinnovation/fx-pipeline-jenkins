@@ -239,7 +239,7 @@ def call(Map config = [:]){
   // parallelism
   if ( config.containsKey('parallelism') ){
     if ( config.parallelism instanceof Integer ){
-      optionsString - optionsString + "-parallelism=${config.parallelism} "
+      optionsString = optionsString + "-parallelism=${config.parallelism} "
     }
   }
   // pluginDirs
