@@ -86,6 +86,7 @@ def slowRefresh(Map config = [:]){
         }
       }
     }
+    terraform(config)
   }
 }
 
