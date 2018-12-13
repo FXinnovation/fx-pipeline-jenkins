@@ -78,6 +78,7 @@ def slowRefresh(Map config = [:]){
           "'${currentResourceType}.${currentResourceId}'"
         ]
         terraform(config)
+        sh 'sleep 1'
       }
     }
   }
