@@ -41,6 +41,48 @@ def refresh(Map config = [:]){
   terraform(config)
 }
 
+def slowRefresh(Map config = [:]){
+  config.subCommand = 'refresh'
+  validParameters = [
+    'backup':'',
+    'lock':'',
+    'lockTimeout':'',
+    'noColor':'',
+    'state':'',
+    'stateOut':'',
+    'targets':'',
+    'vars':'',
+    'varFile':'',
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+    }
+  }
+  terraformFiles = findFiles(glob: '*.tf')"
+  for ( terraformFile in terraformFiles ) {
+    println "Refreshing state for resource in file: ${terraformFile.toString()}"
+    currentResources = readJSON text: sh(
+      returnStdout: true,
+      script: "cat ${terraformFile.toString()} | docker run --rm -i fxinnovation/json2hcl -reverse"
+    )
+    for ( resource in currentResources.resource ){
+      currentResourceType = resource.keySet().toArray()[0]
+      for ( tfResource in resource."${currentResourceType}") {
+        currentResourceId = tfResource.keySet().toArray()[0]
+        println "### Refreshing state for resource: '${currentResourceType}.${currentResourceId}'"
+        config.targets = [
+          "'${currentResourceType}.${currentResourceId}'"
+        ]
+        terraform(config)
+      }
+    }
+  }
+}
+
 def init(Map config = [:]){
   config.subCommand = 'init'
   validParameters = [
