@@ -1,13 +1,12 @@
-The *terraform* variable makes it easier to use terraform in a Jenkins Pipeline.
+The terraform variable makes it easier to use terraform in a Jenkins Pipeline.
 
 By default, it will always prefer using terraform inside a docker image. If docker is not present on the Jenkins executor, it will assume you have *terraform* installed. If the docker image is used, it will mount the current directory in the docker container.
 
 All parameters of the methods are optionnal. Some have default values, the others will not be set and thus will default to terraform's default behavior.
 
 The terraform vairable has the following methods:
-**validate**:
+validate:
   This method is a helper to call *terraform validate*.
-  ```
     terraform.validate(
       checkVariables: Boolean
       noColor: Boolean
@@ -16,11 +15,9 @@ The terraform vairable has the following methods:
       dockerImage: String
       commandTarget: String
     )
-  ```
 
-**init**:
+init:
   This method is a helper to call *terraform init*.
-  ```
     terraform.init(
       backend: String
       backendConfigs: ArrayList
@@ -38,11 +35,9 @@ The terraform vairable has the following methods:
       commandTarget: String
       dockerImage: String
     )
-  ```
 
-**plan**:
+plan:
   This method is a helper to call *terraform plan*.
-  ```
     terraform.plan(
       destroy: Boolean
       lock: Boolean
@@ -53,17 +48,15 @@ The terraform vairable has the following methods:
       parallelism: Integer
       refresh: Bollean
       state: String
-      target: String
+      targets: ArrayList
       vars: ArrayList
       varFile: String
       commandTarget: String
       dockerImage: String
     )
-  ```
 
-**apply**:
+apply:
   This method is a helper to call *terraform apply*.
-  ```
     terraform.apply(
       backup: Boolean
       lock: Boolean
@@ -73,10 +66,25 @@ The terraform vairable has the following methods:
       refresh: Boolean
       state: String
       stateOut: String
-      target: String
+      targets: ArrayList
       vars: ArrayList
       varFile: String
       dockerImage: String
       commandTarget: String
     )
-  ```
+
+refresh:
+  This method is a helper to call *terraform refresh*.
+    terraform.refresh(
+      backup: Boolean
+      lock: Boolean
+      lockTimeout: String
+      noColor: Boolean
+      state: String
+      stateOut: String
+      targets: ArrayList
+      vars: ArrayList
+      varFile: String
+      dockerImage: String
+      commandTarget: String
+    )

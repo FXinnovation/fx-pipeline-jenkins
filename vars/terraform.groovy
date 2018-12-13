@@ -17,6 +17,30 @@ def validate(Map config = [:]){
   terraform(config)
 }
 
+def refresh(Map config = [:]){
+  config.subCommand = 'refresh'
+  validParameters = [
+    'backup':'',
+    'lock':'',
+    'lockTimeout':'',
+    'noColor':'',
+    'state':'',
+    'stateOut':'',
+    'targets':'',
+    'vars':'',
+    'varFile':'',
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+    }
+  }
+  terraform(config)
+}
+
 def init(Map config = [:]){
   config.subCommand = 'init'
   validParameters = [
@@ -57,7 +81,7 @@ def plan(Map config = [:]){
     'parallelism':'',
     'refresh':'',
     'state':'',
-    'target':'',
+    'targets':'',
     'vars':'',
     'varFile':'',
     'subCommand': '',
@@ -84,7 +108,7 @@ def apply(Map config = [:]){
     'refresh':'',
     'state':'',
     'stateOut':'',
-    'target':'',
+    'targets':'',
     'vars':'',
     'varFile':'',
     'subCommand':'',
@@ -290,8 +314,8 @@ def call(Map config = [:]){
     if ( !config.targets instanceof ArrayList ){
       error('terraform - "targets" parameter must be of type "String[]"')
     }
-    for (i=0; i<config.tartgets.size(); i++){
-      optionsString = optionsString + "-target ${config.target[i]} "
+    for (i=0; i<config.targets.size(); i++){
+      optionsString = optionsString + "-target=${config.target[i]} "
     }
   }
   // upgrade
