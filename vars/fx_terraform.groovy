@@ -45,7 +45,12 @@ def call(Map config = [:]){
             terraform.validate()
           }
           stage('refresh'){
-            terraform.slowRefresh()
+            terraform.slowRefresh(
+              vars: [
+                "bitbucket_username=${TF_bitbucket_username}",
+                "bitbucket_password=${TF_bitbucket_password}"
+              ]
+            )
           }
           stage('plan') {
             terraform.plan(
