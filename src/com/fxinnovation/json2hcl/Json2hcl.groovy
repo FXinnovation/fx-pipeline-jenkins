@@ -9,7 +9,7 @@ class Json2hcl {
   String dockerImage
   final JSON_2_HCL_COMMAND = 'json2hcl'
 
-  Json2Hcl(
+  Json2hcl(
     Object context,
     String dockerImage = 'fxinnovation/json2hcl:latest'
   ){
