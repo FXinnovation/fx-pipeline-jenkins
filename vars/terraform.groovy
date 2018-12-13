@@ -62,7 +62,7 @@ def slowRefresh(Map config = [:]){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
     }
   }
-  terraformFiles = findFiles(glob: '*.tf')"
+  terraformFiles = findFiles(glob: '*.tf')
   for ( terraformFile in terraformFiles ) {
     println "Refreshing state for resource in file: ${terraformFile.toString()}"
     currentResources = readJSON text: sh(
