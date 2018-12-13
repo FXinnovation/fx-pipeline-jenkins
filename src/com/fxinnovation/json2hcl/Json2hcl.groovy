@@ -18,9 +18,9 @@ class Json2hcl {
   }
 
   /**
-  * Transforms a $json String into a hcl String
+  * Transforms a $json String into a HCL String
   * @param json JSON string to transform
-  * @return hcl string
+  * @return HCL string
   */
   public String transform(String json){
     return this.context.sh(
@@ -34,7 +34,7 @@ class Json2hcl {
   * @param hcl HCL string to transform
   * @return JSON string
   */
-  public String reverse(String hcl){
+  public String reverseTranform(String hcl){
     return this.context.sh(
       returnStdout: true,
       script:       this.getExecCommand(hcl, '-reverse') 
