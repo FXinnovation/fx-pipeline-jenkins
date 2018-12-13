@@ -74,11 +74,15 @@ def slowRefresh(Map config = [:]){
       for ( tfResource in resource."${currentResourceType}") {
         currentResourceId = tfResource.keySet().toArray()[0]
         println "### Refreshing state for resource: '${currentResourceType}.${currentResourceId}'"
-        config.targets = [
-          "'${currentResourceType}.${currentResourceId}'"
-        ]
-        terraform(config)
-        sh 'sleep 1'
+        // config.targets = [
+        //   "'${currentResourceType}.${currentResourceId}'"
+        // ]
+        config.targets[config.targets.size()] = "'${currentResourceType}.${currentResourceId}'"
+        if ( config.targets.size() >= 5 ){
+          terraform(config)
+          config.targets = []
+          sh 'sleep 1'
+        }
       }
     }
   }
