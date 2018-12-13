@@ -358,7 +358,7 @@ def call(Map config = [:]){
       error('terraform - "targets" parameter must be of type "String[]"')
     }
     for (i=0; i<config.targets.size(); i++){
-      optionsString = optionsString + "-target=${config.target[i]} "
+      optionsString = optionsString + "-target=${config.targets[i]} "
     }
   }
   // upgrade
