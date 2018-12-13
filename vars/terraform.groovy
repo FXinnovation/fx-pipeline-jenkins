@@ -63,6 +63,7 @@ def slowRefresh(Map config = [:]){
     }
   }
   terraformFiles = findFiles(glob: '*.tf')
+  config.targets = []
   for ( terraformFile in terraformFiles ) {
     println "Refreshing state for resource in file: ${terraformFile.toString()}"
     currentResources = readJSON text: sh(
