@@ -44,6 +44,9 @@ def call(Map config = [:]){
           stage('validate'){
             terraform.validate()
           }
+          stage('refresh'){
+            terraform.slowRefresh()
+          }
           stage('plan') {
             terraform.plan(
               out: 'plan.out',
