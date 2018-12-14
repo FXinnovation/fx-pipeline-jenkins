@@ -1,18 +1,17 @@
 package com.fxinnovation.docker
 
 /**
-* Helper for docker
+* Helpers for using docker
 */
 
 class Docker {
 
   Object context
 
-  Json2hcl(
+  Docker(
     Object context
   ){
     this.context = context
-    this.dockerImage = dockerImage
   }
 
   /**
