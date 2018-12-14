@@ -65,7 +65,6 @@ def slowRefresh(Map config = [:]){
   terraformFiles = findFiles(glob: '*.tf')
   config.targets = []
   for ( terraformFile in terraformFiles ) {
-    println "Refreshing state for resource in file: ${terraformFile.toString()}"
     currentResources = readJSON text: sh(
       returnStdout: true,
       script: "cat ${terraformFile.toString()} | docker run --rm -i fxinnovation/json2hcl -reverse"
@@ -74,10 +73,6 @@ def slowRefresh(Map config = [:]){
       currentResourceType = resource.keySet().toArray()[0]
       for ( tfResource in resource."${currentResourceType}") {
         currentResourceId = tfResource.keySet().toArray()[0]
-        println "### Refreshing state for resource: '${currentResourceType}.${currentResourceId}'"
-        // config.targets = [
-        //   "'${currentResourceType}.${currentResourceId}'"
-        // ]
         config.targets[config.targets.size()] = "'${currentResourceType}.${currentResourceId}'"
         if ( config.targets.size() >= 5 ){
           terraform(config)
