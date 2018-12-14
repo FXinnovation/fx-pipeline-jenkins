@@ -175,6 +175,34 @@ def apply(Map config = [:]){
 
 }
 
+def destroy(Map config = [:]){
+  config.subCommand = 'destroy'
+  validParameters = [
+    'backup':'',
+    'lock':'',
+    'lockTimeout':'',
+    'noColor':'',
+    'parallelism':'',
+    'refresh':'',
+    'state':'',
+    'stateOut':'',
+    'targets':'',
+    'vars':'',
+    'varFile':'',
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+    }
+  }
+  config.force = true
+  terraform(config)
+
+}
+
 def call(Map config = [:]){
   // dockerImage
   if ( !config.containsKey('dockerImage') ){
@@ -226,6 +254,16 @@ def call(Map config = [:]){
     }
   }else{
     config.commandTarget = ''
+  }
+  // force
+  if ( config.containsKey('force') ){
+    if ( config.force instanceof Boolean ){
+      if ( config.force ){
+        optionsString = optionsString + "-force "
+      }
+    }else{
+      error('terraform - "force" parameter must be of type "Boolean"')
+    }
   }
   // forceCopy
   if ( config.containsKey('forceCopy') ){
