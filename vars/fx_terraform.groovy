@@ -72,6 +72,7 @@ def call(Map config = [:]){
                 input 'Do you want to apply this plan ?'
                 terraform.apply(
                   parallelism: 1,
+                  refresh: false,
                   commandTarget: 'plan.out'
                 )
               }catch (error_backup) {
