@@ -88,10 +88,7 @@ def call(Map config = [:]){
         }
       }
     }catch (error){
-      result="FAILED"
-      color="RED"
-      notify=true
-      message=error
+      result="FAILURE"
       throw (error)
     }finally {
       stage("notify"){
