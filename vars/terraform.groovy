@@ -41,6 +41,50 @@ def refresh(Map config = [:]){
   terraform(config)
 }
 
+def slowRefresh(Map config = [:]){
+  config.subCommand = 'refresh'
+  validParameters = [
+    'backup':'',
+    'lock':'',
+    'lockTimeout':'',
+    'noColor':'',
+    'state':'',
+    'stateOut':'',
+    'targets':'',
+    'vars':'',
+    'varFile':'',
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+    }
+  }
+  terraformFiles = findFiles(glob: '*.tf')
+  config.targets = []
+  for ( terraformFile in terraformFiles ) {
+    currentResources = readJSON text: sh(
+      returnStdout: true,
+      script: "cat ${terraformFile.toString()} | docker run --rm -i fxinnovation/json2hcl -reverse"
+    )
+    for ( resource in currentResources.resource ){
+      currentResourceType = resource.keySet().toArray()[0]
+      for ( tfResource in resource."${currentResourceType}") {
+        currentResourceId = tfResource.keySet().toArray()[0]
+        config.targets[config.targets.size()] = "'${currentResourceType}.${currentResourceId}'"
+        if ( config.targets.size() >= 5 ){
+          terraform(config)
+          config.targets = []
+          sh 'sleep 1'
+        }
+      }
+    }
+    terraform(config)
+  }
+}
+
 def init(Map config = [:]){
   config.subCommand = 'init'
   validParameters = [
@@ -126,6 +170,34 @@ def apply(Map config = [:]){
 
 }
 
+def destroy(Map config = [:]){
+  config.subCommand = 'destroy'
+  validParameters = [
+    'backup':'',
+    'lock':'',
+    'lockTimeout':'',
+    'noColor':'',
+    'parallelism':'',
+    'refresh':'',
+    'state':'',
+    'stateOut':'',
+    'targets':'',
+    'vars':'',
+    'varFile':'',
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+    }
+  }
+  config.force = true
+  terraform(config)
+
+}
+
 def call(Map config = [:]){
   // dockerImage
   if ( !config.containsKey('dockerImage') ){
@@ -177,6 +249,16 @@ def call(Map config = [:]){
     }
   }else{
     config.commandTarget = ''
+  }
+  // force
+  if ( config.containsKey('force') ){
+    if ( config.force instanceof Boolean ){
+      if ( config.force ){
+        optionsString = optionsString + "-force "
+      }
+    }else{
+      error('terraform - "force" parameter must be of type "Boolean"')
+    }
   }
   // forceCopy
   if ( config.containsKey('forceCopy') ){
@@ -315,7 +397,7 @@ def call(Map config = [:]){
       error('terraform - "targets" parameter must be of type "String[]"')
     }
     for (i=0; i<config.targets.size(); i++){
-      optionsString = optionsString + "-target=${config.target[i]} "
+      optionsString = optionsString + "-target=${config.targets[i]} "
     }
   }
   // upgrade
