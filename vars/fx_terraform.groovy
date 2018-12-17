@@ -44,10 +44,19 @@ def call(Map config = [:]){
           stage('validate'){
             terraform.validate()
           }
+          stage('refresh'){
+            terraform.slowRefresh(
+              vars: [
+                "bitbucket_username=${TF_bitbucket_username}",
+                "bitbucket_password=${TF_bitbucket_password}"
+              ]
+            )
+          }
           stage('plan') {
             terraform.plan(
               out: 'plan.out',
               parallelism: 1,
+              refresh: false,
               vars: [
                 "bitbucket_username=${TF_bitbucket_username}",
                 "bitbucket_password=${TF_bitbucket_password}"
@@ -63,6 +72,7 @@ def call(Map config = [:]){
                 input 'Do you want to apply this plan ?'
                 terraform.apply(
                   parallelism: 1,
+                  refresh: false,
                   commandTarget: 'plan.out'
                 )
               }catch (error_backup) {
@@ -79,10 +89,7 @@ def call(Map config = [:]){
         }
       }
     }catch (error){
-      result="FAILED"
-      color="RED"
-      notify=true
-      message=error
+      result="FAILURE"
       throw (error)
     }finally {
       stage("notify"){
