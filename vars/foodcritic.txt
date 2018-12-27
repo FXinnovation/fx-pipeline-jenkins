@@ -1,0 +1,13 @@
+The *foodcritic* method is a helper to execute a foodcritic command.
+
+By default it will try to use docker to execute foodcritic. The foodcritic helper returns nothing.
+
+
+**Usage**
+```
+  foodcritic(
+    dockerImage: String
+    cookbookPaths: String
+    options: String
+  )
+```
