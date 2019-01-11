@@ -18,7 +18,7 @@ def call(Map config = [:]){
   }catch(dockerError){
     println 'docker is not available, assuming cookstyle is installed.'
   }
-  sh '${dockerCommand} cookstyle --version'
+  sh "${dockerCommand} cookstyle --version"
   try{
     output = sh(
       returnStdout: true,
