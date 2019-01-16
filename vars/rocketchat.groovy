@@ -26,8 +26,8 @@ def findUserByMail(Map config = [:]){
       url: encodedUrl
     )
   }
-  response
-  println response.toString()
+  response_json
+  println response_json.toString()
   response = readJSON text: response_json
   if (response.success != true){
     error('An error occured on rocketchat while fetching the user')
