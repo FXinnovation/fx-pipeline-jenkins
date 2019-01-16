@@ -22,18 +22,18 @@ def call (Map config = [:]){
         scmInfo = fx_checkout()
         sh 'docker --version && docker images'
         if (scmInfo.tag == ''){
-          image_tag = scmInfo.commitId
+          imageTag = scmInfo.commitId
         }else{
-          image_tag = scmInfo.tag
+          imageTag = scmInfo.tag
         }
       }
       stage('build'){
         sh "docker build \
                --build-arg \"VCS_REF\"=\"${scmInfo.commitId}\" \
-               --build-arg \"VERSION\"=\"${image_tag}\" \
+               --build-arg \"VERSION\"=\"${imageTag}\" \
                --build-arg \"BUILD_DATE\"=\"\$(date -u +\"%Y-%m-%dT%H:%M:%SZ\")\" \
-               -t ${config.imageName}:${image_tag} ."
-        sh "docker inspect ${config.imageName}:${image_tag}"
+               -t ${config.imageName}:${imageTag} ."
+        sh "docker inspect ${config.imageName}:${imageTag}"
       }
     }catch(error){
       result = "FAILURE"
