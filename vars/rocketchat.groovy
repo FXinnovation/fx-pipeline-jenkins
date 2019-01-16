@@ -29,7 +29,7 @@ def findUserByMail(Map config = [:]){
   if (response.success != true){
     error('An error occured on rocketchat while fetching the user')
   }
-  if (response.total != 1){
+  if (response.total > 1){
     error('I got multiple users from the request. WTF!')
   }
   return response.users[0]
