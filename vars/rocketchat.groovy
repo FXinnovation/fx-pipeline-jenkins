@@ -17,18 +17,17 @@ def findUserByMail(Map config = [:]){
       usernameVariable: 'username'
     )
   ]) {
-    response_json = httpRequest(
+    response_raw = httpRequest(
       customHeaders: [
         [ maskValue: true, name: 'X-Auth-Token', value: password],
         [ maskValue: true, name: 'X-User-Id', value: username],
       ],
       timeout: 60,
+      consoleLogResponseBody: true,
       url: encodedUrl
     )
   }
-  response_json
-  println response_json.toString()
-  response = readJSON text: response_json
+  response = readJSON text: response_raw.content
   if (response.success != true){
     error('An error occured on rocketchat while fetching the user')
   }
