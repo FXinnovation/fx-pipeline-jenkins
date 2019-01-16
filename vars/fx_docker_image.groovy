@@ -44,7 +44,7 @@ def call (Map config = [:]){
         )
       }
       stage('clean'){
-        cleanWS()
+        cleanWs()
       }
     }
   }
