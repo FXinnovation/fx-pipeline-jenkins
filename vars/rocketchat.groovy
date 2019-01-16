@@ -9,7 +9,7 @@ def findUserByMail(Map config = [:]){
     error('rocketchatCredentialId parameter is mandatory.')
   }
 
-  encodedUrl = config.rocketChatUrl + "/api/v1/users.list?query=" + java.net.URLEncoder.encode("{\"emails.address\":{\"\$regex\":\"(?i)${config.mail}\"}}")
+  encodedUrl = config.rocketChatUrl + "/api/v1/users.list?query=" + java.net.URLEncoder.encode("{\"emails.address\":{\"\$regex\":\"(?i)${config.mail}\"}}", "UTF-8")
   withCredentials([
     usernamePassword(
       credentialsId: config.rocketChatCredentialId,
