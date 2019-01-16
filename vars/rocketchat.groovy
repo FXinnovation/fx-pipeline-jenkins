@@ -22,7 +22,7 @@ def findUserByMail(Map config = [:]){
         [ maskValue: true, name: 'X-User-Id', value: username],
       ],
       timeout: 60,
-      url: "${config.rocketChatUrl}/api/v1/users.list?query={\"emails.address\":{\"\$regex\":\"(?i)${config.mail}\"}}"encodeURL()
+      url: "${config.rocketChatUrl}/api/v1/users.list?query={\"emails.address\":{\"\$regex\":\"(?i)${config.mail}\"}}".encodeURL()
     )
   }
   response = readJSON text: response_json
