@@ -37,16 +37,27 @@ def call(Map config = [:]){
 
   for (i=0; i < buildCausers.size(); i++){
     currentCause = buildCausers[i]
-    if (currentCause.userName != null){
-      config.notifiedPeople = config.notifiedPeople + " @" + currentCause.userName.replace(' ','.').toLowerCase()
+    if (currentCause.userId != null){
+      rocketUser = rocketchat.findUserByMail(
+        mail: currentCause.userId,
+        rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
+        rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
+      )
+      config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
       foundCausers = true
     }
   }
   if (!foundCausers){
-    config.notifiedPeople = config.notifiedPeople + " @" + sh(
+    email = sh(
       returnStdout: true,
-      script:       "git log -1 --pretty=format:'%an'"
-    ).replace(' ','.').toLowerCase()
+      script:       "git log -1 --pretty=format:'%ae'"
+    ).trim()
+    rocketUser = rocketchat.findUserByMail(
+      mail: email,
+      rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
+      rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
+    )
+    config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
   }
 
   message = """
@@ -76,5 +87,4 @@ def call(Map config = [:]){
       videoUrl: ''
     ]]
   )
-
 }
