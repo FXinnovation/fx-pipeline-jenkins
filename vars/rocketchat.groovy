@@ -9,7 +9,7 @@ def findUserByMail(Map config = [:]){
     error('rocketchatCredentialId parameter is mandatory.')
   }
 
-  encodedUrl = config.rocketChatUrl + "/api/v1/users.list?query=" + java.net.URLEncoder.encode("{\"emails.address\":{\"\$regex\":\"(?i)${config.mail}\"}}", "UTF-8")
+  encodedUrl = config.rocketChatUrl + '/api/v1/users.list?query=' + java.net.URLEncoder.encode("{\"emails.address\":{\"\$regex\":\"(?i)${config.mail}\"}}", "UTF-8")
   withCredentials([
     usernamePassword(
       credentialsId: config.rocketChatCredentialId,
@@ -17,7 +17,7 @@ def findUserByMail(Map config = [:]){
       usernameVariable: 'username'
     )
   ]) {
-    response_raw = httpRequest(
+    responseRaw = httpRequest(
       customHeaders: [
         [ maskValue: true, name: 'X-Auth-Token', value: password],
         [ maskValue: true, name: 'X-User-Id', value: username],
@@ -28,12 +28,9 @@ def findUserByMail(Map config = [:]){
       url: encodedUrl
     )
   }
-  response = readJSON text: response_raw.content
-  if (response.success != true){
+  response = readJSON text: responseRaw.content
+  if (response.success != true || response.total > 1){
     error('An error occured on rocketchat while fetching the user')
-  }
-  if (response.total > 1){
-    error('I got multiple users from the request. WTF!')
   }
   return response.users[0]
 }
