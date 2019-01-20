@@ -195,7 +195,25 @@ def destroy(Map config = [:]){
   }
   config.force = true
   terraform(config)
+}
 
+def fmt(Map config = [:]){
+  config.subCommand = 'fmt'
+  validParameters = [
+    'list':'',
+    'write':'',
+    'diff':'',
+    'check':'',
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"fmt\", please remove it!")
+    }
+  }
+  terraform(config)
 }
 
 def call(Map config = [:]){
