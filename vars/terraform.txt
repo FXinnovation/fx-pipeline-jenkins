@@ -1,10 +1,13 @@
 The terraform variable makes it easier to use terraform in a Jenkins Pipeline.
 
-By default, it will always prefer using terraform inside a docker image. If docker is not present on the Jenkins executor, it will assume you have *terraform* installed. If the docker image is used, it will mount the current directory in the docker container.
+By default, it will always prefer using terraform inside a docker image.
+If docker is not present on the Jenkins executor, it will assume you have *terraform* installed.
+If the docker image is used, it will mount the current directory in the docker container.
 
-All parameters of the methods are optionnal. Some have default values, the others will not be set and thus will default to terraform's default behavior.
+All parameters of the methods are optional.
+Some have default values, the others will not be set and thus will default to terraform's default behavior.
 
-The terraform vairable has the following methods:
+The terraform variable has the following methods:
 validate:
   This method is a helper to call *terraform validate*.
     terraform.validate(
@@ -85,6 +88,17 @@ refresh:
       targets: ArrayList
       vars: ArrayList
       varFile: String
+      dockerImage: String
+      commandTarget: String
+    )
+
+fmt:
+  This method is a helper to call *terraform fmt*.
+    terraform.refresh(
+      list: Boolean
+      write: Boolean
+      diff: Boolean
+      check: Boolean
       dockerImage: String
       commandTarget: String
     )
