@@ -195,7 +195,25 @@ def destroy(Map config = [:]){
   }
   config.force = true
   terraform(config)
+}
 
+def fmt(Map config = [:]){
+  config.subCommand = 'fmt'
+  validParameters = [
+    'list':'',
+    'write':'',
+    'diff':'',
+    'check':'',
+    'subCommand':'',
+    'dockerImage':'',
+    'commandTarget':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"fmt\", please remove it!")
+    }
+  }
+  terraform(config)
 }
 
 def call(Map config = [:]){
@@ -215,6 +233,34 @@ def call(Map config = [:]){
       optionsString = optionsString + "-backend=${config.backend} "
     }else{
       error('terraform - "backend" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('check') ){
+    if ( config.check instanceof Boolean ){
+      optionsString = optionsString + "-check=${config.check} "
+    }else{
+      error('terraform - "check" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('list') ){
+    if ( config.list instanceof Boolean ){
+      optionsString = optionsString + "-list=${config.list} "
+    }else{
+      error('terraform - "list" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('diff') ){
+    if ( config.diff instanceof Boolean ){
+      optionsString = optionsString + "-diff=${config.diff} "
+    }else{
+      error('terraform - "diff" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('write') ){
+    if ( config.write instanceof Boolean ){
+      optionsString = optionsString + "-write=${config.write} "
+    }else{
+      error('terraform - "write" parameter must be of type "Boolean"')
     }
   }
   // backendConfigs
@@ -457,5 +503,9 @@ def call(Map config = [:]){
 
   println "Terraform version is:\n${terraformVersion}"
 
-  sh "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+  return sh(
+    returnStdout: true,
+    script:       "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+  ).trim()
+
 }
