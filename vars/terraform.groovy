@@ -503,5 +503,9 @@ def call(Map config = [:]){
 
   println "Terraform version is:\n${terraformVersion}"
 
-  sh "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+  return sh(
+    returnStdout: true,
+    script:       "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+  ).trim()
+
 }
