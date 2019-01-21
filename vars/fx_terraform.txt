@@ -1,0 +1,12 @@
+fx_terraform()
+
+Will execute test & deploy terraform modules/deploy repositories.
+
+The function takes a Map as input that follows the following pattern:
+
+*testEnvironmentCredentialId*: ''
+
+*terraformCommandTarget*:     '.'
+
+Output:
+String

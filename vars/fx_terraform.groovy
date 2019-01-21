@@ -1,102 +1,111 @@
-def call(Map config = [:]){
+def call(Map config = [:]) {
+  if (!config.containsKey('testEnvironmentCredentialId')) {
+    error('“testEnvironmentCredentialId” parameter is mandatory.')
+  }
+  if (!config.containsKey('terraformCommandTarget')) {
+    config.terraformCommandTarget = '.'
+  }
+
   node {
     result="SUCCESS"
-    color="GREEN"
-    notify=false
-    message="No special message"
     try {
       ansiColor('xterm') {
         stage('checkout') {
-          checkout scm
-          commit_id = sh(
-            returnStdout: true, 
-            script: "git rev-parse HEAD"
-          ).trim()
-          tag_id = sh(
-            returnStdout: true, 
-            script: "git describe --tags --exact-match || git rev-parse HEAD"
-          ).trim()
+          scmInfo = fx_checkout()
         }
-        // Pre-deploy stage
-        stage('pre-deploy') {
-          withCredentials([
-            file(
-              credentialsId: 'dazzlingwrench-google-service-account', 
-              variable: 'account'
-            )
-            ]){
-              sh 'cat $account > ./account.json'
-            }
-          println terraform.init()
+
+        stage('init') {
+          println terraform.init(
+            commandTarget: config.terraformCommandTarget
+          )
         }
+
+        stage('validate'){
+          println terraform.validate(
+            commandTarget: config.terraformCommandTarget
+          )
+          println terraform.fmt(
+            check: true,
+            commandTarget: config.terraformCommandTarget
+          )
+        }
+
         withCredentials([
           usernamePassword(
-            credentialsId: 'dazzlingwrench-k8s_password',
-            passwordVariable: 'secret',
-            usernameVariable: 'user'
-          ),
-          usernamePassword(
-            credentialsId: 'jenkins_fxinnovation_bitbucket',
-            usernameVariable: 'TF_bitbucket_username',
-            passwordVariable: 'TF_bitbucket_password'
+            credentialsId: config.testEnvironmentCredentialId,
+            usernameVariable: 'TF_access_key',
+            passwordVariable: 'TF_secret_key'
           )
-        ]){
-          stage('validate'){
-            println terraform.validate()
-          }
-          stage('refresh'){
-            terraform.slowRefresh(
-              vars: [
-                "bitbucket_username=${TF_bitbucket_username}",
-                "bitbucket_password=${TF_bitbucket_password}"
-              ]
+        ]) {
+          try {
+            println plan(
+              TF_access_key,
+              TF_secret_key,
+              config.terraformCommandTarget
             )
-          }
-          stage('plan') {
-            println terraform.plan(
-              out: 'plan.out',
+
+            println terraform.apply(
               parallelism: 1,
               refresh: false,
-              vars: [
-                "bitbucket_username=${TF_bitbucket_username}",
-                "bitbucket_password=${TF_bitbucket_password}"
-              ]
+              commandTarget: 'plan.out'
             )
-          }
-          stage("deploy") {
-            if(tag_id != commit_id){
-              try {
-                fx_notify(
-                  status: 'PENDING'
-                )
-                input 'Do you want to apply this plan ?'
-                println terraform.apply(
-                  parallelism: 1,
-                  refresh: false,
-                  commandTarget: 'plan.out'
-                )
-              }catch (error_backup) {
-                archiveArtifacts(
-                  allowEmptyArchive: true,
-                  artifacts: 'terraform.tfstat*'
-                )
-                throw (error_backup)
-              }
-            }else{
-              sh 'echo "This is not a tagged version, skipping apply deployment"'
+
+            replay = plan(
+              TF_access_key,
+              TF_secret_key,
+              config.terraformCommandTarget
+            )
+
+            println '###############################'
+            println replay
+            println '###############################'
+            if ( !(replay =~ /.*Infrastructure is up-to-date.*/) ){
+              error('Replaying the “apply” contains new changes. Make sure your terraform consecutive run makes no changes.')
             }
+          } catch (errorApply) {
+            archiveArtifacts(
+              allowEmptyArchive: true,
+              artifacts: 'terraform.tfstat*'
+            )
+            throw (errorApply)
+          } finally {
+            terraform.destroy(
+              vars: [
+                "access_key=${TF_access_key}",
+                "secret_key=${TF_secret_key}"
+              ],
+              commandTarget: config.terraformCommandTarget
+            )
           }
         }
       }
     }catch (error){
-      result="FAILURE"
+      result='FAILURE'
       throw (error)
     }finally {
-      stage("notify"){
+      stage('notify'){
         fx_notify(
-          status: result  
+          status: result
         )
       }
     }
   }
+}
+
+/**
+ *Terraform plan & apply
+ * @param username
+ * @param password
+ * @param commandTarget
+ * @return String terraform apply output
+ */
+def plan(String username, String password, String commandTarget){
+  return terraform.plan(
+    out: 'plan.out',
+    vars: [
+      "access_key=${username}",
+      "secret_key=${password}"
+    ],
+    commandTarget: commandTarget
+  )
 }
