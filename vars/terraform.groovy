@@ -235,6 +235,34 @@ def call(Map config = [:]){
       error('terraform - "backend" parameter must be of type "Boolean"')
     }
   }
+  if ( config.containsKey('check') ){
+    if ( config.check instanceof Boolean ){
+      optionsString = optionsString + "-check=${config.check} "
+    }else{
+      error('terraform - "check" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('list') ){
+    if ( config.list instanceof Boolean ){
+      optionsString = optionsString + "-list=${config.list} "
+    }else{
+      error('terraform - "list" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('diff') ){
+    if ( config.diff instanceof Boolean ){
+      optionsString = optionsString + "-diff=${config.diff} "
+    }else{
+      error('terraform - "diff" parameter must be of type "Boolean"')
+    }
+  }
+  if ( config.containsKey('write') ){
+    if ( config.write instanceof Boolean ){
+      optionsString = optionsString + "-write=${config.write} "
+    }else{
+      error('terraform - "write" parameter must be of type "Boolean"')
+    }
+  }
   // backendConfigs
   if ( config.containsKey('backendConfigs') ){
     if ( !config.backendConfigs instanceof ArrayList ){
