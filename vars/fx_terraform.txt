@@ -6,7 +6,7 @@ The function takes a Map as input that follows the following pattern:
 
 *testEnvironmentCredentialId*: ''
 
-*terraformCommandTarget*:     '.'
+*terraformCommandTargets*:     ['.']
 
 Output:
 String
