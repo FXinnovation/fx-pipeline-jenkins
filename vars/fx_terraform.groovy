@@ -1,4 +1,20 @@
 def call(Map config = [:]) {
+  properties([
+    disableConcurrentBuilds(),
+    buildDiscarder(
+      logRotator(
+        artifactDaysToKeepStr: '10',
+        artifactNumToKeepStr: '10',
+        daysToKeepStr: '10',
+        numToKeepStr: '10'
+      )
+    ),
+    pipelineTriggers([[
+      $class: 'PeriodicFolderTrigger',
+      interval: '1d'
+    ]])
+  ])
+
   if (!config.containsKey('initCredentialId')) {
     config.initCredentialId = 'gitea-administrator'
   }
