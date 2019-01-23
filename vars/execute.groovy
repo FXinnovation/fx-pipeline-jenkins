@@ -7,7 +7,7 @@ def call(Map config = [:]){
   }
 
   // TODO: Handle windows slaves
-  file_prefix = new Date().getTime()
+  filePrefix = new Date().getTime()
   response = [:]
   sh """
   set +x
