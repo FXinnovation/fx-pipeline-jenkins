@@ -1,4 +1,7 @@
 def call(Map config = [:]) {
+  if (!config.containsKey('initCredentialId')) {
+    config.initCredentialId = 'gitea-administrator'
+  }
   if (!config.containsKey('testEnvironmentCredentialId')) {
     error('“testEnvironmentCredentialId” parameter is mandatory.')
   }
@@ -12,7 +15,7 @@ def call(Map config = [:]) {
       ansiColor('xterm') {
         stageCheckout()
 
-        stageInit(config.terraformCommandTargets)
+        stageInit(config.terraformCommandTargets, config.initCredentialId)
 
         stageValidate(config.terraformCommandTargets)
 
@@ -62,13 +65,25 @@ def stageCheckout(){
 /**
  * Executes init stage.
  * @param commandTargets
+ * @param credentialsId
  */
-def stageInit(ArrayList commandTargets){
+def stageInit(ArrayList commandTargets, String credentialsId){
   stage('init') {
-    for ( commandTarget in commandTargets ) {
-      println terraform.init(
-        commandTarget: commandTarget
+    withCredentials([
+      usernamePassword(
+        credentialsId: credentialsId,
+        usernameVariable: 'git_user',
+        passwordVariable: 'git_password'
       )
+    ]) {
+      sh("git config --global credential.helper '!f() { sleep 1; echo \"username=${git_user}\npassword=${git_password}\"; }; f'")
+      println(sh(returnStdout: true, script: 'cat .git/config'))
+
+      for (commandTarget in commandTargets) {
+        println terraform.init(
+          commandTarget: commandTarget
+        )
+      }
     }
   }
 }
