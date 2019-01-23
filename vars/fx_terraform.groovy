@@ -16,7 +16,7 @@ def call(Map config = [:]) {
   ])
 
   if (!config.containsKey('initCredentialId')) {
-    config.initCredentialId = 'gitea-administrator'
+    config.initCredentialId = 'gitea-fx_administrator-key'
   }
   if (!config.containsKey('testEnvironmentCredentialId')) {
     error('“testEnvironmentCredentialId” parameter is mandatory.')
@@ -51,25 +51,6 @@ def call(Map config = [:]) {
 }
 
 /**
- * Terraform plan.
- * @param username
- * @param password
- * @param commandTarget
- * @return String terraform plan output
- */
-def plan(String username, String password, String commandTarget){
-  return terraform.plan(
-    out: 'plan.out',
-    vars: [
-      "access_key=${username}",
-      "secret_key=${password}"
-    ],
-    commandTarget: commandTarget
-  )
-}
-
-
-/**
  * Executes checkout stage.
  */
 def stageCheckout(){
@@ -86,15 +67,12 @@ def stageCheckout(){
 def stageInit(ArrayList commandTargets, String credentialsId){
   stage('init') {
     withCredentials([
-      usernamePassword(
+      sshUserPrivateKey(
         credentialsId: credentialsId,
-        usernameVariable: 'git_user',
-        passwordVariable: 'git_password'
+        usernameVariable: 'git_ssh_user',
+        keyFileVariable: 'git_ssh_keyfile'
       )
     ]) {
-      sh("git config --global credential.helper '!f() { sleep 1; echo \"username=${git_user}\npassword=${git_password}\"; }; f'")
-      println(sh(returnStdout: true, script: 'cat .git/config'))
-
       for (commandTarget in commandTargets) {
         println terraform.init(
           commandTarget: commandTarget
@@ -177,4 +155,22 @@ def stageTest(ArrayList commandTargets, String credentialsId){
       }
     }
   }
+}
+
+/**
+ * Terraform plan.
+ * @param username
+ * @param password
+ * @param commandTarget
+ * @return String terraform plan output
+ */
+def plan(String username, String password, String commandTarget){
+  return terraform.plan(
+    out: 'plan.out',
+    vars: [
+      "access_key=${username}",
+      "secret_key=${password}"
+    ],
+    commandTarget: commandTarget
+  )
 }
