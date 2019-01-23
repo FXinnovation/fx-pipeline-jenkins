@@ -73,6 +73,7 @@ def stageInit(ArrayList commandTargets, String credentialsId){
         keyFileVariable: 'git_ssh_keyfile'
       )
     ]) {
+      sh("ssh-add ${git_ssh_keyfile}")
       for (commandTarget in commandTargets) {
         println terraform.init(
           commandTarget: commandTarget
