@@ -15,8 +15,11 @@ def call(Map config = [:]) {
     ]])
   ])
 
-  if (!config.containsKey('initCredentialId')) {
-    config.initCredentialId = 'gitea-fx_administrator-key'
+  if (!config.containsKey('initSSHCredentialId')) {
+    config.initSSHCredentialId = 'gitea-fx_administrator-key'
+  }
+  if (!config.containsKey('initSSHHostKeys')) {
+    config.initSSHHostKeys = ['|1|l69oRqv/0PqVoMUxVxPX1bwfXQ4=|9EfwFmRLV8KvC+0DQkS3nt9rDv4= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ3FKD0KmXvh4irI4fhjsZ6AsqYPlxKAd7vAY/yiXUod']
   }
   if (!config.containsKey('testEnvironmentCredentialId')) {
     error('“testEnvironmentCredentialId” parameter is mandatory.')
@@ -31,7 +34,7 @@ def call(Map config = [:]) {
       ansiColor('xterm') {
         stageCheckout()
 
-        stageInit(config.terraformCommandTargets, config.initCredentialId)
+        stageInit(config.terraformCommandTargets, config.initSSHCredentialId, config.initSSHHostKeys)
 
         stageValidate(config.terraformCommandTargets)
 
@@ -63,8 +66,9 @@ def stageCheckout(){
  * Executes init stage.
  * @param commandTargets
  * @param credentialsId
+ * @param hostKeys
  */
-def stageInit(ArrayList commandTargets, String credentialsId){
+def stageInit(ArrayList commandTargets, String credentialsId, ArrayList hostKeys){
   stage('init') {
     withCredentials([
       sshUserPrivateKey(
@@ -73,7 +77,9 @@ def stageInit(ArrayList commandTargets, String credentialsId){
         keyFileVariable: 'git_ssh_keyfile'
       )
     ]) {
-      sh("ssh-add ${git_ssh_keyfile}")
+      sh("eval \$(ssh-agent -s) && ssh-add ${git_ssh_keyfile}")
+      sh("mkdir -p ~/.ssh")
+      sh('echo "' + hostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
       for (commandTarget in commandTargets) {
         println terraform.init(
           commandTarget: commandTarget

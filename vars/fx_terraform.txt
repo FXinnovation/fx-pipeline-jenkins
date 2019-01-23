@@ -8,5 +8,12 @@ The function takes a Map as input that follows the following pattern:
 
 *terraformCommandTargets*:     ['.']
 
+*initSSHCredentialIds*:
+
+*initSSHHostKeys*:
+
 Output:
 String
+
+Limitation:
+- For now it is not possible to have multiple private repositories
