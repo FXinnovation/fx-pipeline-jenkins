@@ -11,7 +11,6 @@ def call(Map config = [:]){
   response = [:]
   println config.script
   sh """
-  set +x
   touch /tmp/${filePrefix}-all.log
   tail -f /tmp/$filePrefix-all.log &
   TAIL_PID=\$!
