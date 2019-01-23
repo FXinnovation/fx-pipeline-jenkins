@@ -3,7 +3,7 @@ def call(Map config = [:]){
     error('"script" parameter is mandatory.')
   } 
   if (!config.containsKey('returnDetails') || !config.returnDetails instanceof Boolean ){
-    config.containsKey('returnDetails') = true
+    config.returnDetails = true
   }
 
   // TODO: Handle windows slaves
