@@ -9,6 +9,7 @@ def call(Map config = [:]){
   // TODO: Handle windows slaves
   filePrefix = new Date().getTime()
   response = [:]
+  println config.script
   sh """
   set +x
   touch /tmp/${filePrefix}-all.log
