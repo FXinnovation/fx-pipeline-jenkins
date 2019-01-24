@@ -15,7 +15,7 @@ def call(Map config = [:]){
   println "Executing: '${config.script}'"
   try{
     sh """
-       set +x
+       set -x
        touch /tmp/${filePrefix}-all.log
        touch /tmp/${filePrefix}-stdout.log
        touch /tmp/${filePrefix}-stderr.log
@@ -25,7 +25,7 @@ def call(Map config = [:]){
        ((${config.script} | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log
        echo \${PIPESTATUS[0]} > /tmp/${filePrefix}-statuscode
        echo \${PIPESTATUS[@]}
-       kill \${TAIL_PID}
+       kill \${TAIL_PID} > /dev/null
        rm /tmp/${filePrefix}-all.log
        """
   }catch(error){
