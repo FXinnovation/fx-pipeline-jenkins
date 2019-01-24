@@ -24,7 +24,7 @@ def call(Map config = [:]){
        tail -f /tmp/$filePrefix-stderr.log &
        STDERR_PID=\$!
        ${config.script} >> /tmp/$filePrefix-stdout.log 2>> /tmp/$filePrefix-stderr.log
-       echo $? > /tmp/${filePrefix}-statuscode
+       echo \$? > /tmp/${filePrefix}-statuscode
        kill \${STDOUT_PID} &> /dev/null
        kill \${STDERR_PID} &> /dev/null
        """
