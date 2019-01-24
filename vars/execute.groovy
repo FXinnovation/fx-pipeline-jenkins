@@ -15,7 +15,7 @@ def call(Map config = [:]){
   touch /tmp/${filePrefix}-all.log
   tail -f /tmp/$filePrefix-all.log &
   TAIL_PID=\$!
-  ${config.script} | tee /tmp/${filePrefix}-stdout.log"
+  ${config.script} | tee /tmp/${filePrefix}-stdout.log
   echo \$? > /tmp/${filePrefix}-statuscode
   kill \${TAIL_PID}
   rm /tmp/${filePrefix}-all.log
