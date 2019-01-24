@@ -12,11 +12,12 @@ def call(Map config = [:]){
   println "Executing: '${config.script}'"
   try {
     sh """
-       set +e
+       set -x
        touch /tmp/${filePrefix}-all.log
        tail -f /tmp/$filePrefix-all.log &
        TAIL_PID=\$!
        ((${config.script} | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log
+       echo "${PIPESTATUS[0]}" > /tmp/${filePrefix}-statuscode
        kill \${TAIL_PID}
        rm /tmp/${filePrefix}-all.log
        """
