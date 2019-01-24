@@ -2,7 +2,7 @@ def call(Map config = [:]){
   if (!config.containsKey('script') || !config.script instanceof String){
     error('"script" parameter is mandatory and must be a String')
   } 
-  if (!config.constainsKey('throwError') || !config.throwError instanceof Boolean){
+  if (!config.containsKey('throwError') || !config.throwError instanceof Boolean){
     config.throwError = true
   }
 
