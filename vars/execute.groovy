@@ -16,9 +16,10 @@ def call(Map config = [:]){
   try{
     sh """
        set -x
-       touch /tmp/${filePrefix}-stdout.log
-       touch /tmp/${filePrefix}-stderr.log
-       touch /tmp/${filePrefix}-statuscode
+       set +e
+       echo "" > /tmp/${filePrefix}-stdout.log
+       echo "" > /tmp/${filePrefix}-stderr.log
+       echo "" > /tmp/${filePrefix}-statuscode
        tail -f /tmp/$filePrefix-stdout.log &
        STDOUT_PID=\$!
        tail -f /tmp/$filePrefix-stderr.log &
