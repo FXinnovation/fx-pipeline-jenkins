@@ -12,7 +12,7 @@ def call(Map config = [:]){
   println "Executing: '${config.script}'"
   try {
     sh """
-       set +ex
+       set +e
        touch /tmp/${filePrefix}-all.log
        tail -f /tmp/$filePrefix-all.log &
        TAIL_PID=\$!
@@ -25,15 +25,15 @@ def call(Map config = [:]){
   }finally{
     response.stdout = sh(
       returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stdout.log; rm /tmp/${filePrefix}-stdout.log"
+      script: "set +e; cat /tmp/${filePrefix}-stdout.log; rm /tmp/${filePrefix}-stdout.log"
     ).trim()
     response.stderr = sh(
       returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stderr.log; rm /tmp/${filePrefix}-stderr.log"
+      script: "set +e; cat /tmp/${filePrefix}-stderr.log; rm /tmp/${filePrefix}-stderr.log"
     ).trim()
     response.statusCode = sh(
       returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-statuscode; rm /tmp/${filePrefix}-statuscode"
+      script: "set +e; cat /tmp/${filePrefix}-statuscode; rm /tmp/${filePrefix}-statuscode"
     ).trim().toInteger()
 
     return response
