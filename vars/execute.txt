@@ -1,0 +1,16 @@
+The *execute* method is a helper to execute a shell command.
+
+It will execute your shell script while capturing stdout, stderr and the satuscode, but still displaying these on the console. It will also return a map containing stdout, stderr and the status code.
+
+*NOTE:The command will be executed with the pipefail option activated!*
+
+**Usage**
+```
+  execution = execute(
+    script: String,
+    thorwError: Boolean, // Defaults to true
+  )
+  println execution.stdout
+  println execution.stderr
+  println execution.statusCode
+```
