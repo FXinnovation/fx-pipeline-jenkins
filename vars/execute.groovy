@@ -29,6 +29,7 @@ def call(Map config = [:]){
        set -e
        kill \${STDOUT_PID} &> /dev/null
        kill \${STDERR_PID} &> /dev/null
+       exit $(cat /tmp/${filePrefix}-statuscode)
        """
   }catch(error){
     if (config.trhowError){
