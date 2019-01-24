@@ -4,14 +4,19 @@ def call(Map config = [:]){
   } 
 
   filePrefix = new Date().getTime()
-  response = [:]
-  println config.script
+  response = [
+    stdout: null,
+    stderr: null,
+    statusCode: null
+  ]
+  println "Executing: '${config.script}'"
   try {
     sh """
-       set +x
+       set +ex
        touch /tmp/${filePrefix}-all.log
        tail -f /tmp/$filePrefix-all.log &
        TAIL_PID=\$!
+       set -o pipefail
        ((${config.script} | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log
        echo \$? > /tmp/${filePrefix}-statuscode
        kill \${TAIL_PID}
