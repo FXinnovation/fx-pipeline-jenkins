@@ -15,8 +15,7 @@ def call(Map config = [:]){
   println "Executing: '${config.script}'"
   try{
     sh """
-       set -x
-       set +e
+       set +x
        echo "" > /tmp/${filePrefix}-stdout.log
        echo "" > /tmp/${filePrefix}-stderr.log
        echo "" > /tmp/${filePrefix}-statuscode
@@ -24,8 +23,10 @@ def call(Map config = [:]){
        STDOUT_PID=\$!
        tail -f /tmp/$filePrefix-stderr.log &
        STDERR_PID=\$!
+       set +e
        ${config.script} >> /tmp/$filePrefix-stdout.log 2>> /tmp/$filePrefix-stderr.log
        echo \$? > /tmp/${filePrefix}-statuscode
+       set -e
        kill \${STDOUT_PID} &> /dev/null
        kill \${STDERR_PID} &> /dev/null
        """
