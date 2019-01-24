@@ -36,4 +36,3 @@ def call(Map config = [:]){
 
   return response
 }
-  //bash -c "((${config.script} | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log"
