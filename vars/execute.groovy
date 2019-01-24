@@ -25,6 +25,7 @@ def call(Map config = [:]){
        ((${config.script} | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log
        foo=\${PIPESTATUS[@]}
        # echo \${PIPESTATUS[0]} > /tmp/${filePrefix}-statuscode
+       echo 0 > /tmp/${filePrefix}-statuscode
        # echo \${PIPESTATUS[@]}
        kill \${TAIL_PID} > /dev/null
        rm /tmp/${filePrefix}-all.log
