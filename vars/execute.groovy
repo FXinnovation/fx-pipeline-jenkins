@@ -16,20 +16,20 @@ def call(Map config = [:]){
   try{
     sh """
        set +x
-       echo "" > /tmp/$filePrefix-stdout.log
-       echo "" > /tmp/$filePrefix-stderr.log
-       echo "" > /tmp/$filePrefix-statuscode
-       tail -f /tmp/$filePrefix-stdout.log &
+       echo "" > /tmp/${filePrefix}-stdout.log
+       echo "" > /tmp/${filePrefix}-stderr.log
+       echo "" > /tmp/${filePrefix}-statuscode
+       tail -f /tmp/${filePrefix}-stdout.log &
        STDOUT_PID=\$!
-       tail -f /tmp/$filePrefix-stderr.log &
+       tail -f /tmp/${filePrefix}-stderr.log &
        STDERR_PID=\$!
        set +e
-       $config.script >> /tmp/$filePrefix-stdout.log 2>> /tmp/$filePrefix-stderr.log
-       echo \$? > /tmp/$filePrefix-statuscode
+       ${config.script} >> /tmp/${filePrefix}-stdout.log 2>> /tmp/${filePrefix}-stderr.log
+       echo \$? > /tmp/${filePrefix}-statuscode
        set -e
        kill \${STDOUT_PID} &> /dev/null
        kill \${STDERR_PID} &> /dev/null
-       exit $(cat /tmp/$filePrefix-statuscode)
+       exit \$(cat /tmp/${filePrefix}-statuscode)
        """
   }catch(error){
     if (config.trhowError){
