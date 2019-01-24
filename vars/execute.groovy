@@ -13,12 +13,10 @@ def call(Map config = [:]){
   try {
     sh """
        set +x
-       set -o pipefail
        touch /tmp/${filePrefix}-all.log
        tail -f /tmp/$filePrefix-all.log &
        TAIL_PID=\$!
-       ((${config.script} | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log
-       echo \$? > /tmp/${filePrefix}-statuscode
+       ((${config.script}; echo \$? > /tmp/${filePrefix}-statuscode | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log
        kill \${TAIL_PID}
        rm /tmp/${filePrefix}-all.log
        """
