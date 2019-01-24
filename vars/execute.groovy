@@ -27,6 +27,7 @@ def call(Map config = [:]){
        ${config.script} >> /tmp/${filePrefix}-stdout.log 2>> /tmp/${filePrefix}-stderr.log
        echo \$? > /tmp/${filePrefix}-statuscode
        set -e
+       # This sleep is needed to make sure both stdout and stderr have been outputed on jenkins... :(
        sleep 1
        kill \${STDOUT_PID} &> /dev/null
        kill \${STDERR_PID} &> /dev/null
