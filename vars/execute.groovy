@@ -12,8 +12,7 @@ def call(Map config = [:]){
   println "Executing: '${config.script}'"
   try {
     sh """
-       set -x
-       touch /tmp/${filePrefix}-all.log
+       touch /tmp/${filePrefix}-{all,stdout,stderr}.log
        tail -f /tmp/$filePrefix-all.log &
        TAIL_PID=\$!
        ((${config.script} | tee /tmp/${filePrefix}-stdout.log) 3>&1 1>&2 2>&3 | tee /tmp/${filePrefix}-stderr.log) &> /tmp/${filePrefix}-all.log
