@@ -9,7 +9,6 @@ def call(Map config = [:]){
   try {
     sh """
        set +x
-       set -o pipefail
        touch /tmp/${filePrefix}-all.log
        tail -f /tmp/$filePrefix-all.log &
        TAIL_PID=\$!
