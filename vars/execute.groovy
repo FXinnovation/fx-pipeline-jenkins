@@ -11,6 +11,7 @@ def call(Map config = [:]){
   response = [:]
   println config.script
   sh """
+  set +x
   set -o pipefail
   touch /tmp/${filePrefix}-all.log
   tail -f /tmp/$filePrefix-all.log &
