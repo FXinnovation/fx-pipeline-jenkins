@@ -149,7 +149,7 @@ def call(Map config = [:]){
   }
 
   execute(
-    script: "${config.packerCommand} version"
+    script: "${packerCommand} version"
   )
 
   return execute(
