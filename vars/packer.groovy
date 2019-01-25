@@ -1,4 +1,4 @@
-packer.build(Map config = [:]){
+def packer.build(Map config = [:]){
   config.subCommand = 'build'
   validParameters = [
     'color':'',
@@ -24,7 +24,7 @@ packer.build(Map config = [:]){
   packer.command(config)
 }
 
-packer.validate(Map config = [:]){
+def packer.validate(Map config = [:]){
   config.subCommand = 'validate'
   validParameters = [
     'except':'',
@@ -45,7 +45,7 @@ packer.validate(Map config = [:]){
   packer.command(config)
 }
 
-packer.command(Map config = [:]){
+def packer.command(Map config = [:]){
   optionsString = ""
   if (!config.containsKey('dockerImage')){
     config.dockerImage = 'fxinnovation/packer:latest'
