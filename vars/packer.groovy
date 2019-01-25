@@ -21,7 +21,7 @@ def build(Map config = [:]){
     }
   }
 
-  packer.command(config)
+  packer(config)
 }
 
 def validate(Map config = [:]){
@@ -42,10 +42,10 @@ def validate(Map config = [:]){
     }
   }
 
-  packer.command(config)
+  packer(config)
 }
 
-def command(Map config = [:]){
+def call(Map config = [:]){
   optionsString = ""
   if (!config.containsKey('dockerImage')){
     config.dockerImage = 'fxinnovation/packer:latest'
