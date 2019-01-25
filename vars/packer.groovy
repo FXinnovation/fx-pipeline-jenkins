@@ -60,9 +60,7 @@ packer.command(Map config = [:]){
     if (!config.color instanceof Boolean){
       error('"color" parameter must be of type Boolean')
     }
-    if (config.color == false){
-      optionsString = optionsString + '-color=false '
-    }
+    optionsString = optionsString + "-color=${config.color} "
   }
   if (config.containsKey('debug')){
     if (!config.debug instanceof Boolean){
@@ -110,9 +108,7 @@ packer.command(Map config = [:]){
     if (!config.parallel instanceof Boolean){
       error('"parallel" parameter must be of type Boolean')
     }
-    if (config.parallel == false){
-      optionsString = optionsString + '-parallel=false '
-    }
+    optionsString = optionsString + "-parallel=${config.parallel} "
   }
   if (config.containsKey('syntaxOnly')){
     if (!config.syntaxOnly instanceof Boolean){
@@ -126,7 +122,7 @@ packer.command(Map config = [:]){
     if ( config.varFile instanceof String ){
       optionsString = optionsString + "-var-file=${config.varFile} "
     }else{
-      error('terraform - "varFile" parameter must be of type "String"')
+      error('"varFile" parameter must be of type "String"')
     }
   }
   if ( config.containsKey('vars') ){
@@ -135,7 +131,7 @@ packer.command(Map config = [:]){
         optionsString = optionsString + "-var \"${config.vars[i]}\" "
       }
     }else{
-      error('terraform - "vars" parameter must be of type "String[]"')
+      error('"vars" parameter must be of type "String[]"')
     }
   }
 
