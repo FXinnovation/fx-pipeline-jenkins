@@ -34,7 +34,7 @@ def call(Map config = [:]){
        exit \$(cat /tmp/${filePrefix}-statuscode)
        """
   }catch(error){
-    if (config.trhowError){
+    if (config.throwError){
       throw error
     }
   }finally{
