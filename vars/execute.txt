@@ -2,7 +2,7 @@ The *execute* method is a helper to execute a shell command.
 
 It will execute your shell script while capturing stdout, stderr and the satuscode, but still displaying stdout and stderr on the console. It will also return a map containing stdout, stderr and the status code.
 
-You can choose to if the command should throw an error or not. The helper will through an error with the exit code of your command but will still return the result before throwing the error. You'll have to use a try/catch to handle the error to be able to use what is return by the helper.
+You can choose if the command should throw an error or not. The helper will through an error with the exit code of your command but will still return the result before throwing the error. You'll have to use a try/catch to handle the error to be able to use what is return by the helper.
 
 **Usage**
 ```
