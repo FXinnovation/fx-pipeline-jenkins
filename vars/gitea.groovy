@@ -84,8 +84,8 @@ def post(Map config = [:]){
       timeout: 60,
       httpMode: 'POST',
       requestBody: config.data,
-      consoleLogResponseBody: false,
-      quiet: true,
+      //consoleLogResponseBody: false,
+      //quiet: true,
       url: encodedUrl
     )
   }
