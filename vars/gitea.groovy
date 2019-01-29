@@ -15,7 +15,7 @@ def getPullRequest(Map config = [:]){
     error('credentialId parameter is mandatory.')
   }
 
-  return gitea.get(
+  return get(
     url:          config.url,
     apiPath:      "repos/${config.owner}/${config.repo}/pulls/${config.pullNumber}",
     credentialId: config.credentialId
