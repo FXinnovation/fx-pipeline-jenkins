@@ -80,6 +80,7 @@ def post(Map config = [:]){
     responseRaw = httpRequest(
       customHeaders: [
         [ maskValue: true, name: 'Authorization', value: 'token ' + password],
+        [ maskValue: false, name: 'Content-Type', value: 'application/json'], 
       ],
       timeout: 60,
       httpMode: 'POST',
