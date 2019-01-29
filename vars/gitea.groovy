@@ -6,18 +6,18 @@ def getPullRequest(Map config = [:]){
     error('credentialId parameter is mandatory.')
   }
   if (!config.containsKey('owner')){
-    error('credentialId parameter is mandatory.')
+    error('owner parameter is mandatory.')
   }
-  if (!config.containsKey('repo')){
-    error('credentialId parameter is mandatory.')
+  if (!config.containsKey('repository')){
+    error('repository parameter is mandatory.')
   }
   if (!config.containsKey('pullNumber')){
-    error('credentialId parameter is mandatory.')
+    error('pullNumber parameter is mandatory.')
   }
 
   return get(
     url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repo}/pulls/${config.pullNumber}",
+    apiPath:      "repos/${config.owner}/${config.repository}/pulls/${config.pullNumber}",
     credentialId: config.credentialId
   )
 }
@@ -53,4 +53,70 @@ def get(Map config = [:]){
   }
   response = readJSON text: responseRaw.content
   return response
+}
+
+def post(Map config = [:]){
+  if (!config.containsKey('url')){
+    error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('apiPath')){
+    error('apiPath')
+  }
+  if (!config.containsKey('credentialId')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('data')){
+    error('data parameter is mandatory.')
+  }
+
+  encodedUrl = config.url + '/api/v1/' + config.apiPath
+  withCredentials([
+    usernamePassword(
+      credentialsId: config.credentialId,
+      passwordVariable: 'password',
+      usernameVariable: 'username'
+    )
+  ]) {
+    responseRaw = httpRequest(
+      customHeaders: [
+        [ maskValue: true, name: 'Authorization', value: 'token ' + password],
+      ],
+      timeout: 60,
+      httpMode: 'POST',
+      requestBody: config.data
+      consoleLogResponseBody: false,
+      quiet: true,
+      url: encodedUrl
+    )
+  }
+  response = readJSON text: responseRaw.content
+  return response
+}
+
+def postComment(Map config = [:]){
+  if (!config.containsKey('url')){
+    error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('credentialId')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('owner')){
+    error('owner parameter is mandatory.')
+  }
+  if (!config.containsKey('repository')){
+    error('repository parameter is mandatory.')
+  }
+  if (!config.containsKey('issueId')){
+    error('issueId parameter is mandatory.')
+  }
+  if (!config.containsKey('message')){
+    error('message parameter is mandatory.')
+  }
+  
+  return post(
+    url:          config.url,
+    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
+    credentialId: config.credentialId,
+    data:         '{"body":"' + config.message + '"}'
+  )
 }
