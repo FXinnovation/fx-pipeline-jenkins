@@ -41,20 +41,19 @@ def call(Map config = [:]){
     }else{
       println 'Not throwing error'
     }
-  }finally{
-    response.stdout = sh(
-      returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stdout.log; rm /tmp/${filePrefix}-stdout.log"
-    ).trim()
-    response.stderr = sh(
-      returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stderr.log; rm /tmp/${filePrefix}-stderr.log"
-    ).trim()
-    response.statusCode = sh(
-      returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-statuscode; rm /tmp/${filePrefix}-statuscode"
-    ).trim().toInteger()
-
-    return response
   }
+  response.stdout = sh(
+    returnStdout: true,
+    script: "set +x; cat /tmp/${filePrefix}-stdout.log; rm /tmp/${filePrefix}-stdout.log"
+  ).trim()
+  response.stderr = sh(
+    returnStdout: true,
+    script: "set +x; cat /tmp/${filePrefix}-stderr.log; rm /tmp/${filePrefix}-stderr.log"
+  ).trim()
+  response.statusCode = sh(
+    returnStdout: true,
+    script: "set +x; cat /tmp/${filePrefix}-statuscode; rm /tmp/${filePrefix}-statuscode"
+  ).trim().toInteger()
+
+  return response
 }
