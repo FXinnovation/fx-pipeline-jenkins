@@ -34,8 +34,12 @@ def call(Map config = [:]){
        exit \$(cat /tmp/${filePrefix}-statuscode)
        """
   }catch(error){
+    println 'Catched an error'
     if (config.throwError){
+      println 'Throwing error'
       throw error
+    }else{
+      println 'Not throwing error'
     }
   }finally{
     response.stdout = sh(
