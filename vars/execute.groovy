@@ -33,23 +33,25 @@ def call(Map config = [:]){
        kill \${STDERR_PID} &> /dev/null
        exit \$(cat /tmp/${filePrefix}-statuscode)
        """
+    response.stdout = sh(
+      returnStdout: true,
+      script: "set +x; cat /tmp/${filePrefix}-stdout.log"
+    ).trim()
+    response.stderr = sh(
+      returnStdout: true,
+      script: "set +x; cat /tmp/${filePrefix}-stderr.log"
+    ).trim()
+    response.statusCode = sh(
+      returnStdout: true,
+      script: "set +x; cat /tmp/${filePrefix}-statuscode"
+    ).trim().toInteger()
+
+    return response
   }catch(error){
     if (config.throwError){
       throw error
     }
+  }finally{
+    sh "rm /tmp/${filePrefix}-*"
   }
-  response.stdout = sh(
-    returnStdout: true,
-    script: "set +x; cat /tmp/${filePrefix}-stdout.log; rm /tmp/${filePrefix}-stdout.log"
-  ).trim()
-  response.stderr = sh(
-    returnStdout: true,
-    script: "set +x; cat /tmp/${filePrefix}-stderr.log; rm /tmp/${filePrefix}-stderr.log"
-  ).trim()
-  response.statusCode = sh(
-    returnStdout: true,
-    script: "set +x; cat /tmp/${filePrefix}-statuscode; rm /tmp/${filePrefix}-statuscode"
-  ).trim().toInteger()
-
-  return response
 }
