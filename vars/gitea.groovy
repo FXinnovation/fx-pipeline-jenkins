@@ -91,8 +91,8 @@ def post(Map config = [:]){
       url: encodedUrl
     )
   }
-  response = readJSON text: responseRaw.content
-  return response
+  //response = readJSON text: responseRaw.content
+  return responseRaw
 }
 
 def postComment(Map config = [:]){
