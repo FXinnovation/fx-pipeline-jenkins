@@ -113,11 +113,14 @@ def postComment(Map config = [:]){
   if (!config.containsKey('message')){
     error('message parameter is mandatory.')
   }
+  def data = [
+    body: config.message
+  ]
   
   return post(
     url:          config.url,
     apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
     credentialId: config.credentialId,
-    data:         '{"body":"' + config.message + '"}'
+    data:         JsonOutput.toJson(data)
   )
 }
