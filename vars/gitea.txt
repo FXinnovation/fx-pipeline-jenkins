@@ -1,0 +1,22 @@
+The gitea helper makes it easier to interact with gitea using Jenkins
+
+postComment:
+This method is a helper to post a comment on an issue or pull request.
+  gitea.postComment(
+    url: String
+    credentialsId: String
+    owner: String
+    repository: String
+    issueId: String
+    message: String
+  )
+
+getPullRequest:
+This method is a helper to fetch details about a pull request.
+  gitea.getPullRequest(
+    url: String
+    credentialsId: String
+    owner: String
+    repository: String
+    pullNumber: String
+  )
