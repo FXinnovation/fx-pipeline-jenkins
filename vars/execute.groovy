@@ -14,25 +14,33 @@ def call(Map config = [:]){
   ]
   println "Executing: '${config.script}'"
   try{
-    sh """
-       set +x
-       echo "" > /tmp/${filePrefix}-stdout.log
-       echo "" > /tmp/${filePrefix}-stderr.log
-       echo "" > /tmp/${filePrefix}-statuscode
-       tail -f /tmp/${filePrefix}-stdout.log &
-       STDOUT_PID=\$!
-       tail -f /tmp/${filePrefix}-stderr.log &
-       STDERR_PID=\$!
-       set +e
-       ${config.script} >> /tmp/${filePrefix}-stdout.log 2>> /tmp/${filePrefix}-stderr.log
-       echo \$? > /tmp/${filePrefix}-statuscode
-       set -e
-       # This sleep is needed to make sure both stdout and stderr have been outputed on jenkins... :(
-       sleep 1
-       kill \${STDOUT_PID} &> /dev/null
-       kill \${STDERR_PID} &> /dev/null
-       exit \$(cat /tmp/${filePrefix}-statuscode)
-       """
+    try{
+      sh """
+         set +x
+         echo "" > /tmp/${filePrefix}-stdout.log
+         echo "" > /tmp/${filePrefix}-stderr.log
+         echo "" > /tmp/${filePrefix}-statuscode
+         tail -f /tmp/${filePrefix}-stdout.log &
+         STDOUT_PID=\$!
+         tail -f /tmp/${filePrefix}-stderr.log &
+         STDERR_PID=\$!
+         set +e
+         ${config.script} >> /tmp/${filePrefix}-stdout.log 2>> /tmp/${filePrefix}-stderr.log
+         echo \$? > /tmp/${filePrefix}-statuscode
+         set -e
+         # This sleep is needed to make sure both stdout and stderr have been outputed on jenkins... :(
+         sleep 1
+         kill \${STDOUT_PID} &> /dev/null
+         kill \${STDERR_PID} &> /dev/null
+         exit \$(cat /tmp/${filePrefix}-statuscode)
+         """
+    }catch(err){
+      if ( config.throwError == true ){
+        throw error
+      }else{
+        println 'There was an error, not throwing'
+      }
+    }
     response.stdout = sh(
       returnStdout: true,
       script: "set +x; cat /tmp/${filePrefix}-stdout.log"
@@ -48,9 +56,7 @@ def call(Map config = [:]){
 
     return response
   }catch(error){
-    if (config.throwError == true){
       throw error
-    }
   }finally{
     sh "rm /tmp/${filePrefix}-*"
   }
