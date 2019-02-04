@@ -14,7 +14,6 @@ def call(Map config = [:]){
   ]
   println "Executing: '${config.script}'"
   try{
-    try{
       sh """
          set +x
          echo "" > /tmp/${filePrefix}-stdout.log
@@ -32,15 +31,7 @@ def call(Map config = [:]){
          sleep 1
          kill \${STDOUT_PID} &> /dev/null
          kill \${STDERR_PID} &> /dev/null
-         exit \$(cat /tmp/${filePrefix}-statuscode)
          """
-    }catch(err){
-      if ( config.throwError == true ){
-        throw error
-      }else{
-        println 'There was an error, not throwing'
-      }
-    }
     response.stdout = sh(
       returnStdout: true,
       script: "set +x; cat /tmp/${filePrefix}-stdout.log"
@@ -54,6 +45,9 @@ def call(Map config = [:]){
       script: "set +x; cat /tmp/${filePrefix}-statuscode"
     ).trim().toInteger()
 
+    if (config.throwError && response.statusCode != 0){
+      error(response.stderr)
+    }
     return response
   }catch(error){
       throw error
