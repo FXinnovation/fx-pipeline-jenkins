@@ -2,7 +2,7 @@ def call(Map config = [:]){
   if (config.containsKey('scm') && config.scm instanceof hudson.plugins.git.GitSCM){
     checkout config.scm
   }else{
-    if (binding.hasVariable('scm') && scm instanceof hudson.plugins.git.GitSCM){
+    if (scm instanceof hudson.plugins.git.GitSCM){
       checkout scm
     }else{
       error('advancedCheckout - scm parameter was not given and could not find the scm variable or config.scm or scm was not of class hudson.plugins.git.GitSCM')
