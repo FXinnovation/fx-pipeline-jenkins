@@ -113,8 +113,9 @@ def postComment(Map config = [:]){
   if (!config.containsKey('message')){
     error('message parameter is mandatory.')
   }
+  def jsonOuput = new groovy.json.JsonOutput
 
-  def data = new groovy.json.JsonOutput.toJson([body: config.message])
+  def data = jsonOutput.toJson([body: config.message])
 
   return post(
     url:          config.url,
