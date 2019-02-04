@@ -114,14 +114,12 @@ def postComment(Map config = [:]){
     error('message parameter is mandatory.')
   }
 
-  def json = new groovy.json.JsonBuilder()
-
-  json body: config.message
+  def data = new groovy.json.JsonOutput.toJson([body: config.message])
 
   return post(
     url:          config.url,
     apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
     credentialId: config.credentialId,
-    data:         json.toString
+    data:         data
   )
 }
