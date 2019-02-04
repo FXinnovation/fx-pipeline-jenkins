@@ -2,7 +2,7 @@ def call(Map config = [:]){
   if (!config.containsKey('script') || !config.script instanceof String){
     error('"script" parameter is mandatory and must be a String')
   } 
-  if (!config.containsKey('throwError') || !config.throwError instanceof Boolean){
+  if (!config.containsKey('throwError') || !(config.throwError instanceof Boolean)){
     config.throwError = true
   }
 
@@ -45,7 +45,7 @@ def call(Map config = [:]){
       script: "set +x; cat /tmp/${filePrefix}-statuscode"
     ).trim().toInteger()
 
-    if (config.throwError && response.statusCode != 0){
+    if (config.throwError == true && response.statusCode != 0){
       error(response.stderr)
     }
     return response
