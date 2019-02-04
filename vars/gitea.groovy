@@ -86,8 +86,8 @@ def post(Map config = [:]){
       httpMode: 'POST',
       requestBody: config.data,
       acceptType: 'APPLICATION_JSON',
-      //consoleLogResponseBody: false,
-      //quiet: true,
+      consoleLogResponseBody: false,
+      quiet: true,
       url: encodedUrl
     )
   }
