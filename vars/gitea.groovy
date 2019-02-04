@@ -91,7 +91,6 @@ def post(Map config = [:]){
       url: encodedUrl
     )
   }
-  //response = readJSON text: responseRaw.content
   return responseRaw
 }
 
