@@ -48,7 +48,7 @@ def call(Map config = [:]){
 
     return response
   }catch(error){
-    if (config.throwError){
+    if (config.throwError == true){
       throw error
     }
   }finally{
