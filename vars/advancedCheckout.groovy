@@ -8,6 +8,6 @@ def call(){
   }catch(error){
     scmInfo.tag = ''
   }
-  scmInfo.isPullRequest = scmInfo.branch.matches('^PR-\d$')
+  //scmInfo.isPullRequest = scmInfo.branch.matches('^PR-\d$')
   return scmInfo
 }
