@@ -1,13 +1,5 @@
-def call(Map config = [:]){
-  if (config.containsKey('scm') && config.scm instanceof hudson.plugins.git.GitSCM){
-    checkout config.scm
-  }else{
-    if (scm instanceof hudson.plugins.git.GitSCM){
-      checkout scm
-    }else{
-      error('advancedCheckout - scm parameter was not given and could not find the scm variable or config.scm or scm was not of class hudson.plugins.git.GitSCM')
-    }
-  }
+def call(){
+  checkout scm
   def scmInfo = {}
   scmInfo.commitId = command('git rev-parse HEAD').trim()
   scmInfo.branch   = command('echo "${BRANCH_NAME}"').trim()
