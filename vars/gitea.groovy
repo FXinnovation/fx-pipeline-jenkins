@@ -1,3 +1,5 @@
+import groovy.json.JsonOutput
+
 def getPullRequest(Map config = [:]){
   if (!config.containsKey('url')){
     error('url parameter is mandatory.')
@@ -114,11 +116,7 @@ def postComment(Map config = [:]){
     error('message parameter is mandatory.')
   }
 
-  def json = new groovy.json.JsonBuilder()
-
-  json body: config.message
-
-  def data = json.toString()
+  def data = JsonOutput.toJson([body: config.message])
 
   return post(
     url:          config.url,
