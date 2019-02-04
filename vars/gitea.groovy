@@ -116,7 +116,7 @@ def postComment(Map config = [:]){
 
   def json = new groovy.json.JsonBuilder()
 
-  json body: message
+  json body: config.message
 
   return post(
     url:          config.url,
