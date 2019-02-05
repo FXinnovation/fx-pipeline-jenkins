@@ -238,6 +238,8 @@ def publishOnPullRequest(Map config = [:]){
     credentialId: config.credentialId
   ).id
 
+  println userId
+
   comments = getIssueComments(
     url: config.url,
     credentialId: config.credentialId,
@@ -246,10 +248,13 @@ def publishOnPullRequest(Map config = [:]){
     repository: config.repository
   )
 
+  println commentId
+
   commentId = null
 
   for ( comment in comments ){
     if ( comment.user.id == userId ) {
+      println comment
       commentId = comment.id
     }
   }
@@ -264,6 +269,7 @@ def publishOnPullRequest(Map config = [:]){
       message: config.message
     )
   }else{
+    println ("Going to patch comment of user ${userId} on comment ${commentId}")
     patchComment(
       url: config.url,
       credentialId: config.credentialId,
