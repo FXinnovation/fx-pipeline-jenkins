@@ -199,7 +199,7 @@ def patchComment(Map config = [:]){
   if (!config.containsKey('message')){
     error('message parameter is mandatory.')
   }
-  if (!config.comtainsKey('commentId')){
+  if (!config.containsKey('commentId')){
     error('commentId parameter is mandatory.')
   }
 
