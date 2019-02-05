@@ -248,7 +248,7 @@ def publishOnPullRequest(Map config = [:]){
     repository: config.repository
   )
 
-  println commentId
+  println comments
 
   commentId = null
 
