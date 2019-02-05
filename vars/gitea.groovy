@@ -103,8 +103,8 @@ def patch(Map config = [:]){
       httpMode: 'PATCH',
       requestBody: config.data,
       acceptType: 'APPLICATION_JSON',
-      consoleLogResponseBody: false,
-      quiet: true,
+      consoleLogResponseBody: true,
+      //quiet: true,
       url: encodedUrl
     )
   }
