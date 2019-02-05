@@ -261,7 +261,6 @@ def publishOnPullRequest(Map config = [:]){
       message: config.message
     )
   }else{
-    println ("Going to patch comment of user ${userId} on comment ${commentId}")
     patchComment(
       url: config.url,
       credentialId: config.credentialId,
