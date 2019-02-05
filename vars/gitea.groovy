@@ -72,6 +72,45 @@ def get(Map config = [:]){
   return response
 }
 
+def patch(Map config = [:]){
+  if (!config.containsKey('url')){
+    error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('apiPath')){
+    error('apiPath')
+  }
+  if (!config.containsKey('credentialId')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('data')){
+    error('data parameter is mandatory.')
+  }
+
+  encodedUrl = config.url + '/api/v1/' + config.apiPath
+  withCredentials([
+    usernamePassword(
+      credentialsId: config.credentialId,
+      passwordVariable: 'password',
+      usernameVariable: 'username'
+    )
+  ]) {
+    responseRaw = httpRequest(
+      customHeaders: [
+        [ maskValue: true, name: 'Authorization', value: 'token ' + password],
+        [ maskValue: false, name: 'Content-Type', value: 'application/json'], 
+      ],
+      timeout: 60,
+      httpMode: 'PATCH',
+      requestBody: config.data,
+      acceptType: 'APPLICATION_JSON',
+      consoleLogResponseBody: false,
+      quiet: true,
+      url: encodedUrl
+    )
+  }
+  return responseRaw
+}
+
 def post(Map config = [:]){
   if (!config.containsKey('url')){
     error('url parameter is mandatory.')
@@ -138,5 +177,97 @@ def postComment(Map config = [:]){
     apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
     credentialId: config.credentialId,
     data:         data
+  )
+}
+
+def patchComment(Map config = [:]){
+  if (!config.containsKey('url')){
+    error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('credentialId')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('owner')){
+    error('owner parameter is mandatory.')
+  }
+  if (!config.containsKey('repository')){
+    error('repository parameter is mandatory.')
+  }
+  if (!config.containsKey('issueId')){
+    error('issueId parameter is mandatory.')
+  }
+  if (!config.containsKey('message')){
+    error('message parameter is mandatory.')
+  }
+
+  def data = new JsonBuilder([body: config.message]).toString()
+
+  return patch(
+    url:          config.url,
+    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
+    credentialId: config.credentialId,
+    data:         data
+  )
+}
+
+def publishOnPullRequest(Map config = [:]){
+  if (!config.containsKey('url')){
+    error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('credentialId')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('pullNumber')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('message')){
+    error('message parameter is mandatory.')
+  }
+  if (!config.containsKey('owner')){
+    error('owner parameter is mandatory.')
+  }
+  if (!config.containsKey('repository')){
+    error('repository parameter is mandatory.')
+  }
+
+  userId = getCurrentUser(
+    url: config.url,
+    credentialId: config.credentialId
+  ).id
+
+  println userId
+
+  comments = getIssueComments(
+    url: config.url,
+    credentialId: config.credentialId,
+    issueId: config.pullNumber,
+    owner: config.owner,
+    repository: config.repository
+  )
+
+  println comments
+}
+
+def getIssueComments(Map config = [:]){
+  if (!config.containsKey('url')){
+    error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('credentialId')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('issueId')){
+    error('credentialId parameter is mandatory.')
+  }
+  if (!config.containsKey('owner')){
+    error('owner parameter is mandatory.')
+  }
+  if (!config.containsKey('repository')){
+    error('repository parameter is mandatory.')
+  }
+
+  return get(
+    url:          config.url,
+    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
+    credentialId: config.credentialId
   )
 }
