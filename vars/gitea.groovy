@@ -199,12 +199,15 @@ def patchComment(Map config = [:]){
   if (!config.containsKey('message')){
     error('message parameter is mandatory.')
   }
+  if (!config.comtainsKey('commentId')){
+    error('commentId parameter is mandatory.')
+  }
 
   def data = new JsonBuilder([body: config.message]).toString()
 
   return patch(
     url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
+    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments/${config.commentId}",
     credentialId: config.credentialId,
     data:         data
   )
@@ -235,8 +238,6 @@ def publishOnPullRequest(Map config = [:]){
     credentialId: config.credentialId
   ).id
 
-  println userId
-
   comments = getIssueComments(
     url: config.url,
     credentialId: config.credentialId,
@@ -245,12 +246,33 @@ def publishOnPullRequest(Map config = [:]){
     repository: config.repository
   )
 
-  println comments
+  commentId = null
 
   for ( comment in comments ){
     if ( comment.user.id == userId ) {
-      println comment.id
+      commentId = comment.id
     }
+  }
+
+  if ( commentId == null ){
+    postComment(
+      url: config.url,
+      credentialId: config.credentialId,
+      issueId: config.issueId,
+      owner: config.owner,
+      repository: config.repository,
+      message: config.message
+    )
+  }else{
+    patchComment(
+      url: config.url,
+      credentialId: config.credentialId,
+      issueId: config.issueId,
+      commentId: config.commentId,
+      owner: config.owner,
+      repository: config.repository,
+      message: config.message
+    )
   }
 }
 
