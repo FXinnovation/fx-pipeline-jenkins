@@ -20,7 +20,7 @@ def call(Map config = [:]) {
       returnStdout: true,
       script:       'docker version'
     )
-  } catch(dockerError) {
+  } catch(dockerVersionError) {
     println "Docker is not available, assuming ${fallbackCommand} is installed."
     return fallbackCommand
   }
