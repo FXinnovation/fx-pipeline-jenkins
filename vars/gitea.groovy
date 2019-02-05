@@ -1,5 +1,20 @@
 import groovy.json.JsonBuilder
 
+def getCurrentUser(Map config = [:]){
+  if (!config.containsKey('url')){
+    error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('credentialId')){
+    error('credentialId parameter is mandatory.')
+  }
+
+  return get(
+    url: config.url,
+    credentialId: config.credentialId,
+    apiPath: "user"
+  )
+}
+
 def getPullRequest(Map config = [:]){
   if (!config.containsKey('url')){
     error('url parameter is mandatory.')
