@@ -248,6 +248,7 @@ def publishOnPullRequest(Map config = [:]){
   for ( comment in comments ){
     if ( comment.user.id == userId ) {
       commentId = comment.id
+      break;
     }
   }
 
