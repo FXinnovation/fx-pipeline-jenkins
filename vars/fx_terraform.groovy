@@ -3,9 +3,9 @@ def call(Map config = [:]) {
     disableConcurrentBuilds(),
     buildDiscarder(
       logRotator(
-        artifactDaysToKeepStr: '10',
+        artifactDaysToKeepStr: '',
         artifactNumToKeepStr: '10',
-        daysToKeepStr: '10',
+        daysToKeepStr: '',
         numToKeepStr: '10'
       )
     ),
@@ -14,12 +14,18 @@ def call(Map config = [:]) {
       interval: '1d'
     ]])
   ])
+//  buildCausers = currentBuild.getBuildCauses()
+
 
   if (!config.containsKey('initSSHCredentialId')) {
     config.initSSHCredentialId = 'gitea-fx_administrator-key'
   }
   if (!config.containsKey('initSSHHostKeys')) {
-    config.initSSHHostKeys = ['|1|l69oRqv/0PqVoMUxVxPX1bwfXQ4=|9EfwFmRLV8KvC+0DQkS3nt9rDv4= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ3FKD0KmXvh4irI4fhjsZ6AsqYPlxKAd7vAY/yiXUod']
+    config.initSSHHostKeys = [
+      '|1|74mX2nLR+83nP0uyOZrs7NzEU1M=|RymcMBFFD+rBnGakSK5qWvCDJZs= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDD4T37qQ3qJENiwfVwog8UfWlMg3Rl6PhEeF3vD1kvSpGjyF88XqgGsdDzTvFYeoc+WhbPQQXqIiowoovh6W4LkNi7SOTf10po0Llxde/xSZc32zQ4fltERf69L2XvQy43a5Apx1GgcLQrbaRj1/zx4Muo3hjvDu/OPkhso6Q734lfgZcy1uFoXaZIadeJOVzQIez3FiAmmr6r48Eb7hntK57u+Xdpd5Fq9zBDoMbzAnsCXZWzYEC/j9Hje+wV5iwyM/UWUaC06zyfG8NvPkwU90mIVxIX6NB9yrGlT0tPuNL69Vz4Ykc9LoHJQoHcetqbzS684vvwDnlXP0TrC/AV',
+      '|1|6cz+5EZ5PkSoJsntX7GXerkhPps=|6oShAbhnZHc0/OnAg6zZ1nTsD2k= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnKb68pJWPerdWlT9m2DraaFalb7K562kUO4SHtpyaL',
+      '|1|fTLlydQ8yCJSsm6XfMy1dO6e09E=|x6D/mfk5wbqg3t/li7vAIUsnA30= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZ3HVe71Jte8O3B6CnnCojmCtQJidELmlSiKbxZphEwnhl6Wr7iF0GH+Oo5k34Q8toPHvmIRPh9UcNTr4g5dHI=',
+    ]
   }
   if (!config.containsKey('testEnvironmentCredentialId')) {
     error('“testEnvironmentCredentialId” parameter is mandatory.')
@@ -70,19 +76,23 @@ def stageCheckout(){
  */
 def stageInit(ArrayList commandTargets, String credentialsId, ArrayList hostKeys){
   stage('init') {
-    withCredentials([
-      sshUserPrivateKey(
-        credentialsId: credentialsId,
-        usernameVariable: 'git_ssh_user',
-        keyFileVariable: 'git_ssh_keyfile'
-      )
-    ]) {
-      sh("eval \$(ssh-agent -s) && ssh-add ${git_ssh_keyfile}")
+    sshagent(['gitea-fx_administrator-key']) {
+      sh("ssh-add -l")
       sh("mkdir -p ~/.ssh")
       sh('echo "' + hostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
+      execute(
+        script: 'cat ~/.ssh/known_hosts'
+      )
       for (commandTarget in commandTargets) {
-        println terraform.init(
-          commandTarget: commandTarget
+        terraform.init(
+          commandTarget: commandTarget,
+          dockerAdditionalMounts: [
+            '~/.ssh/': '/root/.ssh/',
+            '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
+          ],
+          dockerEnvironmentVariables: [
+            'SSH_AUTH_SOCK': '/ssh-agent'
+          ]
         )
       }
     }
@@ -96,10 +106,10 @@ def stageInit(ArrayList commandTargets, String credentialsId, ArrayList hostKeys
 def stageValidate(ArrayList commandTargets){
   stage('validate'){
     for ( commandTarget in commandTargets ) {
-      println terraform.validate(
+      terraform.validate(
         commandTarget: commandTarget
       )
-      println terraform.fmt(
+      terraform.fmt(
         check: true,
         commandTarget: commandTarget
       )
@@ -123,13 +133,13 @@ def stageTest(ArrayList commandTargets, String credentialsId){
     ]) {
       for ( commandTarget in commandTargets ) {
         try {
-          println plan(
+          plan(
             TF_access_key,
             TF_secret_key,
             commandTarget
           )
 
-          println terraform.apply(
+          terraform.apply(
             parallelism: 1,
             refresh: false,
             commandTarget: 'plan.out'
@@ -141,7 +151,7 @@ def stageTest(ArrayList commandTargets, String credentialsId){
             commandTarget
           )
 
-          if (!(replay =~ /.*Infrastructure is up-to-date.*/)) {
+          if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
             error('Replaying the “apply” contains new changes. Make sure your terraform consecutive run makes no changes.')
           }
         } catch (errorApply) {
