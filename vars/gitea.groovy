@@ -246,6 +246,12 @@ def publishOnPullRequest(Map config = [:]){
   )
 
   println comments
+
+  for ( comment in comments ){
+    if ( comment.user.id == userId ) {
+      println comment.id
+    }
+  }
 }
 
 def getIssueComments(Map config = [:]){
