@@ -193,9 +193,6 @@ def patchComment(Map config = [:]){
   if (!config.containsKey('repository')){
     error('repository parameter is mandatory.')
   }
-  if (!config.containsKey('issueId')){
-    error('issueId parameter is mandatory.')
-  }
   if (!config.containsKey('message')){
     error('message parameter is mandatory.')
   }
@@ -207,7 +204,7 @@ def patchComment(Map config = [:]){
 
   return patch(
     url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments/${config.commentId}",
+    apiPath:      "repos/${config.owner}/${config.repository}/issues/comments/${config.commentId}",
     credentialId: config.credentialId,
     data:         data
   )
@@ -273,7 +270,6 @@ def publishOnPullRequest(Map config = [:]){
     patchComment(
       url: config.url,
       credentialId: config.credentialId,
-      issueId: config.issueId,
       commentId: config.commentId,
       owner: config.owner,
       repository: config.repository,
