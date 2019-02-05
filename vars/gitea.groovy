@@ -103,8 +103,8 @@ def patch(Map config = [:]){
       httpMode: 'PATCH',
       requestBody: config.data,
       acceptType: 'APPLICATION_JSON',
-      consoleLogResponseBody: true,
-      //quiet: true,
+      consoleLogResponseBody: false,
+      quiet: true,
       url: encodedUrl
     )
   }
@@ -235,8 +235,6 @@ def publishOnPullRequest(Map config = [:]){
     credentialId: config.credentialId
   ).id
 
-  println userId
-
   comments = getIssueComments(
     url: config.url,
     credentialId: config.credentialId,
@@ -245,13 +243,10 @@ def publishOnPullRequest(Map config = [:]){
     repository: config.repository
   )
 
-  println comments
-
   commentId = null
 
   for ( comment in comments ){
     if ( comment.user.id == userId ) {
-      println comment
       commentId = comment.id
     }
   }
@@ -270,7 +265,7 @@ def publishOnPullRequest(Map config = [:]){
     patchComment(
       url: config.url,
       credentialId: config.credentialId,
-      commentId: config.commentId,
+      commentId: commentId,
       owner: config.owner,
       repository: config.repository,
       message: config.message
