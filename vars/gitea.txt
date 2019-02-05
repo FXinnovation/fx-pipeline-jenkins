@@ -20,3 +20,35 @@ This method is a helper to fetch details about a pull request.
     repository: String
     pullNumber: String
   )
+
+getCurrentUser:
+this method is a helper to fetch details about the current user.
+  gitea.getCurrentUser(
+    url: String
+    credentialsId: String
+  )
+
+patchComment:
+This method is a helper to patch a comment on an issue or pull request.
+  gitea.patchComment(
+    url: String
+    credentialsId: String
+    owner: String
+    repository: String
+    commentId: String
+    message: String
+  )
+
+publishOnPullRequest:
+This method is helper to post or patch a message as a comment on an issue or pull request.
+  gitea.publishOnPullRequest(
+    url: String
+    credentialsId: String
+    owner: String
+    repository: String
+    pullNumber: String
+    message: String
+  )
+
+getIssueComment:
+TODO
