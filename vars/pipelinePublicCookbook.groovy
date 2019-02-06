@@ -1,12 +1,6 @@
-def call(Map config = [:], Map closures = [:]){
-  if (!closures.preCookstyle){
-    closures.preCookstyle = {
-      println 'preCookstyle stage is not defined, doing nothing'
-    }
-  }
-
+def call(Closure preCookstyle){
   stage('pre-cookstyle'){
-    closures.preCookstyle()
+    preCookstyle()
   }
   stage('cookstyle'){
     cookstyle()
