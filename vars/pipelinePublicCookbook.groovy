@@ -1,4 +1,9 @@
 def call(Map closures = [:], Map config = [:]){
+  if (!closures.containsKey('preCookstyle')){
+    closures.preCookstyle = {
+      println 'bar'
+    }
+  }
   stage('pre-cookstyle'){
     closures.preCookstyle()
   }
