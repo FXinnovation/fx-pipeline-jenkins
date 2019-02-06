@@ -142,7 +142,7 @@ def publishOnPullRequest(Map config = [:]){
     error('repository parameter is mandatory.')
   }
 
-  println getCurrentUset(
+  println getCurrentUser(
     url: config.url,
     credentialId: config.credentialId
   )
