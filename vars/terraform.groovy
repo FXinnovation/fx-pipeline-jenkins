@@ -481,26 +481,15 @@ def call(Map config = [:]){
     }
   }
 
-  try {
-    sh(
-      returnStdout: true,
-      script:       "docker version"
-    )
-    terraformCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage}"
-    sh(
-      returnStdout: true,
-      script:       "docker pull ${config.dockerImage}"
-    )
-  } catch(dockerError) {
-    println 'Docker is not available, assuming terraform is installed'
-    terraformCommand = 'terraform'
-  }
+  terraformCommand = dockerRunCommand(
+    dockerImage: config.dockerImage,
+    fallbackCommand:  'terraform',
 
-  terraformVersionResult = execute(
-    script: "${terraformCommand} version"
   )
 
-  println "Terraform version is:\n${terraformVersionResult.stdout}"
+  execute(
+    script: "${terraformCommand} version"
+  )
 
   return execute(
     script: "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"

@@ -135,18 +135,10 @@ def call(Map config = [:]){
     }
   }
 
-  try {
-    execute(
-      script: 'docker version'
-    )
-    packerCommand = "docker run --rm -v \$(pwd):/data -w /data ${config.dockerImage}"
-    execute(
-      script: "docker pull ${config.dockerImage}"
-    )
-  }catch(error){
-    println 'Docker is not available, assuming packer is installed'
-    packerCommand = 'packer'
-  }
+  packerCommand = dockerRunCommand(
+    dockerImage: config.dockerImage,
+    fallbackCommand:  'packer'
+  )
 
   execute(
     script: "${packerCommand} version"
