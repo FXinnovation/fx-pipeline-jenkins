@@ -37,7 +37,9 @@ def call(Map config = [:]){
     if (config.httpMode == 'POST' || config.httpMode == 'PATCH'){
       request.requestBody = config.data
     }
-    return httpRequest(request)
+    response = httpRequest(request)
+    println response
+    return response
   }
 }
 
@@ -139,6 +141,11 @@ def publishOnPullRequest(Map config = [:]){
   if (!config.containsKey('repository')){
     error('repository parameter is mandatory.')
   }
+
+  println getCurrentUset(
+    url: config.url,
+    credentialId: config.credentialId
+  )
 
   userId = getCurrentUser(
     url: config.url,
