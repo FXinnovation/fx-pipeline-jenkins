@@ -1,6 +1,6 @@
-def call(Closure preCookstyle){
+def call(Map closures = [:]){
   stage('pre-cookstyle'){
-    preCookstyle()
+    closures.preCookstyle()
   }
   stage('cookstyle'){
     cookstyle()
