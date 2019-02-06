@@ -44,19 +44,10 @@ def call(Map config = [:]){
 }
 
 def getCurrentUser(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
+  config.apiPath = 'user'
+  config.httpMode = 'GET'
 
-  return call(
-    url: config.url,
-    credentialId: config.credentialId,
-    apiPath: "user",
-    httpMode: "GET"
-  )
+  return call(config)
 }
 
 def getPullRequest(Map config = [:]){
