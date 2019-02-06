@@ -5,8 +5,10 @@ def validate(Map config = [:]){
     'noColor':'',
     'vars':'',
     'varFile':'',
-    'subCommand':'',
     'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
     'commandTarget':'',
   ]
   for ( parameter in config ) {
@@ -29,9 +31,11 @@ def refresh(Map config = [:]){
     'targets':'',
     'vars':'',
     'varFile':'',
-    'subCommand':'',
     'dockerImage':'',
-    'commandTarget':''
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
+    'commandTarget':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -53,9 +57,11 @@ def slowRefresh(Map config = [:]){
     'targets':'',
     'vars':'',
     'varFile':'',
-    'subCommand':'',
     'dockerImage':'',
-    'commandTarget':''
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
+    'commandTarget':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -101,9 +107,11 @@ def init(Map config = [:]){
     'reconfigure':'',
     'upgrade':'',
     'verifyPlugins':'',
+    'dockerImage':'',
     'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
     'commandTarget':'',
-    'dockerImage':''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -128,9 +136,11 @@ def plan(Map config = [:]){
     'targets':'',
     'vars':'',
     'varFile':'',
-    'subCommand': '',
+    'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
     'commandTarget':'',
-    'dockerImage': ''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -155,8 +165,10 @@ def apply(Map config = [:]){
     'targets':'',
     'vars':'',
     'varFile':'',
-    'subCommand':'',
     'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
     'commandTarget':''
   ]
   for ( parameter in config ) {
@@ -184,8 +196,10 @@ def destroy(Map config = [:]){
     'targets':'',
     'vars':'',
     'varFile':'',
-    'subCommand':'',
     'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
     'commandTarget':''
   ]
   for ( parameter in config ) {
@@ -204,9 +218,11 @@ def fmt(Map config = [:]){
     'write':'',
     'diff':'',
     'check':'',
-    'subCommand':'',
     'dockerImage':'',
-    'commandTarget':''
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
+    'commandTarget':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -224,6 +240,12 @@ def call(Map config = [:]){
   // subCommand
   if ( !config.containsKey('subCommand') ){
     error('ERROR: The subcommand must be defined!')
+  }
+  if ( !config.containsKey('dockerAdditionalMounts') ){
+    config.dockerAdditionalMounts = []
+  }
+  if ( !config.containsKey('dockerEnvironmentVariables') ){
+    config.dockerEnvironmentVariables = []
   }
 
   optionsString = ''
@@ -484,7 +506,8 @@ def call(Map config = [:]){
   terraformCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand:  'terraform',
-
+    additionalMounts: config.dockerAdditionalMounts,
+    environmentVariables: config.dockerEnvironmentVariables,
   )
 
   execute(
