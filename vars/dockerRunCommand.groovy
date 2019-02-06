@@ -30,8 +30,12 @@ def call(Map config = [:]) {
     script:       "docker pull ${config.dockerImage}"
   )
 
-  def additionalMounts = config.additionalMounts.each{ key, value -> "-v ${key}:${value} " }
-  def environmentVariables = config.environmentVariables.each{ key, value -> "-e ${key}:${value} " }
+  def additionalMounts = config.additionalMounts.each{
+    key, value -> "-v ${key}:\"${value}\" "
+  }
+  def environmentVariables = config.environmentVariables.each{
+    key, value -> "-e ${key}=\"${value}\" "
+  }
 
   return "docker run --rm -v \$(pwd):/data ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage}"
 }
