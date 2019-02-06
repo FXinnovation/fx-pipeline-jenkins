@@ -1,6 +1,6 @@
 def call(Map config = [:]){
-  if (!config.containsKey('script') || !(config.script instanceof String)){
-    error('"script" parameter is mandatory and must be a String')
+  if (!config.containsKey('script') || !(config.script instanceof CharSequence)){
+    error('"script" parameter is mandatory and must be a String (implements CharSequence).')
   } 
   if (!config.containsKey('throwError') || !(config.throwError instanceof Boolean)){
     config.throwError = true

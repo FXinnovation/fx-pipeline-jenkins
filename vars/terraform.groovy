@@ -496,16 +496,13 @@ def call(Map config = [:]){
     terraformCommand = 'terraform'
   }
 
-  terraformVersion = sh(
-    returnStdout: true,
-    script:       "${terraformCommand} version"
-  ).trim()
+  terraformVersionResult = execute(
+    script: "${terraformCommand} version"
+  )
 
-  println "Terraform version is:\n${terraformVersion}"
+  println "Terraform version is:\n${terraformVersionResult.stdout}"
 
-  return sh(
-    returnStdout: true,
-    script:       "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
-  ).trim()
-
+  return execute(
+    script: "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+  )
 }
