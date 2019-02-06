@@ -22,7 +22,7 @@ def call(Map config = [:]){
       usernameVariable: 'username'
     )
   ]) {
-    request = (
+    request = [
       customHeaders: [
         [ maskValue: true, name: 'Authorization', value: 'token ' + password],
         [ maskValue: false, name: 'Content-Type', value: 'application/json'], 
@@ -33,7 +33,7 @@ def call(Map config = [:]){
       consoleLogResponseBody: false,
       quiet: true,
       url: encodedUrl
-    )
+    ]
     if (config.httpMode == 'POST' || config.httpMode == 'PATCH')(
       request.requestBody: config.data,
     return httpRequest(request)
