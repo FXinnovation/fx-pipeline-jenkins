@@ -37,8 +37,8 @@ def call(Map config = [:]){
     if (config.httpMode == 'POST' || config.httpMode == 'PATCH'){
       request.requestBody = config.data
     }
-    response = httpRequest(request)
-    println response
+    responseRaw = httpRequest(request)
+    response = readJSON text: responseRaw.content
     return response
   }
 }
