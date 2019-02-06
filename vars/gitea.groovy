@@ -70,12 +70,9 @@ def getPullRequest(Map config = [:]){
     error('pullNumber parameter is mandatory.')
   }
 
-  return call(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/pulls/${config.pullNumber}",
-    credentialId: config.credentialId,
-    httpMode:     'GET'
-  )
+  config.apiPath = "repos/${config.owner}/${config.repository}/pulls/${config.pullNumber}"
+  config.httpMode = 'GET'
+  return call(config)
 }
 
 def postComment(Map config = [:]){
@@ -92,15 +89,11 @@ def postComment(Map config = [:]){
     error('message parameter is mandatory.')
   }
 
-  def data = new JsonBuilder([body: config.message]).toString()
+  config.data = new JsonBuilder([body: config.message]).toString()
+  config.apiPath = "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments"
+  cofnig.httpMode = 'POST'
 
-  return call(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
-    credentialId: config.credentialId,
-    httpMode:     'POST',
-    data:         data
-  )
+  return call(config)
 }
 
 def patchComment(Map config = [:]){
@@ -117,15 +110,11 @@ def patchComment(Map config = [:]){
     error('commentId parameter is mandatory.')
   }
 
-  def data = new JsonBuilder([body: config.message]).toString()
+  config.data = new JsonBuilder([body: config.message]).toString()
+  config.apiPath = "repos/${config.owner}/${config.repository}/issues/comments/${config.commentId}"
+  config.httpMode = 'PATCH'
 
-  return call(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/comments/${config.commentId}",
-    credentialId: config.credentialId,
-    httpMode:     'PATCH',
-    data:         data
-  )
+  return call(config)
 }
 
 def publishOnPullRequest(Map config = [:]){
@@ -196,10 +185,8 @@ def getIssueComments(Map config = [:]){
     error('repository parameter is mandatory.')
   }
 
-  return call(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
-    credentialId: config.credentialId,
-    httpMode:     'GET'
-  )
+  config.apiPath = "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments"
+  config.httpMode = 'GET'
+
+  return call(config)
 }
