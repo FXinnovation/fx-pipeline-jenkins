@@ -501,8 +501,6 @@ def call(Map config = [:]){
     }
   }
 
-  println "DOCKER IMAGE: ${config.dockerImage}"
-  println "DOCKER IMAGE: ${config.dockerImage.getClass()}"
   terraformCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand:  'terraform',

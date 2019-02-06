@@ -1,9 +1,9 @@
 def call(Map config = [:]) {
-  if ( !config.containsKey('dockerImage') || !(config.script instanceof CharSequence) ){
+  if ( !config.containsKey('dockerImage') || !(config.dockerImage instanceof CharSequence) ){
     error('dockerRunCommand - "dockerImage" parameter must exists and be a String (implements CharSequence).')
   }
 
-  if ( !config.containsKey('fallbackCommand') || !(config.script instanceof CharSequence) ){
+  if ( !config.containsKey('fallbackCommand') || !(config.fallbackCommand instanceof CharSequence) ){
     error('dockerRunCommand - "fallbackCommand" parameter must exists and be a String (implements CharSequence).')
   }
 
@@ -32,11 +32,14 @@ def call(Map config = [:]) {
     script: "docker pull ${config.dockerImage}"
   )
 
-  def additionalMounts = config.additionalMounts.each{
-    key, value -> "-v ${key}:\"${value}\" "
+  def additionalMounts = ""
+
+  config.additionalMounts.each{
+    key, value -> additionalMounts += "-v ${key}:\"${value}\" "
   }
-  def environmentVariables = config.environmentVariables.each{
-    key, value -> "-e ${key}=\"${value}\" "
+  def environmentVariables = ""
+  config.environmentVariables.each{
+    key, value -> environmentVariables += "-e ${key}=\"${value}\" "
   }
 
   return "docker run --rm -v \$(pwd):/data ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage}"
