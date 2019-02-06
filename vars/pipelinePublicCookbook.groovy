@@ -8,7 +8,8 @@ def call(Map closures = [:], Map config = [:]){
     closures.preCookstyle()
   }
   stage('cookstyle'){
-    cookstyle()
+    println 'toto'
+    //cookstyle()
   }
   //stage('post-cookstyle'){
   //  closures.postCookstyle()
