@@ -16,18 +16,20 @@ def call(Map config = [:]) {
   }
 
   try {
-    sh(
-      returnStdout: true,
-      script:       'docker version'
+    execute(
+      script: 'docker version'
     )
   } catch(dockerVersionError) {
-    println "Docker is not available, assuming ${fallbackCommand} is installed."
+    if ( "" == fallbackCommand ){
+      println "Docker is not available, assuming the tool is installed."
+    }else{
+      println "Docker is not available, assuming ${fallbackCommand} is installed."
+    }
     return fallbackCommand
   }
 
-  sh(
-    returnStdout: true,
-    script:       "docker pull ${config.dockerImage}"
+  execute(
+    script: "docker pull ${config.dockerImage}"
   )
 
   def additionalMounts = config.additionalMounts.each{
