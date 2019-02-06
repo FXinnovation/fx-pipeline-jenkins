@@ -1,27 +1,56 @@
 import groovy.json.JsonBuilder
 
-def getCurrentUser(Map config = [:]){
+def call(Map config = [:]){
   if (!config.containsKey('url')){
     error('url parameter is mandatory.')
+  }
+  if (!config.containsKey('apiPath')){
+    error('apiPath')
   }
   if (!config.containsKey('credentialId')){
     error('credentialId parameter is mandatory.')
   }
+  if (!config.containsKey('httpMode')){
+    error('httpMode parameter is mandatory.')
+  }
 
-  return get(
-    url: config.url,
-    credentialId: config.credentialId,
-    apiPath: "user"
-  )
+  encodedUrl = config.url + '/api/v1/' + config.apiPath
+  withCredentials([
+    usernamePassword(
+      credentialsId: config.credentialId,
+      passwordVariable: 'password',
+      usernameVariable: 'username'
+    )
+  ]) {
+    request = [
+      customHeaders: [
+        [ maskValue: true, name: 'Authorization', value: 'token ' + password],
+        [ maskValue: false, name: 'Content-Type', value: 'application/json'], 
+      ],
+      timeout: 60,
+      httpMode: config.httpMode,
+      acceptType: 'APPLICATION_JSON',
+      consoleLogResponseBody: false,
+      quiet: true,
+      url: encodedUrl
+    ]
+    if (config.httpMode == 'POST' || config.httpMode == 'PATCH'){
+      request.requestBody = config.data
+    }
+    responseRaw = httpRequest(request)
+    response = readJSON text: responseRaw.content
+    return response
+  }
+}
+
+def getCurrentUser(Map config = [:]){
+  config.apiPath = 'user'
+  config.httpMode = 'GET'
+
+  return call(config)
 }
 
 def getPullRequest(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
   if (!config.containsKey('owner')){
     error('owner parameter is mandatory.')
   }
@@ -32,131 +61,12 @@ def getPullRequest(Map config = [:]){
     error('pullNumber parameter is mandatory.')
   }
 
-  return get(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/pulls/${config.pullNumber}",
-    credentialId: config.credentialId
-  )
-}
-
-def get(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('apiPath')){
-    error('apiPath')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
-
-  encodedUrl = config.url + '/api/v1/' + config.apiPath
-  withCredentials([
-    usernamePassword(
-      credentialsId: config.credentialId,
-      passwordVariable: 'password',
-      usernameVariable: 'username'
-    )
-  ]) {
-    responseRaw = httpRequest(
-      customHeaders: [
-        [ maskValue: true, name: 'Authorization', value: 'token ' + password],
-      ],
-      timeout: 60,
-      consoleLogResponseBody: false,
-      quiet: true,
-      url: encodedUrl
-    )
-  }
-  response = readJSON text: responseRaw.content
-  return response
-}
-
-def patch(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('apiPath')){
-    error('apiPath')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
-  if (!config.containsKey('data')){
-    error('data parameter is mandatory.')
-  }
-
-  encodedUrl = config.url + '/api/v1/' + config.apiPath
-  withCredentials([
-    usernamePassword(
-      credentialsId: config.credentialId,
-      passwordVariable: 'password',
-      usernameVariable: 'username'
-    )
-  ]) {
-    responseRaw = httpRequest(
-      customHeaders: [
-        [ maskValue: true, name: 'Authorization', value: 'token ' + password],
-        [ maskValue: false, name: 'Content-Type', value: 'application/json'], 
-      ],
-      timeout: 60,
-      httpMode: 'PATCH',
-      requestBody: config.data,
-      acceptType: 'APPLICATION_JSON',
-      consoleLogResponseBody: false,
-      quiet: true,
-      url: encodedUrl
-    )
-  }
-  return responseRaw
-}
-
-def post(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('apiPath')){
-    error('apiPath')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
-  if (!config.containsKey('data')){
-    error('data parameter is mandatory.')
-  }
-
-  encodedUrl = config.url + '/api/v1/' + config.apiPath
-  withCredentials([
-    usernamePassword(
-      credentialsId: config.credentialId,
-      passwordVariable: 'password',
-      usernameVariable: 'username'
-    )
-  ]) {
-    responseRaw = httpRequest(
-      customHeaders: [
-        [ maskValue: true, name: 'Authorization', value: 'token ' + password],
-        [ maskValue: false, name: 'Content-Type', value: 'application/json'], 
-      ],
-      timeout: 60,
-      httpMode: 'POST',
-      requestBody: config.data,
-      acceptType: 'APPLICATION_JSON',
-      consoleLogResponseBody: false,
-      quiet: true,
-      url: encodedUrl
-    )
-  }
-  return responseRaw
+  config.apiPath = "repos/${config.owner}/${config.repository}/pulls/${config.pullNumber}"
+  config.httpMode = 'GET'
+  return call(config)
 }
 
 def postComment(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
   if (!config.containsKey('owner')){
     error('owner parameter is mandatory.')
   }
@@ -170,23 +80,14 @@ def postComment(Map config = [:]){
     error('message parameter is mandatory.')
   }
 
-  def data = new JsonBuilder([body: config.message]).toString()
+  config.data = new JsonBuilder([body: config.message]).toString()
+  config.apiPath = "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments"
+  cofnig.httpMode = 'POST'
 
-  return post(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
-    credentialId: config.credentialId,
-    data:         data
-  )
+  return call(config)
 }
 
 def patchComment(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
   if (!config.containsKey('owner')){
     error('owner parameter is mandatory.')
   }
@@ -200,25 +101,16 @@ def patchComment(Map config = [:]){
     error('commentId parameter is mandatory.')
   }
 
-  def data = new JsonBuilder([body: config.message]).toString()
+  config.data = new JsonBuilder([body: config.message]).toString()
+  config.apiPath = "repos/${config.owner}/${config.repository}/issues/comments/${config.commentId}"
+  config.httpMode = 'PATCH'
 
-  return patch(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/comments/${config.commentId}",
-    credentialId: config.credentialId,
-    data:         data
-  )
+  return call(config)
 }
 
 def publishOnPullRequest(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
   if (!config.containsKey('pullNumber')){
-    error('credentialId parameter is mandatory.')
+    error('pullNumber parameter is mandatory.')
   }
   if (!config.containsKey('message')){
     error('message parameter is mandatory.')
@@ -274,12 +166,6 @@ def publishOnPullRequest(Map config = [:]){
 }
 
 def getIssueComments(Map config = [:]){
-  if (!config.containsKey('url')){
-    error('url parameter is mandatory.')
-  }
-  if (!config.containsKey('credentialId')){
-    error('credentialId parameter is mandatory.')
-  }
   if (!config.containsKey('issueId')){
     error('credentialId parameter is mandatory.')
   }
@@ -290,9 +176,8 @@ def getIssueComments(Map config = [:]){
     error('repository parameter is mandatory.')
   }
 
-  return get(
-    url:          config.url,
-    apiPath:      "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments",
-    credentialId: config.credentialId
-  )
+  config.apiPath = "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments"
+  config.httpMode = 'GET'
+
+  return call(config)
 }
