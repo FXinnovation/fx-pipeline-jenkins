@@ -34,8 +34,9 @@ def call(Map config = [:]){
       quiet: true,
       url: encodedUrl
     ]
-    if (config.httpMode == 'POST' || config.httpMode == 'PATCH')(
+    if (config.httpMode == 'POST' || config.httpMode == 'PATCH'){
       request.requestBody = config.data
+    }
     return httpRequest(request)
   }
 }
