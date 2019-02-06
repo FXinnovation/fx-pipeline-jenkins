@@ -233,11 +233,9 @@ def fmt(Map config = [:]){
 }
 
 def call(Map config = [:]){
-  // dockerImage
   if ( !config.containsKey('dockerImage') ){
     config.dockerImage = "fxinnovation/terraform:latest"
   }
-  // subCommand
   if ( !config.containsKey('subCommand') ){
     error('ERROR: The subcommand must be defined!')
   }
@@ -503,6 +501,8 @@ def call(Map config = [:]){
     }
   }
 
+  println "DOCKER IMAGE: ${config.dockerImage}"
+  println "DOCKER IMAGE: ${config.dockerImage.getClass()}"
   terraformCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand:  'terraform',
