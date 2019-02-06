@@ -1,4 +1,4 @@
-def call(Map closures = [:]){
+def call(Map closures = [:], Map config = [:]){
   stage('pre-cookstyle'){
     closures.preCookstyle()
   }
