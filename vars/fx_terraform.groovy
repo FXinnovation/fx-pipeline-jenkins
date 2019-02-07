@@ -140,6 +140,7 @@ def stageTest(ArrayList commandTargets, String credentialsId){
           )
 
           terraform.apply(
+            stateOut: 'test.tfstate',
             parallelism: 1,
             refresh: false,
             commandTarget: 'plan.out'
@@ -162,6 +163,7 @@ def stageTest(ArrayList commandTargets, String credentialsId){
           throw (errorApply)
         } finally {
           terraform.destroy(
+            state: 'test.tfstate',
             vars: [
               "access_key=${TF_access_key}",
               "secret_key=${TF_secret_key}"
@@ -182,8 +184,10 @@ def stageTest(ArrayList commandTargets, String credentialsId){
  * @return String terraform plan output
  */
 def plan(String username, String password, String commandTarget){
+  // State 'test.tfstate' is to make sure tests works even when terraform.tfstate exists, which may be dangerous.
   return terraform.plan(
     out: 'plan.out',
+    state: 'test.tfstate',
     vars: [
       "access_key=${username}",
       "secret_key=${password}"
