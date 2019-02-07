@@ -1,77 +1,33 @@
-def call(Map closures = [:], Map config = [:]){
-  if (!closures.containsKey('preCookstyle')){
-    closures.preCookstyle = {
-      println 'nothing was specified'
-    }
+def call(Map config = [:], Map closures = [:]){
+  if (!closures.containsKey('preTest') || !(closures.preTest instanceof Closure)){
+    closures.preCookstyle = {}
   }
-  if (!closures.containsKey('postCookstyle')){
-    closures.postCookstyle = {
-      println 'nothing was specified'
-    }
+  if (!closures.containsKey('postTest') || !(closures.postTest instanceof Closure)){
+    closures.postCookstyle = {}
   }
-  if (!closures.containsKey('preFoodcritic')){
-    closures.preFoodcritic = {
-      println 'nothing was specified'
-    }
+  if (!closures.containsKey('prePublish') || !(closures.prePublish instanceof Closure)){
+    closures.prePublish = {}
   }
-  if (!closures.containsKey('postFoodcritic')){
-    closures.postFoodcritic = {
-      println 'nothing was specified'
-    }
-  }
-  if (!closures.containsKey('preKitchen')){
-    closures.preKitchen = {
-      println 'nothing was specified'
-    }
-  }
-  if (!closures.containsKey('postKitchen')){
-    closures.postKitchen = {
-      println 'nothing was specified'
-    }
-  }
-  if (!closures.containsKey('prePublish')){
-    closures.prePublish = {
-      println 'nothing was specified'
-    }
-  }
-  if (!closures.containsKey('postPublish')){
-    closures.postPublish = {
-      println 'nothing was specified'
-    }
+  if (!closures.containsKey('postPublish') || !(closures.postPublish instanceof Closure)){
+    closures.postPublish = {}
   }
   if (!config.containsKey('publish') || !(config.publish instanceof Boolean)){
     config.publish = false
   }
-  if (!config.containsKey('stoveCredentialsId')){
-    error ('stoveCredentialsId parameter is mandatory.')
+  if (!config.containsKey('supermarketCredentialsId')){
+    error ('supermarketCredentialsId parameter is mandatory.')
   }
 
-  stage('pre-cookstyle'){
-    closures.preCookstyle()
+  stage('pre-test'){
+    closures.preTest()
   }
-  stage('cookstyle'){
+  stage('test'){
     cookstyle()
-  }
-  stage('post-cookstyle'){
-    closures.postCookstyle()
-  }
-  stage('pre-foodcritic'){
-    closures.preFoodcritic()
-  }
-  stage('foodcritic'){
     foodcritic()
-  }
-  stage('post-foodcritic'){
-    closures.postFoodcritic()
-  }
-  stage('pre-kitchen'){
-    closures.preKitchen()
-  }
-  stage('kitchen'){
     kitchen()
   }
-  stage('post-kitchen'){
-    closures.postKitchen()
+  stage('post-test'){
+    closures.postTest()
   }
   stage('pre-publish'){
     closures.prePublish()
@@ -79,7 +35,7 @@ def call(Map closures = [:], Map config = [:]){
   stage('publish'){
     if (config.publish){
       stove(
-        credentialsId: config.stoveCredentialsId
+        credentialsId: config.supermarketCredentialsId
       )
     }else{
       println "Publish step is skipped"
