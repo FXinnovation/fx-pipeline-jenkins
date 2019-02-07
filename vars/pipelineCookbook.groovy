@@ -22,7 +22,7 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
 
-  if (closures.containsKey('preTest') || closures.preTest instanceof Closure){
+  if (closures.containsKey('preTest')){
     stage('pre-test'){
       closures.preTest()
     }
@@ -32,12 +32,12 @@ def call(Map config = [:], Map closures = [:]){
     foodcritic(config.foodcritic)
     kitchen(config.kitchen)
   }
-  if (closures.containsKey('postTest') || closures.postTest instanceof Closure){
+  if (closures.containsKey('postTest')){
     stage('post-test'){
       closures.postTest()
     }
   }
-  if (closures.containsKey('prePublish') || closures.prePublish instanceof Closure){
+  if (closures.containsKey('prePublish')){
     stage('pre-publish'){
       closures.prePublish()
     }
@@ -49,7 +49,7 @@ def call(Map config = [:], Map closures = [:]){
       println "Publish step is skipped"
     }
   }
-  if (closures.containsKey('postPublish') || closures.postPublish instanceof Closure){
+  if (closures.containsKey('postPublish')){
     stage('post-publish'){
       closures.postPublish()
     }
