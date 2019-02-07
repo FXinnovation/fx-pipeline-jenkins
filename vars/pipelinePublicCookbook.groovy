@@ -1,9 +1,10 @@
 def call(Map config = [:], Map closures = [:]){
   if (!closures.containsKey('preTest') || !(closures.preTest instanceof Closure)){
-    closures.preCookstyle = {}
+    println closures.preTest.getClass()
+    closures.preTest = {}
   }
   if (!closures.containsKey('postTest') || !(closures.postTest instanceof Closure)){
-    closures.postCookstyle = {}
+    closures.postTest = {}
   }
   if (!closures.containsKey('prePublish') || !(closures.prePublish instanceof Closure)){
     closures.prePublish = {}
