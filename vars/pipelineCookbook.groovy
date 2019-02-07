@@ -16,7 +16,7 @@ def call(Map config = [:], Map closures = [:]){
       error("${closure.key} has to be a Closure")
     }
   }
-  if ((!closures.containsKey('publish') || !(closures.publish instanceof Closure)) && config.publish){
+  if (!closures.containsKey('publish') && config.publish){
     closures.publish = {
       println "Publishing step was not defined"
     }
