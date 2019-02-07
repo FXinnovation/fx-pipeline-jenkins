@@ -9,11 +9,12 @@ def call(Map config = [:]){
     config.dockerImage = 'fxinnovation/chefdk:latest'
   }
 
-  def foodcriticCommand = 'foodcritic'
+  def foodcriticCommand = dockerRunCommand(
+    dockerImage: config.dockerImage,
+    fallbackCommand:  ''
+  )
 
-  try{
-    sh "docker --version"
-    foodcriticCommand = "docker run --rm -v \$(pwd):/data ${config.dockerImage} foodcritic"
-  }catch(error){}
-  sh "${foodcriticCommand} ${config.options} ${config.cookbookPaths}"
+  return execute(
+    script: "${foodcriticCommand} foodcritic ${config.options} ${config.cookbookPaths}"
+  )
 }

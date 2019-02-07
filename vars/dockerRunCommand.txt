@@ -1,0 +1,16 @@
+The *dockerRunCommand* function is a helper to get a complete docker run command or a fallback command if docker is not available.
+
+It will generate a valid docker run command containing additional mounts and environment variables.
+If docker is not available in the context this function is called, this function will return the fallbackCommand passed as parameter.
+
+If docker is available, this function will also pull the dockerImage passed as parameter preventively.
+
+**Usage**
+```
+  command = dockerRunCommand(
+    dockerImage: String,
+    fallbackCommand: String,
+    additionalMounts: Map,
+    environmentVariables: Map,
+  )
+```
