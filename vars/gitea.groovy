@@ -148,7 +148,7 @@ def publishOnPullRequest(Map config = [:]){
     postComment(
       url: config.url,
       credentialId: config.credentialId,
-      issueId: config.issueId,
+      issueId: config.pullNumber,
       owner: config.owner,
       repository: config.repository,
       message: config.message
