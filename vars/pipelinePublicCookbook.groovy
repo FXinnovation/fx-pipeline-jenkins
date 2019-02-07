@@ -2,7 +2,6 @@ def call(Map config = [:], Map closures = [:]){
   if (!closures.containsKey('preTest') || !(closures.preTest instanceof Closure)){
     closures.preTest = {}
   }
-    println closures.preTest.getClass()
   if (!closures.containsKey('postTest') || !(closures.postTest instanceof Closure)){
     closures.postTest = {}
   }
