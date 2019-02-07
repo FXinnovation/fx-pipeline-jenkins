@@ -82,7 +82,7 @@ def postComment(Map config = [:]){
 
   config.data = new JsonBuilder([body: config.message]).toString()
   config.apiPath = "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments"
-  cofnig.httpMode = 'POST'
+  config.httpMode = 'POST'
 
   return call(config)
 }
