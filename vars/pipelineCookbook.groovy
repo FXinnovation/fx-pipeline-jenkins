@@ -1,14 +1,4 @@
 def call(Map config = [:], Map closures = [:]){
-  for (closure in closures){
-    if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a Closure")
-    }
-  }
-  if (!closures.containsKey('publish') || !(closures.publish instanceof Closure)){
-    closures.publish = {
-      println "Publishing step was not defined"
-    }
-  }
   if (!config.containsKey('publish') || !(config.publish instanceof Boolean)){
     config.publish = false
   }
@@ -20,6 +10,16 @@ def call(Map config = [:], Map closures = [:]){
   }
   if (!config.containsKey('kitchen') || !(config.kitchen instanceof Map)){
     config.kitchen = [:]
+  }
+  for (closure in closures){
+    if (!closure.value instanceof Closure){
+      error("${closure.key} has to be a Closure")
+    }
+  }
+  if ((!closures.containsKey('publish') || !(closures.publish instanceof Closure)) && config.publish){
+    closures.publish = {
+      println "Publishing step was not defined"
+    }
   }
 
   if (closures.containsKey('preTest') || closures.preTest instanceof Closure){
