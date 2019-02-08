@@ -8,6 +8,8 @@ def call(Map config = [:], Map closures = [:]){
     config.commandTargets = ['']
   }
 
+  println config.commandTargets
+
   validate(config, closures)
 
   init(config, closures)
