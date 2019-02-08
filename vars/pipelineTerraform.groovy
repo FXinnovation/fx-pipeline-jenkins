@@ -1,4 +1,6 @@
 def call(Map config = [:], Map closures = [:]){
+  println config
+  println config.commandTargets.getClass()
   for (closure in closures){
     if (!closure.value instanceof Closure){
       error("${closure.key} has to be a java.lang.Closure.")
@@ -8,7 +10,6 @@ def call(Map config = [:], Map closures = [:]){
     config.commandTargets = ['.']
   }
 
-  println config
 
   validate(config, closures)
 
