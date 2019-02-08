@@ -41,11 +41,7 @@ def call(Map config = [:]) {
       ansiColor('xterm') {
 
         stageCheckout()
-        environment {
-          TF_okok = 'okok'
-        }
-        sh("echo \$TF_okok")
-        execute(script: "echo \$TF_okok")
+
         withCredentials([
           usernamePassword(
             credentialsId: config.testEnvironmentCredentialId,
@@ -53,14 +49,9 @@ def call(Map config = [:]) {
             passwordVariable: 'TF_secret_key'
           )
         ]) {
-          execute(script: "echo ${TF_access_key}")
-        }
-        execute(script: "echo ${TF_access_key}")
-        execute(script: "printenv")
-
-        pipelineTerraform([
-            commandTargets: config.terraformCommandTargets,
-            testPlanOptions: [
+          pipelineTerraform([
+            commandTargets    : config.terraformCommandTargets,
+            testPlanOptions   : [
               vars: [
                 'access_key=\$TF_access_key',
                 'secret_key=\$TF_secret_key',
@@ -73,21 +64,6 @@ def call(Map config = [:]) {
               ]
             ],
           ], [
-            preTest: {
-              withCredentials([
-                usernamePassword(
-                  credentialsId: config.testEnvironmentCredentialId,
-                  usernameVariable: 'TF_access_key',
-                  passwordVariable: 'TF_secret_key'
-                )
-              ]) {
-                sh("export TF_access_key=${TF_access_key}")
-                sh("export TF_secret_key=${TF_secret_key}")
-                sh("export TF_okok=okok")
-                sh("echo \$TF_okok")
-                execute(script: "echo \$TF_okok")
-              }
-            },
             init: {
               sshagent([config.initSSHCredentialId]) {
                 sh('ssh-add -l')
@@ -97,7 +73,7 @@ def call(Map config = [:]) {
                   terraform.init(
                     commandTarget: commandTarget,
                     dockerAdditionalMounts: [
-                      '~/.ssh/': '/root/.ssh/',
+                      '~/.ssh/'                       : '/root/.ssh/',
                       '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
                     ],
                     dockerEnvironmentVariables: [
@@ -107,9 +83,8 @@ def call(Map config = [:]) {
                 }
               }
             }
-          ]
-        )
-
+          ])
+        }
       }
     }catch (error){
       result='FAILURE'
