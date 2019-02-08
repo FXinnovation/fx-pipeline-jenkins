@@ -1,12 +1,12 @@
 def call(Map config = [:]) {
-  if (!config.containsKey('testEnvironmentCredentialId') || !(config.providerAccessKeyVariableName instanceof CharSequence)) {
+  if (!config.containsKey('testEnvironmentCredentialId') || !(config.testEnvironmentCredentialId instanceof CharSequence)) {
     error('“testEnvironmentCredentialId” parameter is mandatory.')
   }
   if (!config.containsKey('providerAccessKeyVariableName') || !(config.providerAccessKeyVariableName instanceof CharSequence)) {
     config.providerAccessKeyVariableName = 'access_key'
   }
-  if (!config.containsKey('providerSecretKeyVariableName') || !(config.providerAccessKeyVariableName instanceof CharSequence)) {
-    config.providerAccessKeyVariableName = 'secret_key'
+  if (!config.containsKey('providerSecretKeyVariableName') || !(config.providerSecretKeyVariableName instanceof CharSequence)) {
+    config.providerSecretKeyVariableName = 'secret_key'
   }
 
   withCredentials([
