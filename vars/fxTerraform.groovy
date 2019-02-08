@@ -67,6 +67,7 @@ def call(Map config = [:]) {
               ]) {
                 sh("export TF_access_key=${TF_access_key}")
                 sh("export TF_secret_key=${TF_secret_key}")
+                sh("export TF_okok=okok")
               }
             },
             init: {
