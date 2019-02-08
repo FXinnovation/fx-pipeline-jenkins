@@ -103,7 +103,7 @@ def test(Map config = [:], Map closures = [:]){
               out: 'test.out',
               state: 'test.tfstate',
               commandTarget: commandTarget,
-            ] + testPlanOptions
+            ] + config.testPlanOptions
           )
           terraform.apply([
               stateOut: 'test.tfstate',
@@ -113,10 +113,10 @@ def test(Map config = [:], Map closures = [:]){
             ] + config.testApplyOptions
           )
           replay = terraform.plan([
-            out: 'test.out',
-            state: 'test.tfstate',
-            commandTarget: commandTarget,
-          ] + config.testPlanOptions
+              out: 'test.out',
+              state: 'test.tfstate',
+              commandTarget: commandTarget,
+            ] + config.testPlanOptions
           )
 
           if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
