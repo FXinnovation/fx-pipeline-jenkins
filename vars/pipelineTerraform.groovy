@@ -99,6 +99,7 @@ def test(Map config = [:], Map closures = [:]){
     closures.test = {
       for (commandTarget in config.commandTargets) {
         try {
+          execute(script: 'echo \$TF_okok')
           terraform.plan([
               out: 'test.out',
               state: 'test.tfstate',
