@@ -65,12 +65,8 @@ def call(Map config = [:]) {
                   passwordVariable: 'TF_secret_key'
                 )
               ]) {
-                execute(
-                  script: "export TF_access_key=${TF_access_key}"
-                )
-                execute(
-                  script: "export TF_secret_key=${TF_secret_key}"
-                )
+                sh("export TF_access_key=${TF_access_key}")
+                sh("export TF_secret_key=${TF_secret_key}")
               }
             },
             init: {
