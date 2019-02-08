@@ -31,7 +31,7 @@ def call(Map config = [:]) {
       '|1|fTLlydQ8yCJSsm6XfMy1dO6e09E=|x6D/mfk5wbqg3t/li7vAIUsnA30= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZ3HVe71Jte8O3B6CnnCojmCtQJidELmlSiKbxZphEwnhl6Wr7iF0GH+Oo5k34Q8toPHvmIRPh9UcNTr4g5dHI=',
     ]
   }
-  if (!config.containsKey('terraformCommandTargets') || !(config.commandTargets instanceof List)) {
+  if (!config.containsKey('terraformCommandTargets') || !(config.terraformCommandTargets instanceof List)) {
     config.terraformCommandTargets = ['.']
   }
 
