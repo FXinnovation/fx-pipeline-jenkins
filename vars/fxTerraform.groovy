@@ -56,6 +56,7 @@ def call(Map config = [:]) {
           execute(script: "echo ${TF_access_key}")
         }
         execute(script: "echo ${TF_access_key}")
+        execute(script: "printenv")
 
         pipelineTerraform([
             commandTargets: config.terraformCommandTargets,
