@@ -41,7 +41,9 @@ def call(Map config = [:]) {
       ansiColor('xterm') {
 
         stageCheckout()
-        sh("export TF_okok=okok")
+        environment {
+          TF_okok = 'okok'
+        }
         sh("echo \$TF_okok")
         execute(script: "echo \$TF_okok")
 
