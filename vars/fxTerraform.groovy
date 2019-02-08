@@ -17,22 +17,23 @@ def call(Map config = [:]) {
 //  buildCausers = currentBuild.getBuildCauses()
 
   if (!config.containsKey('initSSHCredentialId')) {
+    // default: gitea administrator key
     config.initSSHCredentialId = 'gitea-fx_administrator-key'
   }
+  if (!config.containsKey('testEnvironmentCredentialId')) {
+    error('“testEnvironmentCredentialId” parameter is mandatory.')
+  }
   if (!config.containsKey('initSSHHostKeys')) {
+    // default: gitea host keys
     config.initSSHHostKeys = [
       '|1|74mX2nLR+83nP0uyOZrs7NzEU1M=|RymcMBFFD+rBnGakSK5qWvCDJZs= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDD4T37qQ3qJENiwfVwog8UfWlMg3Rl6PhEeF3vD1kvSpGjyF88XqgGsdDzTvFYeoc+WhbPQQXqIiowoovh6W4LkNi7SOTf10po0Llxde/xSZc32zQ4fltERf69L2XvQy43a5Apx1GgcLQrbaRj1/zx4Muo3hjvDu/OPkhso6Q734lfgZcy1uFoXaZIadeJOVzQIez3FiAmmr6r48Eb7hntK57u+Xdpd5Fq9zBDoMbzAnsCXZWzYEC/j9Hje+wV5iwyM/UWUaC06zyfG8NvPkwU90mIVxIX6NB9yrGlT0tPuNL69Vz4Ykc9LoHJQoHcetqbzS684vvwDnlXP0TrC/AV',
       '|1|6cz+5EZ5PkSoJsntX7GXerkhPps=|6oShAbhnZHc0/OnAg6zZ1nTsD2k= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnKb68pJWPerdWlT9m2DraaFalb7K562kUO4SHtpyaL',
       '|1|fTLlydQ8yCJSsm6XfMy1dO6e09E=|x6D/mfk5wbqg3t/li7vAIUsnA30= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZ3HVe71Jte8O3B6CnnCojmCtQJidELmlSiKbxZphEwnhl6Wr7iF0GH+Oo5k34Q8toPHvmIRPh9UcNTr4g5dHI=',
     ]
   }
-  if (!config.containsKey('testEnvironmentCredentialId')) {
-    error('“testEnvironmentCredentialId” parameter is mandatory.')
-  }
-  if (!config.containsKey('terraformCommandTargets')) {
+  if (!config.containsKey('terraformCommandTargets') || !(config.commandTargets instanceof List)) {
     config.terraformCommandTargets = ['.']
   }
-
 
   node {
     result="SUCCESS"
