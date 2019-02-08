@@ -42,8 +42,6 @@ def call(Map config = [:]) {
 
         stageCheckout()
 
-        println config.terraformCommandTargets
-
         pipelineTerraform([
             commandTargets: config.terraformCommandTargets,
             testPlanOptions: [
@@ -78,9 +76,6 @@ def call(Map config = [:]) {
             init: {
               sshagent([config.initSSHCredentialId]) {
                 execute(
-                  script: 'ssh-add -l'
-                )
-                execute(
                   script:  'mkdir -p ~/.ssh'
                 )
                 execute(
@@ -89,7 +84,7 @@ def call(Map config = [:]) {
                 execute(
                   script: 'cat ~/.ssh/known_hosts'
                 )
-                for (commandTarget in config.commandTargets) {
+                for (commandTarget in config.terraformCommandTargets) {
                   terraform.init(
                     commandTarget: commandTarget,
                     dockerAdditionalMounts: [
