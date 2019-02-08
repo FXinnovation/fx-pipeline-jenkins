@@ -41,6 +41,9 @@ def call(Map config = [:]) {
       ansiColor('xterm') {
 
         stageCheckout()
+        sh("export TF_okok=okok")
+        sh("echo \$TF_okok")
+        execute(script: "echo \$TF_okok")
 
         pipelineTerraform([
             commandTargets: config.terraformCommandTargets,
@@ -68,6 +71,8 @@ def call(Map config = [:]) {
                 sh("export TF_access_key=${TF_access_key}")
                 sh("export TF_secret_key=${TF_secret_key}")
                 sh("export TF_okok=okok")
+                sh("echo \$TF_okok")
+                execute(script: "echo \$TF_okok")
               }
             },
             init: {
