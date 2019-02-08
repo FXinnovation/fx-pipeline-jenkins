@@ -5,19 +5,19 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   if (!config.containsKey('commandTargets') || !(config.commandTargets instanceof Map)){
-    config.fmtOptions = ['']
+    config.commandTargets = ['']
   }
 
-  validate()
+  validate(config, closures)
 
-  init()
+  init(config, closures)
 
-  test()
+  test(config, closures)
 
-  publish()
+  publish(config, closures)
 }
 
-def validate(Map config = [:], Map closures = [:]){
+def validate(Map config = [:], Map closures = TF_access_key){
   if (!config.containsKey('validateOptions') || !(config.validateOptions instanceof Map)){
     config.validateOptions = [:]
   }
