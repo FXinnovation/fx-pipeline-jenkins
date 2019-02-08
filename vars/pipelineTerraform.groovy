@@ -24,7 +24,10 @@ def init(Map config = [:], Map closures = [:]){
   if (!closures.containsKey('init')){
     closures.init = {
       for (commandTarget in config.commandTargets) {
-        terraform.init([ commandTarget: commandTarget ] + config.initOptions)
+        terraform.init([
+            commandTarget: commandTarget
+          ] + config.initOptions
+        )
       }
     }
   }
@@ -107,13 +110,13 @@ def test(Map config = [:], Map closures = [:]){
               parallelism: 1,
               refresh: false,
               commandTarget: 'test.out',
-            ] + testApplyOptions
+            ] + config.testApplyOptions
           )
           replay = terraform.plan([
             out: 'test.out',
             state: 'test.tfstate',
             commandTarget: commandTarget,
-          ] + testPlanOptions
+          ] + config.testPlanOptions
           )
 
           if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
@@ -129,7 +132,7 @@ def test(Map config = [:], Map closures = [:]){
           terraform.destroy([
               state: 'test.tfstate',
               commandTarget: commandTarget
-            ] + testDestroyOptions
+            ] + config.testDestroyOptions
           )
         }
       }
