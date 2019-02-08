@@ -5,7 +5,7 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   if (!config.containsKey('commandTargets') || !(config.commandTargets instanceof Map)){
-    config.commandTargets = ['']
+    config.commandTargets = ['.']
   }
 
   println config
