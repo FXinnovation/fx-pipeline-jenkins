@@ -41,6 +41,7 @@ def call(Map config = [:]) {
 
         stageCheckout()
 
+        println config.terraformCommandTargets
         pipelineTerraform([
             commandTargets: config.terraformCommandTargets,
             testPlanOptions: [
