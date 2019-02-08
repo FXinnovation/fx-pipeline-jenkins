@@ -17,6 +17,33 @@ def call(Map config = [:], Map closures = [:]){
   publish(config, closures)
 }
 
+def init(Map config = [:], Map closures = [:]){
+  if (!config.containsKey('initOptions') || !(config.initOptions instanceof Map)){
+    config.initOptions = [:]
+  }
+  if (!closures.containsKey('init')){
+    closures.init = {
+      for (commandTarget in config.commandTargets) {
+        terraform.init([ commandTarget: commandTarget ] + config.initOptions)
+      }
+    }
+  }
+
+  if (closures.containsKey('preInit')){
+    stage('pre-init'){
+      closures.preInit()
+    }
+  }
+  stage('init'){
+    closures.init()
+  }
+  if (closures.containsKey('postInit')){
+    stage('post-init'){
+      closures.postInit()
+    }
+  }
+}
+
 def validate(Map config = [:], Map closures = TF_access_key){
   if (!config.containsKey('validateOptions') || !(config.validateOptions instanceof Map)){
     config.validateOptions = [:]
@@ -51,33 +78,6 @@ def validate(Map config = [:], Map closures = TF_access_key){
   if (closures.containsKey('postValidate')){
     stage('post-validate'){
       closures.postValidate()
-    }
-  }
-}
-
-def init(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('initOptions') || !(config.initOptions instanceof Map)){
-    config.initOptions = [:]
-  }
-  if (!closures.containsKey('init')){
-    closures.init = {
-      for (commandTarget in config.commandTargets) {
-        terraform.init([ commandTarget: commandTarget ] + config.initOptions)
-      }
-    }
-  }
-
-  if (closures.containsKey('preInit')){
-    stage('pre-init'){
-      closures.preInit()
-    }
-  }
-  stage('init'){
-    closures.init()
-  }
-  if (closures.containsKey('postInit')){
-    stage('post-init'){
-      closures.postInit()
     }
   }
 }
