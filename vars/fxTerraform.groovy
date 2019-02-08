@@ -53,14 +53,14 @@ def call(Map config = [:]) {
             commandTargets    : config.terraformCommandTargets,
             testPlanOptions   : [
               vars: [
-                'access_key=\$TF_access_key',
-                'secret_key=\$TF_secret_key',
+                "access_key=\${TF_access_key}",
+                "secret_key=\$TF_secret_key",
               ]
             ],
             testDestroyOptions: [
               vars: [
-                'access_key=\$TF_access_key',
-                'secret_key=\$TF_secret_key',
+                "access_key=\$TF_access_key",
+                "secret_key=\$TF_secret_key",
               ]
             ],
           ], [
