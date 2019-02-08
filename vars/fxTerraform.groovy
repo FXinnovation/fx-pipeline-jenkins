@@ -84,7 +84,7 @@ def call(Map config = [:]) {
                   script:  'mkdir -p ~/.ssh'
                 )
                 execute(
-                  script:  'echo "' + config.hostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts'
+                  script:  'echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts'
                 )
                 execute(
                   script: 'cat ~/.ssh/known_hosts'
