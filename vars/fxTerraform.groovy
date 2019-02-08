@@ -16,12 +16,15 @@ def call(Map config = [:]) {
   ])
 //  buildCausers = currentBuild.getBuildCauses()
 
-  if (!config.containsKey('initSSHCredentialId')) {
+  if (!config.containsKey('initSSHCredentialId') || !(config.providerAccessKeyVariableName instanceof CharSequence)) {
     // default: gitea administrator key
     config.initSSHCredentialId = 'gitea-fx_administrator-key'
   }
-  if (!config.containsKey('testEnvironmentCredentialId')) {
-    error('“testEnvironmentCredentialId” parameter is mandatory.')
+  if (!config.containsKey('planVars') || !(config.planVars instanceof List)) {
+    config.planVars = []
+  }
+  if (!config.containsKey('providerSecretKeyVariableName')) {
+    config.providerAccessKeyVariableName = 'secret_key'
   }
   if (!config.containsKey('initSSHHostKeys')) {
     // default: gitea host keys
@@ -42,49 +45,35 @@ def call(Map config = [:]) {
 
         stageCheckout()
 
-        withCredentials([
-          usernamePassword(
-            credentialsId: config.testEnvironmentCredentialId,
-            usernameVariable: 'TF_access_key',
-            passwordVariable: 'TF_secret_key'
-          )
-        ]) {
-          pipelineTerraform([
-            commandTargets    : config.terraformCommandTargets,
-            testPlanOptions   : [
-              vars: [
-                "access_key=${TF_access_key}",
-                "secret_key=${TF_secret_key}",
-              ]
-            ],
-            testDestroyOptions: [
-              vars: [
-                "access_key=${TF_access_key}",
-                "secret_key=${TF_secret_key}",
-              ]
-            ],
-          ], [
-            init: {
-              sshagent([config.initSSHCredentialId]) {
-                sh('ssh-add -l')
-                sh('mkdir -p ~/.ssh')
-                sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-                for (commandTarget in config.terraformCommandTargets) {
-                  terraform.init(
-                    commandTarget: commandTarget,
-                    dockerAdditionalMounts: [
-                      '~/.ssh/'                       : '/root/.ssh/',
-                      '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
-                    ],
-                    dockerEnvironmentVariables: [
-                      'SSH_AUTH_SOCK': '/ssh-agent'
-                    ]
-                  )
-                }
+        pipelineTerraform([
+          commandTargets    : config.terraformCommandTargets,
+          testPlanOptions   : [
+            vars: planVars
+          ],
+          testDestroyOptions: [
+            vars: planVars
+          ],
+        ], [
+          init: {
+            sshagent([config.initSSHCredentialId]) {
+              sh('ssh-add -l')
+              sh('mkdir -p ~/.ssh')
+              sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
+              for (commandTarget in config.terraformCommandTargets) {
+                terraform.init(
+                  commandTarget: commandTarget,
+                  dockerAdditionalMounts: [
+                    '~/.ssh/'                       : '/root/.ssh/',
+                    '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
+                  ],
+                  dockerEnvironmentVariables: [
+                    'SSH_AUTH_SOCK': '/ssh-agent'
+                  ]
+                )
               }
             }
-          ])
-        }
+          }
+        ])
       }
     }catch (error){
       result='FAILURE'
