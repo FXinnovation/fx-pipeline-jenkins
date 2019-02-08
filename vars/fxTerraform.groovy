@@ -23,10 +23,7 @@ def call(Map config = [:]) {
   if (!config.containsKey('planVars') || !(config.planVars instanceof List)) {
     config.planVars = []
   }
-  if (!config.containsKey('providerSecretKeyVariableName')) {
-    config.providerAccessKeyVariableName = 'secret_key'
-  }
-  if (!config.containsKey('initSSHHostKeys')) {
+  if (!config.containsKey('initSSHHostKeys') || !(config.planVars instanceof List)) {
     // default: gitea host keys
     config.initSSHHostKeys = [
       '|1|V8Cs9iHiY6IHtysrmCUykgmnQEI=|CNbB5msCLZaO4ne4HAdyHNr93eo= ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDD4T37qQ3qJENiwfVwog8UfWlMg3Rl6PhEeF3vD1kvSpGjyF88XqgGsdDzTvFYeoc+WhbPQQXqIiowoovh6W4LkNi7SOTf10po0Llxde/xSZc32zQ4fltERf69L2XvQy43a5Apx1GgcLQrbaRj1/zx4Muo3hjvDu/OPkhso6Q734lfgZcy1uFoXaZIadeJOVzQIez3FiAmmr6r48Eb7hntK57u+Xdpd5Fq9zBDoMbzAnsCXZWzYEC/j9Hje+wV5iwyM/UWUaC06zyfG8NvPkwU90mIVxIX6NB9yrGlT0tPuNL69Vz4Ykc9LoHJQoHcetqbzS684vvwDnlXP0TrC/AV',
@@ -48,10 +45,10 @@ def call(Map config = [:]) {
         pipelineTerraform([
           commandTargets    : config.terraformCommandTargets,
           testPlanOptions   : [
-            vars: planVars
+            vars: config.planVars
           ],
           testDestroyOptions: [
-            vars: planVars
+            vars: config.planVars
           ],
         ], [
           init: {
