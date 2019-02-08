@@ -8,7 +8,7 @@ def call(Map config = [:], Map closures = [:]){
     config.commandTargets = ['']
   }
 
-  println config.commandTargets
+  println config
 
   validate(config, closures)
 
