@@ -43,7 +43,7 @@ def call(Map config = [:]) {
 
         println config.terraformCommandTargets
         pipelineTerraform([
-            commandTargets: config.terraformCommandTargets,
+            commandTargets: ${config.terraformCommandTargets},
             testPlanOptions: [
               vars: [
                 'access_key=\$TF_access_key',
@@ -60,7 +60,7 @@ def call(Map config = [:]) {
             preTest: {
               withCredentials([
                 usernamePassword(
-                  credentialsId: config.testEnvironmentCredentialId,
+                  credentialsId: ${config.testEnvironmentCredentialId},
                   usernameVariable: 'TF_access_key',
                   passwordVariable: 'TF_secret_key'
                 )
