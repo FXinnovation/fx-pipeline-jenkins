@@ -1,4 +1,5 @@
 def call(Map config = [:], Map closures = [:]){
+  println config
   for (closure in closures){
     if (!closure.value instanceof Closure){
       error("${closure.key} has to be a java.lang.Closure.")
