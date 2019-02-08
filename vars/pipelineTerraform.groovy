@@ -4,6 +4,9 @@ def call(Map config = [:], Map closures = [:]){
       error("${closure.key} has to be a java.lang.Closure.")
     }
   }
+  if (!config.containsKey('commandTargets') || !(config.commandTargets instanceof Map)){
+    config.fmtOptions = ['']
+  }
 
   validate()
 
@@ -23,8 +26,17 @@ def validate(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('validate')){
     closures.validate = {
-      terraform.validate(config.validateOptions)
-      terraform.fmt(config.fmtOptions)
+      for (commandTarget in config.commandTargets) {
+        terraform.validate([
+            commandTarget: commandTarget
+          ] + config.validateOptions
+        )
+        terraform.fmt([
+            check: true,
+            commandTarget: commandTarget,
+          ] + config.fmtOptions
+        )
+      }
     }
   }
 
@@ -49,7 +61,9 @@ def init(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('init')){
     closures.init = {
-      terraform.init(config.initOptions)
+      for (commandTarget in config.commandTargets) {
+        terraform.init([ commandTarget: commandTarget ] + config.initOptions)
+      }
     }
   }
 
@@ -80,22 +94,44 @@ def test(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('test')){
     closures.test = {
-      try {
-        terraform.plan(testPlanOptions)
-        terraform.apply(testApplyOptions)
-        replay = terraform.plan(testPlanOptions)
+      for (commandTarget in config.commandTargets) {
+        try {
+          terraform.plan([
+              out: 'test.out',
+              state: 'test.tfstate',
+              commandTarget: commandTarget,
+            ] + testPlanOptions
+          )
+          terraform.apply([
+              stateOut: 'test.tfstate',
+              parallelism: 1,
+              refresh: false,
+              commandTarget: 'test.out',
+            ] + testApplyOptions
+          )
+          replay = terraform.plan([
+            out: 'test.out',
+            state: 'test.tfstate',
+            commandTarget: commandTarget,
+          ] + testPlanOptions
+          )
 
-        if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
-          error('Replaying the “apply” contains new changes. Make sure your terraform consecutive run makes no changes.')
+          if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
+            error('Replaying the “apply” contains new changes. Make sure your terraform consecutive run makes no changes.')
+          }
+        } catch (errorApply) {
+          archiveArtifacts(
+            allowEmptyArchive: true,
+            artifacts: 'test.tfstat*'
+          )
+          throw (errorApply)
+        } finally {
+          terraform.destroy([
+              state: 'test.tfstate',
+              commandTarget: commandTarget
+            ] + testDestroyOptions
+          )
         }
-      } catch (errorApply) {
-        archiveArtifacts(
-          allowEmptyArchive: true,
-          artifacts: '*.tfstat*'
-        )
-        throw (errorApply)
-      } finally {
-        terraform.destroy(testDestroyOptions)
       }
     }
   }
