@@ -46,6 +46,16 @@ def call(Map config = [:]) {
         }
         sh("echo \$TF_okok")
         execute(script: "echo \$TF_okok")
+        withCredentials([
+          usernamePassword(
+            credentialsId: config.testEnvironmentCredentialId,
+            usernameVariable: 'TF_access_key',
+            passwordVariable: 'TF_secret_key'
+          )
+        ]) {
+          execute(script: "echo ${TF_access_key}")
+        }
+        execute(script: "echo ${TF_access_key}")
 
         pipelineTerraform([
             commandTargets: config.terraformCommandTargets,
