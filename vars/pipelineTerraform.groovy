@@ -1,24 +1,30 @@
 def call(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('publish') || !(config.publish instanceof Boolean)){
-    config.publish = false
-  }
-  if (!config.containsKey('init') || !(config.cookstyle instanceof Map)){
-    config.cookstyle = [:]
-  }
-  if (!config.containsKey('validate') || !(config.foodcritic instanceof Map)){
-    config.foodcritic = [:]
-  }
-  if (!config.containsKey('test') || !(config.kitchen instanceof Map)){
-    config.kitchen = [:]
-  }
   for (closure in closures){
     if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a Closure")
+      error("${closure.key} has to be a java.lang.Closure.")
     }
   }
-  if (!closures.containsKey('publish') && config.publish){
-    closures.publish = {
-      println "Publishing step was not defined"
+
+  validate()
+
+  init()
+
+  test()
+
+  publish()
+}
+
+def validate(Map config = [:], Map closures = [:]){
+  if (!config.containsKey('validateOptions') || !(config.validateOptions instanceof Map)){
+    config.validateOptions = [:]
+  }
+  if (!config.containsKey('fmtOptions') || !(config.fmtOptions instanceof Map)){
+    config.fmtOptions = [:]
+  }
+  if (!closures.containsKey('validate')){
+    closures.validate = {
+      terraform.validate(config.validateOptions)
+      terraform.fmt(config.fmtOptions)
     }
   }
 
@@ -28,10 +34,22 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   stage('validate'){
+    closures.validate()
   }
   if (closures.containsKey('postValidate')){
     stage('post-validate'){
       closures.postValidate()
+    }
+  }
+}
+
+def init(Map config = [:], Map closures = [:]){
+  if (!config.containsKey('initOptions') || !(config.initOptions instanceof Map)){
+    config.initOptions = [:]
+  }
+  if (!closures.containsKey('init')){
+    closures.init = {
+      terraform.init(config.initOptions)
     }
   }
 
@@ -41,10 +59,44 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   stage('init'){
+    closures.init()
   }
   if (closures.containsKey('postInit')){
     stage('post-init'){
       closures.postInit()
+    }
+  }
+}
+
+def test(Map config = [:], Map closures = [:]){
+  if (!config.containsKey('testPlanOptions') || !(config.testPlanOptions instanceof Map)){
+    config.initOptions = [:]
+  }
+  if (!config.containsKey('testApplyOptions') || !(config.testApplyOptions instanceof Map)){
+    config.testApplyOptions = [:]
+  }
+  if (!config.containsKey('testDestroyOptions') || !(config.testDestroyOptions instanceof Map)){
+    config.testDestroyOptions = [:]
+  }
+  if (!closures.containsKey('test')){
+    closures.test = {
+      try {
+        terraform.plan(testPlanOptions)
+        terraform.apply(testApplyOptions)
+        replay = terraform.plan(testPlanOptions)
+
+        if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
+          error('Replaying the “apply” contains new changes. Make sure your terraform consecutive run makes no changes.')
+        }
+      } catch (errorApply) {
+        archiveArtifacts(
+          allowEmptyArchive: true,
+          artifacts: '*.tfstat*'
+        )
+        throw (errorApply)
+      } finally {
+        terraform.destroy(testDestroyOptions)
+      }
     }
   }
 
@@ -53,11 +105,29 @@ def call(Map config = [:], Map closures = [:]){
       closures.preTest()
     }
   }
-  stage('test'){
+  stage('test') {
+    closures.test()
   }
   if (closures.containsKey('postTest')){
     stage('post-test'){
       closures.postTest()
+    }
+  }
+}
+
+def publish(Map config = [:], Map closures = [:]){
+  if (!config.containsKey('publishPlanOptions') || !(config.publishPlanOptions instanceof Map)){
+    config.publishPlanOptions = [:]
+  }
+  if (!config.containsKey('publishApplyOptions') || !(config.publishApplyOptions instanceof Map)){
+    config.publishApplyOptions = [:]
+  }
+  if (!config.containsKey('publish') || !(config.publish instanceof Boolean)){
+    config.publish = false
+  }
+  if (!closures.containsKey('publish') && config.publish){
+    closures.publish = {
+      println "Publish step was not defined."
     }
   }
 
