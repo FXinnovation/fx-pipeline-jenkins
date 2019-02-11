@@ -1,10 +1,16 @@
 def call(Map config = [:]){
   checkout scm
   def scmInfo = {}
-  scmInfo.commitId = command('git rev-parse HEAD').trim()
-  scmInfo.branch   = command('echo "${BRANCH_NAME}"').trim()
+  scmInfo.commitId = execute(
+    script: 'git rev-parse HEAD'
+  ).stdout.trim()
+  scmInfo.branch   = execute(
+    script: 'echo "${BRANCH_NAME}"'
+  ).stdout.trim()
   try{
-    scmInfo.tag = command('git describe --tags --exact-match').trim()
+    scmInfo.tag = execute(
+    script: 'git describe --tags --exact-match'
+  ).stdout.trim()
   }catch(error){
     scmInfo.tag = ''
   }
