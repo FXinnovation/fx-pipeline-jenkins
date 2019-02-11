@@ -31,8 +31,8 @@ def call(Map config = [:]) {
       '|1|6Kd9WNT+MUC06McJma+j91Fxfik=|aHMHcoEUNdmmgU75HWXfkIGTUWA= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnKb68pJWPerdWlT9m2DraaFalb7K562kUO4SHtpyaL',
     ]
   }
-  if (!config.containsKey('terraformCommandTargets') || !(config.terraformCommandTargets instanceof List)) {
-    config.terraformCommandTargets = ['.']
+  if (!config.containsKey('commandTargets') || !(config.commandTargets instanceof List)) {
+    config.commandTargets = ['.']
   }
 
   node {
@@ -42,7 +42,7 @@ def call(Map config = [:]) {
 
         stageCheckout()
 
-        for (commandTarget in config.terraformCommandTargets) {
+        for (commandTarget in config.commandTargets) {
           pipelineTerraform([
             commandTarget : commandTarget,
             testPlanOptions : [
@@ -57,7 +57,7 @@ def call(Map config = [:]) {
                 sh('ssh-add -l')
                 sh('mkdir -p ~/.ssh')
                 sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-//                for (commandTarget in config.terraformCommandTargets) {
+//                for (commandTarget in config.commandTargets) {
                 terraform.init(
                   commandTarget: commandTarget,
                   dockerAdditionalMounts: [
