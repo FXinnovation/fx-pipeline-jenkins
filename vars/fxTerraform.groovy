@@ -44,8 +44,8 @@ def call(Map config = [:]) {
 
         for (commandTarget in config.commandTargets) {
           pipelineTerraform([
-            commandTarget : commandTarget,
-            testPlanOptions : [
+            commandTarget: commandTarget,
+            testPlanOptions: [
               vars: config.planVars
             ],
             testDestroyOptions: [
