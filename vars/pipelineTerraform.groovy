@@ -4,8 +4,8 @@ def call(Map config = [:], Map closures = [:]){
       error("${closure.key} has to be a java.lang.Closure.")
     }
   }
-  if (!config.containsKey('commandTargets') || !(config.commandTargets instanceof List)){
-    config.commandTargets = ['.']
+  if (!config.containsKey('commandTarget') || !(config.commandTarget instanceof CharSequence)){
+    config.commandTarget = '.'
   }
 
   init(config, closures)
@@ -23,12 +23,12 @@ def init(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('init')){
     closures.init = {
-      for (commandTarget in config.commandTargets) {
+//      for (commandTarget in config.commandTargets) {
         terraform.init([
-            commandTarget: commandTarget
+            commandTarget: config.commandTarget
           ] + config.initOptions
         )
-      }
+//      }
     }
   }
 
@@ -56,17 +56,17 @@ def validate(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('validate')){
     closures.validate = {
-      for (commandTarget in config.commandTargets) {
+//      for (commandTarget in config.commandTargets) {
         terraform.validate([
-            commandTarget: commandTarget
+            commandTarget: config.commandTarget
           ] + config.validateOptions
         )
         terraform.fmt([
             check: true,
-            commandTarget: commandTarget,
+            commandTarget: config.commandTarget,
           ] + config.fmtOptions
         )
-      }
+//      }
     }
   }
 
@@ -97,12 +97,12 @@ def test(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('test')){
     closures.test = {
-      for (commandTarget in config.commandTargets) {
+//      for (commandTarget in config.commandTargets) {
         try {
           terraform.plan([
               out: 'test.out',
               state: 'test.tfstate',
-              commandTarget: commandTarget,
+              commandTarget: config.commandTarget,
             ] + config.testPlanOptions
           )
           terraform.apply([
@@ -115,7 +115,7 @@ def test(Map config = [:], Map closures = [:]){
           replay = terraform.plan([
               out: 'test.out',
               state: 'test.tfstate',
-              commandTarget: commandTarget,
+              commandTarget: config.commandTarget,
             ] + config.testPlanOptions
           )
 
@@ -131,11 +131,11 @@ def test(Map config = [:], Map closures = [:]){
         } finally {
           terraform.destroy([
               state: 'test.tfstate',
-              commandTarget: commandTarget
+              commandTarget: config.commandTarget
             ] + config.testDestroyOptions
           )
         }
-      }
+//      }
     }
   }
 
