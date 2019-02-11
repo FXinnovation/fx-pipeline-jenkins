@@ -1,4 +1,4 @@
-def call(Map closures = [:], Map propertiesConfig = []){
+def call(Map closures = [:], List propertiesConfig = []){
   if ([] == propertiesConfig){
     propertiesConfig = [
       buildDiscarder(
