@@ -43,10 +43,12 @@ def call(Map closures = [:], List propertiesConfig = []){
   status='SUCCESS'
   node(){
     try{
-      stage('prepare'){
-        closures.prepare()
+      ansiColor('xterm') {
+        stage('prepare'){
+          closures.prepare()
+        }
+        closures.pipeline()
       }
-      closures.pipeline()
     }catch(error){
        status='FAILURE'
        throw error
