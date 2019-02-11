@@ -87,7 +87,7 @@ def validate(Map config = [:], Map closures = [:]){
 
 def test(Map config = [:], Map closures = [:]){
   if (!config.containsKey('testPlanOptions') || !(config.testPlanOptions instanceof Map)){
-    config.initOptions = [:]
+    config.testPlanOptions = [:]
   }
   if (!config.containsKey('testApplyOptions') || !(config.testApplyOptions instanceof Map)){
     config.testApplyOptions = [:]
