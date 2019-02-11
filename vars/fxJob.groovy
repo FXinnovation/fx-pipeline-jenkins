@@ -42,7 +42,7 @@ def call(Map closures = [:], Map propertiesConfig = []){
   properties(propertiesConfig)
   status='SUCCESS'
   node(){
-    try(
+    try{
       stage('prepare'){
         closures.prepare()
       }

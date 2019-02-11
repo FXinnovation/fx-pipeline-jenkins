@@ -5,8 +5,8 @@ def call(Map config = [:]) {
   if (!config.containsKey('providerUsernameVariableName') || !(config.providerUsernameVariableName instanceof CharSequence)) {
     config.providerUsernameVariableName = 'access_key'
   }
-  if (!config.containsKey('providerSecretKeyVariableName') || !(config.providerSecretKeyVariableName instanceof CharSequence)) {
-    config.providerSecretKeyVariableName = 'secret_key'
+  if (!config.containsKey('providerPasswordVariableName') || !(config.providerPasswordVariableName instanceof CharSequence)) {
+    config.providerPasswordVariableName = 'secret_key'
   }
 
   withCredentials([
@@ -19,8 +19,8 @@ def call(Map config = [:]) {
     fxTerraform(
       [
         planVars: [
-          "${config.providerAccessKeyVariableName}=${TF_username}",
-          "${config.providerSecretKeyVariableName}=${TF_password}",
+          "${config.providerUsernameVariableName}=${TF_username}",
+          "${config.providerPasswordVariableName}=${TF_password}",
         ]
       ] + config
     )
