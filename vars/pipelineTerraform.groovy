@@ -4,6 +4,7 @@ def call(Map config = [:], Map closures = [:]){
       error("${closure.key} has to be a java.lang.Closure.")
     }
   }
+  println config.commandTarget
   if (!config.containsKey('commandTarget') || !(config.commandTarget instanceof CharSequence)){
     config.commandTarget = '.'
   }
