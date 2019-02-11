@@ -17,25 +17,27 @@ def call(Map closures = [:], List propertiesConfig = []){
       )
     ]
   }
-  if (!closures.containsKey('prepare')){
+  if (!closures.containsKey('prepare') || !(closures.prepare instanceof Closure)){
     closures.prepare = {
       scmInfo = fxCheckout()
     }
   }
-  if (!closures.containsKey('notify')){
-    closures.notify = {
+  // It is not possible to name the closure “notify” because a java.lang.Map is an object and every object inherit the
+  // notify method. Overriding the Map “notify” method is not a good idea.
+  if (!closures.containsKey('notification') || !(closures.notification instanceof Closure)){
+    closures.notification = {
       fx_notify(
         status: status
       )
     }
   }
-  if (!closures.containsKey('cleanup')){
+  if (!closures.containsKey('cleanup') || !(closures.cleanup instanceof Closure)){
     closures.cleanup = {
       cleanWs()
     }
   }
 
-  if (!closures.containsKey('pipeline')){
+  if (!closures.containsKey('pipeline') || !(closures.pipeline instanceof Closure)){
     error('pipeline closure is mandatory.')
   }
 
@@ -54,7 +56,7 @@ def call(Map closures = [:], List propertiesConfig = []){
        throw error
     }finally{
       stage('notify'){
-        closures.notify()
+        closures.notification()
       }
       stage('cleanup'){
         closures.cleanup()

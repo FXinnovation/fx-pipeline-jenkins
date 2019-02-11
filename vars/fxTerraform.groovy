@@ -19,7 +19,7 @@ def call(Map config = [:]) {
     config.commandTargets = ['.']
   }
 
-  fxJob(
+  fxJob([
     pipeline: {
       for (commandTarget in config.commandTargets) {
         pipelineTerraform([
@@ -50,8 +50,8 @@ def call(Map config = [:]) {
           }
         ])
       }
-    },
-    [
+    }
+  ], [
       disableConcurrentBuilds(),
       buildDiscarder(
         logRotator(
