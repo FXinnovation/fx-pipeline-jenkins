@@ -1,20 +1,4 @@
 def call(Map config = [:]) {
-  properties([
-    disableConcurrentBuilds(),
-    buildDiscarder(
-      logRotator(
-        artifactDaysToKeepStr: '',
-        artifactNumToKeepStr: '10',
-        daysToKeepStr: '',
-        numToKeepStr: '10'
-      )
-    ),
-    pipelineTriggers([[
-      $class: 'PeriodicFolderTrigger',
-      interval: '1d'
-    ]])
-  ])
-//  buildCausers = currentBuild.getBuildCauses()
 
   if (!config.containsKey('initSSHCredentialId') || !(config.providerAccessKeyVariableName instanceof CharSequence)) {
     // default: gitea administrator key
@@ -35,61 +19,54 @@ def call(Map config = [:]) {
     config.commandTargets = ['.']
   }
 
-  node {
-    result="SUCCESS"
-    try {
-      ansiColor('xterm') {
-
-        stageCheckout()
-
-        for (commandTarget in config.commandTargets) {
-          pipelineTerraform([
-            commandTarget: commandTarget,
-            testPlanOptions: [
-              vars: config.planVars
-            ],
-            testDestroyOptions: [
-              vars: config.planVars
-            ],
-          ], [
-            init: {
-              sshagent([config.initSSHCredentialId]) {
-                sh('ssh-add -l')
-                sh('mkdir -p ~/.ssh')
-                sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-                terraform.init(
-                  commandTarget: commandTarget,
-                  dockerAdditionalMounts: [
-                    '~/.ssh/'                       : '/root/.ssh/',
-                    '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
-                  ],
-                  dockerEnvironmentVariables: [
-                    'SSH_AUTH_SOCK': '/ssh-agent'
-                  ]
-                )
-              }
+  fxJob(
+    pipeline: {
+      for (commandTarget in config.commandTargets) {
+        pipelineTerraform([
+          commandTarget     : commandTarget,
+          testPlanOptions   : [
+            vars: config.planVars
+          ],
+          testDestroyOptions: [
+            vars: config.planVars
+          ],
+        ], [
+          init: {
+            sshagent([config.initSSHCredentialId]) {
+              sh('ssh-add -l')
+              sh('mkdir -p ~/.ssh')
+              sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
+              terraform.init(
+                commandTarget: commandTarget,
+                dockerAdditionalMounts: [
+                  '~/.ssh/'                       : '/root/.ssh/',
+                  '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
+                ],
+                dockerEnvironmentVariables: [
+                  'SSH_AUTH_SOCK': '/ssh-agent'
+                ]
+              )
             }
-          ])
-        }
+          }
+        ])
       }
-    }catch (error){
-      result='FAILURE'
-      throw (error)
-    }finally {
-      stage('notify'){
-        fx_notify(
-          status: result
+    },
+    [
+      disableConcurrentBuilds(),
+      buildDiscarder(
+        logRotator(
+          artifactDaysToKeepStr: '',
+          artifactNumToKeepStr: '10',
+          daysToKeepStr: '',
+          numToKeepStr: '10'
         )
-      }
-    }
-  }
-}
-
-/**
- * Executes checkout stage.
- */
-def stageCheckout(){
-  stage('checkout') {
-    scmInfo = fx_checkout()
-  }
+      ),
+      pipelineTriggers([
+        [
+          $class  : 'PeriodicFolderTrigger',
+          interval: '1d'
+        ]
+      ])
+    ]
+  )
 }
