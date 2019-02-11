@@ -42,21 +42,22 @@ def call(Map config = [:]) {
 
         stageCheckout()
 
-        pipelineTerraform([
-          commandTargets    : config.terraformCommandTargets,
-          testPlanOptions   : [
-            vars: config.planVars
-          ],
-          testDestroyOptions: [
-            vars: config.planVars
-          ],
-        ], [
-          init: {
-            sshagent([config.initSSHCredentialId]) {
-              sh('ssh-add -l')
-              sh('mkdir -p ~/.ssh')
-              sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-              for (commandTarget in config.terraformCommandTargets) {
+        for (commandTarget in config.terraformCommandTargets) {
+          pipelineTerraform([
+            commandTarget : commandTarget,
+            testPlanOptions : [
+              vars: config.planVars
+            ],
+            testDestroyOptions: [
+              vars: config.planVars
+            ],
+          ], [
+            init: {
+              sshagent([config.initSSHCredentialId]) {
+                sh('ssh-add -l')
+                sh('mkdir -p ~/.ssh')
+                sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
+//                for (commandTarget in config.terraformCommandTargets) {
                 terraform.init(
                   commandTarget: commandTarget,
                   dockerAdditionalMounts: [
@@ -67,10 +68,11 @@ def call(Map config = [:]) {
                     'SSH_AUTH_SOCK': '/ssh-agent'
                   ]
                 )
+//                }
               }
             }
-          }
-        ])
+          ])
+        }
       }
     }catch (error){
       result='FAILURE'
