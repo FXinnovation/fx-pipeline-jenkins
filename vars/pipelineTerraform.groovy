@@ -47,7 +47,7 @@ def init(Map config = [:], Map closures = [:]){
   }
 }
 
-def validate(Map config = [:], Map closures = TF_access_key){
+def validate(Map config = [:], Map closures = [:]){
   if (!config.containsKey('validateOptions') || !(config.validateOptions instanceof Map)){
     config.validateOptions = [:]
   }
@@ -99,7 +99,6 @@ def test(Map config = [:], Map closures = [:]){
     closures.test = {
       for (commandTarget in config.commandTargets) {
         try {
-          execute(script: 'echo \$TF_okok')
           terraform.plan([
               out: 'test.out',
               state: 'test.tfstate',
@@ -121,7 +120,7 @@ def test(Map config = [:], Map closures = [:]){
           )
 
           if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
-            error('Replaying the “apply” contains new changes. Make sure your terraform consecutive run makes no changes.')
+            error('Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
           }
         } catch (errorApply) {
           archiveArtifacts(
