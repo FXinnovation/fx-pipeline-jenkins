@@ -1,4 +1,22 @@
-def call(Map closures = [:]){
+def call(Map closures = [:], Map propertiesConfig = []){
+  if ([] == propertiesConfig){
+    propertiesConfig = [
+      buildDiscarder(
+        logRotator(
+          artifactDaysToKeepStr: '',
+          artifactNumToKeepStr: '10',
+          daysToKeepStr: '',
+          numToKeepStr: '10'
+        )
+      ),
+      pipelineTriggers(
+        [[
+          $class: 'PeriodicFolderTrigger',
+          interval: '1d'
+        ]]
+      )
+    ]
+  }
   if (!closures.containsKey('prepare')){
     closures.prepare = {
       scmInfo = fxCheckout()
@@ -21,24 +39,7 @@ def call(Map closures = [:]){
     error('pipeline closure is mandatory.')
   }
 
-  properties(
-    [
-      buildDiscarder(
-        logRotator(
-          artifactDaysToKeepStr: '',
-          artifactNumToKeepStr: '10',
-          daysToKeepStr: '',
-          numToKeepStr: '10'
-        )
-      ),
-      pipelineTriggers(
-        [[
-          $class: 'PeriodicFolderTrigger',
-          interval: '1d'
-        ]]
-      )
-    ]
-  )
+  properties(propertiesConfig)
   status='SUCCESS'
   node(){
     try(
