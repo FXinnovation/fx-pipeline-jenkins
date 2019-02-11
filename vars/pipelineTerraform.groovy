@@ -170,21 +170,21 @@ def publish(Map config = [:], Map closures = [:]){
     }
   }
 
-  if (closures.containsKey('prePublish')){
-    stage('pre-publish'){
-      closures.prePublish()
+  if (config.publish) {
+    if (closures.containsKey('prePublish')){
+      stage('pre-publish'){
+        closures.prePublish()
+      }
     }
-  }
-  stage('publish'){
-    if (config.publish){
+    stage('publish') {
       closures.publish()
-    }else{
-      println "Publish step is skipped"
     }
-  }
-  if (closures.containsKey('postPublish')){
-    stage('post-publish'){
-      closures.postPublish()
+    if (closures.containsKey('postPublish')){
+      stage('post-publish'){
+        closures.postPublish()
+      }
     }
+  }else{
+    println 'Publish step is skipped because "config.publish" is false.'
   }
 }
