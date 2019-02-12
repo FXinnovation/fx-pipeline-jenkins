@@ -27,7 +27,7 @@ def call(Map config = [:]){
             ]){
               sh 'cat $account > ./account.json'
             }
-          println terraform.init()
+          terraform.init()
         }
         withCredentials([
           usernamePassword(
@@ -42,7 +42,7 @@ def call(Map config = [:]){
           )
         ]){
           stage('validate'){
-            println terraform.validate()
+            terraform.validate()
           }
           stage('refresh'){
             terraform.slowRefresh(
@@ -53,7 +53,7 @@ def call(Map config = [:]){
             )
           }
           stage('plan') {
-            println terraform.plan(
+            terraform.plan(
               out: 'plan.out',
               parallelism: 1,
               refresh: false,
@@ -70,7 +70,7 @@ def call(Map config = [:]){
                   status: 'PENDING'
                 )
                 input 'Do you want to apply this plan ?'
-                println terraform.apply(
+                terraform.apply(
                   parallelism: 1,
                   refresh: false,
                   commandTarget: 'plan.out'
