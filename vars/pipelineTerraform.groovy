@@ -24,12 +24,10 @@ def init(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('init')){
     closures.init = {
-//      for (commandTarget in config.commandTargets) {
-        terraform.init([
-            commandTarget: config.commandTarget
-          ] + config.initOptions
-        )
-//      }
+      terraform.init([
+          commandTarget: config.commandTarget
+        ] + config.initOptions
+      )
     }
   }
 
@@ -57,17 +55,15 @@ def validate(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('validate')){
     closures.validate = {
-//      for (commandTarget in config.commandTargets) {
-        terraform.validate([
-            commandTarget: config.commandTarget
-          ] + config.validateOptions
-        )
-        terraform.fmt([
-            check: true,
-            commandTarget: config.commandTarget,
-          ] + config.fmtOptions
-        )
-//      }
+      terraform.validate([
+          commandTarget: config.commandTarget
+        ] + config.validateOptions
+      )
+      terraform.fmt([
+          check: true,
+          commandTarget: config.commandTarget,
+        ] + config.fmtOptions
+      )
     }
   }
 
@@ -98,45 +94,43 @@ def test(Map config = [:], Map closures = [:]){
   }
   if (!closures.containsKey('test')){
     closures.test = {
-//      for (commandTarget in config.commandTargets) {
-        try {
-          terraform.plan([
-              out: 'test.out',
-              state: 'test.tfstate',
-              commandTarget: config.commandTarget,
-            ] + config.testPlanOptions
-          )
-          terraform.apply([
-              stateOut: 'test.tfstate',
-              parallelism: 1,
-              refresh: false,
-              commandTarget: 'test.out',
-            ] + config.testApplyOptions
-          )
-          replay = terraform.plan([
-              out: 'test.out',
-              state: 'test.tfstate',
-              commandTarget: config.commandTarget,
-            ] + config.testPlanOptions
-          )
+      try {
+        terraform.plan([
+            out: 'test.out',
+            state: 'test.tfstate',
+            commandTarget: config.commandTarget,
+          ] + config.testPlanOptions
+        )
+        terraform.apply([
+            stateOut: 'test.tfstate',
+            parallelism: 1,
+            refresh: false,
+            commandTarget: 'test.out',
+          ] + config.testApplyOptions
+        )
+        replay = terraform.plan([
+            out: 'test.out',
+            state: 'test.tfstate',
+            commandTarget: config.commandTarget,
+          ] + config.testPlanOptions
+        )
 
-          if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
-            error('Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
-          }
-        } catch (errorApply) {
-          archiveArtifacts(
-            allowEmptyArchive: true,
-            artifacts: 'test.tfstat*'
-          )
-          throw (errorApply)
-        } finally {
-          terraform.destroy([
-              state: 'test.tfstate',
-              commandTarget: config.commandTarget
-            ] + config.testDestroyOptions
-          )
+        if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
+          error('Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
         }
-//      }
+      } catch (errorApply) {
+        archiveArtifacts(
+          allowEmptyArchive: true,
+          artifacts: 'test.tfstat*'
+        )
+        throw (errorApply)
+      } finally {
+        terraform.destroy([
+            state: 'test.tfstate',
+            commandTarget: config.commandTarget
+          ] + config.testDestroyOptions
+        )
+      }
     }
   }
 
