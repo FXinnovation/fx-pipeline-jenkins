@@ -14,9 +14,9 @@ def call(Map closures = [:], List propertiesConfig = []){
       )
     ]
   }
-  closures.each { name, closure
-    if (!(closure instanceof Closure)){
-      error("${name} must be of type Closure")
+  for (closure in closures){
+    if (!closure.value instanceof Closure){
+      error("${closure.key} has to be a Closure")
     }
   }
 
