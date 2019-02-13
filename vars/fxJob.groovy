@@ -49,6 +49,7 @@ def call(Map closures = [:], List propertiesConfig = []){
         stage('prepare'){
           closures.prepare()
         }
+        closures.pipeline.resolveStrategy = Closure.DELEGATE_FIRST
         closures.pipeline()
       }
     }catch(error){
