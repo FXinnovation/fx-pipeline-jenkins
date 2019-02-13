@@ -25,7 +25,7 @@ def publish(Map config = [:]){
   if (!config.containsKey('image') && !(config.image instanceof CharSequence)){
     error('image parameter is mandatory and must be of type CharSequence')
   }
-  if (!config.containsKey('tags') && !(config.tags instanceof Array)){
+  if (!config.containsKey('tags') && !(config.tags instanceof List)){
     error('tags parameter is mandatory and must be of type Array')
   }
   if (!config.containsKey('registry') && !(config.registry instanceof CharSequence)){
