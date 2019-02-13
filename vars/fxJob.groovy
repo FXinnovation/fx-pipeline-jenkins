@@ -43,7 +43,6 @@ def call(Map closures = [:], Map pipelineConfig = [:], List propertiesConfig = [
 
   properties(propertiesConfig)
   status='SUCCESS'
-  scmInfo = [:]
   node(){
     try{
       ansiColor('xterm') {
