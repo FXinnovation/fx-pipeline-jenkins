@@ -19,9 +19,7 @@ def call(Map closures = [:], List propertiesConfig = []){
   }
   if (!closures.containsKey('prepare') || !(closures.prepare instanceof Closure)){
     closures.prepare = {
-      scmInfo = fxCheckout()
-      println scmInfo
-      return scmInfo
+      return fxCheckout()
     }
   }
   // It is not possible to name the closure “notify” because a java.lang.Map is an object and every object inherit the
@@ -50,9 +48,8 @@ def call(Map closures = [:], List propertiesConfig = []){
       ansiColor('xterm') {
         stage('prepare'){
           closurePrepareReturn = closures.prepare()
-          println closurePrepareReturn
         }
-        closures.pipeline()
+        closures.pipeline(closurePrepareReturn)
       }
     }catch(error){
        status='FAILURE'
