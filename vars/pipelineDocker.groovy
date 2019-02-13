@@ -15,6 +15,8 @@ def call(Map config = [:], Map closures =[:]){
     }
   }
   stage('build'){
+    println scmInfo.branch
+    println scmInfo.tag
     dockerImage.build(config.dockerBuild)
   }
   if (closures.containsKey('postBuild') && closures.postBuild instanceof Closure){
