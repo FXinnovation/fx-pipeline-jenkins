@@ -10,34 +10,17 @@ def call(Map closures = [:], List propertiesConfig = []){
         )
       ),
       pipelineTriggers(
-        [[
-          $class: 'PeriodicFolderTrigger',
-          interval: '1d'
-        ]]
+        [cron('@midnight')]
       )
     ]
   }
-  if (!closures.containsKey('prepare') || !(closures.prepare instanceof Closure)){
-    closures.prepare = {
-      scmInfo = fxCheckout()
-    }
-  }
-  // It is not possible to name the closure “notify” because a java.lang.Map is an object and every object inherit the
-  // notify method. Overriding the Map “notify” method is not a good idea.
-  if (!closures.containsKey('notification') || !(closures.notification instanceof Closure)){
-    closures.notification = {
-      fx_notify(
-        status: status
-      )
-    }
-  }
-  if (!closures.containsKey('cleanup') || !(closures.cleanup instanceof Closure)){
-    closures.cleanup = {
-      cleanWs()
+  for (closure in closures){
+    if (!closure.value instanceof Closure){
+      error("${closure.key} has to be a Closure")
     }
   }
 
-  if (!closures.containsKey('pipeline') || !(closures.pipeline instanceof Closure)){
+  if (!closures.containsKey('pipeline')){
     error('pipeline closure is mandatory.')
   }
 
@@ -47,19 +30,39 @@ def call(Map closures = [:], List propertiesConfig = []){
     try{
       ansiColor('xterm') {
         stage('prepare'){
-          closures.prepare()
+          if (closures.containsKey('prePrepare')){
+            closures.prePrepare()
+          }
+          scmInfo = fxCheckout()
+          if (closures.containsKey('postPrepare')){
+            closures.postPrepare()
+          }
         }
-        closures.pipeline()
+        closures.pipeline(scmInfo)
       }
     }catch(error){
        status='FAILURE'
        throw error
     }finally{
       stage('notify'){
-        closures.notification()
+        if (closures.containsKey('preNotify')){
+          closures.preNotify()
+        }
+        fx_notify(
+          status: status
+        )
+        if (closures.containsKey('postNotify')){
+          closures.postNotify()
+        }
       }
       stage('cleanup'){
-        closures.cleanup()
+        if (closures.containsKey('preCleanup')){
+          closures.preCleanup()
+        }
+        cleanWs()
+        if (closures.containsKey('postCleanup')){
+          closures.postCleanup()
+        }
       }
     }
   }
