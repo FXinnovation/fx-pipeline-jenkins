@@ -19,7 +19,9 @@ def call(Map closures = [:], List propertiesConfig = []){
   }
   if (!closures.containsKey('prepare') || !(closures.prepare instanceof Closure)){
     closures.prepare = {
-      return fxCheckout()
+      scmInfo = fxCheckout()
+      println scmInfo
+      return scmInfo
     }
   }
   // It is not possible to name the closure “notify” because a java.lang.Map is an object and every object inherit the
