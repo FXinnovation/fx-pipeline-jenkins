@@ -1,6 +1,6 @@
 def call(Map config = [:]){
   checkout scm
-  def scmInfo = {}
+  def scmInfo = [:]
   scmInfo.commitId = execute(
     script: 'git rev-parse HEAD'
   ).stdout.trim()
