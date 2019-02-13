@@ -43,14 +43,13 @@ def call(Map closures = [:], List propertiesConfig = []){
 
   properties(propertiesConfig)
   status='SUCCESS'
+  scmInfo = [:]
   node(){
     try{
       ansiColor('xterm') {
         stage('prepare'){
           closures.prepare()
-          println scmInfo.branch
         }
-        closures.pipeline.resolveStrategy = Closure.DELEGATE_FIRST
         closures.pipeline()
       }
     }catch(error){
