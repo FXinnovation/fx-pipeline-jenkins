@@ -11,11 +11,9 @@ def build(Map config = [:]){
   if (!config.containsKey('namespace') && !(config.namespace instanceof CharSequence)){
     error('namespace parameter is mandatory and must be of type CharSequence')
   }
-  
-  optionString = ''
 
   config.tags.each { tag ->
-    optionsString += "--tag ${config.registry}/${config.namespace}/${config.image}:${tag} "
+    optionsString = "--tag ${config.registry}/${config.namespace}/${config.image}:${tag} "
   }
 
   execute(
