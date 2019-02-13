@@ -68,8 +68,7 @@ def publish(Map config = [:]){
     }
     optionsString += "${config.namespace}/${config.image}:${tag} "
   }
-    execute(
-      script: "docker push ${optionsString}"
-    )
-  }
+  execute(
+    script: "docker push ${optionsString}"
+  )
 }
