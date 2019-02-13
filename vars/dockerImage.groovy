@@ -13,7 +13,7 @@ def build(Map config = [:]){
   }
 
   config.tags.each { tag ->
-    optionsString = "--tag ${config.registry}/${config.namespace}/${config.image}:${tag} "
+    optionsString = "--tag ${config.registry}${config.namespace}/${config.image}:${tag} "
   }
 
   execute(
