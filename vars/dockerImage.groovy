@@ -3,10 +3,7 @@ def build(Map config = [:]){
     error('image parameter is mandatory and must be of type CharSequence')
   }
   if (!config.containsKey('tags') && !(config.tags instanceof List)){
-    config.tags = [scmInfo.branch]
-    if ('' != scmInfo.tag){
-      config.tags.add(scmInfo.tag)
-    }
+    error('tags parameter is mandatory and must be of type List')
   }
   if (config.containsKey('registry') && !(config.registry instanceof CharSequence)){
     error('registry parameter is mandatory and must be of type CharSequence')
@@ -34,10 +31,7 @@ def publish(Map config = [:]){
     error('image parameter is mandatory and must be of type CharSequence')
   }
   if (!config.containsKey('tags') && !(config.tags instanceof List)){
-    config.tags = [scmInfo.branch]
-    if ('' != scmInfo.tag){
-      config.tags.add(scmInfo.tag)
-    }
+    error('tags parameter is mandatory and must be of type List')
   }
   if (!config.containsKey('registry') && !(config.registry instanceof CharSequence)){
     error('registry parameter is mandatory and must be of type CharSequence')
