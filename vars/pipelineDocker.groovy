@@ -15,7 +15,7 @@ def call(Map config = [:], Map closures =[:]){
     }
   }
   stage('build'){
-    docker.build(config.dockerBuild)
+    dockerImage.build(config.dockerBuild)
   }
   if (closures.containsKey('postBuild') && closures.postBuild instanceof Closure){
     stage('postBuild'){
@@ -29,7 +29,7 @@ def call(Map config = [:], Map closures =[:]){
       }
     }
     stage('publish'){
-      docker.publish(config.dockerPublish)
+      dockerImage.publish(config.dockerPublish)
     }
     if (closures.containsKey('postPublish') && closures.postPublish instanceof Closure){
       stage('postPublish'){
