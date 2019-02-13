@@ -1,4 +1,4 @@
-def call(Map closures = [:], List propertiesConfig = []){
+def call(Map closures = [:], Map pipelineConfig = [:] List propertiesConfig = []){
   if ([] == propertiesConfig){
     propertiesConfig = [
       buildDiscarder(
@@ -50,7 +50,7 @@ def call(Map closures = [:], List propertiesConfig = []){
         stage('prepare'){
           closures.prepare()
         }
-        closures.pipeline()
+        closures.pipeline(pipelineConfig)
       }
     }catch(error){
        status='FAILURE'
