@@ -1,4 +1,4 @@
-def call(Map closures = [:], Map pipelineConfig = [:], List propertiesConfig = []){
+def call(Map closures = [:], List propertiesConfig = []){
   if ([] == propertiesConfig){
     propertiesConfig = [
       buildDiscarder(
@@ -49,7 +49,8 @@ def call(Map closures = [:], Map pipelineConfig = [:], List propertiesConfig = [
         stage('prepare'){
           closures.prepare()
         }
-        closures.pipeline(pipelineConfig)
+        println 'foobar: ' + scmInfo.branch
+        closures.pipeline()
       }
     }catch(error){
        status='FAILURE'
