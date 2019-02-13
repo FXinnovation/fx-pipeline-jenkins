@@ -48,6 +48,7 @@ def call(Map closures = [:], List propertiesConfig = []){
       ansiColor('xterm') {
         stage('prepare'){
           closures.prepare()
+          println scmInfo.branch
         }
         closures.pipeline.resolveStrategy = Closure.DELEGATE_FIRST
         closures.pipeline()
