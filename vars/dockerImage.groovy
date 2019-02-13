@@ -3,17 +3,25 @@ def build(Map config = [:]){
     error('image parameter is mandatory and must be of type CharSequence')
   }
   if (!config.containsKey('tags') && !(config.tags instanceof List)){
-    error('tags parameter is mandatory and must be of type Array')
+    config.tags = [scmInfo.branch]
+    if ('' != scmInfo.tag){
+      config.tags.add(scmInfo.tag)
+    }
   }
-  if (!config.containsKey('registry') && !(config.registry instanceof CharSequence)){
+  if (config.containsKey('registry') && !(config.registry instanceof CharSequence)){
     error('registry parameter is mandatory and must be of type CharSequence')
   }
   if (!config.containsKey('namespace') && !(config.namespace instanceof CharSequence)){
     error('namespace parameter is mandatory and must be of type CharSequence')
   }
 
+  optionsString = ''
   config.tags.each { tag ->
-    optionsString = "--tag ${config.registry}${config.namespace}/${config.image}:${tag} "
+    optionsString += '--tag '
+    if (config.containsKey('registry')){
+      optionsString += "${config.registry}/"
+    }
+    optionsString += "${config.namespace}/${config.image}:${tag} "
   }
 
   execute(
@@ -26,7 +34,10 @@ def publish(Map config = [:]){
     error('image parameter is mandatory and must be of type CharSequence')
   }
   if (!config.containsKey('tags') && !(config.tags instanceof List)){
-    error('tags parameter is mandatory and must be of type Array')
+    config.tags = [scmInfo.branch]
+    if ('' != scmInfo.tag){
+      config.tags.add(scmInfo.tag)
+    }
   }
   if (!config.containsKey('registry') && !(config.registry instanceof CharSequence)){
     error('registry parameter is mandatory and must be of type CharSequence')
@@ -49,9 +60,16 @@ def publish(Map config = [:]){
       script: "docker login --username ${username} --password ${password} ${config.registry}"
     )
   }
+  optionsString = ''
   config.tags.each { tag ->
+    optionsString += '--tag '
+    if (config.containsKey('registry')){
+      optionsString += "${config.registry}/"
+    }
+    optionsString += "${config.namespace}/${config.image}:${tag} "
+  }
     execute(
-      script: "docker push ${config.registry}/${config.namespace}/${config.image}:${tag}"
+      script: "docker push ${optionsString}"
     )
   }
 }
