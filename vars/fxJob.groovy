@@ -48,6 +48,7 @@ def call(Map closures = [:], List propertiesConfig = []){
       ansiColor('xterm') {
         stage('prepare'){
           closurePrepareReturn = closures.prepare()
+          println closurePrepareReturn
         }
         closures.pipeline()
       }
