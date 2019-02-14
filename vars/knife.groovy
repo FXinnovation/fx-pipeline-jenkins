@@ -1,5 +1,26 @@
+def environmentFromFile(Map config = [:]){
+  config.subCommand = 'environment from file'
+  validParameters = [
+    'dockerImage':'',
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+    }
+  }
+  knife(config)
+}
+
 def call (Map config = [:]){
   optionsString = ''
+  // commandTarget
+  if (!config.containsKey('commandTarget') && !(config.commandTarget instanceof CharSequence)){
+    error('commandTarget parameter is mandatory and must be of type CharSequence')
+  }
   // credentialId
   if (!config.containsKey('credentialId') && !(config.credentialId instanceof CharSequence)){
     error('user parameter is mandatory and must be of type CharSequence')
@@ -47,7 +68,7 @@ def call (Map config = [:]){
     )
 
     return execute(
-      script: "${knifeCommand} knife ${subCommand} ${optionsString}"
+      script: "${knifeCommand} knife ${subCommand} ${optionsString} ${commandTarget}"
     )
   }
 }
