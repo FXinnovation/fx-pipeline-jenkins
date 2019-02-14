@@ -9,7 +9,7 @@ def call(Map config = [:]){
   fxJob(
     [
       pipeline: { Map scmInfo ->
-        tags = [scmInfo.branch]
+        tags = [scmInfo.branch.replace('/','_')]
         if ( '' != scmInfo.tag ){
           publish = true
           tags.add(scmInfo.tag)
