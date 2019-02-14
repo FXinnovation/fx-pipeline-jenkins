@@ -15,6 +15,25 @@ def environmentFromFile(Map config = [:]){
   knife(config)
 }
 
+def cookbookUpload(Map config = [:]){
+  config.subCommand = 'cookbook upload'
+  validParameters = [
+    'dockerImage':'',
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+    'force': '',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+    }
+  }
+  
+  knife(config)
+}
+
 def call (Map config = [:]){
   optionsString = ''
   // commandTarget
@@ -23,11 +42,11 @@ def call (Map config = [:]){
   }
   // credentialId
   if (!config.containsKey('credentialId') && !(config.credentialId instanceof CharSequence)){
-    error('user parameter is mandatory and must be of type CharSequence')
+    error('"credentialId" parameter is mandatory and must be of type CharSequence')
   }
   // dockerImage
   if (!config.containsKey('dockerImage') && !(config.dockerImage instanceof CharSequence)]){
-    config.dockerImage = 'fxinnovation/chefdk'
+    config.dockerImage = 'fxinnovation/chefdk:latest'
   }
   // server-url
   if (config.containsKey('serverUrl') && config.serverUrl instanceof CharSequence){
@@ -39,8 +58,22 @@ def call (Map config = [:]){
   if (!config.containsKey('subCommand') && !(config.subCommand instanceof CharSequence)){
     error('subCommand parameter is mandatory and must be of type CharSequence')
   }
+  // force
+  if (config.containsKey('force')){
+    if (!(config.force instanceof Boolean)){
+      error('force parameter must be of type Boolean')
+    }
+    if (config.force) {
+      optionsString += '--force '
+    }
+  }
+
   // Adding options because of CI environment
   optionsString += '--disable-editing --yes '
+
+  if (config.subCommand == 'cookbook upload') {
+    optionsString += '--freeze'
+  }
 
   withCredentials([
     sshUserPrivateKey(
