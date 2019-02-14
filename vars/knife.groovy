@@ -17,13 +17,18 @@ def environmentFromFile(Map config = [:]){
 
 def cookbookUpload(Map config = [:]){
   config.subCommand = 'cookbook upload'
+  
+  if (!(config.containsKey('freeze'))){  
+    config.freeze = true
+  }
+ 
   validParameters = [
     'dockerImage':'',
     'subCommand':'',
     'credentialId': '',
     'serverUrl': '',
     'commandTarget':'',
-    'force': '',
+    'freeze': '',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -59,21 +64,17 @@ def call (Map config = [:]){
     error('subCommand parameter is mandatory and must be of type CharSequence')
   }
   // force
-  if (config.containsKey('force')){
-    if (!(config.force instanceof Boolean)){
+  if (config.containsKey('freeze')){
+    if (!(config.freeze instanceof Boolean)){
       error('force parameter must be of type Boolean')
     }
-    if (config.force) {
-      optionsString += '--force '
+    if (config.freeze) {
+      optionsString += '--freeze ' 
     }
   }
 
   // Adding options because of CI environment
   optionsString += '--disable-editing --yes '
-
-  if (config.subCommand == 'cookbook upload') {
-    optionsString += '--freeze'
-  }
 
   withCredentials([
     sshUserPrivateKey(
