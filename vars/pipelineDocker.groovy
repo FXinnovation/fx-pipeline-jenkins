@@ -1,5 +1,6 @@
 def call(Map config = [:], Map closures =[:]){
   if (!config.containsKey('publish')){
+    config.publish = false
   }
   if (!config.containsKey('dockerBuild')){
     error('dockerBuild configuration is mandatory')
