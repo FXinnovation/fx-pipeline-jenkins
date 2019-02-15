@@ -51,7 +51,7 @@ def publish(Map config = [:]){
     )
   ]) {
     execute(
-      script: "docker login --username ${username} --password ${password} ${config.registry}"
+      script: "docker login --username \'${username}\' --password \'${password}\' ${config.registry}"
     )
   }
   optionsString = ''
