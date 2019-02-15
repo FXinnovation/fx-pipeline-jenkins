@@ -15,7 +15,7 @@ def build(Map config = [:]){
   optionsString = ''
   config.tags.each { tag ->
     optionsString += '--tag '
-    if (config.containsKey('registry')){
+    if (config.containsKey('registry') && '' != config.registry){
       optionsString += "${config.registry}/"
     }
     optionsString += "${config.namespace}/${config.image}:${tag} "
@@ -56,13 +56,12 @@ def publish(Map config = [:]){
   }
   optionsString = ''
   config.tags.each { tag ->
-    optionsString += '--tag '
-    if (config.containsKey('registry')){
+    if (config.containsKey('registry') && '' != config.registry){
       optionsString += "${config.registry}/"
     }
     optionsString += "${config.namespace}/${config.image}:${tag} "
+    execute(
+      script: "docker push ${optionsString}"
+    )
   }
-  execute(
-    script: "docker push ${optionsString}"
-  )
 }
