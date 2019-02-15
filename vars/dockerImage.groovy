@@ -54,8 +54,8 @@ def publish(Map config = [:]){
       script: "docker login --username \'${username}\' --password \'${password}\' ${config.registry}"
     )
   }
-  optionsString = ''
   config.tags.each { tag ->
+    optionsString = ''
     if (config.containsKey('registry') && '' != config.registry){
       optionsString += "${config.registry}/"
     }
