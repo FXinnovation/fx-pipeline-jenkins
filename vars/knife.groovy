@@ -9,10 +9,10 @@ def environmentFromFile(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"environmentFromFile\", please remove it!")
     }
   }
-  knife(config)
+  return knife(config)
 }
 
 def cookbookUpload(Map config = [:]){
