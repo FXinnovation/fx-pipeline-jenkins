@@ -2,6 +2,9 @@ def call(Map config = [:]){
   if (!config.containsKey('image') && !(config.image instanceof CharSequence)){
     error('image parameter is mandatory and must be of type CharSequence')
   }
+  if (!config.containsKey('pushLatest') || !(config.pushLatest instanceof Boolean)){
+    pushLatest = false
+  }
   if (!config.containsKey('namespace') && !(config.namespace instanceof CharSequence)){
     config.namespace = 'fxinnovation'
   }
@@ -16,7 +19,9 @@ def call(Map config = [:]){
         }else{
           publish = false
         }
-        tags.add('latest')
+        if (config.pushLatest)
+          tags.add('latest')
+        }
         pipelineDocker(
           [
             dockerBuild: [
