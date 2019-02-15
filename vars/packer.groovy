@@ -17,7 +17,7 @@ def build(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("packer - Parameter \"${parameter.key}\" is not valid for \"build\", please remove it!")
     }
   }
 
@@ -38,7 +38,7 @@ def validate(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("packer - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
     }
   }
 
