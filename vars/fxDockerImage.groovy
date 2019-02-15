@@ -16,6 +16,7 @@ def call(Map config = [:]){
         }else{
           publish = false
         }
+        tags.add('latest')
         pipelineDocker(
           [
             dockerBuild: [
@@ -26,6 +27,7 @@ def call(Map config = [:]){
             dockerPublish: [
               image: config.image,
               tags: tags,
+              registry: '',
               namespace: config.namespace,
               credentialId: 'jenkins-fxinnovation-dockerhub'
             ],
