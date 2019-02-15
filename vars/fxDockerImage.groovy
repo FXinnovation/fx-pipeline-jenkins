@@ -19,7 +19,7 @@ def call(Map config = [:]){
         }else{
           publish = false
         }
-        if (config.pushLatest)
+        if (config.pushLatest){
           tags.add('latest')
         }
         pipelineDocker(
