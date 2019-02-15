@@ -22,10 +22,6 @@ def cookbookUpload(Map config = [:]){
     config.freeze = true
   }
 
-  if (!(config.containsKey('cookbookName'))){
-    error('cookbookName parameter is mandatory')  
-  }
-
   validParameters = [
     'dockerImage':'',
     'subCommand':'',
@@ -33,7 +29,6 @@ def cookbookUpload(Map config = [:]){
     'serverUrl': '',
     'commandTarget':'',
     'freeze': '',
-    'cookbookName': '',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -47,44 +42,35 @@ def cookbookUpload(Map config = [:]){
 def call (Map config = [:]){
   optionsString = ''
   cookbookName = ''
-  // commandTarget
+  
   if (!config.containsKey('commandTarget') && !(config.commandTarget instanceof CharSequence)){
     error('commandTarget parameter is mandatory and must be of type CharSequence')
   }
-  // credentialId
+  
   if (!config.containsKey('credentialId') && !(config.credentialId instanceof CharSequence)){
     error('"credentialId" parameter is mandatory and must be of type CharSequence')
   }
-  // dockerImage
+  
   if (!config.containsKey('dockerImage') && !(config.dockerImage instanceof CharSequence)]){
     config.dockerImage = 'fxinnovation/chefdk:latest'
   }
-  // server-url
+  
   if (config.containsKey('serverUrl') && config.serverUrl instanceof CharSequence){
     optionsString += "--server-url ${config.serverUrl} "
   }else{
     error('serverUrl parameter is mandatory and must be of type CharSequence')
   }
-  // subCommand
+
   if (!config.containsKey('subCommand') && !(config.subCommand instanceof CharSequence)){
     error('subCommand parameter is mandatory and must be of type CharSequence')
   }
-  // freeze
+  
   if (config.containsKey('freeze')){
     if (!(config.freeze instanceof Boolean)){
       error('freeze parameter must be of type Boolean')
     }
     if (config.freeze) {
       optionsString += '--freeze ' 
-    }
-  }
-  //cookbook name 
-  if (config.constainsKey('cookbookName')) {
-    if (!(config.cookbookName instanceof CharSequence)){
-      error('cookbookName parameter must be of type CharSequence')
-    }
-    if (config.cookbookName) {
-      cookbookName = config.cookbookName
     }
   }
 
@@ -99,9 +85,8 @@ def call (Map config = [:]){
       usernameVariable: 'username'
     )
   ]) {
-    // user
     optionsString += "--user ${username} "
-    // key
+    
     optionsString += "--key /secret/chef"
 
     knifeCommand = dockerRunCommand(
@@ -117,7 +102,7 @@ def call (Map config = [:]){
     )
 
     return execute(
-      script: "${knifeCommand} knife ${subCommand} ${optionsString} ${commandTarget} ${cookbookName}"
+      script: "${knifeCommand} knife ${subCommand} ${optionsString} ${commandTarget}"
     )
   }
 }
