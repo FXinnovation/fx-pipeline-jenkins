@@ -8,7 +8,7 @@ def environmentFromFile(Map config = [:]){
     'commandTarget':'',
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if (!validParameters.containsKey(parameter.key)){
       error("knife - Parameter \"${parameter.key}\" is not valid for \"environmentFromFile\", please remove it!")
     }
   }
@@ -31,7 +31,7 @@ def cookbookUpload(Map config = [:]){
     'freeze': '',
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if (!validParameters.containsKey(parameter.key)){
       error("knife - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
     }
   }
@@ -41,7 +41,6 @@ def cookbookUpload(Map config = [:]){
 
 def call (Map config = [:]){
   optionsString = ''
-  cookbookName = ''
   
   if (!config.containsKey('commandTarget') && !(config.commandTarget instanceof CharSequence)){
     error('commandTarget parameter is mandatory and must be of type CharSequence')

@@ -9,7 +9,7 @@ def call(Map config = [:], Map closures = [:]){
     error('knifeConfig.commandTarget is mandatory and must be of type String')
   }
   for (closure in closures){
-    if (!closure.value instanceof Closure){
+    if (!closure instanceof Closure){
       error("${closure.key} has to be a Closure")
     }
   }
@@ -22,7 +22,8 @@ def call(Map config = [:], Map closures = [:]){
   stage('test'){
     environment = readJSON file: config.knifeConfig.commandTarget
     // TODO: We will need to make some additionnal validation here
-    // for the time being, we only validate it's valid json
+    // for the time being, we only validate it's valid json. In the future, we need to be able to check
+    // if every cookbook available on the chef-server is pinned.
   }
   if (closures.containsKey('postTest')){
     stage('post-test'){
