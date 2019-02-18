@@ -5,7 +5,7 @@ def call(Map config = [:], Map closures = [:]){
   if (!config.containsKey('knifeConfig') || !(config.knifeConfig instanceof Map)){
     error('knifeConfig parameter is mandatory and must be of type Map')
   }
-  if (!config.knifeConfig.containsKey('commandTarget') || !(config.knifeConfig.commandTarget instanceof String)){
+  if (!config.knifeConfig.containsKey('commandTarget') || !(config.knifeConfig.commandTarget instanceof CharSequence)){
     error('knifeConfig.commandTarget is mandatory and must be of type String')
   }
   for (closure in closures){
