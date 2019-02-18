@@ -73,7 +73,7 @@ def call (Map config = [:]){
     }
   }
 
-  // Adding options because of CI environment
+  // Adding options because of CI environment. In a CI environment it is impossbile to edit the file on the fly.
   optionsString += '--disable-editing --yes '
 
   withCredentials([
