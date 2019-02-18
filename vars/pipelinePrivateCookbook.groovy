@@ -1,7 +1,21 @@
 def call(Map config = [:], Map closures = [:]){
   if (!closures.containsKey('publish')){
+    if (!config.containsKey('credentialId')){
+      error ('credentialId parameter is mandatory.')
+    }
+    if (!config.containsKey('serverUrl')) {
+      error ('serverUrl parameter is mandatory.')
+    }
+    if (!config.containsKey('cookbookName')) {
+      error ('cookbookName parameter is mandatory.')
+    }
+    
     closures.publish = {
-      println 'Publishing to chef-server is not yet implemented'
+      cookbookUpload(
+        credentialId: config.credentialId,
+        serverUrl: config.serverUrl,
+        commandTarget: config.cookbookName,
+      ) 
     }
   }
   if (!config.containsKey('foodcritic')){
