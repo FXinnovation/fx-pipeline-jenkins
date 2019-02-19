@@ -50,13 +50,11 @@ def call (Map config = [:]){
     error('"credentialId" parameter is mandatory and must be of type CharSequence')
   }
   
-  if (!config.containsKey('dockerImage') && !(config.dockerImage instanceof CharSequence)]){
+  if (!config.containsKey('dockerImage') && !(config.dockerImage instanceof CharSequence)){
     config.dockerImage = 'fxinnovation/chefdk:latest'
   }
   
-  if (config.containsKey('serverUrl') && config.serverUrl instanceof CharSequence){
-    optionsString += "--server-url ${config.serverUrl} "
-  }else{
+  if (!config.containsKey('serverUrl') && !(config.serverUrl instanceof CharSequence)){
     error('serverUrl parameter is mandatory and must be of type CharSequence')
   }
 
@@ -72,6 +70,8 @@ def call (Map config = [:]){
       optionsString += '--freeze ' 
     }
   }
+  
+  optionsString += "--server-url ${config.serverUrl} "
 
   // Adding options because of CI environment. In a CI environment it is impossbile to edit the file on the fly.
   optionsString += '--disable-editing --yes '
