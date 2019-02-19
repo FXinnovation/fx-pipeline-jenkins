@@ -36,7 +36,7 @@ def cookbookUpload(Map config = [:]){
     }
   }
   
-  knife(config)
+  return knife(config)
 }
 
 def call (Map config = [:]){
