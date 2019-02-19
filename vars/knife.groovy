@@ -101,7 +101,7 @@ def call (Map config = [:]){
     )
 
     return execute(
-      script: "${knifeCommand} knife ${subCommand} ${optionsString} ${commandTarget}"
+      script: "${knifeCommand} knife ${config.subCommand} ${optionsString} ${commandTarget}"
     )
   }
 }
