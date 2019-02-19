@@ -11,11 +11,14 @@ def call(Map config = [:], Map closures = [:]){
     }
     
     closures.publish = {
-      knife.cookbookUpload(
+      cookbookUploadOutput = knife.cookbookUpload(
         credentialId: config.credentialId,
         serverUrl: config.serverUrl,
         commandTarget: config.cookbookName,
       ) 
+      if (cookbookUploadOutput.stderr =~ /ERROR: Could not find cookbook/) {
+        error(cookbookUploadOutput.stderr)
+      } 
     }
   }
   if (!config.containsKey('foodcritic')){
