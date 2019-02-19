@@ -27,11 +27,11 @@ def call(Map config = [:], Map closures = [:]){
       closures.preTest()
     }
   }
-  //stage('test'){
-  //  cookstyle(config.cookstyle)
-  //  foodcritic(config.foodcritic)
-  //  kitchen(config.kitchen)
-  //}
+  stage('test'){
+    cookstyle(config.cookstyle)
+    foodcritic(config.foodcritic)
+    kitchen(config.kitchen)
+  }
   if (closures.containsKey('postTest')){
     stage('post-test'){
       closures.postTest()
