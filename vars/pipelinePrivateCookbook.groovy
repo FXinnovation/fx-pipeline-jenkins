@@ -11,10 +11,11 @@ def call(Map config = [:], Map closures = [:]){
     }
     
     closures.publish = {
-      cookbookUploadOutput = knife.cookbookUpload(
+      cookbookUploadOutput = knife.cookbookUpload([
         credentialId: config.credentialId,
         serverUrl: config.serverUrl,
         commandTarget: config.cookbookName,
+       ]
       ) 
       
       println "${cookbookUploadOutput}"
