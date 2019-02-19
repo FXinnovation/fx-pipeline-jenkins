@@ -18,7 +18,6 @@ def call(Map config = [:], Map closures = [:]){
        ]
       ) 
       
-      println "${cookbookUploadOutput}"
       if (cookbookUploadOutput.stderr =~ /ERROR: Could not find cookbook/) {
         error(cookbookUploadOutput.stderr)
       } 
