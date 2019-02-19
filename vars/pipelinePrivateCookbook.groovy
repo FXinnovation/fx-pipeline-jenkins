@@ -17,7 +17,7 @@ def call(Map config = [:], Map closures = [:]){
         commandTarget: config.cookbookName,
       ) 
       
-      println cookbookUploadOutput
+      println ${cookbookUploadOutput}
       if (cookbookUploadOutput.stderr =~ /ERROR: Could not find cookbook/) {
         error(cookbookUploadOutput.stderr)
       } 
