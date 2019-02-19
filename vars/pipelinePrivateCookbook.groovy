@@ -16,6 +16,8 @@ def call(Map config = [:], Map closures = [:]){
         serverUrl: config.serverUrl,
         commandTarget: config.cookbookName,
       ) 
+      
+      println cookbookUploadOutput.stderr
       if (cookbookUploadOutput.stderr =~ /ERROR: Could not find cookbook/) {
         error(cookbookUploadOutput.stderr)
       } 
