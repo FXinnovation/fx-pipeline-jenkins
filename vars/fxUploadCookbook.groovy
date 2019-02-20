@@ -1,15 +1,15 @@
 def call(Map config = [:]) {
-  if (!(config.credentialId instanceof CharSequence)){
-    error ('credentialId parameter must be of type CharSequence')
+  if (!config.containsKey('credentialId') && !(config.credentialId instanceof CharSequence)){
+    error ('"credentialId" parameter must be of type CharSequence')
   }
-  if (!(config.serverUrl instanceof CharSequence)) {
-    error ('serverUrl parameter must be of type CharSequence')
+  if (!config.containsKey('serverUrl') && !(config.serverUrl instanceof CharSequence)) {
+    error ('"serverUrl" parameter must be of type CharSequence')
   }
-  if (!(config.cookbookName instanceof CharSequence)) {
-    error ('cookbookName parameter must be of type CharSequence')
+  if (!config.containsKey('cookbookName') && !(config.cookbookName instanceof CharSequence)) {
+    error ('"cookbookName" parameter must be of type CharSequence')
   }
-  if (!(config.publish instanceof Boolean)){
-    error ('publish parameter must be of type Boolean')    
+  if (!config.containsKey('publish') && !(config.publish instanceof Boolean)){
+    error ('"publish" parameter must be of type Boolean')    
   }
 
   if (!config.containsKey('credentialId')) {
@@ -29,7 +29,7 @@ def call(Map config = [:]) {
         serverUrl: config.serverUrl,
         cookbookName: config.cookbookName,
         publish: config.publish,
-        ]),
+      ]),
     }
   ])
 }
