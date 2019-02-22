@@ -15,6 +15,43 @@ def environmentFromFile(Map config = [:]){
   return knife(config)
 }
 
+def environmentList(Map config = [:]){
+  config.subCommand = 'environment list'
+  config.commandTarget = ''
+  validParameters = [
+    'dockerImage':'',
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+    'format':'',
+  ]
+  for ( parameter in config ) {
+    if (!validParameters.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"environmentFromFile\", please remove it!")
+    }
+  }
+  return knife(config)
+}
+
+def environmentShow(Map config = [:]){
+  config.subCommand = 'environment show'
+  validParameters = [
+    'dockerImage':'',
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+    'format':'',
+  ]
+  for ( parameter in config ) {
+    if (!validParameters.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"environmentFromFile\", please remove it!")
+    }
+  }
+  return knife(config)
+}
+
 def cookbookUpload(Map config = [:]){
   config.subCommand = 'cookbook upload'
   
@@ -62,6 +99,12 @@ def call (Map config = [:]){
     error('subCommand parameter is mandatory and must be of type CharSequence')
   }
   
+  if (config.containsKey('format')){
+    if (!config.format instanceof CharSequence){
+      error('format parameter must of type CharSequence')
+    }
+    optionsString += "--format ${config.format}"
+  }
   if (config.containsKey('freeze')){
     if (!(config.freeze instanceof Boolean)){
       error('freeze parameter must be of type Boolean')
