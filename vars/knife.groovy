@@ -36,7 +36,6 @@ def environmentList(Map config = [:]){
 
 def environmentShow(Map config = [:]){
   config.subCommand = 'environment show'
-  config.commandTarget = ''
   validParameters = [
     'dockerImage':'',
     'subCommand':'',

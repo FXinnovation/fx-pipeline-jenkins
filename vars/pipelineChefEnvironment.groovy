@@ -36,6 +36,7 @@ def call(Map config = [:], Map closures = [:]){
       currentEnvironment = knife.environmentShow(
         serverUrl: config.knifeConfig.serverUrl,
         credentialId: config.knifeConfig.credentialId,
+        commandTarget: environment.name
         format: 'json'
       ).stdout
       writeFile file: 'currentEnv.json', text: currentEnvironment
