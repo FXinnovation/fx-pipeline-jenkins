@@ -31,7 +31,7 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   stage('plan'){
-    environementExists = false
+    environmentExists = false
     environmentList = readJSON text: knife.environmentList(
       serverUrl: config.knifeConfig.serverUrl,
       credentialId: config.knifeConfig.credentialId,
