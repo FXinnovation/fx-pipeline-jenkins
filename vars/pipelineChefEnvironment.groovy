@@ -50,10 +50,14 @@ def call(Map config = [:], Map closures = [:]){
         format: 'json'
       ).stdout
       writeFile file: 'currentEnv.json', text: currentEnvironment
+      execute(
+        script: "diff -a -U 10 currentEnv.json ${config.knifeConfig.commandTarget}"
+      )
+    }else{
+      execute(
+        script: "cat ${config.knifeConfig.commandTarget}"
+      )
     }
-    execute(
-      script: "diff -N -a -U 10 currentEnv.json ${config.knifeConfig.commandTarget}"
-    )
 
   }
   if (closures.containsKey('prePublish')){
