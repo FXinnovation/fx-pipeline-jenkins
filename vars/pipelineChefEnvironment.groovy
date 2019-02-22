@@ -41,7 +41,7 @@ def call(Map config = [:], Map closures = [:]){
       ).stdout
       writeFile file: 'currentEnv.json', text: currentEnvironment
       execute(
-        script: "diff -U 10 currentEnv.json config.knifeConfig.commandTarget"
+        script: "diff -U 10 currentEnv.json ${config.knifeConfig.commandTarget}"
       )
     }
     // TODO: We will need to make some additionnal validation here
