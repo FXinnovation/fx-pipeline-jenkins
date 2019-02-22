@@ -103,7 +103,7 @@ def call (Map config = [:]){
     if (!config.format instanceof CharSequence){
       error('format parameter must of type CharSequence')
     }
-    optionsString += "--format ${config.format}"
+    optionsString += "--format ${config.format} "
   }
   if (config.containsKey('freeze')){
     if (!(config.freeze instanceof Boolean)){
