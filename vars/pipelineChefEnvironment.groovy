@@ -56,7 +56,7 @@ def call(Map config = [:], Map closures = [:]){
       ).stdout
       writeFile file: 'currentEnv.json', text: currentEnvironment
       execute(
-        script: "diff -a -U 10 currentEnv.json ${config.knifeConfig.commandTarget}"
+        script: "diff -U 10 currentEnv.json ${config.knifeConfig.commandTarget}"
       )
     }else{
       println 'Environment does not exist, this will be created.'
