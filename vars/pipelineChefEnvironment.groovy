@@ -21,6 +21,28 @@ def call(Map config = [:], Map closures = [:]){
   }
   stage('test'){
     environment = readJSON file: config.knifeConfig.commandTarget
+    environementExists = false
+    environmentList = readJSON text: knife.environmentList(
+      serverUrl: config.knifeConfig.serverUrl,
+      credentialId: config.knifeConfig.credentialId,
+      format: 'json'
+    ).stdout
+    environmentList.each {
+      if (environment.name == it){
+        environmentExists = true
+      }
+    }
+    if (true == environmentExists){
+      currentEnvironment = knife.environmentShow(
+        serverUrl: config.knifeConfig.serverUrl,
+        credentialId: config.knifeConfig.credentialId,
+        format: 'json'
+      ).stdout
+      writeFile file: 'currentEnv.json', text: currentEnvironment
+      execute(
+        script: "diff -y currentEnv.json config.knifeConfig.commandTarget"
+      )
+    }
     // TODO: We will need to make some additionnal validation here
     // for the time being, we only validate it's valid json. In the future, we need to be able to check
     // if every cookbook available on the chef-server is pinned.
