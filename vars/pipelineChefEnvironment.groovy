@@ -30,6 +30,11 @@ def call(Map config = [:], Map closures = [:]){
       closures.postTest()
     }
   }
+  if (closures.containsKey('prePlan')){
+    stage('pre-plan'){
+      closures.prePlan()
+    }
+  }
   stage('plan'){
     environmentExists = false
     environmentList = readJSON text: knife.environmentList(
@@ -54,11 +59,16 @@ def call(Map config = [:], Map closures = [:]){
         script: "diff -a -U 10 currentEnv.json ${config.knifeConfig.commandTarget}"
       )
     }else{
+      println 'Environment does not exist, this will be created.'
       execute(
         script: "cat ${config.knifeConfig.commandTarget}"
       )
     }
-
+  }
+  if (closures.containsKey('postPlan')){
+    stage('post-plan'){
+      closures.postPlan()
+    }
   }
   if (closures.containsKey('prePublish')){
     stage('pre-publish'){
