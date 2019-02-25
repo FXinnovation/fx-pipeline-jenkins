@@ -10,7 +10,14 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'commandTargets', List, ['.'])
 
   fxJob([
-    pipeline: {
+    pipeline: { Map scmInfo ->
+      def publish = false
+      if ( '' != scmInfo.tag ){
+        publish = true
+      }
+
+      println(currentBuild.rawBuild.getCauses())
+
       for (commandTarget in config.commandTargets) {
         pipelineTerraform([
           commandTarget     : commandTarget,
@@ -23,6 +30,10 @@ def call(Map config = [:]) {
           testDestroyOptions: [
             vars: config.testPlanVars
           ],
+          publishPlanOptions: [
+            vars: config.publishPlanVars
+          ],
+          publish: publish
         ], [
           init: {
             sshagent([config.initSSHCredentialId]) {
