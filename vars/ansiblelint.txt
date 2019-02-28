@@ -1,0 +1,18 @@
+The *ansiblelint* method is a helper to execute an ansible-lint command.
+
+The ansible-lint helper return the output of the ansible-lint command as a String.
+If docker is available, it will be used to execute ansible-lint.
+
+All parameters are optionnals because sane default are set by the method but they can be overwritten.
+
+Ansible-lint will inspect all files in the current directory including subfolders.
+
+**Usage**
+```
+  ansiblelint(
+    dockerImage: String
+    options: String
+    commandTarget: String
+    rewritePath: Boolean
+  )
+```
