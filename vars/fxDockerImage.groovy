@@ -13,13 +13,15 @@ def call(Map config = [:]){
     [
       pipeline: { Map scmInfo ->
         tags = [scmInfo.branch.replace('/','_')]
-        if ( '' != scmInfo.tag ){
+        if ( 'master' == scmInfo.branch ){
           publish = true
+        }
+        if ( '' != scmInfo.tag ){
           tags.add(scmInfo.tag)
         }else{
           publish = false
         }
-        if (config.pushLatest){
+        if (config.pushLatest && '' != scmInfo.tag ){
           tags.add('latest')
         }
         pipelineDocker(
