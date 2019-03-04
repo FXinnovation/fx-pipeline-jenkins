@@ -33,10 +33,40 @@ def upgrade(Map config = [:]){
   helm(config)
 }
 
+def lint(Map config = [:]){
+  config.subCommand = 'lint'
+  if (!config.containsKey('commandTarget')){
+    config.commandTarget = './'
+  }
+  validParameters = [
+    'namespace': '',
+    'values': '',
+    'strict': '',
+    'commandTarget': '',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("helm - Parameter \"${parameter.key}\" is not valid for \"lint\", please remove it!")
+    }
+  }
+
+  helm(config)
+}
+
+//TODO Implement this
+//def repoAdd(Map config = [:]){
+//  config.subCommand = 'repo add'
+//
+//  helm(config)
+//}
+
 def call(Map config = [:]){
   optionsString = ''
   if (!config.containKey('subCommand')){
     error('subCommand parameter is mandatory.')
+  }
+  if (!config.containsKey('commandTarget')){
+    config.commandTarget = ''
   }
   if (!config.containsKey('chart')){
     config.chart = ''
@@ -62,6 +92,9 @@ def call(Map config = [:]){
   if (config.containsKey('dryRun') && (config.dryRun instanceof Boolean) && config.dryRun){
     optionsString += "--dry-run "
   }
+  if (config.containsKey('strict') && (config.strict instanceof Boolean) && config.strict){
+    optionsString += "--strict "
+  }
   if (config.containsKey('force') && (config.force instanceof Boolean) && config.force){
     optionsString += "--force "
   }
@@ -78,7 +111,13 @@ def call(Map config = [:]){
     optionsString += "--password ${config.password} "
   }
 
+  // NOTE: We're not using docker because it's very hard to use helm in isolation
+  // this might become a future enhancement
+  execute(
+    script: 'helm version'
+  )
+
   return execute(
-    script: "helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart}"
+    script: "helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart} ${config.commandTarget}"
   )
 }
