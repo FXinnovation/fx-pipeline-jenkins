@@ -29,7 +29,7 @@ def call(Map config = [:]) {
         serverUrl: config.serverUrl,
         cookbookName: config.cookbookName,
         publish: config.publish,
-      ]),
+      ])
     }
   ])
 }
