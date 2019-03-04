@@ -23,6 +23,9 @@ def call(Map config = [:]) {
   }
   
   fxJob([
+    postPrepare: {
+      sh 'ssh-keygen -t rsa -f /tmp/id_rsa -P \'\''
+    },
     pipeline: {
       pipelinePrivateCookbook ([
         credentialId: config.credentialId,
