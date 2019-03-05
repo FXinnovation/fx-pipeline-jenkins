@@ -9,12 +9,16 @@ def call(Map config = [:], Map closures = [:]){
     if (!config.containsKey('cookbookName') && !(config.cookbookName instanceof CharSequence)) {
       error ('cookbookName parameter is mandatory and must be of type CharSequence')
     }
+    if (!config.containsKey('cookbookPath') && !(config.cookbookPath instanceof CharSequence)) {
+      error ('cookbookPath parameter is mandatory and must be of type CharSequence')
+    }
     
     closures.publish = {
       cookbookUploadOutput = knife.cookbookUpload([
         credentialId: config.credentialId,
         serverUrl: config.serverUrl,
         commandTarget: config.cookbookName,
+        cookbookPath: config.cookbookPath,
        ]
       ) 
       

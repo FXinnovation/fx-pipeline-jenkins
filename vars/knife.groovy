@@ -66,6 +66,7 @@ def cookbookUpload(Map config = [:]){
     'serverUrl': '',
     'commandTarget':'',
     'freeze': '',
+    'cookbookPath': ''
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
@@ -73,6 +74,20 @@ def cookbookUpload(Map config = [:]){
     }
   }
   
+  madatoryParamaters = [
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+    'cookbookPath': ''
+  ]
+   
+  for ( parameter in madatoryParamaters ) {
+    if (!config.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is mandatory for \"cookbook upload\" subCommand")
+    }
+  }
+
   return knife(config)
 }
 
@@ -111,6 +126,14 @@ def call (Map config = [:]){
     }
     if (config.freeze) {
       optionsString += '--freeze ' 
+    }
+  }
+  if (config.containsKey('cookbookPath')){
+    if (!(config.cookbookPath instanceof CharSequence)){
+      error('cookbookPath parameter must be of type CharSequence')
+    }
+    if (config.cookbookPath){
+       optionsString += "--cookbook-path ${config.cookbookPath} "
     }
   }
   
