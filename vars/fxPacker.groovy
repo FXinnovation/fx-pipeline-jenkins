@@ -7,6 +7,7 @@ def call(Map config = [:]){
         }else{
           publish = false
         }
+        publish = true
         pipelinePacker(
           [
             validateConfig: [
