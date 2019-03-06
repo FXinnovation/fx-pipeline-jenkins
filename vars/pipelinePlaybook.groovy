@@ -1,7 +1,10 @@
 def call(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('ansiblelint') || !(config.ansiblelint instanceof Map)){
-    config.ansiblelint = [:]
+  if (!config.containsKey('ansiblelintConfig')) {
+    config.ansiblelintConfig = [:]
+  } else if (!(config.ansiblelintConfig instanceof Map)) {
+    error('ansiblelintConfig parameter must be of type Map')
   }
+
   for (closure in closures){
     if (!closure.value instanceof Closure){
       error("${closure.key} has to be a Closure")
@@ -15,7 +18,7 @@ def call(Map config = [:], Map closures = [:]){
   }
 
   stage('test'){
-    ansiblelint(config.ansiblelint)
+    ansiblelint(config.ansiblelintConfig)
   }
 
   if (closures.containsKey('postTest')){
