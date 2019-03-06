@@ -84,7 +84,7 @@ def cookbookUpload(Map config = [:]){
    
   for ( parameter in madatoryParamaters ) {
     if (!config.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is mandatory for \"cookbook upload\" subCommand")
+      error("knife - Parameter \"${parameter.key}\" is mandatory for \"${config.subCommand}\" subCommand")
     }
   }
 
