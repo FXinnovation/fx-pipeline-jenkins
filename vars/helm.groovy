@@ -180,7 +180,7 @@ def call(Map config = [:]){
   if (!config.containsKey('subCommand')){
     error('subCommand parameter is mandatory.')
   }
-  if (config.comtaimsKey('timeout') && (config.timeout instanceof Integer)){
+  if (config.comtainsKey('timeout') && (config.timeout instanceof Integer)){
     optionsString += "--timeout ${config.timeout} "
   }
   if (config.containsKey('username') && (config.username instanceof CharSequence)){
