@@ -18,7 +18,15 @@ def call(Map config = [:], Map closures = [:]){
   }
 
   stage('test'){
-    ansiblelint(config.ansiblelintConfig)
+    try {
+      ansiblelint(config.ansiblelintConfig)
+    } catch(error) {
+      writeFile(
+        file: 'ansible-lint.txt',
+        text: error.getMessage()
+      )
+      throw(error)
+    }
   }
 
   if (closures.containsKey('postTest')){
