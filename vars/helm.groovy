@@ -202,6 +202,10 @@ def call(Map config = [:]){
     script: 'helm version'
   )
 
+  execute(
+    script: 'helm repo update'
+  )
+
   return execute(
     script: "helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart} ${config.commandTarget}"
   )
