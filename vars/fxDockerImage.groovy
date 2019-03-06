@@ -21,7 +21,7 @@ def call(Map config = [:]){
         if ( '' != scmInfo.tag ){
           tags.add(scmInfo.tag)
         }
-        if (config.pushLatest){
+        if (config.pushLatest && '' != scmInfo.tag){
           tags.add('latest')
         }
         pipelineDocker(
