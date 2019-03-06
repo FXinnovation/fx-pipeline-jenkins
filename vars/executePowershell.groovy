@@ -1,6 +1,8 @@
 def call(Map config = [:]){
-  
-  if (!config.containsKey('dockerImage') || !config.dockerImage instanceof CharSequence){
+  if (config.containsKey('dockerImage') && !config.dockerImage instanceof CharSequence) {
+    error('"dockerImage" parameter must be of type CharSequence.')
+  }  
+  if (!config.containsKey('dockerImage')){
     config.dockerImage = 'fxinnovation/powershell:latest'
   }
   if (!config.containsKey('script') || !config.script instanceof CharSequence){
