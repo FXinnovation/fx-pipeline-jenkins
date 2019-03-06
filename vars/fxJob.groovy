@@ -34,7 +34,7 @@ def call(Map closures = [:], List propertiesConfig = []){
     nodeUsageMode: 'NORMAL',
     idleMinutes: 0,
     slaveConnectTimeout: 100,
-    podRetention: '',
+    podRetention: never(),
     label: label,
     containers: [
       containerTemplate(
