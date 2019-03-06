@@ -203,6 +203,10 @@ def call(Map config = [:]){
   )
 
   execute(
+    script: 'helm init --client-only'
+  )
+
+  execute(
     script: 'helm repo update'
   )
 
