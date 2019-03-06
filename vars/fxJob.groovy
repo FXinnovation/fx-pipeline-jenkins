@@ -31,10 +31,10 @@ def call(Map closures = [:], List propertiesConfig = []){
     cloud: 'kubernetes',
     name:  'jenkins-slave-linux',
     namespace: 'default',
-    nodeUsageMode: 'NORMAL'
+    nodeUsageMode: 'NORMAL',
     idleMinutes: '',
     slaveConnectTimeout: 100,
-    podRetention: ''
+    podRetention: '',
     label: label,
     containers: [
       containerTemplate(
