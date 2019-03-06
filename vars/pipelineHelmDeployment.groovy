@@ -41,7 +41,7 @@ def call(Map config = [:], Map closures = [:]){
         failed: true,
         commandTarget: "^${config.helmConfig.release}\$"
       ).stdout
-      if (releases.Releases.size() != 1 || releases.Releases[0].Revision == 1){
+      if ( 1 != releases.Releases.size() || 1 == releases.Releases[0].Revision){
         println 'I cannot determine which release to rollback, or this is an initial deployment.'
       }else{
         helm.rollback(
