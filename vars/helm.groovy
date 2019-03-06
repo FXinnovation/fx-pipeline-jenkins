@@ -177,7 +177,7 @@ def call(Map config = [:]){
   if (config.containsKey('strict') && (config.strict instanceof Boolean) && config.strict){
     optionsString += "--strict "
   }
-  if (!config.containKey('subCommand')){
+  if (!config.containsKey('subCommand')){
     error('subCommand parameter is mandatory.')
   }
   if (config.comtaimsKey('timeout') && (config.timeout instanceof Integer)){
