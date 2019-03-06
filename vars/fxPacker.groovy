@@ -2,12 +2,12 @@ def call(Map config = [:]){
   fxJob(
     [
       pipeline: { Map scmInfo ->
+        publish = false
+
         if ( '' != scmInfo.tag ){
           publish = true
-        }else{
-          publish = false
         }
-        publish = true
+ 
         pipelinePacker(
           [
             validateConfig: [
