@@ -32,7 +32,7 @@ def call(Map closures = [:], List propertiesConfig = []){
     name:  'jenkins-slave-linux',
     namespace: 'default',
     nodeUsageMode: 'NORMAL',
-    idleMinutes: '',
+    idleMinutes: 0,
     slaveConnectTimeout: 100,
     podRetention: '',
     label: label,
