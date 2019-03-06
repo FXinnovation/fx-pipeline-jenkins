@@ -147,13 +147,13 @@ def call(Map config = [:]){
     optionsString += "--install "
   }
   if (config.containsKey('max') && (config.max instanceof Integer)){
-    optionsString += "--max ${confing.max} "
+    optionsString += "--max ${config.max} "
   }
   if (config.containsKey('namespace') && (config.namespace instanceof CharSequence)){
-    optionsString += "--namespace ${confing.namespace} "
+    optionsString += "--namespace ${config.namespace} "
   }
   if (config.containsKey('output') && ('json' == config.output || 'yaml' == config.output)){
-    optionsString += "--output ${confing.output} "
+    optionsString += "--output ${config.output} "
   }
   if (config.containsKey('password') && (config.password instanceof CharSequence)){
     optionsString += "--password ${config.password} "
@@ -168,7 +168,7 @@ def call(Map config = [:]){
     optionsString += "--recreate-pods "
   }
   if (config.containsKey('repo') && (config.repo instanceof CharSequence)){
-    optionsString += "--repo ${confing.repo} "
+    optionsString += "--repo ${config.repo} "
   }
   // TODO: Reserve is a reserved word in groovy, need to find a workaround
   //if (config.containsKey('reverse') && (config.reverse instanceof Boolean) && config.reverse){
@@ -190,7 +190,7 @@ def call(Map config = [:]){
     optionsString += "--values ${config.values} "
   }
   if (config.containsKey('version') && (config.version instanceof CharSequence)){
-    optionsString += "--version ${confing.version} "
+    optionsString += "--version ${config.version} "
   }
   if (config.containsKey('wait') && (config.wait instanceof Boolean) && config.wait){
     optionsString += "--wait "
