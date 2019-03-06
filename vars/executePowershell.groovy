@@ -1,26 +1,23 @@
 def call(Map config = [:]){
   
-  if (!config.containsKey('dockerImage')){
+  if (!config.containsKey('dockerImage') || !config.dockerImage instanceof CharSequence){
     config.dockerImage = 'fxinnovation/powershell:latest'
   }
-  if (!config.containsKey('command') || !config.subCommand instanceof CharSequence){
-    error('"subCommand" parameter is mandatory and must be of type CharSequence.')
-  }
-  if (config.containsKey('options') && !config.options instanceof CharSequence){
-    error('"options" parameter must be of type CharSequence.')
+  if (!config.containsKey('script') || !config.script instanceof CharSequence){
+    error('"script" parameter is mandatory and must be of type CharSequence.')
   }
   if ( !config.containsKey('environmentVariables')  || !(config.environmentVariables instanceof Map) ){
     config.environmentVariables = []
   }
-  
-  if ( !config.containsKey('options') ){
-    config.options = ''
+  if ( !config.containsKey('additionalMounts') || !(config.additionalMounts instanceof Map) ){
+    config.additionalMounts = []
   }
- 
+  
   powershellCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     environmentVariables: config.environmentVariables,
-    fallbackCommand:  'pwsh'
+    additionalMounts: config.additionalMounts,
+    fallbackCommand:  'pwsh',
   )
 
   execute(
@@ -28,6 +25,6 @@ def call(Map config = [:]){
   )
 
   return execute(
-    script: "${powershellCommand} ${config.options} ${config.command}"
+    script: "${powershellCommand} ${config.script}"
   )
 }
