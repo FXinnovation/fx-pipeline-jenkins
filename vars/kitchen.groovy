@@ -23,6 +23,9 @@ def call(Map config = [:]){
   if ( !config.containsKey('dockerAdditionalMounts') ){
     config.dockerAdditionalMounts = []
   }
+  if ( !config.containsKey('dockerImage') ){
+    config.dockerImage = 'fxinnovation/chefdk:latest'
+  }
   if ( !config.containsKey('dockerEnvironmentVariables') ){
     config.dockerEnvironmentVariables = []
   }
