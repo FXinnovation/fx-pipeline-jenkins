@@ -60,18 +60,6 @@ def call() {
       throw(error)
     }finally{
       stage('notification'){
-        hipchatSend (
-          color:        color,
-          credentialId: 'jenkins-hipchat-token',
-          message:      "Job Name: ${JOB_NAME} (<a href=\"${BUILD_URL}\">Open</a>)<br /> \
-                         Job Status: ${result} <br /> \
-                         Job Message: ${message}",
-          room:         '942680',
-          notify:       notify,
-          sendAs:       'New-Jenkins',
-          server:       'api.hipchat.com',
-          v2enabled:    false
-        )
         fx_notify(
           status: result
         )
