@@ -26,7 +26,6 @@ def call(Map config = [:]){
   if ( !config.containsKey('dockerEnvironmentVariables') ){
     config.dockerEnvironmentVariables = []
   }
-  // color
   if (!config.containsKey('color')){
     config.color = true
   }
