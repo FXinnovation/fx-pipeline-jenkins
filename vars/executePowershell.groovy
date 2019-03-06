@@ -8,10 +8,17 @@ def call(Map config = [:]){
   if (!config.containsKey('script') || !config.script instanceof CharSequence){
     error('"script" parameter is mandatory and must be of type CharSequence.')
   }
-  if ( !config.containsKey('environmentVariables')  || !(config.environmentVariables instanceof Map) ){
+  if (config.containsKey('environmentVariables') && !config.environmentVariables instanceof Map){
+    error('"environmentVariables" parameter must be of type Map.')
+  }
+  if (config.containsKey('additionalMounts') && !config.additionalMounts instanceof Map){
+    error('"additionalMounts" parameter must be of type Map.')
+  }
+  
+  if ( !config.containsKey('environmentVariables')  || !(config.environmentVariables instanceof Map)){
     config.environmentVariables = []
   }
-  if ( !config.containsKey('additionalMounts') || !(config.additionalMounts instanceof Map) ){
+  if ( !config.containsKey('additionalMounts') || !(config.additionalMounts instanceof Map)){
     config.additionalMounts = []
   }
   
