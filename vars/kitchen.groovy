@@ -55,7 +55,7 @@ def call(Map config = [:]){
   if (!config.containsKey('destroy')){
     config.destroy = 'always'
   }
-  if ('always' != config.destroy || 'never' != config.destroy || 'passing' != config.destroy){
+  if (!('always' == config.destroy || 'never' == config.destroy || 'passing' == config.destroy)){
     error('destroy parameter must be one of the following values: always, never, passing')
   }
   optionsString += "--destroy=${config.destroy} "
