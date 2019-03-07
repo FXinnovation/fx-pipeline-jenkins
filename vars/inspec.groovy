@@ -36,7 +36,7 @@ def call(Map config = [:]){
   }
   // Please leave this option as latest one
   if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
-    optionsString += "--reporter=${config.reporter} --"
+    optionsString += "--reporter ${config.reporter} --"
   }
   if (!config.containsKey('subCommand') || !(config.subCommand instanceof CharSequence)){
     error('subCommand parameter is mandatory')
