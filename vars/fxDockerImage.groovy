@@ -48,6 +48,16 @@ def call(Map config = [:]){
           "INSPEC_DOCKER_TAG=${tags[0]}"
         ]){
           try{
+            infiniteLoopScript = """
+            while true
+            do
+              sleep 15
+            done
+            """
+            writeFile(
+              file: 'infiniteLoop.sh',
+              text: infiniteLoopScript
+            )
             execute(
               script: "docker run -d \
                 -v \$(pwd):/data \
@@ -55,7 +65,7 @@ def call(Map config = [:]){
                 --name inspec-test \
                 --entrypoint sh \
                 ${config.namespace}/${config.image}:${tags[0]} \
-                while true; do sleep 15; done"
+                infiniteLoop.sh"
             )
             inspec.exec(
               target: 'docker://inspec-test',
