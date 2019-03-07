@@ -30,7 +30,7 @@ def call(Map config = [:], Map closures = [:]){
   stage('test'){
     cookstyle(config.cookstyle)
     foodcritic(config.foodcritic)
-    kitchen(config.kitchen)
+    kitchen.test(config.kitchen)
   }
   if (closures.containsKey('postTest')){
     stage('post-test'){
