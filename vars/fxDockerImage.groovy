@@ -53,6 +53,7 @@ def call(Map config = [:]){
             )
             inspec.exec(
               target: 'docker://inspec-test',
+              reporter: 'cli junit:./inspec-results.xml'
               dockerAdditionalMounts: [
                 '/var/run/docker.sock': '/var/run/docker.sock'
               ],
@@ -63,6 +64,10 @@ def call(Map config = [:]){
           }finally{
             execute(
               script: 'scripts/post-inspec'
+            )
+            junit(
+              allowEmptyResults: true,
+              testResults: 'inspec-results.xml'
             )
           }
         }
