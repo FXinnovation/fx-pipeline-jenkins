@@ -51,6 +51,9 @@ def call(Map config = [:]){
             execute(
               script: 'scripts/pre-inspec'
             )
+            execute(
+              script: 'sleep 5 && docker ps'
+            )
             inspec.exec(
               target: 'docker://inspec-test',
               dockerAdditionalMounts: [
