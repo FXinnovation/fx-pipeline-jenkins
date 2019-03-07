@@ -22,10 +22,10 @@ def call(Map config = [:]){
   if (!config.containsKey('commandTarget') || !(config.commandTarget instanceof CharSequence)){
     error('commandTarget parameter is mandatory')
   }
-  if (!config.containsKey('dockerAdditionalMounts') || !(config.dockerAdditionalMounts instanceof CharSequence)){
+  if (!config.containsKey('dockerAdditionalMounts') || !(config.dockerAdditionalMounts instanceof Map)){
     config.dockerAdditionnalMounts = [:]
   }
-  if (!config.containsKey('dockerEnvironmentVariables') || !(config.dockerEnvironmentVariables instanceof CharSequence)){
+  if (!config.containsKey('dockerEnvironmentVariables') || !(config.dockerEnvironmentVariables instanceof Map)){
     config.dockerEnvironmentVariables = [:]
   }
   if (!config.containsKey('dockerImage') || !(config.dockerImage instanceof CharSequence)){
