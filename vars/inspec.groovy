@@ -35,7 +35,7 @@ def call(Map config = [:]){
     optionsString += "--target=${config.target} "
   }
   if (config.containsKey('jsonConfig') && config.jsonConfig instanceof CharSequence){
-    optionsString += "--jsonConfig=${config.jsonConfig} "
+    optionsString += "--json-config=${config.jsonConfig} "
   }
   // Please leave this option as latest one
   // if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
