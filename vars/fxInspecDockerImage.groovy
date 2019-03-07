@@ -48,7 +48,7 @@ def call(Map config = [:]){
         ],
         commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
       )
-    }catch(uselessError){
+    }catch(inspecExecError){
       println 'Inspec tests have failed, but we\'re still being nice for now'
     }
   }catch(inspecError){
