@@ -54,20 +54,22 @@ def call(Map config = [:]){
               sleep 15
             done
             """
-            inspecConfig = [
-              reporter: [
-                cli: [
-                  stdout: true
-                ],
-                junit: [
-                  stdout: false,
-                  file: 'inspec-results.xml'
-                ]
-              ]
-            ]
-            writeJSON(
+            inspecConfig = """
+            {
+              "reporter": {
+                "cli": {
+                  "stdout": true
+                },
+                "junit": {
+                  "stdout": false,
+                  "file": "inspec-results.xml"
+                }
+              }
+            }
+            """
+            writeFile(
               file: 'inspec-config.json',
-              json: inspecConfig
+              text: inspecConfig
             )
             writeFile(
               file: 'infiniteLoop.sh',
