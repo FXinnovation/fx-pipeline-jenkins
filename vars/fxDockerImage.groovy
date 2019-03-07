@@ -54,7 +54,7 @@ def call(Map config = [:]){
             target: 'docker://inspec-test',
             dockerAdditionalMounts: [
               '/var/run/docker.sock': '/var/run/docker.sock'
-            ]
+            ],
             commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
             
           )
