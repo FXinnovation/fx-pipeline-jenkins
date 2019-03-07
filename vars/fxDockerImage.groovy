@@ -54,6 +54,21 @@ def call(Map config = [:]){
               sleep 15
             done
             """
+            inspecConfig = [
+              reporter: [
+                cli: [
+                  stdout: true
+                ],
+                junit: [
+                  stdout: false,
+                  file: 'inspec-results.xml'
+                ]
+              ]
+            ]
+            writeJSON(
+              file: 'inspec-config.json',
+              json: inspecConfig
+            )
             writeFile(
               file: 'infiniteLoop.sh',
               text: infiniteLoopScript
@@ -69,7 +84,7 @@ def call(Map config = [:]){
             )
             inspec.exec(
               target: 'docker://inspec-test',
-              reporter: 'junit:./inspec-results.xml',
+              jsonConfig: 'inspec-config.json',
               dockerAdditionalMounts: [
                 '/var/run/docker.sock': '/var/run/docker.sock'
               ],
