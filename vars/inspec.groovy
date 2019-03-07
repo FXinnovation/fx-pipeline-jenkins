@@ -2,7 +2,7 @@ def exec(Map config = [:]){
   config.subCommand = 'exec'
     validParameters = [
     'target': '',
-    'reporter': '',
+    'jsonConfig': '',
     'dockerImage':'',
     'subCommand':'',
     'dockerAdditionalMounts':'',
@@ -34,10 +34,13 @@ def call(Map config = [:]){
   if (config.containsKey('target') && config.target instanceof CharSequence){
     optionsString += "--target=${config.target} "
   }
-  // Please leave this option as latest one
-  if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
-    optionsString += "--reporter ${config.reporter} --"
+  if (config.containsKey('jsonConfig') && config.jsonConfig instanceof CharSequence){
+    optionsString += "--jsonConfig=${config.jsonConfig} "
   }
+  // Please leave this option as latest one
+  // if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
+  //   optionsString += "--reporter ${config.reporter} --"
+  // }
   if (!config.containsKey('subCommand') || !(config.subCommand instanceof CharSequence)){
     error('subCommand parameter is mandatory')
   }
