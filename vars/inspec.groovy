@@ -1,3 +1,21 @@
+def exec(Map config = [:]){
+  config.subCommand = 'exec'
+    validParameters = [
+    'target': '',
+    'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
+    'commandTarget':'',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("inspec - Parameter \"${parameter.key}\" is not valid for \"exec\", please remove it!")
+    }
+  }
+  inspec(config)
+}
+
 def call(Map config = [:]){
   optionsString = ''
   if (!config.containsKey('commandTarget') || !(config.commandTarget instanceof CharSequence)){
