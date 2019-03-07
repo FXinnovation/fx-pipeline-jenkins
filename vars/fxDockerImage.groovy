@@ -39,6 +39,15 @@ def call(Map config = [:]){
               credentialId: 'jenkins-fxinnovation-dockerhub'
             ],
             publish: publish
+          ],
+          [
+            postBuild: {
+              fxInspecDockerImage(
+                image: config.image,
+                tag: tags[0],
+                namespace: config.namespace
+              )
+            }
           ]
         )
       }
