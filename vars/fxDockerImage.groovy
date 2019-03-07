@@ -47,20 +47,24 @@ def call(Map config = [:]){
           "INSPEC_DOCKER_IMAGE=${config.image}",
           "INSPEC_DOCKER_TAG=${tags[0]}"
         ]){
-          execute(
-            script: 'scripts/pre-inspec'
-          )
-          inspec.exec(
-            target: 'docker://inspec-test',
-            dockerAdditionalMounts: [
-              '/var/run/docker.sock': '/var/run/docker.sock'
-            ],
-            commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
-            
-          )
-          execute(
-            script: 'scripts/post-inspec'
-          )
+          try{
+            execute(
+              script: 'scripts/pre-inspec'
+            )
+            inspec.exec(
+              target: 'docker://inspec-test',
+              dockerAdditionalMounts: [
+                '/var/run/docker.sock': '/var/run/docker.sock'
+              ],
+              commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
+            )
+          catch(inspecError){
+            throw (inspecError)
+          }finally{
+            execute(
+              script: 'scripts/post-inspec'
+            )
+          }
         }
       }
     ]
