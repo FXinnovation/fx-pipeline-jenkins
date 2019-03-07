@@ -28,7 +28,7 @@ def call(Map config = [:]){
     config.dockerEnvironmentVariables = [:]
   }
   if (!config.containsKey('dockerImage') || !(config.dockerImage instanceof CharSequence)){
-    config.dockerImage = 'fxinnovation/inspec:latest'
+    config.dockerImage = 'fxinnovation/chefdk:latest'
   }
   if (config.containsKey('target') && config.target instanceof CharSequence){
     optionsString += "--target=${config.target} "
@@ -39,16 +39,16 @@ def call(Map config = [:]){
 
   inspecCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand: 'inspec',
+    fallbackCommand: '',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables
   )
 
   execute(
-    script: "${inspecCommand} --version"
+    script: "${inspecCommand} inspec --version"
   )
 
   return execute(
-    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+    script: "${inspecCommand} inspec ${config.subCommand} ${optionsString} ${config.commandTarget}"
   )
 }
