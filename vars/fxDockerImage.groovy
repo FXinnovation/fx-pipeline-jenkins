@@ -49,11 +49,17 @@ def call(Map config = [:]){
         ]){
           try{
             execute(
-              script: 'scripts/pre-inspec'
+              script: "docker run -d \
+                -v \$(pwd):/data \
+                -w /data \
+                --name inspec-test \
+                --entrypoint sh \
+                ${config.namespace}/${config.image}:${tags[0]} \
+                while true; do sleep 15; done"
             )
             inspec.exec(
               target: 'docker://inspec-test',
-              reporter: 'cli junit:./inspec-results.xml',
+              reporter: 'junit:./inspec-results.xml',
               dockerAdditionalMounts: [
                 '/var/run/docker.sock': '/var/run/docker.sock'
               ],
@@ -63,7 +69,8 @@ def call(Map config = [:]){
             throw (inspecError)
           }finally{
             execute(
-              script: 'scripts/post-inspec'
+              script: 'docker kill inspec-test && docker rm inspec-test'
+              throwError: false
             )
             junit(
               allowEmptyResults: true,
