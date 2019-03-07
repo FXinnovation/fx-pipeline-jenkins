@@ -41,49 +41,44 @@ def call(Map config = [:]){
             publish: publish
           ]
         )
-        withEnv([
-          "INSPEC_DOCKER_NAME=inspec-test",
-          "INSPEC_DOCKER_NAMESPACE=${config.namespace}",
-          "INSPEC_DOCKER_IMAGE=${config.image}",
-          "INSPEC_DOCKER_TAG=${tags[0]}"
-        ]){
-          try{
-            infiniteLoopScript = """
-            while true
-            do
-              sleep 15
-            done
-            """
-            inspecConfig = """
-            {
-              "reporter": {
-                "cli": {
-                  "stdout": true
-                },
-                "junit": {
-                  "stdout": false,
-                  "file": "inspec-results.xml"
-                }
+        try{
+          infiniteLoopScript = """
+          while true
+          do
+            sleep 15
+          done
+          """
+          inspecConfig = """
+          {
+            "reporter": {
+              "cli": {
+                "stdout": true
+              },
+              "junit": {
+                "stdout": false,
+                "file": "inspec-results.xml"
               }
             }
-            """
-            writeFile(
-              file: 'inspec-config.json',
-              text: inspecConfig
-            )
-            writeFile(
-              file: 'infiniteLoop.sh',
-              text: infiniteLoopScript
-            )
-            execute(
-              script: "docker run -d \
-                -v \$(pwd):/data \
-                -w /data \
-                --name inspec-test \
-                --entrypoint sh \
-                ${config.namespace}/${config.image}:${tags[0]} \
-                infiniteLoop.sh"
-            )
+          }
+          """
+          writeFile(
+            file: 'inspec-config.json',
+            text: inspecConfig
+          )
+          writeFile(
+            file: 'infiniteLoop.sh',
+            text: infiniteLoopScript
+          )
+          execute(
+            script: "docker run -d \
+              -v \$(pwd):/data \
+              -w /data \
+              --name inspec-test \
+              --entrypoint sh \
+              ${config.namespace}/${config.image}:${tags[0]} \
+              infiniteLoop.sh"
+          )
+          try{
             inspec.exec(
               target: 'docker://inspec-test',
               jsonConfig: 'inspec-config.json',
@@ -92,18 +87,20 @@ def call(Map config = [:]){
               ],
               commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
             )
-          }catch(inspecError){
-            throw (inspecError)
-          }finally{
-            execute(
-              script: 'docker kill inspec-test && docker rm inspec-test',
-              throwError: false
-            )
-            junit(
-              allowEmptyResults: true,
-              testResults: 'inspec-results.xml'
-            )
+          }catch(uselessError){
+            println 'Inspec tests have failed, but we\'re still being nice for now'
           }
+        }catch(inspecError){
+          throw (inspecError)
+        }finally{
+          execute(
+            script: 'docker kill inspec-test && docker rm inspec-test',
+            throwError: false
+          )
+          junit(
+            allowEmptyResults: true,
+            testResults: 'inspec-results.xml'
+          )
         }
       }
     ]
