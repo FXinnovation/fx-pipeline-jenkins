@@ -11,21 +11,21 @@ def call(Map config = [:]){
   if (config.containsKey('environmentVariables') && !config.environmentVariables instanceof Map){
     error('"environmentVariables" parameter must be of type Map.')
   }
-  if (config.containsKey('additionalMounts') && !config.additionalMounts instanceof Map){
-    error('"additionalMounts" parameter must be of type Map.')
+  if (config.containsKey('dockerAdditionalMounts') && !config.dockerAdditionalMounts instanceof Map){
+    error('"dockerAdditionalMounts" parameter must be of type Map.')
   }
   
-  if ( !config.containsKey('environmentVariables')  || !(config.environmentVariables instanceof Map)){
+  if (!config.containsKey('environmentVariables')){
     config.environmentVariables = []
   }
-  if ( !config.containsKey('additionalMounts') || !(config.additionalMounts instanceof Map)){
-    config.additionalMounts = []
+  if (!config.containsKey('dockerAdditionalMounts')){
+    config.dockerAdditionalMounts = []
   }
   
   powershellCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     environmentVariables: config.environmentVariables,
-    additionalMounts: config.additionalMounts,
+    additionalMounts: config.dockerAdditionalMounts,
     fallbackCommand:  'pwsh',
   )
 
