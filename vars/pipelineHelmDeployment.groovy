@@ -14,7 +14,7 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   stage('test'){
-    helmTestConfig = config.helmConfig
+    helmTestConfig = config.helmConfig.clone()
     helmTestConfig.dryRun = true
     helm.upgrade(helmTestConfig)
   }

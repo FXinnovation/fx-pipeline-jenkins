@@ -2,7 +2,6 @@ def upgrade(Map config = [:]){
   config.subCommand = 'upgrade'
   validParameters = [
     'chart': '',
-    'commandTarget': '',
     'dryRun': '',
     'force': '',
     'install': '',
@@ -88,7 +87,6 @@ def list(Map config = [:]){
 def rollback(Map config = [:]){
   config.subCommand = 'rollback'
   validParameters = [
-    'commandTarget':'',
     'force':'',
     'recreatePods': '',
     'subCommand': '',
