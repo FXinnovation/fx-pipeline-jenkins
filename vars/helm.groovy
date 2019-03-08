@@ -1,5 +1,6 @@
 def upgrade(Map config = [:]){
   config.subCommand = 'upgrade'
+  println config
   validParameters = [
     'chart': '',
     'dryRun': '',
