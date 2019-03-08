@@ -31,6 +31,10 @@ def call(Map config = [:], Map closures = [:]){
         file: config.ansiblelintOutputFile,
         text: error.getMessage()
       )
+      archiveArtifacts(
+        artifacts: config.ansiblelintOutputFile
+      )
+
       throw(error)
     }
   }
