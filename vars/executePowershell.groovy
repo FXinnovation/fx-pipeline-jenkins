@@ -8,15 +8,15 @@ def call(Map config = [:]){
   if (!config.containsKey('script') || !config.script instanceof CharSequence){
     error('"script" parameter is mandatory and must be of type CharSequence.')
   }
-  if (config.containsKey('environmentVariables') && !config.environmentVariables instanceof Map){
-    error('"environmentVariables" parameter must be of type Map.')
+  if (config.containsKey('dockerEnvironmentVariables') && !config.dockerEnvironmentVariables instanceof Map){
+    error('"dockerEnvironmentVariables" parameter must be of type Map.')
   }
   if (config.containsKey('dockerAdditionalMounts') && !config.dockerAdditionalMounts instanceof Map){
     error('"dockerAdditionalMounts" parameter must be of type Map.')
   }
   
-  if (!config.containsKey('environmentVariables')){
-    config.environmentVariables = []
+  if (!config.containsKey('dockerEnvironmentVariables')){
+    config.dockerEnvironmentVariables = []
   }
   if (!config.containsKey('dockerAdditionalMounts')){
     config.dockerAdditionalMounts = []
@@ -24,7 +24,7 @@ def call(Map config = [:]){
   
   powershellCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    environmentVariables: config.environmentVariables,
+    environmentVariables: config.dockerEnvironmentVariables,
     additionalMounts: config.dockerAdditionalMounts,
     fallbackCommand:  'pwsh',
   )
