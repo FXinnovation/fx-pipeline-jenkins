@@ -36,21 +36,23 @@ def call(Map config = [:], Map closures = [:]){
         println 'Deploy stage has been skipped'
       }
     }catch(error){
-      releases = readJSON text: helm.list(
-        output: 'json',
-        failed: true,
-        commandTarget: "^${config.helmConfig.release}\$"
-      ).stdout
-      if ( 1 != releases.Releases.size() || 1 == releases.Releases[0].Revision){
-        println 'I cannot determine which release to rollback, or this is an initial deployment.'
-      }else{
-        helm.rollback(
-          force: true,
-          release: config.helmConfig.release,
-          revision: releases.Releases[0].Revision - 1,
-          wait: true
-        )
-      }
+      try{
+        releases = readJSON text: helm.list(
+          output: 'json',
+          failed: true,
+          commandTarget: "^${config.helmConfig.release}\$"
+        ).stdout
+        if ( 1 != releases.Releases.size() || 1 == releases.Releases[0].Revision){
+          println 'I cannot determine which release to rollback, or this is an initial deployment.'
+        }else{
+          helm.rollback(
+            force: true,
+            release: config.helmConfig.release,
+            revision: releases.Releases[0].Revision - 1,
+            wait: true
+          )
+        }
+      }catch(errorHandler){}
       throw error
     }
   }
