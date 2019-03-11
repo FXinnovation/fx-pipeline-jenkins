@@ -89,6 +89,8 @@ def rollback(Map config = [:]){
   validParameters = [
     'force':'',
     'recreatePods': '',
+    'release': '',
+    'revision': '',
     'subCommand': '',
     'timeout': '',
     'wait': ''
@@ -195,6 +197,7 @@ def call(Map config = [:]){
   if (config.containsKey('wait') && (config.wait instanceof Boolean) && config.wait){
     optionsString += "--wait "
   }
+  // TODO: Add revision
 
   // NOTE: We're not using docker because it's very hard to use helm in isolation
   // this might become a future enhancement
