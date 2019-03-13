@@ -289,7 +289,7 @@ def call(Map config = [:]){
       error('terraform - "backendConfigs" parameter must be of type "String[]"')
     }
     for (i=0; i<config.backendConfigs.size(); i++){
-      optionsString = optionsString + "-backend-config=${config.backendConfig[i]} "
+      optionsString = optionsString + "-backend-config=${config.backendConfigs[i]} "
     }
   }
   // backup
