@@ -5,6 +5,12 @@ def call(Map config = [:], Map closures = [:]){
     error('ansiblelintConfig parameter must be of type Map')
   }
 
+  if (!config.containsKey('ansiblelintOutputFile')) {
+    config.ansiblelintOutputFile = 'ansible-lint.txt'
+  } else if (!(config.ansiblelintOutputFile instanceof CharSequence)) {
+    error('ansiblelintOutputFile parameter must be of type CharSequence')
+  }
+
   for (closure in closures){
     if (!closure.value instanceof Closure){
       error("${closure.key} has to be a Closure")
@@ -18,7 +24,19 @@ def call(Map config = [:], Map closures = [:]){
   }
 
   stage('test'){
-    ansiblelint(config.ansiblelintConfig)
+    try {
+      ansiblelint(config.ansiblelintConfig)
+    } catch(error) {
+      writeFile(
+        file: config.ansiblelintOutputFile,
+        text: error.getMessage()
+      )
+      archiveArtifacts(
+        artifacts: config.ansiblelintOutputFile
+      )
+
+      throw(error)
+    }
   }
 
   if (closures.containsKey('postTest')){
