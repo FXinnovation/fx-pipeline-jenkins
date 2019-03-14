@@ -1,0 +1,15 @@
+# printDebug()
+Prints a message only if the environment variable “DEBUG” is set to “true”.
+
+## Input
+The function takes a CharSequence in input that follows the following pattern:
+```
+{
+  message: CharSequence,  # Required
+}
+```
+
+
+## Example
+printDebug('This will display only if “env.DEBUG” = true.')
+```
