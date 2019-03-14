@@ -8,7 +8,7 @@ def call(Map config = [:], Map closures = [:]){
   if (!config.containsKey('ansiblelintOutputFile')) {
     config.ansiblelintOutputFile = 'ansible-lint.txt'
   } else if (!(config.ansiblelintOutputFile instanceof CharSequence)) {
-    error('ansiblelintOutputFile parameter must be of type String')
+    error('ansiblelintOutputFile parameter must be of type CharSequence')
   }
 
   for (closure in closures){
