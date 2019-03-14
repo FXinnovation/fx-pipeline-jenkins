@@ -8,3 +8,4 @@ Usage:
   println scmInfo.branch
   println scmInfo.tag
   println scmInfo.isPullRequest
+  println scmInfo.isLastTag

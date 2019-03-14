@@ -10,9 +10,17 @@ def call(Map config = [:]){
   try{
     scmInfo.tag = execute(
     script: 'git describe --tags --exact-match'
-  ).stdout.trim()
+    ).stdout.trim()
   }catch(error){
     scmInfo.tag = ''
+  }
+  try{
+    latestTag = execute(
+      script: 'git describe --tags $(git rev-list --tags --max-count=1)'
+    ).stdout.trim()
+    scmInfo.isLastTag = (latestTag == scmInfo.tag)
+  }catch(error){
+    scmInfo.isLastTag = false
   }
   scmInfo.isPullRequest = scmInfo.branch.matches('^PR-[0-9]*$')
   return scmInfo
