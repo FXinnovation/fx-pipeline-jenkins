@@ -13,19 +13,7 @@ def call(Map config = [:]) {
 
   fxJob([
     pipeline: {
-      try {
-        ansiblelint(config.ansiblelintConfig)
-      } catch(error) {
-        writeFile(
-          file: config.ansiblelintOutputFile,
-          text: error.getMessage()
-        )
-        archiveArtifacts(
-          artifacts: config.ansiblelintOutputFile
-        )
-
-        throw(error)
-      }
+      pipelinePlaybook(config)
     },
     preNotify: {
       def issues = scanForIssues blameDisabled: true, tool: pyLint(name: 'ansible-lint', pattern: 'ansible-lint.txt')
