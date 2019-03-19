@@ -92,8 +92,16 @@ def test(Map config = [:], Map closures = [:]){
   if (!config.containsKey('testDestroyOptions') || !(config.testDestroyOptions instanceof Map)){
     config.testDestroyOptions = [:]
   }
+  if (!config.containsKey('publish') || !(config.publish instanceof Boolean)){
+    config.publish = false
+  }
+
   if (!closures.containsKey('test')){
     closures.test = {
+      if (config.publish) {
+        return
+      }
+
       try {
         terraform.plan([
             out: 'test.out',
