@@ -1,7 +1,7 @@
 mapAttributeCheck()
 
 Will check a map "mapToCheck" attribute "keyToCheck".
-It will raise an error with "keyUndefinedErrorMessage" content if value does not exist or set a default value "defaultValue".
+It will raise an error with "keyUndefinedErrorMessage" content if the value does not exist or it will set a default value with "defaultValue".
 It will also raise an error if the "keyToCheck" value is not of type "expectedValueType".
 
 The function takes the following arguments:
@@ -18,6 +18,6 @@ The function takes the following arguments:
 
 Examples:
 
-- mapAttributeCheck(myMap, 'bar', Integer, 0, 'AïE CARAMBA! The “bar” key must be defined.")
+- mapAttributeCheck(myMap, 'bar', Integer, 0, 'AïE CARAMBA! The “bar” key must be defined.')
 
 - mapAttributeCheck(myMap, 'foo', CharSequence, '')
