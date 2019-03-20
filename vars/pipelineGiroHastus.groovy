@@ -9,7 +9,7 @@ fxJob([
     )
 
     customer = input(
-      message : 'Which customer do you want to deploy ?',
+      message : 'Which customer\'s infrastructure ?',
       ok: 'Select',
       parameters: [choice(name: 'customer', choices: listCustomer.stdout, description: 'What is the customer?')]
     )
@@ -49,7 +49,7 @@ fxJob([
       error("\"clientNumber\" version must be set in file \"${customer}/version.yml\"")
     }
 
-    // TODO: These files should be hosted in Nexus once it is setup, this is ugly
+    // These files should be hosted in Nexus once it is setup, this is ugly
     dir('fxinnovation-common-scripts-powershell') {
       git(
         credentialsId: 'jenkins_fxinnovation_bitbucket',
@@ -94,7 +94,6 @@ fxJob([
       )
     }
 
-    //Verify if cookbook hastus version exists
     dir('cookbook-hastus') {
       git(
         credentialsId: 'gitea-administrator',
@@ -117,10 +116,8 @@ fxJob([
       script: "rm -rf cookbook-hastus"
     )
 
-    dir ('output') {
-      sh 'pwd'
-    }
-    //fix permissions
+    sh 'mkdir -p output'
+    
     execute (
       script: 'chmod o+w output'
     )
@@ -129,13 +126,13 @@ fxJob([
       usernamePassword(
         credentialsId: 'giro-service-principal',
         usernameVariable: 'appid',
-        passwordVariable: 'passwd'
+        passwordVariable: 'servicePrincipalPassword'
       )
     ]) {
       executePowershell([
         script: "/data/giro-cloud-orchestration/ManifestReader/Export-AzureStackDeployer.ps1 -InputXmlFile \"/data/${customer}/manifest.xml\" -InputCustomerConfigFile \"/data/giro-cloud-orchestration/ManifestReader/Input-Test/Giro-config.json\" -ModuleFxLocation \"/data/fxinnovation-common-scripts-powershell/PsModules/FXNameStandard/1.0\" -OutputPath \"/data/output\" -Tenant \"5748501a-0f16-478b-a990-e53164e32fa8\" -AppId \"${appid}\"  -Local -Verbose",
         dockerEnvironmentVariables: [
-          Password: "${passwd}"
+          Password: "${servicePrincipalPassword}"
         ]
       ])
     }
@@ -157,9 +154,6 @@ fxJob([
       ])
     }
 
-    // Todo environment upload to chef
-    // Todo data bag upload to chef
-
     if (!publish) {
       println "===================\nThis is not a tagged version, this pipeline will not deploy\n==================="
       return
@@ -169,9 +163,6 @@ fxJob([
       status: 'PENDING'
     )
     input 'WARNING: You are about to deploy. Do you want to apply it?'
-
-    // Todo Runbook
-    // Todo chef-client
   },
 ],
 [
