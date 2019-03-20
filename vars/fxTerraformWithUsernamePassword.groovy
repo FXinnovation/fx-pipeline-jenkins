@@ -1,28 +1,27 @@
 def call(Map config = [:]) {
-  if (!config.containsKey('testEnvironmentCredentialId') || !(config.testEnvironmentCredentialId instanceof CharSequence)) {
-    error('“testEnvironmentCredentialId” parameter is mandatory.')
-  }
-  if (!config.containsKey('providerUsernameVariableName') || !(config.providerUsernameVariableName instanceof CharSequence)) {
-    config.providerUsernameVariableName = 'access_key'
-  }
-  if (!config.containsKey('providerPasswordVariableName') || !(config.providerPasswordVariableName instanceof CharSequence)) {
-    config.providerPasswordVariableName = 'secret_key'
-  }
+  mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '“testEnvironmentCredentialId” parameter is mandatory.')
+  mapAttributeCheck(config, 'providerUsernameVariableName', CharSequence, 'access_key')
+  mapAttributeCheck(config, 'providerPasswordVariableName', CharSequence, 'secret_key')
+  mapAttributeCheck(config, 'testPlanVars', List, [])
+  mapAttributeCheck(config, 'validateVars', List, [])
 
   withCredentials([
     usernamePassword(
       credentialsId: config.testEnvironmentCredentialId,
-      usernameVariable: 'TF_username',
-      passwordVariable: 'TF_password'
+      usernameVariable: 'TF_username_test',
+      passwordVariable: 'TF_password_test'
     )
   ]) {
-    fxTerraform(
-      [
-        planVars: [
-          "${config.providerUsernameVariableName}=${TF_username}",
-          "${config.providerPasswordVariableName}=${TF_password}",
-        ]
-      ] + config
-    )
+    config.testPlanVars = [
+      "${config.providerUsernameVariableName}=${TF_username_test}",
+      "${config.providerPasswordVariableName}=${TF_password_test}",
+    ] + config.testPlanVars
+
+    config.validateVars = [
+      "${config.providerUsernameVariableName}=${TF_username_test}",
+      "${config.providerPasswordVariableName}=${TF_password_test}",
+    ] + config.publishPlanVars
+
+    fxTerraform(config)
   }
 }
