@@ -1,6 +1,8 @@
 mapAttributeCheck()
 
-Will check  execute test & deploy terraform modules/deploy repositories.
+Will check a map "mapToCheck" attribute "keyToCheck".
+It will raise an error with "keyUndefinedErrorMessage" content if value does not exist or set a default value "defaultValue".
+It will also raise an error if the "keyToCheck" value is not of type "expectedValueType".
 
 The function takes the following arguments:
 
