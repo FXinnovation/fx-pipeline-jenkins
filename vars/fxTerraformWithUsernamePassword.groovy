@@ -20,7 +20,7 @@ def call(Map config = [:]) {
     config.validateVars = [
       "${config.providerUsernameVariableName}=${TF_username_test}",
       "${config.providerPasswordVariableName}=${TF_password_test}",
-    ] + config.publishPlanVars
+    ] + config.validateVars
 
     fxTerraform(config)
   }
