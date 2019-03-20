@@ -1,6 +1,6 @@
 def call(Map mapToCheck, String keyToCheck, Class<?> expectedValueType, defaultValue, String keyUndefinedErrorMessage = '') {
   if ('' == keyToCheck) {
-    error('Cannot check an empty key. Make sur the “keyToCheck” argument has a proper value.')
+    error('Cannot check a Map’s value with an empty key. Make sure the “keyToCheck” argument has a proper value.')
   }
 
   if (!mapToCheck.containsKey(keyToCheck) && '' != keyUndefinedErrorMessage) {
