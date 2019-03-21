@@ -16,7 +16,13 @@ def call(Map config = [:]) {
       pipelinePlaybook(config)
     },
     preNotify: {
-      def issues = scanForIssues blameDisabled: true, tool: pyLint(name: 'ansible-lint', pattern: config.ansiblelintOutputFile)
+      def issues = scanForIssues(
+        blameDisabled: true,
+        tool: pyLint(
+          name: 'ansible-lint',
+          pattern: config.ansiblelintOutputFile
+        )
+      ) 
       publishIssues issues: [issues]
     }
   ])
