@@ -21,7 +21,7 @@ def call(Map config = [:]) {
             vars: config.validateVars
           ],
           testDestroyOptions: [
-            vars: config.planVars
+            vars: config.testPlanVars
           ],
         ], [
           init: {
