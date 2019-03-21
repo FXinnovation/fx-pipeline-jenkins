@@ -11,10 +11,10 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'filter', CharSequence, '*')
   mapAttributeCheck(config, 'deleteBeforeUpload', Boolean, false)
    
-  def deleteBeforeUploadPowershell = '$False'
+  def deleteBeforeUploadPowershell = '$false'
   
   if (config.deleteBeforeUpload) {
-    deleteBeforeUploadPowershell = '$True'
+    deleteBeforeUploadPowershell = '$true'
   }
  
 
