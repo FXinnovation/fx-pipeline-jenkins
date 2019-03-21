@@ -1,20 +1,10 @@
 def call (Map config = [:]){
-  if (!config.containsKey('directory') && !(config.directory instanceof CharSequence)) {
-    error('directory parameter is mandatory and must be of type CharSequence')
-  }
   
-  if (!config.containsKey('credentialsId') && !(config.credentialsId instanceof CharSequence)) {
-    error('credentialsId parameter is mandatory and must be of type CharSequence')
-  }
+  mapAttributeCheck(config, 'directory', CharSequence, '', '“directory” parameter is mandatory.')
+  mapAttributeCheck(config, 'credentialsId', CharSequence, '', '“credentialsId” parameter is mandatory.')
+  mapAttributeCheck(config, 'repoUrl', CharSequence, '', '“repoUrl” parameter is mandatory.')
+  mapAttributeCheck(config, 'tag', CharSequence, '', '“tag” parameter is mandatory.')
   
-  if (!config.containsKey('repoUrl') && !(config.repoUrl instanceof CharSequence)) {
-    error('repoUrl parameter is mandatory and must be of type CharSequence')
-  }
-  
-  if (!config.containsKey('tag') && !(config.tag instanceof CharSequence)) {
-    error('tag parameter is mandatory and must be of type CharSequence')
-  }
- 
   dir(config.directory) {
     git(
       credentialsId: config.credentialsId,
@@ -28,7 +18,7 @@ def call (Map config = [:]){
       throwError: false
     )
 
-    if ("" == tagExist.stdout) {
+    if ('' == tagExist.stdout) {
       error("There is no tag \"${config.tag}\" in the repo \"${config.repoUrl}\"")
     }
 

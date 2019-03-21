@@ -1,0 +1,14 @@
+The *fxCheckoutTag* method is a helper to clone a git repository to a specific tag.
+This will return an error if the tag doesn't exist. 
+
+Exemple : 
+```
+ fxCheckoutTag (
+    directory: "foo",
+	credentialsId: "jenkins_fxinnovation_bitbucket",
+	repoUrl: "https://bitbucket.org/fxadmin/public-common-pipeline-jenkins.git",
+	tag: "0.0.1"
+  )
+```
+
+This will clone the repo `https://bitbucket.org/fxadmin/public-common-pipeline-jenkins.git` using the jenkins crendentials `jenkins_fxinnovation_bitbucket` in the folder `foo` and checkout to the tag `0.0.1`
