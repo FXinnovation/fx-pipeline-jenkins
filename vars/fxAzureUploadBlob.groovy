@@ -17,11 +17,10 @@ def call(Map config = [:]) {
     deleteBeforeUploadPowershell = '-DeleteBeforeUpload'
   }
  
-
   fxCheckoutTag (
     directory: config.libFolder,
-	credentialsId: "jenkins_fxinnovation_bitbucket",
-	repoUrl: "https://bitbucket.org/fxadmin/fxinnovation-common-scripts-powershell.git",
+	credentialsId: 'jenkins_fxinnovation_bitbucket',
+	repoUrl: 'https://bitbucket.org/fxadmin/fxinnovation-common-scripts-powershell.git',
 	tag: config.libVersion
   )
 
@@ -36,8 +35,4 @@ def call(Map config = [:]) {
       script: "/data/${config.libFolder}/AutomationAccount/Upload-Blob.ps1 -StorageAccountName \"${config.storageAccountName}\" -ContainerName \"${config.containerName}\" -LocalPath \"/data/${config.localFilePath}\" -RemotePath \"${config.blobFilePath}\" -SasToken \"${sas_key}\" -Filter \"${config.filter}\" ${deleteBeforeUploadPowershell} "
     ])
   }
-  
-  execute (
-    script: "rm -rf ${config.libFolder}"
-  )
 }
