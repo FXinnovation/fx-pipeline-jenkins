@@ -33,7 +33,7 @@ def call(Map config = [:]) {
   ]) {
     executePowershell([
       dockerImage: config.powershellDockerImage,
-      script: "/data/${libFolder}/AutomationAccount/Upload-Blob.ps1 -StorageAccountName \"${config.storageAccountName}\" -ContainerName \"${config.containerName}\" -LocalPath \"/data/${config.localFilePath}\" -RemotePath \"${config.blobFilePath}\" -SasToken \"${sas_key}\" -Filter \"${config.filter}\" -DeleteBeforeUpload ${deleteBeforeUploadPowershell} "
+      script: "/data/${config.libFolder}/AutomationAccount/Upload-Blob.ps1 -StorageAccountName \"${config.storageAccountName}\" -ContainerName \"${config.containerName}\" -LocalPath \"/data/${config.localFilePath}\" -RemotePath \"${config.blobFilePath}\" -SasToken \"${sas_key}\" -Filter \"${config.filter}\" -DeleteBeforeUpload ${deleteBeforeUploadPowershell} "
     ])
   }
 }
