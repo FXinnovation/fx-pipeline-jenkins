@@ -11,10 +11,10 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'filter', CharSequence, '*')
   mapAttributeCheck(config, 'deleteBeforeUpload', Boolean, false)
    
-  def deleteBeforeUploadPowershell = '$false'
+  def deleteBeforeUploadPowershell = ''
   
   if (config.deleteBeforeUpload) {
-    deleteBeforeUploadPowershell = '$true'
+    deleteBeforeUploadPowershell = '-DeleteBeforeUpload'
   }
  
 
@@ -33,7 +33,7 @@ def call(Map config = [:]) {
   ]) {
     executePowershell([
       dockerImage: config.powershellDockerImage,
-      script: "/data/${config.libFolder}/AutomationAccount/Upload-Blob.ps1 -StorageAccountName \"${config.storageAccountName}\" -ContainerName \"${config.containerName}\" -LocalPath \"/data/${config.localFilePath}\" -RemotePath \"${config.blobFilePath}\" -SasToken \"${sas_key}\" -Filter \"${config.filter}\" -DeleteBeforeUpload ${deleteBeforeUploadPowershell} "
+      script: "/data/${config.libFolder}/AutomationAccount/Upload-Blob.ps1 -StorageAccountName \"${config.storageAccountName}\" -ContainerName \"${config.containerName}\" -LocalPath \"/data/${config.localFilePath}\" -RemotePath \"${config.blobFilePath}\" -SasToken \"${sas_key}\" -Filter \"${config.filter}\" ${deleteBeforeUploadPowershell} "
     ])
   }
 }
