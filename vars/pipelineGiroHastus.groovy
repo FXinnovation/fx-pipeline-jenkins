@@ -50,68 +50,24 @@ fxJob([
     }
 
     // These files should be hosted in Nexus once it is setup, this is ugly
-    dir('fxinnovation-common-scripts-powershell') {
-      git(
-        credentialsId: 'jenkins_fxinnovation_bitbucket',
-        changelog: false,
-        poll: false,
-        url: 'https://bitbucket.org/fxadmin/fxinnovation-common-scripts-powershell.git'
-      )
-
-      tagExist = execute (
-        script: "git rev-parse -q --verify \"refs/tags/${versions['fxinnovation-common-scripts-powershell']}\"",
-        throwError: false
-      )
-
-      if ("" == tagExist.stdout) {
-        error("There is no tag \"${versions['fxinnovation-common-scripts-powershell']}\" in the repo \"fxinnovation-common-scripts-powershell\"")
-      }
-
-      execute (
-        script: "git checkout ${versions['fxinnovation-common-scripts-powershell']}"
-      )
-    }
-
-    dir('giro-cloud-orchestration') {
-      git(
-        credentialsId: 'jenkins_fxinnovation_bitbucket',
-        changelog: false,
-        poll: false,
-        url: 'https://bitbucket.org/fxadmin/giro-cloud-orchestration.git'
-      )
-
-      tagExist = execute (
-        script: "git rev-parse -q --verify \"refs/tags/${versions['giro-cloud-orchestration']}\"",
-        throwError: false
-      )
-
-      if ("" == tagExist.stdout) {
-        error("There is no tag \"${versions['giro-cloud-orchestration']}\" in the repo \"giro-cloud-orchestration\"")
-      }
-
-      execute (
-        script: "git checkout ${versions['giro-cloud-orchestration']}"
-      )
-    }
-
-    dir('cookbook-hastus') {
-      git(
-        credentialsId: 'gitea-administrator',
-        changelog: false,
-        poll: false,
-        url: 'https://scm.dazzlingwrench.fxinnovation.com/giro/cookbook-hastus.git'
-      )
-
-      tagExist = execute (
-        script: "git rev-parse -q --verify \"refs/tags/${versions['cookbook-hastus']}\"",
-        throwError: false
-      )
-
-      if ("" == tagExist.stdout) {
-        error("There is no tag \"${versions['cookbook-hastus']}\" in the repo \"cookbook-hastus\"")
-      }
-    }
-
+    fxCheckoutTag (
+      directory: 'fxinnovation-common-scripts-powershell',
+      credentialsId: 'jenkins_fxinnovation_bitbucket',
+      repoUrl: 'https://bitbucket.org/fxadmin/fxinnovation-common-scripts-powershell.git',
+      tag: versions['fxinnovation-common-scripts-powershell']
+    ) 
+    fxCheckoutTag (
+      directory: 'giro-cloud-orchestration',
+      credentialsId: 'jenkins_fxinnovation_bitbucket',
+      repoUrl: 'https://bitbucket.org/fxadmin/giro-cloud-orchestration.git',
+      tag: versions['giro-cloud-orchestration']
+    )
+    fxCheckoutTag (
+      directory: 'cookbook-hastus',
+      credentialsId: 'gitea-administrator',
+      repoUrl: 'https://scm.dazzlingwrench.fxinnovation.com/giro/cookbook-hastus.git',
+      tag: versions['cookbook-hastus']
+    )
     execute (
       script: "rm -rf cookbook-hastus"
     )
@@ -141,18 +97,16 @@ fxJob([
         script: "/data/giro-cloud-orchestration/ManifestReader/Pipeline/GiroFxClientName.ps1 -ModulePath \"/data/giro-cloud-orchestration/ManifestReader/AzureStackDeployerGenerator\" -XmlFilePath \"/data/${customer}/manifest.xml\""
     ])
 
-    println "GiroFxClientName : ${giroFxClientName.stdout}"
-
-    withCredentials([
-      string(
-        credentialsId: 'giro-sas-key-blob-storage',
-        variable: 'sas_key'
-      )
-    ]) {
-      executePowershell([
-        script: "/data/giro-cloud-orchestration/ManifestReader/Pipeline/UploadBlobStorage.ps1 -StorageAccountName \"girozca1pgensa000\" -ContaineName \"aa-inputfiles\" -LocalPath \"/data/output/\" -RemotePath \"${giroFxClientName.stdout}\" -SasToken \"${sas_key}\" "
-      ])
-    }
+    fxAzureUploadBlob(
+      credentialSasKey: 'giro-sas-key-blob-storage',
+      storageAccountName: 'girozca1pgensa000',
+      containerName: 'aa-inputfiles',
+      localFilePath: 'output',
+      blobFilePath: giroFxClientName.stdout,
+      deleteBeforeUpload: true,
+      filter: '*.txt',
+      libFolder: 'bar'
+    )
 
     if (!publish) {
       println "===================\nThis is not a tagged version, this pipeline will not deploy\n==================="
