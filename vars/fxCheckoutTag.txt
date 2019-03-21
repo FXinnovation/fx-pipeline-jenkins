@@ -5,9 +5,9 @@ Exemple :
 ```
  fxCheckoutTag (
     directory: "foo",
-	credentialsId: "jenkins_fxinnovation_bitbucket",
-	repoUrl: "https://bitbucket.org/fxadmin/public-common-pipeline-jenkins.git",
-	tag: "0.0.1"
+    credentialsId: "jenkins_fxinnovation_bitbucket",
+    repoUrl: "https://bitbucket.org/fxadmin/public-common-pipeline-jenkins.git",
+    tag: "0.0.1"
   )
 ```
 
