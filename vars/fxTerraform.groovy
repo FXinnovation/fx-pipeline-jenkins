@@ -77,12 +77,12 @@ def call(Map config = [:]) {
             }
           },
           publish: {
-            plan = terraform.plan([
-                commandTarget: commandTarget,
-              ] + config.publishPlanVars
+            plan = terraform.plan(
+              commandTarget: commandTarget,
+              vars: config.publishPlanVars
             )
             if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
-              error('The “plan” does not contain new changes. Infrastructure is up-to-date.')
+              print('The “plan” does not contain new changes. Infrastructure is up-to-date.')
               return
             }
 
