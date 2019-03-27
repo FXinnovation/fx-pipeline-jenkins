@@ -30,7 +30,7 @@ def call(Map config = [:]) {
       if (isTagged && deployFileExists && jobInfo.isManuallyTriggered()){
         toDeploy = true
       }
-      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manualTrigger: ${manualTrigger} | publish:${publish}")
+      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | publish:${publish}")
       for (commandTarget in config.commandTargets) {
         pipelineTerraform([
           commandTarget     : commandTarget,
@@ -77,6 +77,15 @@ def call(Map config = [:]) {
             }
           },
           publish: {
+            print( config.publishPlanVars)
+            print([
+              commandTarget: config.commandTarget,
+            ])
+            print([
+              commandTarget: config.commandTarget,
+            ] + config.publishPlanVars)
+
+
             plan = terraform.plan([
                 commandTarget: config.commandTarget,
               ] + config.publishPlanVars
