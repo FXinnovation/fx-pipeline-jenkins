@@ -83,17 +83,17 @@ def validate(Map config = [:], Map closures = [:]){
 }
 
 def test(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('testPlanOptions') || !(config.testPlanOptions instanceof Map)){
-    config.testPlanOptions = [:]
-  }
-  if (!config.containsKey('testApplyOptions') || !(config.testApplyOptions instanceof Map)){
-    config.testApplyOptions = [:]
-  }
-  if (!config.containsKey('testDestroyOptions') || !(config.testDestroyOptions instanceof Map)){
-    config.testDestroyOptions = [:]
-  }
+  mapAttributeCheck(config, 'testPlanOptions', Map, [:])
+  mapAttributeCheck(config, 'testApplyOptions', Map, [:])
+  mapAttributeCheck(config, 'testDestroyOptions', Map, [:])
+  mapAttributeCheck(config, 'publish', Boolean, false)
+
   if (!closures.containsKey('test')){
     closures.test = {
+      if (config.publish) {
+        return
+      }
+
       try {
         terraform.plan([
             out: 'test.out',
