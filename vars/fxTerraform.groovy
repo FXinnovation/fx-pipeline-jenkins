@@ -49,7 +49,7 @@ def call(Map config = [:]) {
               return
             }
             for (filename in execute(script: "ls").stdout.split()) {
-              if (filename =~ /.+\.tf$/ && ('deploy.tf' != filename || 'variables.tf' != filename)) {
+              if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename) {
                 error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with a “variables.tf” file.")
               }
             }
