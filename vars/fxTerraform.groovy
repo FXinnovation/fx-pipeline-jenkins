@@ -16,14 +16,14 @@ def call(Map config = [:]) {
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'
-      def publish = false
+      def publish = deployFileExists
       def manualTrigger = true
 
       currentBuild.upstreamBuilds?.each { b ->
         manualTrigger = false
       }
       if (isTagged && deployFileExists && manualTrigger){
-        publish = true
+        toDeploy = true
       }
       env.DEBUG = true
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manualTrigger: ${manualTrigger} | publish:${publish}")
@@ -95,14 +95,23 @@ def call(Map config = [:]) {
               ] + config.publishPlanVars
             )
             if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
-              error('The “plan” does not contain new changes. Skipping')
+              error('The “plan” does not contain new changes. Infrastructure is up-to-date.')
+              return
+            }
+
+            if (!toDeploy) {
+              print('The code is either not tagged or the pipeline was triggered automatically. Skipping actual deployment.')
               return
             }
 
             fx_notify(
               status: 'PENDING'
             )
-            input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
+
+            timeout(activity: true, time: 20) {
+              input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
+            }
+
             terraform.apply([
                 parallelism: 1,
                 refresh: false,
@@ -131,13 +140,3 @@ def call(Map config = [:]) {
     ]
   )
 }
-
-def debug(CharSequence message){
-  // The try/catch with silent catch is to simulate a check “is_variable_defined” that does not exist in groovy
-  try {
-    if (env.DEBUG != null) {
-      println(message)
-    }
-  } catch (MissingPropertyException missingPropertyException) {}
-}
-
