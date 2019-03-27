@@ -1,4 +1,13 @@
 def call(Map config = [:]) {
+
+
+
+  env.DEBUG = true
+
+
+
+
+
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, 'gitea-fx_administrator-key')
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])
@@ -17,15 +26,10 @@ def call(Map config = [:]) {
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'
       def publish = deployFileExists
-      def manualTrigger = true
 
-      currentBuild.upstreamBuilds?.each { b ->
-        manualTrigger = false
-      }
-      if (isTagged && deployFileExists && manualTrigger){
+      if (isTagged && deployFileExists && jobInfo.isManuallyTriggered()){
         toDeploy = true
       }
-      env.DEBUG = true
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manualTrigger: ${manualTrigger} | publish:${publish}")
       for (commandTarget in config.commandTargets) {
         pipelineTerraform([
