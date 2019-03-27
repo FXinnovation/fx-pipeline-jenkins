@@ -77,17 +77,8 @@ def call(Map config = [:]) {
             }
           },
           publish: {
-            print( config.publishPlanVars)
-            print([
-              commandTarget: config.commandTarget,
-            ])
-            print([
-              commandTarget: config.commandTarget,
-            ] + config.publishPlanVars)
-
-
             plan = terraform.plan([
-                commandTarget: config.commandTarget,
+                commandTarget: commandTarget,
               ] + config.publishPlanVars
             )
             if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
