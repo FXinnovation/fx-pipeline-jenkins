@@ -68,28 +68,11 @@ def call(Map config = [:]) {
                 dockerEnvironmentVariables: [
                   'SSH_AUTH_SOCK': '/ssh-agent'
                 ],
-                backendConfigs: config.terraformInitBackendConfigsTest
+                backendConfigs: publish ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
               )
             }
           },
           publish: {
-            sshagent([config.initSSHCredentialId]) {
-              sh('ssh-add -l')
-              sh('mkdir -p ~/.ssh')
-              sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-              terraform.init(
-                commandTarget: commandTarget,
-                dockerAdditionalMounts: [
-                  '~/.ssh/'                       : '/root/.ssh/',
-                  '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
-                ],
-                dockerEnvironmentVariables: [
-                  'SSH_AUTH_SOCK': '/ssh-agent'
-                ],
-                backendConfigs: config.terraformInitBackendConfigsPublish
-              )
-            }
-
             plan = terraform.plan([
                 commandTarget: config.commandTarget,
               ] + config.publishPlanVars
