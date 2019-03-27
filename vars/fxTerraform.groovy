@@ -1,13 +1,4 @@
 def call(Map config = [:]) {
-
-
-
-  env.DEBUG = true
-
-
-
-
-
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, 'gitea-fx_administrator-key')
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])
@@ -24,8 +15,8 @@ def call(Map config = [:]) {
   fxJob([
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
-      def deployFileExists = fileExists 'deploy.tf'
-      def publish = deployFileExists
+      def publish = fileExists 'deploy.tf'
+      def toDeploy = false
 
       if (isTagged && deployFileExists && jobInfo.isManuallyTriggered()){
         toDeploy = true
@@ -82,12 +73,12 @@ def call(Map config = [:]) {
               vars: config.publishPlanVars
             )
             if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
-              print('The “plan” does not contain new changes. Infrastructure is up-to-date.')
+              println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
               return
             }
 
             if (!toDeploy) {
-              print('The code is either not tagged or the pipeline was triggered automatically. Skipping actual deployment.')
+              println('The code is either not tagged or the pipeline was triggered automatically. Skipping deployment.')
               return
             }
 
