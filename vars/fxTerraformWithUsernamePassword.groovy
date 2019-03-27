@@ -32,7 +32,8 @@ def call(Map config = [:]) {
     config.publishPlanVars = [
       "${config.providerUsernameVariableName}=${TF_username_publish}",
       "${config.providerPasswordVariableName}=${TF_password_publish}",
-    ]
+    ] + config.publishPlanVars
+
     fxTerraform(config)
   }
 }
