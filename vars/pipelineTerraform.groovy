@@ -6,7 +6,7 @@ def call(Map config = [:], Map closures = [:]){
   }
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
 
-  stage('init ' + config.commandTarget+ '”') {
+  stage('init “' + config.commandTarget+ '”') {
     init(config, closures)
   }
 
