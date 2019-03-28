@@ -15,13 +15,13 @@ def call(Map config = [:]) {
   fxJob([
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
-      def publish = fileExists 'deploy.tf'
+      def deployFileExists = fileExists 'deploy.tf'
       def toDeploy = false
 
       if (isTagged && deployFileExists && jobInfo.isManuallyTriggered()){
         toDeploy = true
       }
-      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | publish:${publish}")
+      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | toDeploy:${toDeploy}")
       for (commandTarget in config.commandTargets) {
         pipelineTerraform([
           commandTarget     : commandTarget,
@@ -37,10 +37,10 @@ def call(Map config = [:]) {
           validateOptions: [
             vars: config.testPlanVars
           ],
-          publish: publish
+          publish: deployFileExists
         ], [
           preValidate: {
-            if (!publish) {
+            if (!deployFileExists) {
               return
             }
             for (filename in execute(script: "ls").stdout.split()) {
@@ -63,7 +63,7 @@ def call(Map config = [:]) {
                 dockerEnvironmentVariables: [
                   'SSH_AUTH_SOCK': '/ssh-agent'
                 ],
-                backendConfigs: publish ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
+                backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
               )
             }
           },
