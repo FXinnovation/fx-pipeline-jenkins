@@ -110,10 +110,7 @@ def call(Map config = [:]) {
         )
       ),
       pipelineTriggers([
-        [
-          $class  : 'PeriodicFolderTrigger',
-          interval: '1d'
-        ]
+        [cron('@midnight')]
       ])
     ]
   )
