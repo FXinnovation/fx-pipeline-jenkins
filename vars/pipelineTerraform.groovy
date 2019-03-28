@@ -1,6 +1,8 @@
 def call(Map config = [:], Map closures = [:]){
   for (closure in closures){
-    mapAttributeCheck(closure, 'value', Closure, {}, "${closure.key} has to be a java.lang.Closure.")
+    if (!closure.value instanceof Closure){
+      error("${closure.key} has to be a java.lang.Closure.")
+    }
   }
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
 
