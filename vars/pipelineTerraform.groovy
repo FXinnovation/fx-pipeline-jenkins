@@ -1,27 +1,24 @@
 def call(Map config = [:], Map closures = [:]){
   for (closure in closures){
-    if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a java.lang.Closure.")
-    }
+    mapAttributeCheck(closure, 'value', Closure, null, "${closure.key} has to be a java.lang.Closure.")
   }
-  println config.commandTarget
-  if (!config.containsKey('commandTarget') || !(config.commandTarget instanceof CharSequence)){
-    config.commandTarget = '.'
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
+
+  stage('init ' + config.commandTarget+ '”') {
+    init(config, closures)
   }
 
-  init(config, closures)
-
-  validate(config, closures)
-
-  test(config, closures)
+  stage('test “' + config.commandTarget + '”') {
+    validate(config, closures)
+    test(config, closures)
+  }
 
   publish(config, closures)
 }
 
 def init(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('initOptions') || !(config.initOptions instanceof Map)){
-    config.initOptions = [:]
-  }
+  mapAttributeCheck(config, 'initOptions', Map, [:])
+
   if (!closures.containsKey('init')){
     closures.init = {
       terraform.init([
@@ -32,27 +29,20 @@ def init(Map config = [:], Map closures = [:]){
   }
 
   if (closures.containsKey('preInit')){
-    stage('pre-init'){
-      closures.preInit()
-    }
+    closures.preInit()
   }
-  stage('init'){
-    closures.init()
-  }
+
+  closures.init()
+
   if (closures.containsKey('postInit')){
-    stage('post-init'){
-      closures.postInit()
-    }
+    closures.postInit()
   }
 }
 
 def validate(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('validateOptions') || !(config.validateOptions instanceof Map)){
-    config.validateOptions = [:]
-  }
-  if (!config.containsKey('fmtOptions') || !(config.fmtOptions instanceof Map)){
-    config.fmtOptions = [:]
-  }
+  mapAttributeCheck(config, 'validateOptions', Map, [:])
+  mapAttributeCheck(config, 'fmtOptions', Map, [:])
+
   if (!closures.containsKey('validate')){
     closures.validate = {
       terraform.validate([
@@ -68,17 +58,13 @@ def validate(Map config = [:], Map closures = [:]){
   }
 
   if (closures.containsKey('preValidate')){
-    stage('pre-validate'){
-      closures.preValidate()
-    }
+    closures.preValidate()
   }
-  stage('validate'){
-    closures.validate()
-  }
+
+  closures.validate()
+
   if (closures.containsKey('postValidate')){
-    stage('post-validate'){
-      closures.postValidate()
-    }
+    closures.postValidate()
   }
 }
 
@@ -135,47 +121,30 @@ def test(Map config = [:], Map closures = [:]){
   }
 
   if (closures.containsKey('preTest')){
-    stage('pre-test'){
-      closures.preTest()
-    }
+    closures.preTest()
   }
-  stage('test') {
-    closures.test()
-  }
+
+  closures.test()
+
   if (closures.containsKey('postTest')){
-    stage('post-test'){
-      closures.postTest()
-    }
+    closures.postTest()
   }
 }
 
 def publish(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('publishPlanOptions') || !(config.publishPlanOptions instanceof Map)){
-    config.publishPlanOptions = [:]
-  }
-  if (!config.containsKey('publishApplyOptions') || !(config.publishApplyOptions instanceof Map)){
-    config.publishApplyOptions = [:]
-  }
-  if (!config.containsKey('publish') || !(config.publish instanceof Boolean)){
-    config.publish = false
-  }
-  if (!closures.containsKey('publish') && config.publish){
-    closures.publish = {
-      println "Publish step was not defined."
-    }
-  }
+  mapAttributeCheck(config, 'publishPlanOptions', Map, [:])
+  mapAttributeCheck(config, 'publishApplyOptions', Map, [:])
+  mapAttributeCheck(config, 'publish', Boolean, false)
 
   if (config.publish) {
-    if (closures.containsKey('prePublish')){
-      stage('pre-publish'){
+    stage('publish') {
+      if (closures.containsKey('prePublish')) {
         closures.prePublish()
       }
-    }
-    stage('publish') {
+
       closures.publish()
-    }
-    if (closures.containsKey('postPublish')){
-      stage('post-publish'){
+
+      if (closures.containsKey('postPublish')) {
         closures.postPublish()
       }
     }
