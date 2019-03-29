@@ -43,8 +43,8 @@ def call(Map config = [:]) {
             publish: deployFileExists
           ], [
             preValidate: preValidate(deployFileExists),
-            init: init(config, commandTarget),
-            publish: publish(config, commandTarget)
+            init: init(config, commandTarget, deployFileExists),
+            publish: publish(config, commandTarget, toDeploy)
           ]
         )
       }
@@ -84,7 +84,7 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
   }
 }
 
-def publish(Map config = [:], CharSequence commandTarget) {
+def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
   plan = terraform.plan(
     commandTarget: commandTarget,
     vars: config.publishPlanVars
