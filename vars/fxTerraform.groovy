@@ -111,6 +111,6 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
     [
       parallelism: 1,
       refresh: false,
-    ] + config.testApplyOptions
+    ]
   )
 }
