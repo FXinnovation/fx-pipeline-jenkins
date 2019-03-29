@@ -6,15 +6,21 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'localFilePath', CharSequence, '', '“localFilePath” parameter is mandatory.')  
   mapAttributeCheck(config, 'blobFilePath', CharSequence, '', '“blobFilePath” parameter is mandatory.')
   mapAttributeCheck(config, 'libFolder', CharSequence, 'fxinnovation-common-scripts-powershell')
-  mapAttributeCheck(config, 'libVersion', CharSequence, '0.0.4')
+  mapAttributeCheck(config, 'libVersion', CharSequence, '0.0.15')
   mapAttributeCheck(config, 'powershellDockerImage', CharSequence, 'fxinnovation/powershell:latest')
   mapAttributeCheck(config, 'filter', CharSequence, '*')
   mapAttributeCheck(config, 'deleteBeforeUpload', Boolean, false)
+  mapAttributeCheck(config, 'recursive', Boolean, false)
    
   def deleteBeforeUploadPowershell = ''
+  def recusive = ''
   
   if (config.deleteBeforeUpload) {
     deleteBeforeUploadPowershell = '-DeleteBeforeUpload'
+  }
+
+  if (config.recursive) {
+    recusive = '-Recusive'
   }
  
   fxCheckoutTag (
@@ -32,7 +38,7 @@ def call(Map config = [:]) {
   ]) {
     executePowershell([
       dockerImage: config.powershellDockerImage,
-      script: "/data/${config.libFolder}/AutomationAccount/Upload-Blob.ps1 -StorageAccountName \"${config.storageAccountName}\" -ContainerName \"${config.containerName}\" -LocalPath \"/data/${config.localFilePath}\" -RemotePath \"${config.blobFilePath}\" -SasToken \"${sas_key}\" -Filter \"${config.filter}\" ${deleteBeforeUploadPowershell} "
+      script: "/data/${config.libFolder}/AutomationAccount/Upload-Blob.ps1 -StorageAccountName \"${config.storageAccountName}\" -ContainerName \"${config.containerName}\" -LocalPath \"/data/${config.localFilePath}\" -RemotePath \"${config.blobFilePath}\" -SasToken \"${sas_key}\" -Filter \"${config.filter}\" ${deleteBeforeUploadPowershell} ${recusive} "
     ])
   }
 }
