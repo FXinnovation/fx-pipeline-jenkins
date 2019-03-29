@@ -6,7 +6,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'localFilePath', CharSequence, '', '“localFilePath” parameter is mandatory.')  
   mapAttributeCheck(config, 'blobFilePath', CharSequence, '', '“blobFilePath” parameter is mandatory.')
   mapAttributeCheck(config, 'libFolder', CharSequence, 'fxinnovation-common-scripts-powershell')
-  mapAttributeCheck(config, 'libVersion', CharSequence, '0.0.10')
+  mapAttributeCheck(config, 'libVersion', CharSequence, '0.0.11')
   mapAttributeCheck(config, 'powershellDockerImage', CharSequence, 'fxinnovation/powershell:latest')
   mapAttributeCheck(config, 'filter', CharSequence, '*')
   mapAttributeCheck(config, 'deleteBeforeUpload', Boolean, false)
