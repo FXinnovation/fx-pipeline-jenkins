@@ -8,12 +8,14 @@ def call(Map config = [:]) {
       fx_notify(
         status: 'PENDING'
       )
-  
-      customer = input(
-        message : 'Which customer\'s infrastructure ?',
-        ok: 'Select',
-        parameters: [choice(name: 'customer', choices: listCustomer.stdout, description: 'What is the customer?')]
-      )
+ 
+      timeout(time: 10, unit: 'MINUTES') { 
+        customer = input(
+          message : 'Which customer\'s infrastructure ?',
+          ok: 'Select',
+          parameters: [choice(name: 'customer', choices: listCustomer.stdout, description: 'What is the customer?')]
+        )
+      }
   
       def versionFileExists = fileExists("${customer}/version.yml")
       def manifestFileExists = fileExists("${customer}/manifest.xml")
@@ -117,7 +119,9 @@ def call(Map config = [:]) {
       fx_notify(
         status: 'PENDING'
       )
-      input 'WARNING: You are about to deploy. Do you want to apply it?'
+      timeout(time: 10, unit: 'MINUTES') {
+        input 'WARNING: You are about to deploy. Do you want to apply it?'
+      }
     },
   ],
   [
