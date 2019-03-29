@@ -40,61 +40,13 @@ def call(Map config = [:]) {
           publish: deployFileExists
         ], [
           preValidate: {
-            if (!deployFileExists) {
-              return
-            }
-            for (filename in execute(script: "ls").stdout.split()) {
-              if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename) {
-                error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with a “variables.tf” file.")
-              }
-            }
+            preValidate(deployFileExists)
           },
           init: {
-            sshagent([config.initSSHCredentialId]) {
-              sh('ssh-add -l')
-              sh('mkdir -p ~/.ssh')
-              sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-              terraform.init(
-                commandTarget: commandTarget,
-                dockerAdditionalMounts: [
-                  '~/.ssh/'                       : '/root/.ssh/',
-                  '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
-                ],
-                dockerEnvironmentVariables: [
-                  'SSH_AUTH_SOCK': '/ssh-agent'
-                ],
-                backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
-              )
-            }
+            init(config, commandTarget)
           },
           publish: {
-            plan = terraform.plan(
-              commandTarget: commandTarget,
-              vars: config.publishPlanVars
-            )
-            if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
-              println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
-              return
-            }
-
-            if (!toDeploy) {
-              println('The code is either not tagged or the pipeline was triggered automatically. Skipping deployment.')
-              return
-            }
-
-            fx_notify(
-              status: 'PENDING'
-            )
-
-            timeout(activity: true, time: 20) {
-              input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
-            }
-
-            terraform.apply([
-              parallelism: 1,
-              refresh: false,
-            ] + config.testApplyOptions
-            )
+            publish(config, commandTarget)
           }
         ])
       }
@@ -113,4 +65,67 @@ def call(Map config = [:]) {
       cron('@midnight')
     ])
   ])
+}
+
+def preValidate(Boolean deployFileExists) {
+  if (!deployFileExists) {
+    return
+  }
+  for (filename in execute(script: "ls").stdout.split()) {
+    if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename) {
+      error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with a “variables.tf” file.")
+    }
+  }
+}
+
+def init(Map config = [:], CharSequence commandTarget) {
+  sshagent([config.initSSHCredentialId]) {
+    sh('ssh-add -l')
+    sh('mkdir -p ~/.ssh')
+    sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
+    terraform.init(
+      commandTarget: commandTarget,
+      dockerAdditionalMounts: [
+        '~/.ssh/'                       : '/root/.ssh/',
+        '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
+      ],
+      dockerEnvironmentVariables: [
+        'SSH_AUTH_SOCK': '/ssh-agent'
+      ],
+      backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
+    )
+  }
+}
+
+def publish(Map config = [:], CharSequence commandTarget) {
+  mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, '', '“publishEnvironmentCredentialId” parameter is mandatory.')
+
+  plan = terraform.plan(
+    commandTarget: commandTarget,
+    vars: config.publishPlanVars
+  )
+  if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
+    println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
+    return
+  }
+
+  if (!toDeploy) {
+    println('The code is either not tagged or the pipeline was triggered automatically. Skipping deployment.')
+    return
+  }
+
+  fx_notify(
+    status: 'PENDING'
+  )
+
+  timeout(activity: true, time: 20) {
+    input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
+  }
+
+  terraform.apply(
+    [
+      parallelism: 1,
+      refresh: false,
+    ] + config.testApplyOptions
+  )
 }
