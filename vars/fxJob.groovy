@@ -1,19 +1,18 @@
 def call(Map closures = [:], List propertiesConfig = []){
-  if ([] == propertiesConfig){
-    propertiesConfig = [
-      buildDiscarder(
-        logRotator(
-          artifactDaysToKeepStr: '',
-          artifactNumToKeepStr: '10',
-          daysToKeepStr: '',
-          numToKeepStr: '10'
-        )
-      ),
-      pipelineTriggers(
-        [cron('@midnight')]
+  defaultPropertiesConfig = [
+    buildDiscarder(
+      logRotator(
+        artifactDaysToKeepStr: '',
+        artifactNumToKeepStr: '10',
+        daysToKeepStr: '',
+        numToKeepStr: '10'
       )
-    ]
-  }
+    ),
+    pipelineTriggers(
+      [cron('@midnight')]
+    )
+  ]
+
   for (closure in closures){
     if (!closure.value instanceof Closure){
       error("${closure.key} has to be a Closure")
@@ -24,7 +23,7 @@ def call(Map closures = [:], List propertiesConfig = []){
     error('pipeline closure is mandatory.')
   }
 
-  properties(propertiesConfig)
+  properties(defaultPropertiesConfig + propertiesConfig)
   status='SUCCESS'
   def label = UUID.randomUUID().toString()
   podTemplate(
