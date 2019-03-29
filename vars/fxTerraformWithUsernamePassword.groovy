@@ -1,6 +1,6 @@
 def call(Map config = [:]) {
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '“testEnvironmentCredentialId” parameter is mandatory.')
-  mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, '')
+  mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)
   mapAttributeCheck(config, 'providerUsernameVariableName', CharSequence, 'access_key')
   mapAttributeCheck(config, 'providerPasswordVariableName', CharSequence, 'secret_key')
   mapAttributeCheck(config, 'testPlanVars', List, [])
