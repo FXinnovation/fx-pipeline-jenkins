@@ -42,9 +42,9 @@ def call(Map config = [:]) {
             ],
             publish: deployFileExists
           ], [
-            preValidate: preValidate(deployFileExists),
-            init: init(config, commandTarget, deployFileExists),
-            publish: publish(config, commandTarget, toDeploy)
+            preValidate: { preValidate(deployFileExists) },
+            init: { init(config, commandTarget, deployFileExists) },
+            publish: { publish(config, commandTarget, toDeploy) }
           ]
         )
       }
