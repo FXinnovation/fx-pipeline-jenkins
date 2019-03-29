@@ -1,0 +1,25 @@
+fxTerraform()
+
+FXInnovation pipeline.
+Will execute test & deploy terraform modules/deploy repositories.
+
+The function takes a Map as input that follows the following pattern:
+
+*initSSHCredentialId*: 'gitea-fx_administrator-key'
+
+*testPlanVars*:  []
+
+*publishPlanVars*: []
+
+*validateVars*: []
+
+*initSSHHostKeys*: *gitea hosts keys*
+
+*terraformInitBackendConfigsTest*: []
+
+*terraformInitBackendConfigsPublish*: []
+
+*commandTargets*: ['.']
+
+Output:
+String
