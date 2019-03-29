@@ -21,34 +21,32 @@ def call(Map config = [:]) {
       if (isTagged && deployFileExists && jobInfo.isManuallyTriggered()){
         toDeploy = true
       }
+
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | toDeploy:${toDeploy}")
+
       for (commandTarget in config.commandTargets) {
-        pipelineTerraform([
-          commandTarget     : commandTarget,
-          testPlanOptions   : [
-            vars: config.testPlanVars
-          ],
-          validateOptions   : [
-            vars: config.validateVars
-          ],
-          testDestroyOptions: [
-            vars: config.testPlanVars
-          ],
-          validateOptions: [
-            vars: config.testPlanVars
-          ],
-          publish: deployFileExists
-        ], [
-          preValidate: {
-            preValidate(deployFileExists)
-          },
-          init: {
-            init(config, commandTarget)
-          },
-          publish: {
-            publish(config, commandTarget)
-          }
-        ])
+        pipelineTerraform(
+          [
+            commandTarget     : commandTarget,
+            testPlanOptions   : [
+              vars: config.testPlanVars
+            ],
+            validateOptions   : [
+              vars: config.validateVars
+            ],
+            testDestroyOptions: [
+              vars: config.testPlanVars
+            ],
+            validateOptions: [
+              vars: config.testPlanVars
+            ],
+            publish: deployFileExists
+          ], [
+            preValidate: preValidate(deployFileExists),
+            init: init(config, commandTarget),
+            publish: publish(config, commandTarget)
+          ]
+        )
       }
     }
   ], [
