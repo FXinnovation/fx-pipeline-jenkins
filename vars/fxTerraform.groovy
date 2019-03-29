@@ -52,18 +52,7 @@ def call(Map config = [:]) {
       }
     }
   ], [
-    disableConcurrentBuilds(),
-    buildDiscarder(
-      logRotator(
-        artifactDaysToKeepStr: '',
-        artifactNumToKeepStr: '10',
-        daysToKeepStr: '',
-        numToKeepStr: '10'
-      )
-    ),
-    pipelineTriggers([
-      cron('@midnight')
-    ])
+    disableConcurrentBuilds()
   ])
 }
 
