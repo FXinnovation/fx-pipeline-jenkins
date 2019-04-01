@@ -91,7 +91,6 @@ def test(Map config = [:], Map closures = [:]){
         )
         terraform.apply([
             stateOut: 'test.tfstate',
-            refresh: false,
             commandTarget: 'test.out',
           ] + config.testApplyOptions
         )
