@@ -107,10 +107,5 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
     input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
   }
 
-  terraform.apply(
-    [
-      parallelism: 1,
-      refresh: false,
-    ]
-  )
+  terraform.apply()
 }
