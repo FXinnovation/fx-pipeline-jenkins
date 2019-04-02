@@ -75,8 +75,8 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “.gitignore” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
 
-    if (!scmInfo.repositoryName =~ /terraform\-module\-(aws|azurerm|google|bitbucket|gitlab|github)-[a-z]]{3,}[a-z\-]]/) {
-      error("This build does not meet FX standards: a Terraform module MUST be name “terraform-module-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
+    if (!scmInfo.repositoryName =~ /terraform\-(module|ecosystem)\-(aws|azurerm|google|bitbucket|gitlab|github)-[a-z0]{3,}([a-z0\-]+)?/) {
+      error("This build does not meet FX standards: a Terraform module MUST be name “terraform-*(module|ecosystem)*-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
 
@@ -85,6 +85,10 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
       if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename) {
         error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with a “variables.tf” file.")
       }
+    }
+
+    if (!scmInfo.repositoryName =~ /terraform\-deployment\-[a-z0]{3,}/) {
+      error("This build does not meet FX standards: a Terraform module MUST be name “terraform-*(module|ecosystem)*-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
 }
