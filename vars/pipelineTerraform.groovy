@@ -118,7 +118,8 @@ def test(Map config = [:], Map closures = [:]){
             commandTarget: config.commandTarget
           ] + config.testDestroyOptions
         )
-        sh 'rm test.tfstate'
+        sh 'rm -f test.tfstate'
+        sh 'rm -f test.out'
       }
     }
   }
