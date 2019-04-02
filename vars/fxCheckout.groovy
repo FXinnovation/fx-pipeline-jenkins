@@ -23,5 +23,6 @@ def call(Map config = [:]){
     scmInfo.isLastTag = false
   }
   scmInfo.isPullRequest = scmInfo.branch.matches('^PR-[0-9]*$')
+  scmInfo.repositoryName = scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
   return scmInfo
 }
