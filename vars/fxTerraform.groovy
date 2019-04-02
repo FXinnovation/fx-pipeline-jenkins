@@ -60,26 +60,27 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
 
   if (!deployFileExists) {
     if (!fileExists('main.tf')) {
-      error("This build does not meet FX standards: a Terraform module MUST contain a “main.tf” file.")
+      error("This build does not meet FX standards: a Terraform module MUST contain a “main.tf” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
     if (!fileExists('variables.tf')) {
-      error("This build does not meet FX standards: a Terraform module MUST contain a “variables.tf” file.")
+      error("This build does not meet FX standards: a Terraform module MUST contain a “variables.tf” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
     if (!fileExists('outputs.tf')) {
-      error("This build does not meet FX standards: a Terraform module MUST contain a “outputs.tf” file.")
+      error("This build does not meet FX standards: a Terraform module MUST contain a “outputs.tf” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
     if (!fileExists('README.md')) {
-      error("This build does not meet FX standards: a Terraform module MUST contain a “README.md” file.")
+      error("This build does not meet FX standards: a Terraform module MUST contain a “README.md” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
     if (!fileExists('.gitignore')) {
-      error("This build does not meet FX standards: a Terraform module MUST contain a “.gitignore” file.")
+      error("This build does not meet FX standards: a Terraform module MUST contain a “.gitignore” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
+    }
+
+    if (!scmInfo.repositoryName =~ /terraform\-module\-(aws|azurerm|google|bitbucket|gitlab|github)-[a-z]]{3,}[a-z\-]]/) {
+      error("This build does not meet FX standards: a Terraform module MUST be name “terraform-module-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
 
-
-
-
-  if (!deployFileExists) {
+  if (deployFileExists) {
     for (filename in execute(script: "ls").stdout.split()) {
       if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename) {
         error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with a “variables.tf” file.")
