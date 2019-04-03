@@ -12,7 +12,6 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
   mapAttributeCheck(config, 'commandTargets', List, ['.'])
 
-  env.DEBUG = true
   fxJob([
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
@@ -134,5 +133,7 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
     input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
   }
 
-  terraform.apply()
+  terraform.apply(
+    commandTarget: 'test.out'
+  )
 }

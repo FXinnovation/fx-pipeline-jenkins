@@ -1,11 +1,6 @@
-def isManuallyTriggered(){
-  currentBuild.getBuildCauses().each { cause ->
-    print(cause)
-    println('CONTAINS: ' + cause.containsKey('_class'))
-    println('CONTAINS: ' + cause.containsKey('"_class"'))
-    println('EQ : ' + cause['_class'] == "hudson.model.Cause$UserIdCause")
-    println('EQ : ' + cause['_class'] == "hudson.model.Cause$UserIdCause")
-    if (cause.containsKey('_class') && cause['_class'] == 'hudson.model.Cause$UserIdCause') {
+Boolean isManuallyTriggered(){
+  for (cause in currentBuild.getBuildCauses()) {
+    if (cause.containsKey('userId')) {
       return true
     }
   }
