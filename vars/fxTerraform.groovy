@@ -13,6 +13,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'commandTargets', List, ['.'])
 
   fxJob([
+    env.DEBUG = true
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'
@@ -115,7 +116,8 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
 def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
   plan = terraform.plan(
     commandTarget: commandTarget,
-    vars: config.publishPlanVars
+    out: 'plan.out',
+    vars: config.publishPlanVars,
   )
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
     println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
