@@ -134,6 +134,6 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
   }
 
   terraform.apply(
-    commandTarget: 'test.out'
+    commandTarget: 'plan.out'
   )
 }
