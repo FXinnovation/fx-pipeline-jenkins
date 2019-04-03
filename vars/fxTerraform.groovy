@@ -23,7 +23,7 @@ def call(Map config = [:]) {
         toDeploy = true
       }
 
-      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | toDeploy:${toDeploy}")
+      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
       for (commandTarget in config.commandTargets) {
         pipelineTerraform(
@@ -56,9 +56,6 @@ def call(Map config = [:]) {
 }
 
 def preValidate(Boolean deployFileExists, Map scmInfo) {
-
-  print(scmInfo)
-
   if (!deployFileExists) {
     if (!fileExists('main.tf')) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “main.tf” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
