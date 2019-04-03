@@ -22,7 +22,7 @@ def call(Map config = [:]) {
         toDeploy = true
       }
 
-      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | toDeploy:${toDeploy}")
+      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
       for (commandTarget in config.commandTargets) {
         pipelineTerraform(
@@ -55,9 +55,6 @@ def call(Map config = [:]) {
 }
 
 def preValidate(Boolean deployFileExists, Map scmInfo) {
-
-  print(scmInfo)
-
   if (!deployFileExists) {
     if (!fileExists('main.tf')) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “main.tf” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
@@ -115,7 +112,8 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
 def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
   plan = terraform.plan(
     commandTarget: commandTarget,
-    vars: config.publishPlanVars
+    out: 'plan.out',
+    vars: config.publishPlanVars,
   )
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
     println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
@@ -135,5 +133,7 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
     input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
   }
 
-  terraform.apply()
+  terraform.apply(
+    commandTarget: 'test.out'
+  )
 }
