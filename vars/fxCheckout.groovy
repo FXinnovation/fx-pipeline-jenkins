@@ -4,7 +4,7 @@ def call(Map config = [:]){
   scmInfo.commitId = execute(
     script: 'git rev-parse HEAD'
   ).stdout.trim()
-  scmInfo.branch   = execute(
+  scmInfo.branch = execute(
     script: 'echo "${BRANCH_NAME}"'
   ).stdout.trim()
   try{
