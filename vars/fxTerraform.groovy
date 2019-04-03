@@ -12,8 +12,8 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
   mapAttributeCheck(config, 'commandTargets', List, ['.'])
 
+  env.DEBUG = true
   fxJob([
-    env.DEBUG = true
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'
