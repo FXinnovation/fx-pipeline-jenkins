@@ -3,7 +3,8 @@ def isManuallyTriggered(){
     print(cause)
     println('CONTAINS: ' + cause.containsKey('_class'))
     println('CONTAINS: ' + cause.containsKey('"_class"'))
-    println('EQ : ' + cause['_class'] == 'hudson.model.Cause$UserIdCause')
+    println('EQ : ' + cause['_class'] == "hudson.model.Cause$UserIdCause")
+    println('EQ : ' + cause['_class'] == "hudson.model.Cause$UserIdCause")
     if (cause.containsKey('_class') && cause['_class'] == 'hudson.model.Cause$UserIdCause') {
       return true
     }
