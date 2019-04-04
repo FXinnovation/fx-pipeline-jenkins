@@ -50,7 +50,7 @@ def call(Map config = [:]){
 
   yarnCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand: 'yarn'
+    fallbackCommand: 'yarn',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables
   )
