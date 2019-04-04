@@ -45,12 +45,14 @@ def install(Map config = [:]){
 
 def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/yarn:latest')
+  mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
+  mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
 
   yarnCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand: 'yarn'
-    //additionalMounts: config.dockerAdditionalMounts,
-    //environmentVariables: config.dockerEnvironmentVariables
+    additionalMounts: config.dockerAdditionalMounts,
+    environmentVariables: config.dockerEnvironmentVariables
   )
 
   execute(
