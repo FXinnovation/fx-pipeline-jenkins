@@ -11,6 +11,8 @@ def audit(Map config = [:]){
       error("yarn - Parameter \"${parameter.key}\" is not valid for \"audit\", please remove it!")
     }
   }
+
+  yarn(config)
 }
 
 def test(Map config = [:]){
@@ -26,6 +28,8 @@ def test(Map config = [:]){
       error("yarn - Parameter \"${parameter.key}\" is not valid for \"test\", please remove it!")
     }
   }
+
+  yarn(config)
 }
 
 def install(Map config = [:]){
@@ -41,6 +45,8 @@ def install(Map config = [:]){
       error("yarn - Parameter \"${parameter.key}\" is not valid for \"install\", please remove it!")
     }
   }
+
+  yarn(config)
 }
 
 def call(Map config = [:]){
