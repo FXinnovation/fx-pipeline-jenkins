@@ -7,7 +7,7 @@ def call(Map config = [:]){
         [
           "preTest": {
             yarn(
-              subcommand: 'lint'
+              subCommand: 'lint'
             )
           }
         ]
