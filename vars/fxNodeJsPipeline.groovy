@@ -2,7 +2,16 @@ def call(Map config = [:]){
   fxJob([
     pipeline: {
       Map scmInfo ->
-      pipelineNodeJsYarn()
+      pipelineNodeJsYarn(
+        [:],
+        [
+          "preTest": {
+            yarn(
+              subcommand: 'lint'
+            )
+          }
+        ]
+      )
     },
     preNotify: {
       junit 'xunit.xml'
