@@ -89,7 +89,7 @@ def call(Map config = [:]) {
         )
       ]) {
         executePowershell([
-          script: "/data/giro-cloud-orchestration/ManifestReader/Export-AzureStackDeployer.ps1 -InputXmlFile \"/data/${customer}/manifest.xml\" -InputCustomerConfigFile \"/data/giro-cloud-orchestration/ManifestReader/Input-Test/Giro-config.json\" -ModuleFxLocation \"/data/fxinnovation-common-scripts-powershell/PsModules/FXNameStandard/1.0\" -OutputPath \"/data/output\" -Tenant \"5748501a-0f16-478b-a990-e53164e32fa8\" -AppId \"${appid}\" -TagVersion ${versions['giro-cloud-orchestration']} -ClientNumber -ClientNumber ${versions['clientNumber'].padLeft(2,0)} -Local -Verbose",
+          script: "/data/giro-cloud-orchestration/ManifestReader/Export-AzureStackDeployer.ps1 -InputXmlFile \"/data/${customer}/manifest.xml\" -InputCustomerConfigFile \"/data/giro-cloud-orchestration/ManifestReader/Input-Test/Giro-config.json\" -ModuleFxLocation \"/data/fxinnovation-common-scripts-powershell/PsModules/FXNameStandard/1.0\" -OutputPath \"/data/output\" -Tenant \"5748501a-0f16-478b-a990-e53164e32fa8\" -AppId \"${appid}\" -TagVersion ${versions['giro-cloud-orchestration']} -ClientNumber -ClientNumber ${versions['clientNumber'].toString().padLeft(2,0)} -Local -Verbose",
           dockerEnvironmentVariables: [
             Password: "${servicePrincipalPassword}"
           ]
