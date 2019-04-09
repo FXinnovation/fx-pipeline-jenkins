@@ -7,8 +7,8 @@ def audit(Map config = [:]){
     'dockerEnvironmentVariables':''
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
-      error("yarn - Parameter \"${parameter.key}\" is not valid for \"audit\", please remove it!")
+    if ( !validParameters.containsKey(parameter.key) ){
+      error("yarn - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
 
@@ -24,8 +24,8 @@ def test(Map config = [:]){
     'dockerEnvironmentVariables':''
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
-      error("yarn - Parameter \"${parameter.key}\" is not valid for \"test\", please remove it!")
+    if ( !validParameters.containsKey(parameter.key) ){
+      error("yarn - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
 
@@ -41,8 +41,8 @@ def install(Map config = [:]){
     'dockerEnvironmentVariables':''
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
-      error("yarn - Parameter \"${parameter.key}\" is not valid for \"install\", please remove it!")
+    if ( !validParameters.containsKey(parameter.key) ){
+      error("yarn - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
 
