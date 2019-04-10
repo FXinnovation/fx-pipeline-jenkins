@@ -5,8 +5,8 @@ def build(Map config = [:]){
   if (!config.containsKey('tags') && !(config.tags instanceof List)){
     error('tags parameter is mandatory and must be of type List')
   }
-  if (config.containsKey('registry') && !(config.registry instanceof CharSequence)){
-    error('registry parameter is mandatory and must be of type CharSequence')
+  if (config.containsKey('registries') && !(config.registries instanceof List)){
+    error('registries parameter must be of type List')
   }
   if (!config.containsKey('namespace') && !(config.namespace instanceof CharSequence)){
     error('namespace parameter is mandatory and must be of type CharSequence')
@@ -15,8 +15,10 @@ def build(Map config = [:]){
   optionsString = ''
   config.tags.each { tag ->
     optionsString += '--tag '
-    if (config.containsKey('registry') && '' != config.registry){
-      optionsString += "${config.registry}/"
+    if (config.containsKey('registries') && [] != config.registries){
+      config.registries.each { registry ->
+        optionsString += "${registry}/${config.namespace}/${config.image}:${tag} "
+      }
     }
     optionsString += "${config.namespace}/${config.image}:${tag} "
   }
