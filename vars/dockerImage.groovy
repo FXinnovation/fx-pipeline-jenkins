@@ -1,16 +1,8 @@
 def build(Map config = [:]){
-  if (!config.containsKey('image') && !(config.image instanceof CharSequence)){
-    error('image parameter is mandatory and must be of type CharSequence')
-  }
-  if (!config.containsKey('tags') && !(config.tags instanceof List)){
-    error('tags parameter is mandatory and must be of type List')
-  }
-  if (config.containsKey('registries') && !(config.registries instanceof List)){
-    error('registries parameter must be of type List')
-  }
-  if (!config.containsKey('namespace') && !(config.namespace instanceof CharSequence)){
-    error('namespace parameter is mandatory and must be of type CharSequence')
-  }
+  mapAttributeCheck(config, 'image', CharSequence)
+  mapAttributeCheck(config, 'tags', List)
+  mapAttributeCheck(config, 'registries', List, [])
+  mapAttributeCheck(config, 'namespace', CharSequence)
 
   optionsString = ''
   config.tags.each { tag ->
@@ -29,21 +21,11 @@ def build(Map config = [:]){
 }
 
 def publish(Map config = [:]){
-  if (!config.containsKey('image') && !(config.image instanceof CharSequence)){
-    error('image parameter is mandatory and must be of type CharSequence')
-  }
-  if (!config.containsKey('tags') && !(config.tags instanceof List)){
-    error('tags parameter is mandatory and must be of type List')
-  }
-  if (!config.containsKey('registry') && !(config.registry instanceof CharSequence)){
-    error('registry parameter is mandatory and must be of type CharSequence')
-  }
-  if (!config.containsKey('namespace') && !(config.namespace instanceof CharSequence)){
-    error('namespace parameter is mandatory and must be of type CharSequence')
-  }
-  if (!config.containsKey('credentialId') && !(config.credentialId instanceof CharSequence)){
-    error('credentialId parameter is mandatory and must be of type CharSequence')
-  }
+  mapAttributeCheck(config, 'image', CharSequence)
+  mapAttributeCheck(config, 'tags', List)
+  mapAttributeCheck(config, 'registries', List, [])
+  mapAttributeCheck(config, 'namespace', CharSequence)
+  mapAttributeCheck(config, 'credentialId', CharSequence)
 
   withCredentials([
     usernamePassword(
