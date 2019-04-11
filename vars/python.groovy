@@ -82,10 +82,6 @@ def call(Map config = [:]){
     environmentVariables: config.dockerEnvironmentVariables,
   )
 
-  execute(
-    script: "${pythonCommand} version"
-  )
-
   return execute(
     script: "${pythonCommand} /bin/bash -c \"${config.subCommand}\""
   )
