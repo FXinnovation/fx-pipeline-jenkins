@@ -47,7 +47,7 @@ def test(Map config = [:], Map closures = [:]) {
         }
     }
     try {
-        closures.test()
+        replay = closures.test()
         if ((replay.stdout =~ /.*FAILED (errors=.*).*/)) {
             error('Some tests have not passed.')
         }
