@@ -24,8 +24,8 @@ def call(Map config = [:], Map closures = [:]) {
 //  publish(config, closures)
 }
 
-static
 def virtualenv(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
     if (!closures.containsKey('virtualenv')) {
         closures.virtualenv = {
             python.virtualenv([
@@ -36,8 +36,9 @@ def virtualenv(Map config = [:], Map closures = [:]) {
     closures.virtualenv()
 }
 
-static
+
 def test(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
     if (!closures.containsKey('test')) {
         closures.test = {
             python.test([
@@ -49,11 +50,11 @@ def test(Map config = [:], Map closures = [:]) {
 }
 
 def lint(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
     if (!closures.containsKey('lint')) {
         closures.lint = {
             python.lint([
                     version: config.version,
-                    folder : folder
             ])
         }
     }
