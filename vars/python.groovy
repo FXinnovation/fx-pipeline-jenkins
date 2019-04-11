@@ -39,8 +39,7 @@ def test(Map config = [:]){
 
 def lint(Map config = [:]){
   validParameters = [
-          'version':'',
-          'folder': ''
+          'version':''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -48,7 +47,6 @@ def lint(Map config = [:]){
     }
   }
   mapAttributeCheck(config, 'version', CharSequence, '3')
-  mapAttributeCheck(config, 'folder', CharSequence, '.')
 
   if (config.version == "3") {
     executable = "python3"
@@ -56,7 +54,7 @@ def lint(Map config = [:]){
     executable = "python"
   }
 
-  config.subCommand = ". virtualenv/bin/activate; pip install pylint; pylint ${folder}/*.py;"
+  config.subCommand = ". virtualenv/bin/activate; make lint;"
 
   python(config)
 }
