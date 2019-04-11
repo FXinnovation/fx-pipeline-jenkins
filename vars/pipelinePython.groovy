@@ -46,7 +46,14 @@ def test(Map config = [:], Map closures = [:]) {
             ])
         }
     }
-    closures.test()
+    try {
+        closures.test()
+        if ((replay.stdout =~ /.*FAILED (errors=.*).*/)) {
+            error('Some tests have not passed.')
+        }
+    } catch (errorApply) {
+        throw (errorApply)
+    }
 }
 
 def lint(Map config = [:], Map closures = [:]) {
@@ -58,7 +65,9 @@ def lint(Map config = [:], Map closures = [:]) {
             ])
         }
     }
+
     closures.lint()
+
 }
 
 
