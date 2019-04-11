@@ -1,8 +1,8 @@
 def build(Map config = [:]){
-  mapAttributeCheck(config, 'image', CharSequence)
-  mapAttributeCheck(config, 'tags', List)
+  mapAttributeCheck(config, 'image', CharSequence, '', 'The image key must be defined')
+  mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
   mapAttributeCheck(config, 'registries', List, [])
-  mapAttributeCheck(config, 'namespace', CharSequence)
+  mapAttributeCheck(config, 'namespace', CharSequence, '', 'The namespace key must be defined')
 
   optionsString = ''
   config.tags.each { tag ->
@@ -21,11 +21,11 @@ def build(Map config = [:]){
 }
 
 def publish(Map config = [:]){
-  mapAttributeCheck(config, 'image', CharSequence)
-  mapAttributeCheck(config, 'tags', List)
+  mapAttributeCheck(config, 'image', CharSequence, '', 'The image key must be defined')
+  mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
   mapAttributeCheck(config, 'registries', List, [])
-  mapAttributeCheck(config, 'namespace', CharSequence)
-  mapAttributeCheck(config, 'credentialId', CharSequence)
+  mapAttributeCheck(config, 'namespace', CharSequence, '', 'The namespace key must be defined')
+  mapAttributeCheck(config, 'credentialId', CharSequence, '', 'The credentialId key must be defined')
 
   withCredentials([
     usernamePassword(
