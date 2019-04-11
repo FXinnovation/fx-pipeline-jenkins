@@ -1,0 +1,12 @@
+fxPython()
+
+FXInnovation pipeline.
+Will execute test & deploy terraform modules/deploy repositories.
+
+The function takes a Map as input that follows the following pattern:
+
+*version*: '3'
+
+
+Output:
+String
