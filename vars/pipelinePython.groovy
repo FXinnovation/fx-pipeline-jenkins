@@ -5,7 +5,7 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   mapAttributeCheck(config, 'version', CharSequence, '3')
-  mapAttributeCheck(config, 'folders', List, [])
+  mapAttributeCheck(config, 'lintFolders', List, [], 'A list of folders needs to be provided.')
 
   stage('Unit Tests') {
     virtualenv(config, closures)
@@ -52,7 +52,7 @@ def lint(Map config = [:], Map closures = [:]){
 
   if (!closures.containsKey('lint')){
     closures.lint = {
-      for (folder in config.folders) {
+      for (folder in config.lintFolders) {
         python.lint([
                 version: config.version,
                 folder : folder
