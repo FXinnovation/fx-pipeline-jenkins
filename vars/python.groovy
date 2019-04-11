@@ -79,7 +79,7 @@ def call(Map config = [:]){
 
   pythonCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand:  'terraform',
+    fallbackCommand:  'false',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables,
   )
