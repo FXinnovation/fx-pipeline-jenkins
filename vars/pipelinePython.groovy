@@ -7,38 +7,59 @@ def call(Map config = [:], Map closures = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
     // in this array we'll place the jobs that we wish to run
 
-    def branches = [:]
+//    def branches = [:]
+//
+//    branches["Unit Tests"] = {
+//        fxSingleJob([
+//                pipeline: { Map scmInfo ->
+//                    stage('Virtual Env') {
+//                        virtualenv(config, closures)
+//                    }
+//
+//                    stage('Unit Tests') {
+//                        test(config, closures)
+//                    }
+//                }
+//        ])
+//    }
+//
+//    branches["Lint"] = {
+//        fxSingleJob([
+//                pipeline: { Map scmInfo ->
+//                    stage('Virtual Env') {
+//                        virtualenv(config, closures)
+//                    }
+//
+//                    stage('Lint') {
+//                        lint(config, closures)
+//                    }
+//                }
+//        ])
+//    }
 
-    branches["Unit Tests"] = {
-        fxSingleJob([
-                pipeline: { Map scmInfo ->
-                    stage('Virtual Env') {
-                        virtualenv(config, closures)
+//    parallel branches
+
+    stage('Virtual Env') {
+                       virtualenv(config, closures)
                     }
-
-                    stage('Unit Tests') {
+    stage('Run Tests') {
+        parallel {
+            stage('Unittests') {
+                steps {
+                    stage('Unittests') {
                         test(config, closures)
                     }
                 }
-        ])
-    }
-
-    branches["Lint"] = {
-        fxSingleJob([
-                pipeline: { Map scmInfo ->
-                    stage('Virtual Env') {
-                        virtualenv(config, closures)
-                    }
-
+            }
+            stage('Lint') {
+                steps {
                     stage('Lint') {
                         lint(config, closures)
                     }
                 }
-        ])
+            }
+        }
     }
-
-    parallel branches
-
 
 //  stage('coverage') {
 //    virtualenv(config, closures)
