@@ -13,7 +13,7 @@ def call(Map config = [:]) {
                     [cron('@midnight')]
             )
     ]
-    properties(defaultPropertiesConfig + propertiesConfig)
+//    properties(defaultPropertiesConfig)
     status = 'SUCCESS'
     def label = UUID.randomUUID().toString()
     def label2 = UUID.randomUUID().toString()
