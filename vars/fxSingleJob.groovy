@@ -1,6 +1,7 @@
 def call(Map closures = [:]){
   status='SUCCESS'
   def label = UUID.randomUUID().toString()
+  printDebug(label)
   podTemplate(
     cloud: 'kubernetes',
     name:  'jenkins-slave-linux',
