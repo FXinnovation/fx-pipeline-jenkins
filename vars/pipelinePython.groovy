@@ -22,36 +22,24 @@ def call(Map config = [:], Map closures = [:]) {
 
                     printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-                    stage('Unit Tests') {
+                    stage('Virtual Env') {
                         virtualenv(config, closures)
-                        test(config, closures)
                     }
 
+                    stage('Unit Tests') {
+                        test(config, closures)
+                    }
                 }
         ])
-
     }
 
     branches["Lint"] = {
-        fxJob([
-                pipeline: { Map scmInfo ->
-                    def isTagged = '' != scmInfo.tag
-                    def MakefileFileExists = fileExists 'Makefile'
-                    def toDeploy = false
-
-                    if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
-                        toDeploy = true
-                    }
-
-                    printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
-                    stage('lint') {
-                        virtualenv(config, closures)
-                        lint(config, closures)
-                    }
-                }
-        ])
-
-
+        stage('Virtual Env') {
+            virtualenv(config, closures)
+        }
+        stage('lint') {
+            lint(config, closures)
+        }
     }
 
     parallel branches
