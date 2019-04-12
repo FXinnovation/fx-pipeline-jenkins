@@ -6,22 +6,19 @@ def call(Map config = [:], Map closures = [:]) {
     }
     mapAttributeCheck(config, 'version', CharSequence, '3')
     // in this array we'll place the jobs that we wish to run
-    def branches = [:]
-    branches["Unit Tests"] = {
+
+    if ( config.stage == 'test' ) {
         stage('Unit Tests') {
             virtualenv(config, closures)
             test(config, closures)
         }
-    }
-
-    branches["Lint"] = {
+    } else if ( config.stage == 'lint' ) {
         stage('lint') {
             virtualenv(config, closures)
             lint(config, closures)
         }
     }
 
-    parallel branches
 
 
 //  stage('coverage') {
@@ -59,10 +56,10 @@ def test(Map config = [:], Map closures = [:]) {
         if (replay.stdout =~ /FAILED \(errors=.*\)/) {
             error('Some tests have not passed.')
         }
-    } catch (errorApply) {
-        throw (errorApply)
+    } catch (error) {
+        throw (error)
     } finally {
-        junit '**/Report/*.xml'
+        junit '**/Reports/*.xml'
     }
 }
 
