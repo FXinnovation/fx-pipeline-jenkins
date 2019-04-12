@@ -17,7 +17,7 @@ def virtualenv(Map config = [:]){
     executable = "python"
   }
 
-  config.subCommand = "${pip} install virtualenv; ${executable} -m virtualenv virtualenv;"
+  config.subCommand = "${pip} install virtualenv; ${executable} -m virtualenv virtualenv; . virtualenv/bin/activate; pip install -r requirements.txt;"
 
   python(config)
 }
