@@ -5,16 +5,24 @@ def call(Map config = [:], Map closures = [:]) {
         }
     }
     mapAttributeCheck(config, 'version', CharSequence, '3')
-
-    stage('Unit Tests') {
-        virtualenv(config, closures)
-        test(config, closures)
+    // in this array we'll place the jobs that we wish to run
+    def branches = [:]
+    branches["branch1"] = {
+        stage('Unit Tests') {
+            virtualenv(config, closures)
+            test(config, closures)
+        }
     }
 
-    stage('lint') {
-        virtualenv(config, closures)
-        lint(config, closures)
+    branches["branch2"] = {
+        stage('lint') {
+            virtualenv(config, closures)
+            lint(config, closures)
+        }
     }
+
+    parallel branches
+
 
 //  stage('coverage') {
 //    virtualenv(config, closures)
