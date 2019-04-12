@@ -7,14 +7,10 @@ def call(Map config = [:], Map closures = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
     // in this array we'll place the jobs that we wish to run
 
-
-    stage('virtualenv') {
-        virtualenv(config, closures)
-    }
     def branches = [:]
 
     branches["Unit Tests"] = {
-        fxJob([
+        fxSingleJob([
                 pipeline: { Map scmInfo ->
                     def isTagged = '' != scmInfo.tag
                     def MakefileFileExists = fileExists 'Makefile'
@@ -37,9 +33,25 @@ def call(Map config = [:], Map closures = [:]) {
     }
 
     branches["Lint"] = {
-        stage('lint') {
-            lint(config, closures)
-        }
+        fxSingleJob([
+                pipeline: { Map scmInfo ->
+                    def isTagged = '' != scmInfo.tag
+                    def MakefileFileExists = fileExists 'Makefile'
+                    def toDeploy = false
+
+                    if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
+                        toDeploy = true
+                    }
+
+                    printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
+                    stage('lint') {
+                        virtualenv(config, closures)
+                        lint(config, closures)
+                    }
+                }
+        ])
+
+
     }
 
     parallel branches
