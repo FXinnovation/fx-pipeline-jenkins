@@ -7,18 +7,14 @@ def call(Map config = [:], Map closures = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
     // in this array we'll place the jobs that we wish to run
 
-    if ( config.stage == 'test' ) {
-        stage('Unit Tests') {
-            virtualenv(config, closures)
-            test(config, closures)
-        }
-    } else if ( config.stage == 'lint' ) {
-        stage('lint') {
-            virtualenv(config, closures)
-            lint(config, closures)
-        }
+    stage('Unit Tests') {
+        virtualenv(config, closures)
+        test(config, closures)
     }
-
+    stage('lint') {
+        virtualenv(config, closures)
+        lint(config, closures)
+    }
 
 
 //  stage('coverage') {
