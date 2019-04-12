@@ -15,18 +15,18 @@ def call(Map config = [:]) {
     config.environmentVariables = []
   }
 
-//  try {
-//    execute(
-//      script: 'docker version'
-//    )
-//  } catch(dockerVersionError) {
-//    if ( "" == config.fallbackCommand ){
-//      println "Docker is not available, assuming the tool is installed."
-//    }else{
-//      println "Docker is not available, assuming ${config.fallbackCommand} is installed."
-//    }
-//    return config.fallbackCommand
-//  }
+  try {
+    execute(
+      script: 'docker version'
+    )
+  } catch(dockerVersionError) {
+    if ( "" == config.fallbackCommand ){
+      println "Docker is not available, assuming the tool is installed."
+    }else{
+      println "Docker is not available, assuming ${config.fallbackCommand} is installed."
+    }
+    return config.fallbackCommand
+  }
 
   execute(
     script: "docker pull ${config.dockerImage}"
