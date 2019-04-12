@@ -13,7 +13,7 @@ def call(Map config = [:]) {
           name: 'ansible-lint',
           pattern: config.ansiblelintOutputFile
         )
-      ) 
+      )
       publishIssues issues: [issues]
     }
   ])
