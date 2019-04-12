@@ -32,7 +32,7 @@ def test(Map config = [:]){
     }
   }
 
-  config.subCommand = ". virtualenv/bin/activate; make test;"
+  config.subCommand = ". virtualenv/bin/activate; python tests;"
 
   python(config)
 }
