@@ -7,7 +7,7 @@ def call(Map config = [:], Map closures = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
     // in this array we'll place the jobs that we wish to run
 
-//    def branches = [:]
+    def branches = [:]
 //
 //    branches["Unit Tests"] = {
 //        fxSingleJob([
@@ -39,34 +39,41 @@ def call(Map config = [:], Map closures = [:]) {
 
 //    parallel branches
 
-    stage('Parallel Stage') {
-        parallel {
-            stage('Branch A') {
-                steps {
-                    echo "On Branch A"
-                }
+//    stage('Parallel Stage') {
+//        parallel {
+    branches["A"] = {
+        stage('Branch A') {
+            steps {
+                echo "On Branch A"
             }
-            stage('Branch B') {
-                steps {
-                    echo "On Branch B"
-                }
+        }
+    }
+    branches["B"] = {
+        stage('Branch B') {
+            steps {
+                echo "On Branch B"
             }
-            stage('Branch C') {
-                stages {
-                    stage('Nested 1') {
-                        steps {
-                            echo "In stage Nested 1 within Branch C"
-                        }
+        }
+    }
+    branches["C"] = {
+        stage('Branch C') {
+            stages {
+                stage('Nested 1') {
+                    steps {
+                        echo "In stage Nested 1 within Branch C"
                     }
-                    stage('Nested 2') {
-                        steps {
-                            echo "In stage Nested 2 within Branch C"
-                        }
+                }
+                stage('Nested 2') {
+                    steps {
+                        echo "In stage Nested 2 within Branch C"
                     }
                 }
             }
         }
     }
+
+    parallel branches
+
 //  stage('coverage') {
 //    virtualenv(config, closures)
 //    coverage(config, closures)
