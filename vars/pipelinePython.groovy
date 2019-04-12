@@ -40,6 +40,7 @@ def call(Map config = [:], Map closures = [:]) {
 //    parallel branches
 
     stage('Parallel Stage') {
+        failFast true
         parallel {
             stage('Branch A') {
                 steps {
@@ -66,6 +67,7 @@ def call(Map config = [:], Map closures = [:]) {
                 }
             }
         }
+    }
 //  stage('coverage') {
 //    virtualenv(config, closures)
 //    coverage(config, closures)
