@@ -39,11 +39,13 @@ def call(Map config = [:], Map closures = [:]) {
 
 //    parallel branches
 
-//    stage('Parallel Stage') {
-//        parallel {
+    stage('Virtual Env') {
+        virtualenv(config, closures)
+    }
+
     branches["A"] = {
-        stage('Branch A') {
-            echo "On Branch A"
+        stage('Lint') {
+            lint(config, closures)
         }
     }
     branches["B"] = {
