@@ -61,6 +61,8 @@ def test(Map config = [:], Map closures = [:]) {
         }
     } catch (errorApply) {
         throw (errorApply)
+    } finally {
+        junit '**/Report/*.xml'
     }
 }
 
