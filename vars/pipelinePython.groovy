@@ -14,9 +14,26 @@ def call(Map config = [:], Map closures = [:]) {
     def branches = [:]
 
     branches["Unit Tests"] = {
-        stage('Unit Tests') {
-            test(config, closures)
-        }
+        fxJob([
+                pipeline: { Map scmInfo ->
+                    def isTagged = '' != scmInfo.tag
+                    def MakefileFileExists = fileExists 'Makefile'
+                    def toDeploy = false
+
+                    if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
+                        toDeploy = true
+                    }
+
+                    printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
+
+                    stage('Unit Tests') {
+                        virtualenv(config, closures)
+                        test(config, closures)
+                    }
+
+                }
+        ])
+
     }
 
     branches["Lint"] = {
