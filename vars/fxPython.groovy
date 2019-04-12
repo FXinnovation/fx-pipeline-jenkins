@@ -74,13 +74,13 @@ def call(Map closures = [:], List propertiesConfig = []){
                         if (closures.containsKey('prePrepare')){
                             closures.prePrepare()
                         }
-                        scmInfo = fxCheckout()
                         if (closures.containsKey('postPrepare')){
                             closures.postPrepare()
                         }
                     }
                     parallel lint: {
                         node(label1) {
+                            fxCheckout()
                             pipelinePython([
                                     version: config.version,
                                     stage: 'lint'
@@ -88,6 +88,7 @@ def call(Map closures = [:], List propertiesConfig = []){
                         }
                     },
                     test: {
+                        fxCheckout()
                         pipelinePython([
                                 version: config.version,
                                 stage: 'test'
