@@ -7,14 +7,14 @@ def call(Map config = [:], Map closures = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
     // in this array we'll place the jobs that we wish to run
     def branches = [:]
-    branches["branch1"] = {
+    branches["Unit Tests"] = {
         stage('Unit Tests') {
             virtualenv(config, closures)
             test(config, closures)
         }
     }
 
-    branches["branch2"] = {
+    branches["Lint"] = {
         stage('lint') {
             virtualenv(config, closures)
             lint(config, closures)
