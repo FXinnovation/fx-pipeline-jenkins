@@ -12,16 +12,6 @@ def call(Map config = [:], Map closures = [:]) {
     branches["Unit Tests"] = {
         fxSingleJob([
                 pipeline: { Map scmInfo ->
-                    def isTagged = '' != scmInfo.tag
-                    def MakefileFileExists = fileExists 'Makefile'
-                    def toDeploy = false
-
-                    if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
-                        toDeploy = true
-                    }
-
-                    printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
-
                     stage('Virtual Env') {
                         virtualenv(config, closures)
                     }
@@ -34,12 +24,17 @@ def call(Map config = [:], Map closures = [:]) {
     }
 
     branches["Lint"] = {
-        stage('Virtual Env') {
-            virtualenv(config, closures)
-        }
-        stage('lint') {
-            lint(config, closures)
-        }
+        fxSingleJob([
+                pipeline: { Map scmInfo ->
+                    stage('Virtual Env') {
+                        virtualenv(config, closures)
+                    }
+
+                    stage('Lint') {
+                        lint(config, closures)
+                    }
+                }
+        ])
     }
 
     parallel branches
