@@ -40,10 +40,6 @@ def call(Map config = [:], Map closures = [:]) {
 //    parallel branches
 
     stage('Parallel Stage') {
-        when {
-            branch 'master'
-        }
-        failFast true
         parallel {
             stage('Branch A') {
                 steps {
