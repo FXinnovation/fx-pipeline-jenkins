@@ -1,5 +1,5 @@
 def call(Map closures = [:], List propertiesConfig = []){
-    mapAttributeCheck(config, 'version', CharSequence, '3')
+//    mapAttributeCheck(config, 'version', CharSequence, '3')
 
     defaultPropertiesConfig = [
             buildDiscarder(
