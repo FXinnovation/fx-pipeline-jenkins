@@ -43,14 +43,14 @@ def call(Map config = [:], Map closures = [:]) {
         virtualenv(config, closures)
     }
 
-    branches["A"] = {
+    branches["Lint"] = {
         stage('Lint') {
             lint(config, closures)
         }
     }
-    branches["B"] = {
-        stage('Branch B') {
-            echo "On Branch B"
+    branches["Unittest"] = {
+        stage('Unittest') {
+            test(config, closures)
         }
     }
     branches["C"] = {
