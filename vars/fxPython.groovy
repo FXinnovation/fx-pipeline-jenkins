@@ -1,42 +1,46 @@
 def call(Map config = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
 
-    fxJob([
-            pipeline: { Map scmInfo ->
-                def isTagged = '' != scmInfo.tag
-                def MakefileFileExists = fileExists 'Makefile'
-                def toDeploy = false
+    parallel lint: {
+        fxJob([
+                pipeline: { Map scmInfo ->
+                    def isTagged = '' != scmInfo.tag
+                    def MakefileFileExists = fileExists 'Makefile'
+                    def toDeploy = false
 
-                if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
-                    toDeploy = true
+                    if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
+                        toDeploy = true
+                    }
+
+                    printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
+
+                    pipelinePython([
+                            version: config.version,
+                            stage  : 'lint'
+                    ])
+
                 }
+        ])
+    },
 
-                printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
+            test: {
+                fxJob([
+                        pipeline: { Map scmInfo ->
+                            def isTagged = '' != scmInfo.tag
+                            def MakefileFileExists = fileExists 'Makefile'
+                            def toDeploy = false
 
-                pipelinePython([
-                        version: config.version,
-                        stage  : 'lint'
-                ])
+                            if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
+                                toDeploy = true
+                            }
 
-            }
-    ])
+                            printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-    fxJob([
-            pipeline: { Map scmInfo ->
-                def isTagged = '' != scmInfo.tag
-                def MakefileFileExists = fileExists 'Makefile'
-                def toDeploy = false
-
-                if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
-                    toDeploy = true
-                }
-
-                printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
-
-                pipelinePython([
-                        version: config.version,
-                        stage  : 'test'
+                            pipelinePython([
+                                    version: config.version,
+                                    stage  : 'test'
+                            ])
+                        }
                 ])
             }
-    ])
 }
