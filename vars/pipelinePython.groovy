@@ -43,30 +43,23 @@ def call(Map config = [:], Map closures = [:]) {
 //        parallel {
     branches["A"] = {
         stage('Branch A') {
-            steps {
-                echo "On Branch A"
-            }
+            echo "On Branch A"
         }
     }
     branches["B"] = {
         stage('Branch B') {
-            steps {
-                echo "On Branch B"
-            }
+            echo "On Branch B"
         }
     }
     branches["C"] = {
         stage('Branch C') {
             stages {
                 stage('Nested 1') {
-                    steps {
-                        echo "In stage Nested 1 within Branch C"
-                    }
+                    echo "In stage Nested 1 within Branch C"
                 }
                 stage('Nested 2') {
-                    steps {
-                        echo "In stage Nested 2 within Branch C"
-                    }
+                    echo "In stage Nested 2 within Branch C"
+
                 }
             }
         }
@@ -80,54 +73,54 @@ def call(Map config = [:], Map closures = [:]) {
 //  }
 
 //  publish(config, closures)
-    }
+}
 
-    def virtualenv(Map config = [:], Map closures = [:]) {
-        mapAttributeCheck(config, 'version', CharSequence, '3')
-        if (!closures.containsKey('virtualenv')) {
-            closures.virtualenv = {
-                python.virtualenv([
-                        version: config.version
-                ])
-            }
-        }
-        closures.virtualenv()
-    }
-
-
-    def test(Map config = [:], Map closures = [:]) {
-        mapAttributeCheck(config, 'version', CharSequence, '3')
-        if (!closures.containsKey('test')) {
-            closures.test = {
-                python.test([
-                        version: config.version
-                ])
-            }
-        }
-        try {
-            replay = closures.test()
-            if (replay.stdout =~ /FAILED \(errors=.*\)/) {
-                error('Some tests have not passed.')
-            }
-        } catch (error) {
-            throw (error)
-        } finally {
-            junit '**/Reports/*.xml'
+def virtualenv(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
+    if (!closures.containsKey('virtualenv')) {
+        closures.virtualenv = {
+            python.virtualenv([
+                    version: config.version
+            ])
         }
     }
+    closures.virtualenv()
+}
 
-    def lint(Map config = [:], Map closures = [:]) {
-        mapAttributeCheck(config, 'version', CharSequence, '3')
-        if (!closures.containsKey('lint')) {
-            closures.lint = {
-                python.lint([
-                        version: config.version,
-                ])
-            }
+
+def test(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
+    if (!closures.containsKey('test')) {
+        closures.test = {
+            python.test([
+                    version: config.version
+            ])
         }
-
-        closures.lint()
-
     }
+    try {
+        replay = closures.test()
+        if (replay.stdout =~ /FAILED \(errors=.*\)/) {
+            error('Some tests have not passed.')
+        }
+    } catch (error) {
+        throw (error)
+    } finally {
+        junit '**/Reports/*.xml'
+    }
+}
+
+def lint(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
+    if (!closures.containsKey('lint')) {
+        closures.lint = {
+            python.lint([
+                    version: config.version,
+            ])
+        }
+    }
+
+    closures.lint()
+
+}
 
 
