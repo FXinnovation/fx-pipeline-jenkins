@@ -10,7 +10,7 @@ def call(Map config = [:], Map closures = [:]) {
     def branches = [:]
 
     branches["Unit Tests"] = {
-        fxJob([
+        fxSingleJob([
                 pipeline: { Map scmInfo ->
                     def isTagged = '' != scmInfo.tag
                     def MakefileFileExists = fileExists 'Makefile'
