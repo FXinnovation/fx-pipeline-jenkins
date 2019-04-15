@@ -59,6 +59,30 @@ def lint(Map config = [:]){
   python(config)
 }
 
+def coverage(Map config = [:]){
+  validParameters = [
+          'version':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("python - Parameter \"${parameter.key}\" is not valid for \"lint\", please remove it!")
+    }
+  }
+  mapAttributeCheck(config, 'version', CharSequence, '3')
+  mapAttributeCheck(config, 'source', CharSequence, 'source', )
+
+
+  if (config.version == "3") {
+    executable = "python3"
+  } else {
+    executable = "python"
+  }
+
+  config.subCommand = ". virtualenv/bin/activate; pip install coverage; for file in \$( ls ${config.source}/*.py) ; do coverage run -a \${file} ; done; coverage.xml"
+
+  python(config)
+
+}
 
 def call(Map config = [:]){
   if ( !config.containsKey('dockerImage') ){

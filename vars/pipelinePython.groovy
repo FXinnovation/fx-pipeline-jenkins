@@ -75,4 +75,31 @@ def lint(Map config = [:], Map closures = [:]) {
 
 }
 
+def coverage(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
+    mapAttributeCheck(config, 'source', CharSequence, 'source', )
+    if (!closures.containsKey('coverage')) {
+        closures.coverage = {
+            python.coverage([
+                    version: config.version,
+                    source: config.source
+            ])
+        }
+    }
+    try {
+        closures.coverage()
 
+    } catch (error) {
+        throw (error)
+    } finally {
+        cobertura('coverage.xml') {
+            failNoReports(true)
+            sourceEncoding('ASCII')
+
+            // the following targets are added by default to check the method, line and conditional level coverage
+            methodTarget(80, 0, 0)
+            lineTarget(80, 0, 0)
+            conditionalTarget(70, 0, 0)
+        }
+    }
+}
