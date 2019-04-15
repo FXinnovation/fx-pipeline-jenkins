@@ -61,11 +61,12 @@ def lint(Map config = [:]){
 
 def coverage(Map config = [:]){
   validParameters = [
-          'version':''
+          'version':'',
+          'source': ''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("python - Parameter \"${parameter.key}\" is not valid for \"lint\", please remove it!")
+      error("python - Parameter \"${parameter.key}\" is not valid for \"coverage\", please remove it!")
     }
   }
   mapAttributeCheck(config, 'version', CharSequence, '3')
