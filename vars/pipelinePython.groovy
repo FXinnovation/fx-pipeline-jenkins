@@ -18,6 +18,9 @@ def call(Map config = [:], Map closures = [:]) {
     stage('Unittest') {
         test(config, closures)
     }
+    stage('Coverage') {
+        coverage(config, closures)
+    }
 
 //  stage('coverage') {
 //    virtualenv(config, closures)
