@@ -84,8 +84,7 @@ def coverage(Map config = [:], Map closures = [:]) {
     if (!closures.containsKey('coverage')) {
         closures.coverage = {
             python.coverage([
-                    version: config.version,
-                    source: config.source
+                    version: config.version
             ])
         }
     }

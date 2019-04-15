@@ -69,7 +69,6 @@ def coverage(Map config = [:]){
     }
   }
   mapAttributeCheck(config, 'version', CharSequence, '3')
-  mapAttributeCheck(config, 'source', CharSequence, 'source', )
 
 
   if (config.version == "3") {
