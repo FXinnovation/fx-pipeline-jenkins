@@ -1,7 +1,6 @@
 def call(Map config = [:]) {
 
     mapAttributeCheck(config, 'version', CharSequence, '3')
-    mapAttributeCheck(config, 'source', CharSequence, 'source_directory', 'need to provide the directory of the sources.')
 
 
     fxJob([
@@ -17,8 +16,7 @@ def call(Map config = [:]) {
                 printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
                 pipelinePython([
-                        version: config.version,
-                        source: config.source
+                        version: config.version
                 ])
 
             }
