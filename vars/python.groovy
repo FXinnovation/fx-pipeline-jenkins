@@ -79,7 +79,7 @@ def coverage(Map config = [:]){
     executable = "python"
   }
 
-  config.subCommand = ". virtualenv/bin/activate; pip install coverage; for file in \$( ls ${config.source}/*.py) ; do coverage run -a \${file} ; done; coverage xml"
+  config.subCommand = ". virtualenv/bin/activate; pip install coverage; for file in \$( ls ${config.source}/\\*.py) ; do coverage run -a \${file} ; done; coverage xml"
 
   python(config)
 
