@@ -61,8 +61,7 @@ def lint(Map config = [:]){
 
 def coverage(Map config = [:]){
   validParameters = [
-          'version':'',
-          'source': ''
+          'version':''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -79,7 +78,7 @@ def coverage(Map config = [:]){
     executable = "python"
   }
 
-  config.subCommand = ". virtualenv/bin/activate; pip install coverage; for file in \$( ls ${config.source}/\\*.py) ; do coverage run -a \${file} ; done; coverage xml"
+  config.subCommand = ". virtualenv/bin/activate; pip install coverage; make coverage; coverage xml"
 
   python(config)
 
