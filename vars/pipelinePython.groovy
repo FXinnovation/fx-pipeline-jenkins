@@ -134,7 +134,7 @@ def build(Map config = [:], Map closures = [:]) {
     } catch (error) {
         throw (error)
     } finally {
-        if (config.containsKey('artifacts')) {
+        if (config.artifacts) {
             archiveArtifacts artifacts: "${config.artifacts}"
         }
     }
