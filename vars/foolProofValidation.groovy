@@ -17,7 +17,7 @@ def call() {
   thirdNumber = random.nextInt(10)
   foolProofInput = input(
     message: """
-Please enter the following numbers (without spaces, commas):
+Please enter the following numbers (without spaces, commas, etc) as digits:
 ${numbers[firstNumber]} ${numbers[secondNumber]} ${numbers[thirdNumber]}""",
     ok: 'Approve',
     parameters: [
