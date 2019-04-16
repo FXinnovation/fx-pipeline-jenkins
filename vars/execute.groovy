@@ -10,12 +10,12 @@ def call(Map config = [:]) {
     withEnv(["filePrefix=$rndNumber"]) {
 
         response = [
-                stdou    t: null,
-                stder    r: null,
-                         statusCode: null
+                stdout: null,
+                stderr: null,
+                statusCode: null
         ]
         println "Executing: '${config.script}'"
-        tr y{
+        try{
             sh """
          set +x
          echo "" > /tmp/${filePrefix}-stdout.log
@@ -51,10 +51,10 @@ def call(Map config = [:]) {
                 error(response.stderr)
             }
             return response
-        }catch(e rror){
+        }catch(error){
             throw error
         }
-        finall y{
+        finally{
             sh "rm /tmp/${filePrefix}-*"
         }
     }
