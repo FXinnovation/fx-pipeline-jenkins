@@ -6,6 +6,11 @@ def call(Map config = [:]){
     config.throwError = true
   }
 
+  def myOutput = [:]
+  randomNumber = Math.abs(new Random().nextInt() % 600) + 1
+
+  myOutput[randomNumber] = Math.abs(new Random().nextInt() % 600) + 1
+
   response = [
     stdout: null,
     stderr: null,
@@ -13,19 +18,18 @@ def call(Map config = [:]){
   ]
   println "Executing: '${config.script}'"
   try{
-    filePrefix = Math.abs(new Random().nextInt() % 600) + 1
       sh """
          set +x
-         echo "" > /tmp/${filePrefix}-stdout.log
-         echo "" > /tmp/${filePrefix}-stderr.log
-         echo "" > /tmp/${filePrefix}-statuscode
-         tail -f /tmp/${filePrefix}-stdout.log &
+         echo "" > /tmp/${myOutput[randomNumber]}-stdout.log
+         echo "" > /tmp/${myOutput[randomNumber]}-stderr.log
+         echo "" > /tmp/${myOutput[randomNumber]}-statuscode
+         tail -f /tmp/${myOutput[randomNumber]}-stdout.log &
          STDOUT_PID=\$!
-         tail -f /tmp/${filePrefix}-stderr.log &
+         tail -f /tmp/${myOutput[randomNumber]}-stderr.log &
          STDERR_PID=\$!
          set +e
-         ${config.script} >> /tmp/${filePrefix}-stdout.log 2>> /tmp/${filePrefix}-stderr.log
-         echo \$? > /tmp/${filePrefix}-statuscode
+         ${config.script} >> /tmp/${myOutput[randomNumber]}-stdout.log 2>> /tmp/${myOutput[randomNumber]}-stderr.log
+         echo \$? > /tmp/${myOutput[randomNumber]}-statuscode
          set -e
          # This sleep is needed to make sure both stdout and stderr have been outputed on jenkins... :(
          sleep 1
@@ -34,15 +38,15 @@ def call(Map config = [:]){
          """
     response.stdout = sh(
       returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stdout.log"
+      script: "set +x; cat /tmp/${myOutput[randomNumber]}-stdout.log"
     ).trim()
     response.stderr = sh(
       returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stderr.log"
+      script: "set +x; cat /tmp/${myOutput[randomNumber]}-stderr.log"
     ).trim()
     response.statusCode = sh(
       returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-statuscode"
+      script: "set +x; cat /tmp/${myOutput[randomNumber]}-statuscode"
     ).trim().toInteger()
 
     if (config.throwError == true && response.statusCode != 0){
@@ -52,6 +56,6 @@ def call(Map config = [:]){
   }catch(error){
       throw error
   }finally{
-    sh "rm /tmp/${filePrefix}-*"
+    sh "rm /tmp/${myOutput[randomNumber]}-*"
   }
 }
