@@ -7,7 +7,7 @@ def call(Map config = [:]){
   }
 
   def filePrefix = UUID.randomUUID().toString()
-  response = [
+  def response = [
     stdout: null,
     stderr: null,
     statusCode: null
