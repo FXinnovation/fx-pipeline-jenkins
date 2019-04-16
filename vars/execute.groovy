@@ -6,7 +6,6 @@ def call(Map config = [:]){
     config.throwError = true
   }
 
-  filePrefix = Math.abs(new Random().nextInt() % 600) + 1
   response = [
     stdout: null,
     stderr: null,
@@ -14,6 +13,7 @@ def call(Map config = [:]){
   ]
   println "Executing: '${config.script}'"
   try{
+    filePrefix = Math.abs(new Random().nextInt() % 600) + 1
       sh """
          set +x
          echo "" > /tmp/${filePrefix}-stdout.log
