@@ -87,7 +87,7 @@ def lint(Map config = [:], Map closures = [:]) {
 
 def coverage(Map config = [:], Map closures = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
-    mapAttributeCheck(config, 'source', CharSequence, 'source', )
+    mapAttributeCheck(config, 'source', CharSequence, 'source',)
     if (!closures.containsKey('coverage')) {
         closures.coverage = {
             python.coverage([
@@ -122,12 +122,10 @@ def build(Map config = [:], Map closures = [:]) {
     mapAttributeCheck(config, 'version', CharSequence, '3')
     mapAttributeCheck(config, 'artifacts', CharSequence, '')
 
-    if (!closures.containsKey('test')) {
-        closures.build = {
-            python.build([
-                    version: config.version
-            ])
-        }
+    closures.build = {
+        python.build([
+                version: config.version
+        ])
     }
     try {
         closures.build()
