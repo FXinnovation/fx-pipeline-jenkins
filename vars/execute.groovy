@@ -55,7 +55,11 @@ def call(Map config = [:]) {
             throw error
         }
         finally{
-            sh "rm /tmp/${filePrefix}-*"
+            try {
+                sh "rm /tmp/${filePrefix}-*"
+            }catch(myError) {
+                println(myError)
+            }
         }
     }
 }
