@@ -23,7 +23,7 @@ ${numbers[firstNumber]} ${numbers[secondNumber]} ${numbers[thirdNumber]}""",
     parameters: [
       string(
         defaultValue: '',
-        description: '',
+        description: 'Example: `one two three` becomes `123`',
         name: 'Response',
         trim: true
       )
