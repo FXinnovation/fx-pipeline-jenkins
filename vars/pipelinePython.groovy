@@ -30,6 +30,10 @@ def call(Map config = [:], Map closures = [:]) {
 
     parallel branches
 
+    stage('Build') {
+        build(config, closures)
+    }
+
 }
 
 def virtualenv(Map config = [:], Map closures = [:]) {
@@ -110,5 +114,27 @@ def coverage(Map config = [:], Map closures = [:]) {
                 sourceEncoding: 'ASCII',
                 zoomCoverageChart: false
         )
+    }
+}
+
+def build(Map config = [:], Map closures = [:]) {
+    mapAttributeCheck(config, 'version', CharSequence, '3')
+    mapAttributeCheck(config, 'artifacts', CharSequence, '')
+
+    if (!closures.containsKey('test')) {
+        closures.build = {
+            python.build([
+                    version: config.version
+            ])
+        }
+    }
+    try {
+        closures.build()
+    } catch (error) {
+        throw (error)
+    } finally {
+        if (config.containsKey('artifacts')) {
+            archiveArtifacts artifacts: "${config.artifacts}"
+        }
     }
 }

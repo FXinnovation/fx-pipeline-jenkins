@@ -59,6 +59,28 @@ def lint(Map config = [:]){
   python(config)
 }
 
+def build(Map config = [:]){
+  validParameters = [
+          'version':''
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("python - Parameter \"${parameter.key}\" is not valid for \"lint\", please remove it!")
+    }
+  }
+  mapAttributeCheck(config, 'version', CharSequence, '3')
+
+  if (config.version == "3") {
+    executable = "python3"
+  } else {
+    executable = "python"
+  }
+
+  config.subCommand = ". virtualenv/bin/activate; make build;"
+
+  python(config)
+}
+
 def coverage(Map config = [:]){
   validParameters = [
           'version':''
