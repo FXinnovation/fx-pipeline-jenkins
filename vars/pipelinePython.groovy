@@ -5,6 +5,7 @@ def call(Map config = [:], Map closures = [:]) {
         }
     }
     mapAttributeCheck(config, 'version', CharSequence, '3')
+    mapAttributeCheck(config, 'artifacts', CharSequence, '')
 
     def branches = [:]
 

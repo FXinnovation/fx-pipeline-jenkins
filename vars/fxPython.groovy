@@ -1,6 +1,7 @@
 def call(Map config = [:]) {
 
     mapAttributeCheck(config, 'version', CharSequence, '3')
+    mapAttributeCheck(config, 'artifacts', CharSequence, '')
 
 
     fxJob([
@@ -16,7 +17,8 @@ def call(Map config = [:]) {
                 printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
                 pipelinePython([
-                        version: config.version
+                        version: config.version,
+                        build: config.artifacts
                 ])
 
             }
