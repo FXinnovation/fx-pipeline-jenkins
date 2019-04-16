@@ -1,22 +1,20 @@
-def call(Map config = [:]) {
-    if (!config.containsKey('script') || !(config.script instanceof CharSequence)) {
-        error('"script" parameter is mandatory and must be a String (implements CharSequence).')
-    }
-    if (!config.containsKey('throwError') || !(config.throwError instanceof Boolean)){
-        config.throwError = true
-    }
+def call(Map config = [:]){
+  if (!config.containsKey('script') || !(config.script instanceof CharSequence)){
+    error('"script" parameter is mandatory and must be a String (implements CharSequence).')
+  }
+  if (!config.containsKey('throwError') || !(config.throwError instanceof Boolean)){
+    config.throwError = true
+  }
 
-    rndNumber = UUID.randomUUID().toString()
-    withEnv(["filePrefix=$rndNumber"]) {
-
-        response = [
-                stdout: null,
-                stderr: null,
-                statusCode: null
-        ]
-        println "Executing: '${config.script}'"
-        try{
-            sh """
+  def filePrefix = UUID.randomUUID().toString()
+  response = [
+    stdout: null,
+    stderr: null,
+    statusCode: null
+  ]
+  println "Executing: '${config.script}'"
+  try{
+      sh """
          set +x
          echo "" > /tmp/${filePrefix}-stdout.log
          echo "" > /tmp/${filePrefix}-stderr.log
@@ -34,32 +32,26 @@ def call(Map config = [:]) {
          kill \${STDOUT_PID} &> /dev/null
          kill \${STDERR_PID} &> /dev/null
          """
-            response.stdout = sh(
-                    returnStdout: true,
-                    script: "set +x; cat /tmp/${filePrefix}-stdout.log"
-            ).trim()
-            response.stderr = sh(
-                    returnStdout: true,
-                    script: "set +x; cat /tmp/${filePrefix}-stderr.log"
-            ).trim()
-            response.statusCode = sh(
-                    returnStdout: true,
-                    script: "set +x; cat /tmp/${filePrefix}-statuscode"
-            ).trim().toInteger()
+    response.stdout = sh(
+      returnStdout: true,
+      script: "set +x; cat /tmp/${filePrefix}-stdout.log"
+    ).trim()
+    response.stderr = sh(
+      returnStdout: true,
+      script: "set +x; cat /tmp/${filePrefix}-stderr.log"
+    ).trim()
+    response.statusCode = sh(
+      returnStdout: true,
+      script: "set +x; cat /tmp/${filePrefix}-statuscode"
+    ).trim().toInteger()
 
-            if (config.throwError == true && response.statusCode != 0){
-                error(response.stderr)
-            }
-            return response
-        }catch(error){
-            throw error
-        }
-        finally{
-            try {
-                sh "rm /tmp/${filePrefix}-*"
-            }catch(myError) {
-                println(myError)
-            }
-        }
+    if (config.throwError == true && response.statusCode != 0){
+      error(response.stderr)
     }
+    return response
+  }catch(error){
+      throw error
+  }finally{
+    sh "rm /tmp/${filePrefix}-*"
+  }
 }
