@@ -6,7 +6,7 @@ def call(Map config = [:]){
     config.throwError = true
   }
 
-  filePrefix = new Date().getTime()
+  filePrefix = UUID.randomUUID().toString()
   response = [
     stdout: null,
     stderr: null,
