@@ -18,7 +18,7 @@ def call(Map config = [:]) {
 
                 pipelinePython([
                         version: config.version,
-                        build: config.artifacts
+                        artifacts: config.artifacts
                 ])
 
             }
