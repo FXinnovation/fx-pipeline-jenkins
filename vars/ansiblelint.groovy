@@ -1,41 +1,21 @@
 def call(Map config = [:]){
-  if (!config.containsKey('dockerImage')) {
-    config.dockerImage = 'fxinnovation/ansible-lint:latest'
-  }
-  if (!(config.dockerImage instanceof CharSequence)) {
-    error('dockerImage parameter must be of type CharSequence')
-  }
-  if (!config.containsKey('options')) {
-    config.options = '-p --parseable-severity'
-  }
-  if (!(config.options instanceof CharSequence)) {
-    error('options parameter must be of type CharSequence')
-  }
-  if (!config.containsKey('commandTarget')) {
-    config.commandTarget = '.'
-  }
-  if (!(config.commandTarget instanceof CharSequence)) {
-    error('commandTarget parameter must be of type CharSequence')
-  }
-  if (!config.containsKey('rewritePath')) {
-    config.rewritePath = true
-  }
-  if (!(config.rewritePath instanceof Boolean)) {
-    error('rewritePath parameter must be of type Boolean')
-  }
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/ansible:latest')
+  mapAttributeCheck(config, 'options', CharSequence, '-p --parseable-severity')
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
+  mapAttributeCheck(config, 'rewritePath', Boolean, true)
 
-
-  def ansiblelintCommand = dockerRunCommand(
+  def ansibleLintCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand: 'ansible-lint'
+    fallbackCommand: 'ansible-lint',
+    command: 'ansible-lint'
   )
 
   execute(
-    script: "${ansiblelintCommand} --version"
+    script: "${ansibleLintCommand} --version"
   )
 
   result = execute(
-    script: "${ansiblelintCommand} ${config.options} ${config.commandTarget}",
+    script: "${ansibleLintCommand} ${config.options} ${config.commandTarget}",
     throwError: false
   )
   if (0 != result.statusCode) {
