@@ -1,0 +1,18 @@
+The *ansiblePlaybook* function is a helper to execute an ansible-playbook command.
+
+The ansible-playbook helper return the output of the ansible-playbook command as a String.
+If docker is available, it will be used to execute ansible-playbook.
+
+All parameters are optionals.
+
+Ansible-playbook will inspect all files in the current directory including sub-folders.
+
+**Usage**
+```
+  ansiblePlaybook(
+    dockerImage: String
+    options: String
+    commandTarget: String
+    rewritePath: Boolean
+  )
+```
