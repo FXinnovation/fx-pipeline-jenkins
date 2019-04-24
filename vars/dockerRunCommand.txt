@@ -10,6 +10,7 @@ If docker is available, this function will also pull the dockerImage passed as p
   command = dockerRunCommand(
     dockerImage: String,
     fallbackCommand: String,
+    command: String,
     additionalMounts: Map,
     environmentVariables: Map,
   )
