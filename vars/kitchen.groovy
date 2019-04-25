@@ -7,7 +7,7 @@ def test(Map config = [:]){
     'commandTarget': '',
     'dockerImage': '',
     'dockerAdditionalMounts': '',
-    'dockerEnvrionmentVariables': '',
+    'dockerEnvironmentVariables': '',
     'subCommand': ''
   ]
   for ( parameter in config ) {
