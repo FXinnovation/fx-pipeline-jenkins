@@ -68,7 +68,7 @@ def call(Map config = [:]){
     dockerImage: config.dockerImage,
     fallbackCommand: '',
     additionalMounts: config.dockerAdditionalMounts,
-    envrionmentVariables: config.dockerEnvironmentVariables
+    environmentVariables: config.dockerEnvironmentVariables
   )
 
   execute(
