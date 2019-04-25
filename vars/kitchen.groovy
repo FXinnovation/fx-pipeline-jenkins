@@ -21,13 +21,13 @@ def test(Map config = [:]){
 def call(Map config = [:]){
   optionsString = ''
   if ( !config.containsKey('dockerAdditionalMounts') ){
-    config.dockerAdditionalMounts = []
+    config.dockerAdditionalMounts = [:]
   }
   if ( !config.containsKey('dockerImage') ){
     config.dockerImage = 'fxinnovation/chefdk:latest'
   }
   if ( !config.containsKey('dockerEnvironmentVariables') ){
-    config.dockerEnvironmentVariables = []
+    config.dockerEnvironmentVariables = [:]
   }
   if (!config.containsKey('color')){
     config.color = true
