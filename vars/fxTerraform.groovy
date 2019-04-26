@@ -10,7 +10,11 @@ def call(Map config = [:]) {
   ])
   mapAttributeCheck(config, 'terraformInitBackendConfigsTest', ArrayList, [])
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
-  mapAttributeCheck(config, 'commandTargets', List, ['.'])
+
+  // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.
+  if (config.containsKey('commandTargets')) {
+    print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
+  }
 
   fxJob([
     pipeline: { Map scmInfo ->
@@ -24,7 +28,18 @@ def call(Map config = [:]) {
 
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-      for (commandTarget in config.commandTargets) {
+      if (execute(script: "[ -d examples ]")) {
+        commandTargets = []
+        for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
+          commandTargets += commandTarget
+        }
+      } else {
+        commandTargets = ['.']
+      }
+
+      printDebug('commandTargets: ' + commandTargets)
+
+      for(commandTarget in commandTargets) {
         pipelineTerraform(
           [
             commandTarget     : commandTarget,
@@ -37,16 +52,21 @@ def call(Map config = [:]) {
             testDestroyOptions: [
               vars: config.testPlanVars
             ],
-            validateOptions: [
+            validateOptions   : [
               vars: config.testPlanVars
             ],
-            publish: deployFileExists
+            publish           : deployFileExists
           ], [
             preValidate: { preValidate(deployFileExists, scmInfo) },
-            init: { init(config, commandTarget, deployFileExists) },
-            publish: { publish(config, commandTarget, toDeploy) }
+            init       : { init(config, commandTarget, deployFileExists) },
+            publish    : { publish(config, commandTarget, toDeploy) }
           ]
         )
+      }
+    },
+    postNotify: {
+      if (config.containsKey('commandTargets')) {
+        print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
       }
     }
   ], [
@@ -98,11 +118,11 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
     terraform.init(
       commandTarget: commandTarget,
       dockerAdditionalMounts: [
-        '~/.ssh/'                       : '/root/.ssh/',
+        '~/.ssh/': '/root/.ssh/',
         '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
       ],
       dockerEnvironmentVariables: [
-        'SSH_AUTH_SOCK': '/ssh-agent'
+        'SSH_AUTH_SOCK': '/ssh-agent',
       ],
       backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
     )

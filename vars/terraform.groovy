@@ -240,10 +240,10 @@ def call(Map config = [:]){
     error('ERROR: The subcommand must be defined!')
   }
   if ( !config.containsKey('dockerAdditionalMounts') ){
-    config.dockerAdditionalMounts = []
+    config.dockerAdditionalMounts = [:]
   }
   if ( !config.containsKey('dockerEnvironmentVariables') ){
-    config.dockerEnvironmentVariables = []
+    config.dockerEnvironmentVariables = [:]
   }
 
   optionsString = ''
