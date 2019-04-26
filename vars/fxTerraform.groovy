@@ -10,7 +10,11 @@ def call(Map config = [:]) {
   ])
   mapAttributeCheck(config, 'terraformInitBackendConfigsTest', ArrayList, [])
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
-  mapAttributeCheck(config, 'commandTargets', List, ['.'])
+
+  // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.
+  if (config.containsKey('commandTargets')) {
+    print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
+  }
 
   env.DEBUG = true
 
@@ -31,7 +35,10 @@ def call(Map config = [:]) {
         for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
           commandTargets += commandTarget
         }
+      } else {
+        commandTargets = ['.']
       }
+
       printDebug('commandTargets: ' + commandTargets)
 
       for(commandTarget in commandTargets)
@@ -57,7 +64,12 @@ def call(Map config = [:]) {
             publish: { publish(config, commandTarget, toDeploy) }
           ]
         )
+      },
+    postNotify(
+      if (config.containsKey('commandTargets')) {
+        print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
       }
+    )
     }
   ], [
     disableConcurrentBuilds()
