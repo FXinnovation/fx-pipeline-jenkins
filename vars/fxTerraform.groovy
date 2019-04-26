@@ -16,8 +16,6 @@ def call(Map config = [:]) {
     print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
   }
 
-  env.DEBUG = true
-
   fxJob([
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
@@ -30,7 +28,7 @@ def call(Map config = [:]) {
 
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-      if ('' != execute(script: "ls examples").stdout.split()) {
+      if (execute(script: "[ -d examples ]")) {
         commandTargets = []
         for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
           commandTargets += commandTarget

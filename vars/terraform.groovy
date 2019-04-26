@@ -233,9 +233,6 @@ def fmt(Map config = [:]){
 }
 
 def call(Map config = [:]){
-  // @TODO REMOVE
-  print(config.dockerAdditionalMounts.getClass())
-
   if ( !config.containsKey('dockerImage') ){
     config.dockerImage = "fxinnovation/terraform:latest"
   }
