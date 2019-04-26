@@ -233,6 +233,9 @@ def fmt(Map config = [:]){
 }
 
 def call(Map config = [:]){
+  // @TODO REMOVE
+  print(config.dockerAdditionalMounts.getClass())
+
   if ( !config.containsKey('dockerImage') ){
     config.dockerImage = "fxinnovation/terraform:latest"
   }
@@ -240,10 +243,10 @@ def call(Map config = [:]){
     error('ERROR: The subcommand must be defined!')
   }
   if ( !config.containsKey('dockerAdditionalMounts') ){
-    config.dockerAdditionalMounts = []
+    config.dockerAdditionalMounts = [:]
   }
   if ( !config.containsKey('dockerEnvironmentVariables') ){
-    config.dockerEnvironmentVariables = []
+    config.dockerEnvironmentVariables = [:]
   }
 
   optionsString = ''

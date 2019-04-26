@@ -8,11 +8,11 @@ def call(Map config = [:]){
   if (!config.containsKey('script') || !config.script instanceof CharSequence){
     error('"script" parameter is mandatory and must be of type CharSequence.')
   }
-  if (config.containsKey('dockerEnvironmentVariables') && !config.dockerEnvironmentVariables instanceof ArrayList){
-    error('"dockerEnvironmentVariables" parameter must be of type ArrayList.')
+  if (config.containsKey('dockerEnvironmentVariables') && !config.dockerEnvironmentVariables instanceof Map){
+    error('"dockerEnvironmentVariables" parameter must be of type Map.')
   }
-  if (config.containsKey('dockerAdditionalMounts') && !config.dockerAdditionalMounts instanceof ArrayList){
-    error('"dockerAdditionalMounts" parameter must be of type ArrayList.')
+  if (config.containsKey('dockerAdditionalMounts') && !config.dockerAdditionalMounts instanceof Map){
+    error('"dockerAdditionalMounts" parameter must be of type Map.')
   }
   
   if (!config.containsKey('dockerEnvironmentVariables')){
