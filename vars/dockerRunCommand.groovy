@@ -2,9 +2,9 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'dockerImage', CharSequence, '', 'dockerRunCommand - "dockerImage" parameter must exists and be a String (implements CharSequence).')
   mapAttributeCheck(config, 'fallbackCommand', CharSequence, '', 'dockerRunCommand - "fallbackCommand" parameter must exists and be a String (implements CharSequence).')
 
-  mapAttributeCheck(config, 'additionalMounts', Map, [:])
+  mapAttributeCheck(config, 'additionalMounts', ArrayList, [])
   mapAttributeCheck(config, 'command', CharSequence, '')
-  mapAttributeCheck(config, 'environmentVariables', Map, [:])
+  mapAttributeCheck(config, 'environmentVariables', ArrayList, [])
 
   try {
     execute(
