@@ -10,10 +10,10 @@ def call(Map config = [:]){
   )
 
   execute(
-    script: "${ansiblelintCommand} --version"
+    script: "${ansiblePlaybookCommand} --version"
   )
 
   return execute(
-    script: "${ansiblelintCommand} ${config.options} ${config.commandTarget}"
+    script: "${ansiblePlaybookCommand} ${config.options} ${config.commandTarget}"
   )
 }
