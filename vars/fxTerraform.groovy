@@ -24,7 +24,7 @@ def call(Map config = [:]) {
 
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-      for (commandTarget in config.commandTargets) {
+      for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
         pipelineTerraform(
           [
             commandTarget     : commandTarget,
