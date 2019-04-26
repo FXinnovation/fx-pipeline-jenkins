@@ -119,13 +119,13 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
     sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
     terraform.init(
       commandTarget: commandTarget,
-      dockerAdditionalMounts: [
-        '~/.ssh/'                       : '/root/.ssh/',
+      dockerAdditionalMounts: {
+        '~/.ssh/': '/root/.ssh/',
         '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
-      ],
-      dockerEnvironmentVariables: [
-        'SSH_AUTH_SOCK': '/ssh-agent'
-      ],
+      },
+      dockerEnvironmentVariables: {
+        'SSH_AUTH_SOCK': '/ssh-agent',
+      },
       backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
     )
   }
