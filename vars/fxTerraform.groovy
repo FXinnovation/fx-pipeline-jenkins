@@ -12,6 +12,8 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
   mapAttributeCheck(config, 'commandTargets', List, ['.'])
 
+  env.DEBUG = true
+
   fxJob([
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
@@ -24,7 +26,15 @@ def call(Map config = [:]) {
 
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-      for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
+      if ('' != execute(script: "ls examples").stdout.split()) {
+        commandTargets = []
+        for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
+          commandTargets += commandTarget
+        }
+      }
+      printDebug('commandTargets: ' + commandTargets)
+
+      for(commandTarget in commandTargets)
         pipelineTerraform(
           [
             commandTarget     : commandTarget,
