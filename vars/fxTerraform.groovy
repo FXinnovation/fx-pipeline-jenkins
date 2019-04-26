@@ -41,7 +41,7 @@ def call(Map config = [:]) {
 
       printDebug('commandTargets: ' + commandTargets)
 
-      for(commandTarget in commandTargets)
+      for(commandTarget in commandTargets) {
         pipelineTerraform(
           [
             commandTarget     : commandTarget,
@@ -54,22 +54,22 @@ def call(Map config = [:]) {
             testDestroyOptions: [
               vars: config.testPlanVars
             ],
-            validateOptions: [
+            validateOptions   : [
               vars: config.testPlanVars
             ],
-            publish: deployFileExists
+            publish           : deployFileExists
           ], [
             preValidate: { preValidate(deployFileExists, scmInfo) },
-            init: { init(config, commandTarget, deployFileExists) },
-            publish: { publish(config, commandTarget, toDeploy) }
+            init       : { init(config, commandTarget, deployFileExists) },
+            publish    : { publish(config, commandTarget, toDeploy) }
           ]
         )
-      },
-    postNotify(
+      }
+    },
+    postNotify: {
       if (config.containsKey('commandTargets')) {
         print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
       }
-    )
     }
   ], [
     disableConcurrentBuilds()
