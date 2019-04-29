@@ -13,6 +13,5 @@ Ansible-playbook will inspect all files in the current directory including sub-f
     dockerImage: String
     options: String
     commandTarget: String
-    rewritePath: Boolean
   )
 ```
