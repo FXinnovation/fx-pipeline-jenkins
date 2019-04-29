@@ -1,47 +1,86 @@
 def call(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('ansiblelintConfig')) {
-    config.ansiblelintConfig = [:]
-  } else if (!(config.ansiblelintConfig instanceof Map)) {
-    error('ansiblelintConfig parameter must be of type Map')
-  }
-
-  if (!config.containsKey('ansiblelintOutputFile')) {
-    config.ansiblelintOutputFile = 'ansible-lint.txt'
-  } else if (!(config.ansiblelintOutputFile instanceof CharSequence)) {
-    error('ansiblelintOutputFile parameter must be of type CharSequence')
-  }
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
 
   for (closure in closures){
     if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a Closure")
+      error("${closure.key} has to be a java.lang.Closure.")
     }
   }
 
-  if (closures.containsKey('preTest')){
-    stage('pre-test'){
-      closures.preTest()
+  stage('test “' + config.commandTarget + '”') {
+    lint(config, closures)
+    converge(config, closures)
+    test(config, closures)
+  }
+
+  publish(config, closures)
+}
+
+
+def lint(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'lintOptions', Map, [:])
+  mapAttributeCheck(config, 'lintOutputFile', CharSequence, 'ansible-lint.txt')
+
+  if (!closures.containsKey('lint')){
+    closures.lint = {
+      try {
+        ansibleLint(
+          options: config.lintOptions,
+          commandTarget: config.commandTarget
+        )
+      } catch(error) {
+        writeFile(
+          file: config.lintOutputFile,
+          text: error.getMessage()
+        )
+        archiveArtifacts(
+          artifacts: config.lintOutputFile
+        )
+
+        throw(error)
+      }
     }
   }
 
-  stage('test'){
-    try {
-      ansiblelint(config.ansiblelintConfig)
-    } catch(error) {
-      writeFile(
-        file: config.ansiblelintOutputFile,
-        text: error.getMessage()
-      )
-      archiveArtifacts(
-        artifacts: config.ansiblelintOutputFile
-      )
-
-      throw(error)
-    }
+  if (closures.containsKey('preLint')){
+    closures.preLint()
   }
 
-  if (closures.containsKey('postTest')){
-    stage('post-test'){
-      closures.postTest()
+  closures.lint()
+
+  if (closures.containsKey('postLint')){
+    closures.postLint()
+  }
+}
+
+def converge(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'convergeOptions', Map, [:])
+
+  println('No Ansible “converge” step define yet.')
+}
+
+def test(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'testOptions', Map, [:])
+
+  println('No Ansible “test” step define yet.')
+}
+
+def publish(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'publish', Boolean, false)
+
+  if (config.publish) {
+    stage('publish') {
+      if (closures.containsKey('prePublish')) {
+        closures.prePublish()
+      }
+
+      closures.publish()
+
+      if (closures.containsKey('postPublish')) {
+        closures.postPublish()
+      }
     }
+  }else{
+    println('Publish step is skipped because "config.publish" is false.')
   }
 }

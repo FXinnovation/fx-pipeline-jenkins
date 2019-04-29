@@ -1,4 +1,4 @@
-The *ansiblelint* function is a helper to execute an ansible-lint command.
+The *ansibleLint* function is a helper to execute an ansible-lint command.
 
 The ansible-lint helper return the output of the ansible-lint command as a String.
 If docker is available, it will be used to execute ansible-lint.
@@ -9,7 +9,7 @@ Ansible-lint will inspect all files in the current directory including sub-folde
 
 **Usage**
 ```
-  ansiblelint(
+  ansibleLint(
     dockerImage: String
     options: String
     commandTarget: String
