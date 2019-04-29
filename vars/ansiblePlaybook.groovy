@@ -1,5 +1,5 @@
 def call(Map config = [:]){
-  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/ansible-playbook:latest')
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/ansible:latest')
   mapAttributeCheck(config, 'options', CharSequence, '')
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
 
