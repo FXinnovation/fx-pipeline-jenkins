@@ -1,10 +1,8 @@
 def call(Map config = [:]){
-  if ( !config.containsKey('dockerImage') ){
-    config.dockerImage = 'fxinnovation/chefdk:latest'
-  }
-  if ( !config.containsKey('options') ){
-    config.options = '-D --force-default-config'
-  }
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/chefdk:latest')
+  mapAttributeCheck(config, 'options', CharSequence, '-D --force-default-config')
+  mapAttributeCheck(config, 'commandTarget', CharSequence, './')
+  
 
   def cookstyleCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
@@ -16,6 +14,7 @@ def call(Map config = [:]){
   )
 
   return execute(
-    script: "${cookstyleCommand} cookstyle ${config.options} ./"
+    script: "${cookstyleCommand} cookstyle ${config.options} ${config.commandTarget}"
+
   )
 }
