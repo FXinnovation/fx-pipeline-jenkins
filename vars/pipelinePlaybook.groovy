@@ -62,13 +62,15 @@ def galaxy(Map config = [:], Map closures = [:]){
 
   if (!closures.containsKey('galaxy')){
     closures.galaxy = {
-      if (fileExists('requirements.yml')) {
+      if (fileExists(config.galaxyReqFile)) {
         ansibleGalaxy.install([
           sshHostKeys:    config.galaxySSHHostKeys,
           sshAgentSocket: config.galaxyAgentSocket,
           reqFile:        config.galaxyReqFile,
           rolesPath:      config.galaxyRolesPath
         ])
+      } else {
+        print "The requirement file doesn't exist : ${config.galaxyReqFile}, skip"
       }
     }
   }
@@ -87,7 +89,19 @@ def galaxy(Map config = [:], Map closures = [:]){
 def converge(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'convergeOptions', Map, [:])
 
-  println('No Ansible “converge” step define yet.')
+  if (closures.containsKey('preConverge')){
+    closures.preGalaxy()
+  }
+
+  if (closures.containsKey('converge')){
+    closures.converge()
+  } else {
+    println('No Ansible “converge” step define yet.')
+  }
+
+  if (closures.containsKey('postConverge')){
+    closures.postGalaxy()
+  }
 }
 
 def test(Map config = [:], Map closures = [:]){
