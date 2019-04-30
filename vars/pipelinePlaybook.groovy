@@ -109,7 +109,21 @@ def converge(Map config = [:], Map closures = [:]){
 def test(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'testOptions', Map, [:])
 
-  println('No Ansible “test” step define yet.')
+  if (!closures.containsKey('test')){
+    closures.converge = {
+      println('No Ansible “test” step define yet.')
+    }
+  }
+
+  if (closures.containsKey('preTest')){
+    closures.preTest()
+  }
+
+  closures.test()
+
+  if (closures.containsKey('postTest')){
+    closures.postTest()
+  }
 }
 
 def publish(Map config = [:], Map closures = [:]){
