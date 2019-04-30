@@ -96,13 +96,13 @@ def converge(Map config = [:], Map closures = [:]){
   }
 
   if (closures.containsKey('preConverge')){
-    closures.preGalaxy()
+    closures.preConverge()
   }
 
   closures.converge()
 
   if (closures.containsKey('postConverge')){
-    closures.postGalaxy()
+    closures.postConverge()
   }
 }
 
