@@ -19,7 +19,7 @@ def call(Map config = [:]){
   if (0 != config.sshHostKeys.size) {
     sh('mkdir -p ~/.ssh')
     sh('echo "' + config.sshHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-    additionalMounts << [ '~/.ssh/known_hosts': '/root/.ssh/known_hosts' ]
+    additionalMounts = [ '~/.ssh/known_hosts': '/root/.ssh/known_hosts' ]
   }
 
   if (0 != config.sshAgentSocket.length()) {
