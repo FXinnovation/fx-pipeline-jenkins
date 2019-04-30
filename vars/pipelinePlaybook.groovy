@@ -89,15 +89,17 @@ def galaxy(Map config = [:], Map closures = [:]){
 def converge(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'convergeOptions', Map, [:])
 
+  if (!closures.containsKey('converge')){
+    closures.converge = {
+      println('No Ansible “converge” step define yet.')
+    }
+  }
+
   if (closures.containsKey('preConverge')){
     closures.preGalaxy()
   }
 
-  if (closures.containsKey('converge')){
-    closures.converge()
-  } else {
-    println('No Ansible “converge” step define yet.')
-  }
+  closures.converge()
 
   if (closures.containsKey('postConverge')){
     closures.postGalaxy()
