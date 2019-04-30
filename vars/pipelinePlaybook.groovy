@@ -110,7 +110,7 @@ def test(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'testOptions', Map, [:])
 
   if (!closures.containsKey('test')){
-    closures.converge = {
+    closures.test = {
       println('No Ansible “test” step define yet.')
     }
   }
