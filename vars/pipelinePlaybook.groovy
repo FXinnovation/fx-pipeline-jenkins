@@ -9,6 +9,8 @@ def call(Map config = [:], Map closures = [:]){
 
   stage('test “' + config.commandTarget + '”') {
     lint(config, closures)
+    if (fileExists('requirements.yml')) {
+    }
     converge(config, closures)
     test(config, closures)
   }
@@ -18,7 +20,7 @@ def call(Map config = [:], Map closures = [:]){
 
 
 def lint(Map config = [:], Map closures = [:]){
-  mapAttributeCheck(config, 'lintOptions', Map, [:])
+  mapAttributeCheck(config, 'lintOptions',    CharSequence, '-p --parseable-severity')
   mapAttributeCheck(config, 'lintOutputFile', CharSequence, 'ansible-lint.txt')
 
   if (!closures.containsKey('lint')){
