@@ -16,13 +16,13 @@ def call(Map config = [:]){
   def additionalMounts = [:]
   def environmentVariables = [:]
 
-  if (config.sshHostKeys.size != 0) {
+  if (0 != config.sshHostKeys.size) {
     sh('mkdir -p ~/.ssh')
     sh('echo "' + config.sshHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
     additionalMounts << [ '~/.ssh/known_hosts': '/root/.ssh/known_hosts' ]
   }
 
-  if (config.sshAgentSocket.length() != 0) {
+  if (0 != config.sshAgentSocket.length()) {
     additionalMounts << [ '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent' ]
     environmentVariables << [ 'SSH_AUTH_SOCK': '/ssh-agent' ]
   }
