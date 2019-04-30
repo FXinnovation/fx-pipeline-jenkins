@@ -9,6 +9,7 @@ def call(Map config = [:], Map closures = [:]){
 
   stage('test “' + config.commandTarget + '”') {
     lint(config, closures)
+    galaxy(config, closures)
     converge(config, closures)
     test(config, closures)
   }
@@ -18,7 +19,7 @@ def call(Map config = [:], Map closures = [:]){
 
 
 def lint(Map config = [:], Map closures = [:]){
-  mapAttributeCheck(config, 'lintOptions', Map, [:])
+  mapAttributeCheck(config, 'lintOptions',    CharSequence, '-p --parseable-severity')
   mapAttributeCheck(config, 'lintOutputFile', CharSequence, 'ansible-lint.txt')
 
   if (!closures.containsKey('lint')){
@@ -53,16 +54,76 @@ def lint(Map config = [:], Map closures = [:]){
   }
 }
 
+def galaxy(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'galaxySSHHostKeys', List,         [])
+  mapAttributeCheck(config, 'galaxyAgentSocket', CharSequence, '')
+  mapAttributeCheck(config, 'galaxyReqFile',     CharSequence, 'requirements.yml')
+  mapAttributeCheck(config, 'galaxyRolesPath',   CharSequence, 'roles/')
+
+  if (!closures.containsKey('galaxy')){
+    closures.galaxy = {
+      if (fileExists(config.galaxyReqFile)) {
+        ansibleGalaxy.install([
+          sshHostKeys:    config.galaxySSHHostKeys,
+          sshAgentSocket: config.galaxyAgentSocket,
+          reqFile:        config.galaxyReqFile,
+          rolesPath:      config.galaxyRolesPath
+        ])
+      } else {
+        print "The requirement file doesn't exist : ${config.galaxyReqFile}, skip"
+      }
+    }
+  }
+
+  if (closures.containsKey('preGalaxy')){
+    closures.preGalaxy()
+  }
+
+  closures.galaxy()
+
+  if (closures.containsKey('postGalaxy')){
+    closures.postGalaxy()
+  }
+}
+
 def converge(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'convergeOptions', Map, [:])
 
-  println('No Ansible “converge” step define yet.')
+  if (!closures.containsKey('converge')){
+    closures.converge = {
+      println('No Ansible “converge” step define yet.')
+    }
+  }
+
+  if (closures.containsKey('preConverge')){
+    closures.preConverge()
+  }
+
+  closures.converge()
+
+  if (closures.containsKey('postConverge')){
+    closures.postConverge()
+  }
 }
 
 def test(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'testOptions', Map, [:])
 
-  println('No Ansible “test” step define yet.')
+  if (!closures.containsKey('test')){
+    closures.test = {
+      println('No Ansible “test” step define yet.')
+    }
+  }
+
+  if (closures.containsKey('preTest')){
+    closures.preTest()
+  }
+
+  closures.test()
+
+  if (closures.containsKey('postTest')){
+    closures.postTest()
+  }
 }
 
 def publish(Map config = [:], Map closures = [:]){
