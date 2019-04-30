@@ -9,8 +9,7 @@ def call(Map config = [:], Map closures = [:]){
 
   stage('test “' + config.commandTarget + '”') {
     lint(config, closures)
-    if (fileExists('requirements.yml')) {
-    }
+    galaxy(config, closures)
     converge(config, closures)
     test(config, closures)
   }
@@ -52,6 +51,36 @@ def lint(Map config = [:], Map closures = [:]){
 
   if (closures.containsKey('postLint')){
     closures.postLint()
+  }
+}
+
+def galaxy(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'galaxySSHHostKeys', List,         [])
+  mapAttributeCheck(config, 'galaxyAgentSocket', CharSequence, '')
+  mapAttributeCheck(config, 'galaxyReqFile',     CharSequence, 'requirements.yml')
+  mapAttributeCheck(config, 'galaxyRolesPath',   CharSequence, 'roles/')
+
+  if (!closures.containsKey('galaxy')){
+    closures.galaxy = {
+      if (fileExists('requirements.yml')) {
+        ansibleGalaxy.install([
+          sshHostKeys:    config.galaxySSHHostKeys,
+          sshAgentSocket: config.galaxyAgentSocket,
+          reqFile:        config.galaxyReqFile,
+          rolesPath:      config.galaxyRolesPath
+        ])
+      }
+    }
+  }
+
+  if (closures.containsKey('preGalaxy')){
+    closures.preGalaxy()
+  }
+
+  closures.galaxy()
+
+  if (closures.containsKey('postGalaxy')){
+    closures.postGalaxy()
   }
 }
 
