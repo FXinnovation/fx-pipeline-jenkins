@@ -1,0 +1,17 @@
+The *ansibleGalaxy* function is a helper to execute an ansible-galaxy command.
+
+The ansible-galaxy helper return the output of the ansible-galaxy command as a String.
+If docker is available, it will be used to execute ansible-galaxy.
+
+All parameters are optionals.
+
+**Usage**
+```
+  ansibleGalaxy(
+    dockerImage:    CharSequence
+    options:        CharSequence
+    sshHostKeys:    List
+    sshAgentSocket: CharSequence
+  )
+```
+
