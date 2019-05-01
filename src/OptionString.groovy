@@ -3,7 +3,7 @@ class OptionString implements Serializable {
   private String delimiter = ' '
 
   void add(String optionName, Object optionValue = '', Class<?> expectedOptionType = CharSequence) {
-    if (!(expectedOptionType.isInstance(option))) {
+    if (!(expectedOptionType.isInstance(optionValue))) {
       error("Cannot add option “${optionName}” to the option string. It is expected to be “${expectedOptionType}”, given: “${optionValue.getClass()}”.")
     }
 
