@@ -8,8 +8,8 @@ class OptionString implements Serializable {
     }
 
     if (optionValue instanceof AbstractCollection) {
-      for (i = 0; i < optionValue.size(); i++){
-        this.updateContent(optionName, optionValue[i])
+      for (singleOptionValue in optionValue){
+        this.updateContent(optionName, singleOptionValue)
       }
     }
 
