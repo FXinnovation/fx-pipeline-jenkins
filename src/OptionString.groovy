@@ -28,7 +28,7 @@ class OptionString implements Serializable {
     return content
   }
 
-  private void updateContent(String optionName, String optionValue) {
+  private void updateContent(String optionName, Object optionValue) {
     if (!(optionValue instanceof Serializable)) {
       error("Cannot add option “${optionName}” to the option string. The given value is does not implement Serializable, thus it cannot be converted to a string. (given: “${optionValue.getClass()}”).")
     }
