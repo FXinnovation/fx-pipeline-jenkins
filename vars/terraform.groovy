@@ -1,3 +1,5 @@
+import OptionString
+
 def validate(Map config = [:]){
   config.subCommand = 'validate'
   validParameters = [
@@ -13,7 +15,7 @@ def validate(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   terraform(config)
@@ -39,7 +41,7 @@ def refresh(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   terraform(config)
@@ -65,7 +67,7 @@ def slowRefresh(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   terraformFiles = findFiles(glob: '*.tf')
@@ -115,7 +117,7 @@ def init(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   terraform(config)
@@ -144,7 +146,7 @@ def plan(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   config.input=false
@@ -173,7 +175,7 @@ def apply(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   config.autoApprove=true
@@ -204,7 +206,7 @@ def destroy(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   config.force = true
@@ -226,279 +228,113 @@ def fmt(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"fmt\", please remove it!")
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   terraform(config)
 }
 
 def call(Map config = [:]){
-  if ( !config.containsKey('dockerImage') ){
-    config.dockerImage = "fxinnovation/terraform:latest"
-  }
-  if ( !config.containsKey('subCommand') ){
-    error('ERROR: The subcommand must be defined!')
-  }
-  if ( !config.containsKey('dockerAdditionalMounts') ){
-    config.dockerAdditionalMounts = [:]
-  }
-  if ( !config.containsKey('dockerEnvironmentVariables') ){
-    config.dockerEnvironmentVariables = [:]
-  }
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/terraform:latest')
+  mapAttributeCheck(config, 'subCommand', CharSequence, '', 'ERROR: The subcommand must be defined!')
+  mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
+  mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '')
 
-  optionsString = ''
-  // backend
+  optionsString = new OptionString()
+  optionsString.setDelimiter('=')
+
   if ( config.containsKey('backend') ){
-    if ( config.backend instanceof Boolean ){
-      optionsString = optionsString + "-backend=${config.backend} "
-    }else{
-      error('terraform - "backend" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-backend', config.backend, Boolean)
   }
   if ( config.containsKey('check') ){
-    if ( config.check instanceof Boolean ){
-      optionsString = optionsString + "-check=${config.check} "
-    }else{
-      error('terraform - "check" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-check', config.check, Boolean)
   }
   if ( config.containsKey('list') ){
-    if ( config.list instanceof Boolean ){
-      optionsString = optionsString + "-list=${config.list} "
-    }else{
-      error('terraform - "list" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-list', config.list, Boolean)
   }
   if ( config.containsKey('diff') ){
-    if ( config.diff instanceof Boolean ){
-      optionsString = optionsString + "-diff=${config.diff} "
-    }else{
-      error('terraform - "diff" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-diff', config.diff, Boolean)
   }
   if ( config.containsKey('write') ){
-    if ( config.write instanceof Boolean ){
-      optionsString = optionsString + "-write=${config.write} "
-    }else{
-      error('terraform - "write" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-write', config.write, Boolean)
   }
-  // backendConfigs
   if ( config.containsKey('backendConfigs') ){
-    if ( !config.backendConfigs instanceof ArrayList ){
-      error('terraform - "backendConfigs" parameter must be of type "String[]"')
-    }
-    for (i=0; i<config.backendConfigs.size(); i++){
-      optionsString = optionsString + "-backend-config=${config.backendConfigs[i]} "
-    }
+    optionsString.add('-backend-config', config.backendConfigs, ArrayList)
   }
-  // backup
   if ( config.containsKey('backup') ){
-    if ( config.backup instanceof String ){
-      optionsString = optionsString + "-backup=${config.backup} "
-    }else{
-      error('terraform - "backup" parameter must be of type "String"')
-    }
+    optionsString.add('-backup', config.backup)
   }
-  // checkVariables
   if ( config.containsKey('checkVariables') ){
-    if ( config.checkVariables instanceof Boolean ){
-      optionsString = optionsString + "-check-variables=${config.checkVariables} "
-    }else{
-      error('terraform - "checkVariables" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-check-variables', config.checkVariables, Boolean)
   }
-  // commandTarget
-  if ( config.containsKey('commandTarget') ){
-    if ( !config.commandTarget instanceof String ){
-      error('terraform - "commandTarget" parameter must be of type "String"')
-    }
-  }else{
-    config.commandTarget = ''
+  if ( config.containsKey('force') && config.force ){
+    optionsString.add('-force', '', Boolean)
   }
-  // force
-  if ( config.containsKey('force') ){
-    if ( config.force instanceof Boolean ){
-      if ( config.force ){
-        optionsString = optionsString + "-force "
-      }
-    }else{
-      error('terraform - "force" parameter must be of type "Boolean"')
-    }
+  if ( config.containsKey('forceCopy') && config.forceCopy ){
+    optionsString.add('-force-copy', '', Boolean)
   }
-  // forceCopy
-  if ( config.containsKey('forceCopy') ){
-    if ( config.forceCopy instanceof Boolean ){
-      if ( config.forceCopy ){
-        optionsString = optionsString + "-force-copy "
-      }
-    }else{
-      error('terraform - "forceCopy" parameter must be of type "Boolean"')
-    }
-  }
-  // fromModule
   if ( config.containsKey('fromModule') ){
-    if ( config.fromModule instanceof String) {
-      optionsString = optionsString + "-from-module=${config.fromModule} "
-    }else{
-      error('terraform - "fromModule" parameter must be of type "String"')
-    }
+    optionsString.add('-from-module', config.fromModule)
   }
-  // get
   if ( config.containsKey('get') ){
-    if ( config.get instanceof Boolean ){
-      optionsString = optionsString + "-get=${config.get} "
-    }else{
-      error('terraform - "get" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-get', config.get, Boolean)
   }
-  // getPlugins
   if ( config.containsKey('getPlugins') ){
-    if ( config.getPlugins instanceof Boolean ){
-      optionsString = optionsString + "-get-plugins=${config.getPlugins} "
-    }else{
-      error('terraform - "getPlugins" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-get-plugins', config.getPlugins, Boolean)
   }
-  // input
-  // NOTE: Since this is jenkins executing it, if input has been set, it must
-  // be set to false.
   if ( config.containsKey('input') ){
-    optionsString = optionsString + "-input=false "
+    // NOTE: Since this is jenkins executing it, if input has been set, it must
+    // be forced set to false.
+    optionsString.add('-input', 'false')
   }
-  // lock
   if ( config.containsKey('lock') ){
-    if ( config.lock instanceof Boolean ){
-      optionsString = optionsString + "-lock=${config.lock} "
-    }else{
-      error('terraform - "lock" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-lock', config.lock, Boolean)
   }
-  // lockTimeout
   if ( config.containsKey('lockTimeout') ){
-    if ( config.lockTimeout instanceof String ){
-      optionsString = optionsString + "-lock-timeout=${config.lockTimeout} "
-    }else{
-      error('terraform - "lockTimeout" parameter must be of type "String"')
-    }
+    optionsString.add('-lock-timeout', config.lockTimeout)
   }
-  // moduleDepth
   if ( config.containsKey('moduleDepth') ){
-    if ( config.moduleDepth instanceof Integer ){
-      optionsString = optionsString + "-module-depth=${config.moduleDepth} "
-    }else{
-      error('terraform - "moduleDepth" parameter must be of type "Integer"')
-    }
+    optionsString.add('-module-depth', config.moduleDepth, Integer)
   }
-  // noColor
-  if ( config.containsKey('noColor') ){
-    if ( config.noColor instanceof Boolean ){
-      if ( config.noColor ){
-        optionsString = optionsString + "-no-color "
-      }
-    }else{
-      error('terraform - "noColor" parameter must be of type "Boolean"')
-    }
+  if ( config.containsKey('noColor') && config.noColor ){
+    optionsString.add('-no-color', '', Boolean)
   }
-  // out
   if ( config.containsKey('out') ){
-    if ( config.out instanceof String ){
-      optionsString = optionsString + "-out=${config.out} "
-    }else{
-      error('terraform - "out" parameter must be of type "String"')
-    }
+    optionsString.add('-out', config.out)
   }
-  // parallelism
   if ( config.containsKey('parallelism') ){
-    if ( config.parallelism instanceof Integer ){
-      optionsString = optionsString + "-parallelism=${config.parallelism} "
-    }
+    optionsString.add('-parallelism', config.parallelism, Integer)
   }
-  // pluginDirs
   if ( config.containsKey('pluginDirs') ){
-    if ( !config.pluginDirs instanceof ArrayList ){
-      error('terraform - "pluginDirs" parameter must be of type "String[]"')
-    }
-    for (i=0; i<config.pluginDirs.size(); i++){
-      optionsString = optionsString + "-plugin-dir ${config.pluginDirs[i]} "
-    }
+    optionsString.add('-plugin-dir', config.pluginDirs, ArrayList)
   }
-  // reconfigure
-  if ( config.containsKey('reconfigure') ){
-    if ( config.reconfigure instanceof Boolean ){
-      if ( config.reconfigure ){
-        optionsString = optionsString + "-reconfigure "
-      }
-    }else{
-      error('terraform - "reconfigure" parameter must be of type "Boolean"')
-    }
+  if ( config.containsKey('reconfigure') && config.reconfigure ){
+    optionsString.add('-lock', '', Boolean)
   }
-  // refresh
   if ( config.containsKey('refresh') ){
-    if ( config.refresh instanceof Boolean ){
-      optionsString = optionsString + "-refresh=${config.refresh} "
-    }else{
-      error('terraform - "refresh" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-refresh', config.refresh, Boolean)
   }
-  // state
   if ( config.containsKey('state') ){
-    if ( config.state instanceof String ){
-      optionsString = optionsString + "-state=${config.state} "
-    }else{
-      error('terraform - "state" parameter must be of type "String"')
-    }
+    optionsString.add('-state', config.state)
   }
-  // stateOut
   if ( config.containsKey('stateOut') ){
-    if ( config.stateOut instanceof String ){
-      optionsString = optionsString + "-state-out=${config.stateOut} "
-    }else{
-      error('terraform - "stateOut" parameter must be of type "String"')
-    }
+    optionsString.add('-state-out', config.state)
   }
-  // targets
   if ( config.containsKey('targets') ){
-    if ( !config.targets instanceof ArrayList ){
-      error('terraform - "targets" parameter must be of type "String[]"')
-    }
-    for (i=0; i<config.targets.size(); i++){
-      optionsString = optionsString + "-target=${config.targets[i]} "
-    }
+    optionsString.add('-targets', config.targets, ArrayList)
   }
-  // upgrade
   if ( config.containsKey('upgrade') ){
-    if ( config.upgrade instanceof Boolean ){
-      optionsString = optionsString + "-upgrade=${config.upgrade} "
-    }else{
-      error('terraform - "upgrade" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-upgrade', config.upgrade, Boolean)
   }
-  // varFile
   if ( config.containsKey('varFile') ){
-    if ( config.varFile instanceof String ){
-      optionsString = optionsString + "-var-file=${config.varFile} "
-    }else{
-      error('terraform - "varFile" parameter must be of type "String"')
-    }
+    optionsString.add('-var-file', config.varFile)
   }
-  // vars
   if ( config.containsKey('vars') ){
-    if ( config.vars instanceof ArrayList ){
-      for (i=0; i<config.vars.size(); i++){
-        optionsString = optionsString + "-var \"${config.vars[i]}\" "
-      }
-    }else{
-      error('terraform - "vars" parameter must be of type "String[]"')
-    }
+    optionsString.add('-var', config.vars, ArrayList)
   }
-  // verifyPlugins
   if ( config.containsKey('verifyPlugins') ){
-    if ( config.verifyPlugins instanceof Boolean ){
-      optionsString = optionsString + "-verify-plugins=${config.verifyPlugins} "
-    }else{
-      error('terraform - "verifyPlugins" parameter must be of type "Boolean"')
-    }
+    optionsString.add('-verify-plugins', config.verifyPlugins, Boolean)
   }
 
   terraformCommand = dockerRunCommand(
