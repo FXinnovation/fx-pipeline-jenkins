@@ -241,7 +241,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
 
-  optionsString = new OptionString()
+  optionsString = new OptionString(this)
   optionsString.setDelimiter('=')
 
   if ( config.containsKey('backend') ){
@@ -259,7 +259,7 @@ def call(Map config = [:]){
   if ( config.containsKey('write') ){
     optionsString.add('-write', config.write, Boolean)
   }
-  if ( config.containsKey('backendConfigs') ){
+  if ( config.containsKey('backendConfigs') && config.backendConfigs ){
     optionsString.add('-backend-config', config.backendConfigs, ArrayList)
   }
   if ( config.containsKey('backup') ){
@@ -269,12 +269,12 @@ def call(Map config = [:]){
     optionsString.add('-check-variables', config.checkVariables, Boolean)
   }
   if ( config.containsKey('force') && config.force ){
-    optionsString.add('-force', '', Boolean)
+    optionsString.add('-force')
   }
   if ( config.containsKey('forceCopy') && config.forceCopy ){
-    optionsString.add('-force-copy', '', Boolean)
+    optionsString.add('-force-copy')
   }
-  if ( config.containsKey('fromModule') ){
+  if ( config.containsKey('fromModule') && config.fromModule ){
     optionsString.add('-from-module', config.fromModule)
   }
   if ( config.containsKey('get') ){
@@ -291,46 +291,46 @@ def call(Map config = [:]){
   if ( config.containsKey('lock') ){
     optionsString.add('-lock', config.lock, Boolean)
   }
-  if ( config.containsKey('lockTimeout') ){
+  if ( config.containsKey('lockTimeout') && config.lockTimeout){
     optionsString.add('-lock-timeout', config.lockTimeout)
   }
-  if ( config.containsKey('moduleDepth') ){
+  if ( config.containsKey('moduleDepth') && config.moduleDepth ){
     optionsString.add('-module-depth', config.moduleDepth, Integer)
   }
   if ( config.containsKey('noColor') && config.noColor ){
-    optionsString.add('-no-color', '', Boolean)
+    optionsString.add('-no-color')
   }
-  if ( config.containsKey('out') ){
+  if ( config.containsKey('out') && config.out ){
     optionsString.add('-out', config.out)
   }
-  if ( config.containsKey('parallelism') ){
+  if ( config.containsKey('parallelism') && config.parallelism ){
     optionsString.add('-parallelism', config.parallelism, Integer)
   }
-  if ( config.containsKey('pluginDirs') ){
+  if ( config.containsKey('pluginDirs') && config.pluginDirs ){
     optionsString.add('-plugin-dir', config.pluginDirs, ArrayList)
   }
   if ( config.containsKey('reconfigure') && config.reconfigure ){
-    optionsString.add('-lock', '', Boolean)
+    optionsString.add('-lock')
   }
   if ( config.containsKey('refresh') ){
     optionsString.add('-refresh', config.refresh, Boolean)
   }
-  if ( config.containsKey('state') ){
+  if ( config.containsKey('state') && config.state ){
     optionsString.add('-state', config.state)
   }
   if ( config.containsKey('stateOut') ){
     optionsString.add('-state-out', config.state)
   }
-  if ( config.containsKey('targets') ){
+  if ( config.containsKey('targets') && config.targets ){
     optionsString.add('-targets', config.targets, ArrayList)
   }
   if ( config.containsKey('upgrade') ){
     optionsString.add('-upgrade', config.upgrade, Boolean)
   }
-  if ( config.containsKey('varFile') ){
+  if ( config.containsKey('varFile') && config.varFile ){
     optionsString.add('-var-file', config.varFile)
   }
-  if ( config.containsKey('vars') ){
+  if ( config.containsKey('vars') && config.vars ){
     optionsString.add('-var', config.vars, ArrayList)
   }
   if ( config.containsKey('verifyPlugins') ){
@@ -348,7 +348,9 @@ def call(Map config = [:]){
     script: "${terraformCommand} version"
   )
 
+  println(optionsString.toString())
+
   return execute(
-    script: "${terraformCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+    script: "${terraformCommand} ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
   )
 }
