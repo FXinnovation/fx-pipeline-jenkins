@@ -7,9 +7,9 @@ class OptionString implements Serializable {
       error("Cannot add option “${optionName}” to the option string. It is expected to be “${expectedOptionType}”, given: “${optionValue.getClass()}”.")
     }
 
-    if (optionValue instanceof Iterable) {
+    if (optionValue instanceof AbstractCollection) {
       for (i = 0; i < optionValue.size(); i++){
-        this.updateContent(optionName, optionValue)
+        this.updateContent(optionName, optionValue[i])
       }
     }
 
