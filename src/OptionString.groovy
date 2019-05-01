@@ -2,7 +2,7 @@ class OptionString implements Serializable {
   private String content
   private String delimiter = ' '
 
-  void OptionString() {
+  OptionString() {
   }
 
   void add(String optionName, Object optionValue = '', Class<?> expectedOptionType = CharSequence) {
