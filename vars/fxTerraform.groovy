@@ -28,12 +28,14 @@ def call(Map config = [:]) {
 
       printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-      if (execute(script: "[ -d examples ]")) {
-        commandTargets = []
+      commandTargets = []
+      try {
+        execute(script: "[ -d examples ]")
+
         for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
           commandTargets += commandTarget
         }
-      } else {
+      } catch (error) {
         commandTargets = ['.']
       }
 
