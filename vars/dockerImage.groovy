@@ -25,18 +25,19 @@ def publish(Map config = [:]){
   mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
   mapAttributeCheck(config, 'registries', List, [])
   mapAttributeCheck(config, 'namespace', CharSequence, '', 'The namespace key must be defined')
-  mapAttributeCheck(config, 'credentialId', CharSequence, '', 'The credentialId key must be defined')
 
-  withCredentials([
-    usernamePassword(
-      credentialsId: config.credentialId,
-      passwordVariable: 'password',
-      usernameVariable: 'username'
-    )
-  ]) {
-    execute(
-      script: "docker login --username \'${username}\' --password \'${password}\' ${config.registry}"
-    )
+  if (config.containsKey('credentialId'){
+    withCredentials([
+      usernamePassword(
+        credentialsId: config.credentialId,
+        passwordVariable: 'password',
+        usernameVariable: 'username'
+      )
+    ]) {
+      execute(
+        script: "docker login --username \'${username}\' --password \'${password}\' ${config.registry}"
+      )
+    }
   }
   config.tags.each { tag ->
     optionsString = ''
