@@ -17,7 +17,7 @@ def build(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("packer - Parameter \"${parameter.key}\" is not valid for \"build\", please remove it!")
+      error("packer - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
 
@@ -38,7 +38,7 @@ def validate(Map config = [:]){
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("packer - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("packer - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
 
@@ -47,15 +47,12 @@ def validate(Map config = [:]){
 
 def call(Map config = [:]){
   optionsString = ""
-  if (!config.containsKey('dockerImage')){
-    config.dockerImage = 'fxinnovation/packer:latest'
-  }
-  if (!config.containsKey('subCommand') || !config.subCommand instanceof String){
-    error('"subCommand" parameter is mandatory and must be of type String.')
-  }
-  if (!config.containsKey('commandTarget') || !config.commandTarger instanceof String){
-    error('"commandTarget" parameter is mandatory and must be of type String.')
-  }
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/packer:latest')
+  mapAttributeCheck(config, 'subCommand', CharSequence, '', '"subCommand" parameter is mandatory and must be of type CharSequence.')
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '', '"commandTarget" parameter is mandatory and must be of type CharSequence.')
+  mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
+  mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
+
   if (config.containsKey('color')){
     if (!config.color instanceof Boolean){
       error('"color" parameter must be of type Boolean')
@@ -137,7 +134,10 @@ def call(Map config = [:]){
 
   packerCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand:  'packer'
+    fallbackCommand: 'packer',
+    command: 'packer',
+    additionalMounts: config.dockerAdditionalMounts,
+    environmentVariables: config.dockerEnvironmentVariables
   )
 
   execute(
