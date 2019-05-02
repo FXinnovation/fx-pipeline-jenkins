@@ -15,11 +15,12 @@ def build(Map config = [:]){
         }
         optionsString += "${config.image}:${tag} "
       }
+    }else{
+      if ('' != config.namespace) {
+        optionsString += "${config.namespace}/"
+      }
+      optionsString += "${config.image}:${tag} "
     }
-    if ('' != config.namespace) {
-      optionsString += "${config.namespace}/"
-    }
-    optionsString += "${config.image}:${tag} "
   }
 
   execute(
