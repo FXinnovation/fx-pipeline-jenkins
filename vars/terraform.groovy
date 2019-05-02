@@ -310,7 +310,7 @@ def call(Map config = [:]){
     optionsString.add('-plugin-dir', config.pluginDirs, ArrayList)
   }
   if ( config.containsKey('reconfigure') && config.reconfigure ){
-    optionsString.add('-lock')
+    optionsString.add('-reconfigure')
   }
   if ( config.containsKey('refresh') ){
     optionsString.add('-refresh', config.refresh, Boolean)
