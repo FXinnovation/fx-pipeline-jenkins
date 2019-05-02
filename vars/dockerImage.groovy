@@ -33,7 +33,7 @@ def publish(Map config = [:]){
   mapAttributeCheck(config, 'registries', List, [])
   mapAttributeCheck(config, 'namespace', CharSequence, '', 'The namespace key must be defined')
 
-  if (config.containsKey('credentialId'){
+  if (config.containsKey('credentialId')){
     withCredentials([
       usernamePassword(
         credentialsId: config.credentialId,
