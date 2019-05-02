@@ -241,7 +241,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
 
-  optionsString = new OptionString(this)
+  def optionsString = new OptionString(this)
   optionsString.setDelimiter('=')
 
   if ( config.containsKey('backend') ){
@@ -319,7 +319,7 @@ def call(Map config = [:]){
     optionsString.add('-state', config.state)
   }
   if ( config.containsKey('stateOut') ){
-    optionsString.add('-state-out', config.state)
+    optionsString.add('-state-out', config.stateOut)
   }
   if ( config.containsKey('targets') && config.targets ){
     optionsString.add('-targets', config.targets, ArrayList)
@@ -347,8 +347,6 @@ def call(Map config = [:]){
   execute(
     script: "${terraformCommand} version"
   )
-
-  println(optionsString.toString())
 
   return execute(
     script: "${terraformCommand} ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"

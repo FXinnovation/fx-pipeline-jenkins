@@ -109,6 +109,7 @@ def test(Map config = [:], Map closures = [:]){
           allowEmptyArchive: true,
           artifacts: 'test.tfstat*'
         )
+        println(errorApply)
         throw (errorApply)
       } finally {
         terraform.destroy([

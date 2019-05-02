@@ -18,9 +18,11 @@ class OptionString implements Serializable {
       for(singleOptionValue in optionValue) {
         this.doAddOption(optionName, singleOptionValue)
       }
-    } else {
-      this.doAddOption(optionName, optionValue)
+
+      return
     }
+
+    this.doAddOption(optionName, optionValue)
   }
 
   void setDelimiter(String delimiter) {
