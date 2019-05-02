@@ -1,3 +1,5 @@
+package com.fxinnovation.utils
+
 class OptionString implements Serializable {
   private String value = ''
   private String delimiter = ' '

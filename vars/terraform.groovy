@@ -1,4 +1,4 @@
-import OptionString
+import com.fxinnovation.utils.OptionString
 
 def validate(Map config = [:]){
   config.subCommand = 'validate'
