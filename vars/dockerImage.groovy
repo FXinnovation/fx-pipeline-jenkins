@@ -10,13 +10,13 @@ def build(Map config = [:]){
     if (config.containsKey('registries') && [] != config.registries){
       config.registries.each { registry ->
         optionsString += "${registry}/"
-        if (config.namespace != '') {
+        if ('' != config.namespace) {
           optionsString += "${config.namespace}/"
         }
         optionsString += "${config.image}:${tag} "
       }
     }
-    if (config.namespace != '') {
+    if ('' != config.namespace) {
       optionsString += "${config.namespace}/"
     }
     optionsString += "${config.image}:${tag} "
@@ -51,7 +51,7 @@ def publish(Map config = [:]){
     if (config.containsKey('registries') && [] != config.registries){
       config.registries.each { registry ->
         optionsString += "${registry}/"
-        if (config.namespace != '') {
+        if ('' != config.namespace) {
           optionsString += "${config.namespace}/"
         }
         optionsString += "${config.image}:${tag} "
@@ -60,7 +60,7 @@ def publish(Map config = [:]){
         )
       }
     }else{
-      if (config.namespace != '') {
+      if ('' != config.namespace) {
         optionsString += "${config.namespace}/"
       }
       optionsString += "${config.image}:${tag} "
