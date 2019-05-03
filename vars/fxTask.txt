@@ -1,0 +1,15 @@
+fxTask()
+
+Generic FX pipeline to execute a specific task.
+
+The function takes two Maps as input.
+The first Map will be delegated to inner pipeline.
+The second Map contains closures and these are expected:
+
+*initSSHCredentialId*: 'gitea-fx_administrator-key'
+
+*selectProject*
+
+*selectCommandOptions*
+
+*executeCommand*
