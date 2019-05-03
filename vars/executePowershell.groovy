@@ -16,10 +16,10 @@ def call(Map config = [:]){
   }
   
   if (!config.containsKey('dockerEnvironmentVariables')){
-    config.dockerEnvironmentVariables = []
+    config.dockerEnvironmentVariables = [:]
   }
   if (!config.containsKey('dockerAdditionalMounts')){
-    config.dockerAdditionalMounts = []
+    config.dockerAdditionalMounts = [:]
   }
   
   powershellCommand = dockerRunCommand(
