@@ -95,11 +95,11 @@ def call(Map config = [:]) {
           ]
         ])
       }
-  
+
       giroFxClientName = executePowershell([
           script: "/data/giro-cloud-orchestration/ManifestReader/Pipeline/GiroFxClientName.ps1 -ModulePath \"/data/giro-cloud-orchestration/ManifestReader/AzureStackDeployerGenerator\" -XmlFilePath \"/data/${customer}/manifest.xml\""
       ])
-  
+
       fxAzureUploadBlob(
         credentialSasKey: 'giro-sas-key-blob-storage',
         storageAccountName: 'girozca1pgensa000',
@@ -110,18 +110,48 @@ def call(Map config = [:]) {
         filter: '*.txt',
         libFolder: 'bar'
       )
-  
+
+      def nodes = []
+      def location = ""
+      def environment = ""
+
+      def listNodes = execute (
+        script: 'basename --suffix=.txt -- *.txt'
+      )
+
+      for (node in listNodes) {
+        parsingNode = node.split('.')
+
+        def nodeDetails = [:]
+        sampleMap.put('name', parsingNode[2])
+        sampleMap.put('role', parsingNode[3])
+
+        nodes.add(nodeDetails)
+
+        environment = parsingNode[0]
+        location = parsingNode[1]
+      }
+
       if (!publish) {
         println "===================\nThis is not a tagged version, this pipeline will not deploy\n==================="
         return
       }
-  
+
       fx_notify(
         status: 'PENDING'
       )
       timeout(time: 10, unit: 'MINUTES') {
         input 'WARNING: You are about to deploy. Do you want to apply it?'
       }
+
+      fxAzureRunRunbook(
+        credentialAzure: 'giro-service-principal',
+        resourceGroupName: 'girozca1pgenrg000',
+        runbook: 'Run-Orchestrator',
+        automaionAccountName: 'girozca2pgenaa000',
+        tenantId: '5748501a-0f16-478b-a990-e53164e32fa8',
+        runbookOptions: "CLIENTNAME=${giroFxClientName.stdout};ENVIRONMENT=${environment};LOCATION=${location};RESOURCEGROUPNUMBER=${versions['clientNumber'].toString().padLeft(2,'0')};CURENTDEPLOYMENTTYPE=app,sql;TAGVERSION=${versions['giro-cloud-orchestration']}"
+      )
     },
   ],
   [
