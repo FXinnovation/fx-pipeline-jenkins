@@ -1,3 +1,5 @@
+import com.fxinnovation.utils.OptionString
+
 def build(Map config = [:]){
   config.subCommand = 'build'
   validParameters = [
@@ -13,11 +15,13 @@ def build(Map config = [:]){
     'varFile':'',
     'subCommand': '',
     'commandTarget':'',
-    'dockerImage': ''
+    'dockerImage': '',
+    'dockerAdditionalMounts': '',
+    'dockerEnvironmentVariables': ''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("packer - Parameter \"${parameter.key}\" is not valid for \"build\", please remove it!")
+      error("packer - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
 
@@ -34,11 +38,13 @@ def validate(Map config = [:]){
     'varFile':'',
     'subCommand': '',
     'commandTarget':'',
-    'dockerImage': ''
+    'dockerImage': '',
+    'dockerAdditionalMounts': '',
+    'dockerEnvironmentVariables': ''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
-      error("packer - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("packer - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
 
@@ -47,104 +53,64 @@ def validate(Map config = [:]){
 
 def call(Map config = [:]){
   optionsString = ""
-  if (!config.containsKey('dockerImage')){
-    config.dockerImage = 'fxinnovation/packer:latest'
-  }
-  if (!config.containsKey('subCommand') || !config.subCommand instanceof String){
-    error('"subCommand" parameter is mandatory and must be of type String.')
-  }
-  if (!config.containsKey('commandTarget') || !config.commandTarger instanceof String){
-    error('"commandTarget" parameter is mandatory and must be of type String.')
-  }
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/packer:latest')
+  mapAttributeCheck(config, 'subCommand', CharSequence, '', '"subCommand" parameter is mandatory and must be of type CharSequence.')
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '', '"commandTarget" parameter is mandatory and must be of type CharSequence.')
+  mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
+  mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
+
+  def optionsString = new OptionString(this)
+  optionsString.setDelimiter('=')
+
   if (config.containsKey('color')){
-    if (!config.color instanceof Boolean){
-      error('"color" parameter must be of type Boolean')
-    }
-    optionsString = optionsString + "-color=${config.color} "
+    optionsString.add('-color', config.color, Boolean)
   }
-  if (config.containsKey('debug')){
-    if (!config.debug instanceof Boolean){
-      error('"debug" parameter must be of type Boolean')
-    }
-    if (config.debug){
-      optionsString = optionsString + '-debug '
-    }
+  if (config.containsKey('debug') && config.debug){
+    optionsString.add('-debug')
   }
   if (config.containsKey('except')){
-    if (!config.except instanceof String){
-      error('"except" parameter must be of type String')
-    }
-    optionsString = optionsString + "-except=${config.except} "
+    optionsString.add('-except', config.except)
   }
   if (config.containsKey('only')){
-    if (!config.only instanceof String){
-      error('"only" parameter must be of type String')
-    }
-    optionsString = optionsString + "-only=${config.only} "
+    optionsString.add('-only', config.only)
   }
-  if (config.containsKey('force')){
-    if (!config.force instanceof Boolean){
-      error('"force" parameter must be of type Boolean')
-    }
-    if (config.force){
-      optionsString = optionsString + '-force '
-    }
+  if (config.containsKey('force') && config.force){
+    optionsString.add('-force')
   }
-  if (config.containsKey('machineReadable')){
-    if (!config.machineReadable instanceof Boolean){
-      error('"machineReadable" parameter must be of type Boolean')
-    }
-    if (config.machineReadable){
-      optionsString = optionsString + '-machine-readable '
-    }
+  if (config.containsKey('machineReadable') && config.machineReadable){
+    optionsString.add('-machine-readable')
   }
   if (config.containsKey('onError')){
     if (!config.onError != 'cleanup' || !config.onError != 'abort'){
       error('"onError" parameter must be either "cleanup" or "abort"')
     }
-      optionsString = optionsString + "-on-error=${config.onError} "
+    optionsString.add('-on-error', config.onError)
   }
   if (config.containsKey('parallel')){
-    if (!config.parallel instanceof Boolean){
-      error('"parallel" parameter must be of type Boolean')
-    }
-    optionsString = optionsString + "-parallel=${config.parallel} "
+    optionsString.add('-parallel', config.parallel, Boolean)
   }
-  if (config.containsKey('syntaxOnly')){
-    if (!config.syntaxOnly instanceof Boolean){
-      error('"syntaxOnly" parameter must be of type Boolean')
-    }
-    if (config.syntaxOnly){
-      optionsString = optionsString + '-syntax-only '
-    }
+  if (config.containsKey('syntaxOnly') && config.syntaxOnly){
+    optionsString.add('-syntax-only')
   }
   if ( config.containsKey('varFile') ){
-    if ( config.varFile instanceof String ){
-      optionsString = optionsString + "-var-file=${config.varFile} "
-    }else{
-      error('"varFile" parameter must be of type "String"')
-    }
+    optionsString.add('-var-file', config.varFile)
   }
-  if ( config.containsKey('vars') ){
-    if ( config.vars instanceof ArrayList ){
-      for (i=0; i<config.vars.size(); i++){
-        optionsString = optionsString + "-var \"${config.vars[i]}\" "
-      }
-    }else{
-      error('"vars" parameter must be of type "String[]"')
-    }
+  if ( config.containsKey('vars') && config.vars){
+    optionsString.add('-var', config.vars, ArrayList)
   }
 
   packerCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand:  'packer'
+    fallbackCommand: 'packer',
+    additionalMounts: config.dockerAdditionalMounts,
+    environmentVariables: config.dockerEnvironmentVariables
   )
 
   execute(
-    script: "${packerCommand} version"
+    script: "${packerCommand} --version"
   )
 
   return execute(
-    script: "${packerCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+    script: "${packerCommand} ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
   )
 }
