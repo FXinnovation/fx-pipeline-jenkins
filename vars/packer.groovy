@@ -98,7 +98,6 @@ def call(Map config = [:]){
   packerCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand: 'packer',
-    command: 'packer',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables
   )
