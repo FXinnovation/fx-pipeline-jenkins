@@ -15,7 +15,9 @@ def build(Map config = [:]){
     'varFile':'',
     'subCommand': '',
     'commandTarget':'',
-    'dockerImage': ''
+    'dockerImage': '',
+    'dockerAdditionalMounts': '',
+    'dockerEnvironmentVariables': ''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -36,7 +38,9 @@ def validate(Map config = [:]){
     'varFile':'',
     'subCommand': '',
     'commandTarget':'',
-    'dockerImage': ''
+    'dockerImage': '',
+    'dockerAdditionalMounts': '',
+    'dockerEnvironmentVariables': ''
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
