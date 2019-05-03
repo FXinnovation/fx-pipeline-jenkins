@@ -120,7 +120,7 @@ def call(Map config = [:]) {
       def environment = ""
 
       def listNodes = execute (
-        script: 'basename --suffix=.txt -- *.txt'
+        script: 'basename --suffix=.txt -- output/*.txt'
       )
 
       for (node in listNodes) {
