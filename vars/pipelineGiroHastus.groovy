@@ -125,9 +125,9 @@ def call(Map config = [:]) {
 
       for (node in listNodes.stdout) {
         
-        parsingNode = node.split('.')
+        parsingNode = node.split('.', 4)
         
-        if('stg' == parsingNode[3]) {
+        if('stg' != parsingNode[3]) {
           def nodeDetails = [:]
           sampleMap.put('name', parsingNode[2])
           sampleMap.put('role', parsingNode[3])
