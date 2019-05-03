@@ -123,18 +123,20 @@ def call(Map config = [:]) {
         script: "ls output/*.txt | sed -e 's/\\.txt\$//g' |sed -e 's/^output\\///g'"
       )
 
-      for (node in listNodes) {
-        println node
+      for (node in listNodes.stdout) {
+        
         parsingNode = node.split('.')
+        
+        if('stg' == parsingNode[3]) {
+          def nodeDetails = [:]
+          sampleMap.put('name', parsingNode[2])
+          sampleMap.put('role', parsingNode[3])
 
-        def nodeDetails = [:]
-        sampleMap.put('name', parsingNode[2])
-        sampleMap.put('role', parsingNode[3])
+          nodes.add(nodeDetails)
 
-        nodes.add(nodeDetails)
-
-        environment = parsingNode[0]
-        location = parsingNode[1]
+          environment = parsingNode[0]
+          location = parsingNode[1]
+        }
       }
 
       if (!publish) {
