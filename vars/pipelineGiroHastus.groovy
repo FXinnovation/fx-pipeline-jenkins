@@ -155,7 +155,7 @@ def call(Map config = [:]) {
         credentialAzure: 'giro-service-principal',
         resourceGroupName: 'girozca1pgenrg000',
         runbook: 'Run-Orchestrator',
-        automaionAccountName: 'girozca2pgenaa000',
+        automationAccountName: 'girozca2pgenaa000',
         tenantId: '5748501a-0f16-478b-a990-e53164e32fa8',
         runbookOptions: "CLIENTNAME=${giroFxClientName.stdout};ENVIRONMENT=${environment};LOCATION=${location};RESOURCEGROUPNUMBER=${versions['clientNumber'].toString().padLeft(2,'0')};CURENTDEPLOYMENTTYPE=app,sql;TAGVERSION=${versions['giro-cloud-orchestration']}"
       )
