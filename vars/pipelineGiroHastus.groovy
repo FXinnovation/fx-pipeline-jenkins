@@ -120,7 +120,7 @@ def call(Map config = [:]) {
       def environment = ""
 
       def listNodes = execute (
-        script: "ls output/*.txt | sed -e 's/\\.txt$//g' |sed -e 's/^output\\///g'"
+        script: "ls output/*.txt | sed -e 's/\\.txt\$//g' |sed -e 's/^output\\///g'"
       )
 
       for (node in listNodes) {
