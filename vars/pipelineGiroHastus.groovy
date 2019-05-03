@@ -27,6 +27,10 @@ def call(Map config = [:]) {
       if (isTagged && isMaster) {
         publish = true
       }
+
+      if ('tst' == scmInfo.branch) {
+        publish = true
+      }
   
       if (!versionFileExists) {
         error("File \"${customer}/version.yml\" must exist")
