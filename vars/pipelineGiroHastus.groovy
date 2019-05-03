@@ -129,8 +129,8 @@ def call(Map config = [:]) {
         
         if('stg' != parsingNode[3]) {
           def nodeDetails = [:]
-          sampleMap.put('name', parsingNode[2])
-          sampleMap.put('role', parsingNode[3])
+          nodeDetails.put('name', parsingNode[2])
+          nodeDetails.put('role', parsingNode[3])
 
           nodes.add(nodeDetails)
 
