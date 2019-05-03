@@ -125,9 +125,7 @@ def call(Map config = [:]) {
 
       for (node in listNodes.stdout) {
         
-        parsingNode = node.split('.')
-        
-        println parsingNode.length
+        parsingNode = node.tokenize('.')
         
         if('stg' != parsingNode[3]) {
           def nodeDetails = [:]
