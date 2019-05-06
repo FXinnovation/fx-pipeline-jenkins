@@ -181,3 +181,19 @@ def getIssueComments(Map config = [:]){
 
   return call(config)
 }
+
+def getRepositoriesByOrganization(Map config = [:]) {
+  mapAttributeCheck(config, 'organizationId', CharSequence, '')
+
+  config.apiPath = "/orgs/{$config.organizationId}/repos"
+  config.httpMode = 'GET'
+
+  return call(config)
+}
+
+def getOrganization(Map config = [:]) {
+  config.apiPath = 'user/orgs'
+  config.httpMode = 'GET'
+
+  return call(config)
+}
