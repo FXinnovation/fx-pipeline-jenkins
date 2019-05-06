@@ -5,8 +5,8 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
 
-  stage('project selection') {
-    selectProject(config, closures)
+  stage('target selection') {
+    selectTarget(config, closures)
   }
 
   stage('command options selection') {
@@ -18,16 +18,16 @@ def call(Map config = [:], Map closures = [:]){
   }
 }
 
-private void selectProject(Map config = [:], Map closures = [:]){
-  mapAttributeCheck(config, 'selectProjectOptions', Map, [:])
+private void selectTarget(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'selectTargetOptions', Map, [:])
 
-  if (!closures.containsKey('selectProject')){
-    closures.selectProject = {
-      println('“selectProject” step is not defined. Skipping.')
+  if (!closures.containsKey('selectTarget')){
+    closures.selectTarget = {
+      println('“selectTarget” step is not defined. Skipping.')
     }
   }
 
-  closures.selectProject()
+  closures.selectTarget()
 }
 
 private Map selectCommandOptions(Map config = [:], Map closures = [:]){

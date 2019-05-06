@@ -8,7 +8,7 @@ The second Map contains closures and these are expected:
 
 *initSSHCredentialId*: 'gitea-fx_administrator-key'
 
-*selectProject*
+*selectTarget*
 
 *selectCommandOptions*
 
