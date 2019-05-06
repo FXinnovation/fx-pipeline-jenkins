@@ -1,13 +1,8 @@
 def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'ansiblelintConfig',      Map,          [:])
   mapAttributeCheck(config, 'ansiblelintOutputFile',  CharSequence, 'ansible-lint.txt')
-  mapAttributeCheck(config, 'awsIAMProfile',          CharSequence, 'AmazonEC2ReadOnlyAccess')
-  mapAttributeCheck(config, 'awsRegion',              CharSequence, 'us-east-1')
-  mapAttributeCheck(config, 'awsSubnetId',            CharSequence, 'subnet-cd28dca9')
   mapAttributeCheck(config, 'kitchenAwsCredentialId', CharSequence, 'itoa-application-awscollectors-awscred')
-  mapAttributeCheck(config, 'kitchenAnsibleVersion',  CharSequence, '2.7.10')
   mapAttributeCheck(config, 'kitchenConcurrency',     Integer,      5)
-  mapAttributeCheck(config, 'kitchenIdempotency',     CharSequence, 'true')
   mapAttributeCheck(config, 'kitchenSshCredentialId', CharSequence, 'fxlab_jenkins')
   mapAttributeCheck(config, 'junitReportFileName',    CharSequence, '*_inspec.xml')
   mapAttributeCheck(config, 'scmSshCredentialId',     CharSequence, 'gitea-fx_administrator-key')
@@ -44,13 +39,7 @@ def call(Map config = [:], Map closures = [:]) {
                     AWS_SSH_KEY_ID:          "${config.kitchenSshCredentialId}",
                     AWS_SSH_KEY:             '/id_rsa.pem',
                     AWS_ACCESS_KEY_ID:       "${access_key}",
-                    AWS_SECRET_ACCESS_KEY:   "${secret_key}",
-                    AWS_REGION:              "${config.awsRegion}",
-                    AWS_SUBNETID:            "${config.awsSubnetId}",
-                    AWS_IAMPROFILE:          "${config.awsIAMProfile}",
-                    KITCHEN_IDEMPOTENCY:     "${config.kitchenIdempotency}",
-                    KITCHEN_ANSIBLE_VERSION: "${config.kitchenAnsibleVersion}",
-                    KITCHEN_ROLENAME:        "${scmInfo.repositoryName}"
+                    AWS_SECRET_ACCESS_KEY:   "${secret_key}"
                   ],
                   dockerAdditionalMounts: [
                     (kitchenKey): '/id_rsa.pem'
@@ -81,11 +70,6 @@ def call(Map config = [:], Map closures = [:]) {
               awsSSHKeyId:           "${config.kitchenSshCredentialId}",
               awsAccessKeyId:        "${access_key}",
               awsSecretAccessKey:    "${secret_key}",
-              awsRegion:             "${config.awsRegion}",
-              awsSubnetId:           "${config.awsSubnetId}",
-              awsIAMProfile:         "${config.awsIAMProfile}",
-              kitchenIdempotency:    "${config.kitchenIdempotency}",
-              kitchenAnsibleVersion: "${config.kitchenAnsibleVersion}",
               kitchenPrivateKeyPath: "${kitchenKey}",
               publish:               config.publish
             ],
