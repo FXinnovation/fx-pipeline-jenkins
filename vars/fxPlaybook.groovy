@@ -9,7 +9,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'kitchenConcurrency',     Integer,      5)
   mapAttributeCheck(config, 'kitchenIdempotency',     CharSequence, 'true')
   mapAttributeCheck(config, 'kitchenSshCredentialId', CharSequence, 'fxlab_jenkins')
-  mapAttributeCheck(config, 'junitReport',            CharSequence, '*_inspec.xml')
+  mapAttributeCheck(config, 'junitReportFileName',    CharSequence, '*_inspec.xml')
   mapAttributeCheck(config, 'scmSshCredentialId',     CharSequence, 'gitea-fx_administrator-key')
   mapAttributeCheck(config, 'publish',                Boolean,      false)
   mapAttributeCheck(config, 'initSSHHostKeys',        List,         [
@@ -66,9 +66,9 @@ def call(Map config = [:], Map closures = [:]) {
               } finally {
                 archiveArtifacts(
                   allowEmptyArchive: true,
-                  artifacts:         config.junitReport
+                  artifacts:         config.junitReportFileName
                 )
-                junit config.junitReport
+                junit config.junitReportFileName
               }
             }
           }
