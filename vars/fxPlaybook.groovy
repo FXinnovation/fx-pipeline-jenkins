@@ -6,6 +6,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'awsSubnetId',            CharSequence, 'subnet-cd28dca9')
   mapAttributeCheck(config, 'kitchenAwsCredentialId', CharSequence, 'itoa-application-awscollectors-awscred')
   mapAttributeCheck(config, 'kitchenAnsibleVersion',  CharSequence, '2.7.10')
+  mapAttributeCheck(config, 'kitchenConcurrency',     Integer,      5)
   mapAttributeCheck(config, 'kitchenIdempotency',     CharSequence, 'true')
   mapAttributeCheck(config, 'kitchenSshCredentialId', CharSequence, 'fxlab_jenkins')
   mapAttributeCheck(config, 'junitReport',            CharSequence, '*_inspec.xml')
@@ -53,7 +54,8 @@ def call(Map config = [:], Map closures = [:]) {
                   ],
                   dockerAdditionalMounts: [
                     (kitchenKey): '/id_rsa.pem'
-                  ]
+                  ],
+                  concurrency: config.kitchenConcurrency
                 )
               } catch(kitchenError) {
                 archiveArtifacts(
