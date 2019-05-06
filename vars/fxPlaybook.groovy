@@ -1,7 +1,7 @@
 def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'ansiblelintConfig',      Map,          [:])
   mapAttributeCheck(config, 'ansiblelintOutputFile',  CharSequence, 'ansible-lint.txt')
-  mapAttributeCheck(config, 'awsIAMProfile',          CharSequence, 'testjc_todelete')
+  mapAttributeCheck(config, 'awsIAMProfile',          CharSequence, 'AmazonEC2ReadOnlyAccess')
   mapAttributeCheck(config, 'awsRegion',              CharSequence, 'us-east-1')
   mapAttributeCheck(config, 'awsSubnetId',            CharSequence, 'subnet-cd28dca9')
   mapAttributeCheck(config, 'kitchenAwsCredentialId', CharSequence, 'itoa-application-awscollectors-awscred')
