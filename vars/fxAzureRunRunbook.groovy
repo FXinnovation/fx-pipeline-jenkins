@@ -30,15 +30,7 @@ def call(Map config = [:]) {
   ]) {
     executePowershell([
       dockerImage: config.powershellDockerImage,
-      script: """/data/${config.libFolder}/AutomationAccount/Run-Runbook.ps1 
-                 -ResourceGroupName \"${config.resourceGroupName}\" 
-                 -Runbook \"${config.runbook}\" 
-                 -AutomationAccountName \"${config.automationAccountName}\" 
-                 -Tenant \"${config.tenantId}\" 
-                 -AppId \"${appId}\" 
-                 -Password \"${servicePrincipalPassword}\" 
-                 ${config.runbookOptions} 
-                 -Verbose """
+      script: "/data/${config.libFolder}/AutomationAccount/Run-Runbook.ps1 -ResourceGroupName \"${config.resourceGroupName}\" -Runbook \"${config.runbook}\" -AutomationAccountName \"${config.automationAccountName}\" -Tenant \"${config.tenantId}\" -AppId \"${appId}\" -Password \"${servicePrincipalPassword}\" ${config.runbookOptions} -Verbose"
     ])
   }
 }
