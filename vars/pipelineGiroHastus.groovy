@@ -136,6 +136,7 @@ def call(Map config = [:]) {
 
           environment = parsingNode[0]
           location = parsingNode[1]
+          println parsingNode.join(",")
         }
       }
 
