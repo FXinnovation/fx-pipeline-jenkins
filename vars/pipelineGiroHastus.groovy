@@ -125,7 +125,7 @@ def call(Map config = [:]) {
       
       for (node in listNodes.stdout.split()) {
         
-        parsingNode = node.split('.')
+        parsingNode = node.split(/\./)
 
         println parsingNode.getClass()
         println parsingNode.toString()
