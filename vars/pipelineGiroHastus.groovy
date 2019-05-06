@@ -124,8 +124,9 @@ def call(Map config = [:]) {
       )
 
       for (node in listNodes.stdout) {
-        
-        parsingNode = node.tokenize(/\./)
+       
+        println node.getClass()
+        parsingNode = node.toString().tokenize('.')
         
         if('stg' != parsingNode[3]) {
           def nodeDetails = [:]
@@ -136,7 +137,7 @@ def call(Map config = [:]) {
 
           environment = parsingNode[0]
           location = parsingNode[1]
-          println parsingNode.join(",")
+          println environment
         }
       }
 
