@@ -122,7 +122,9 @@ def call(Map config = [:]) {
       def listNodes = execute (
         script: "ls output/*.txt | sed -e 's/\\.txt\$//g' |sed -e 's/^output\\///g'"
       )
-
+      
+      println listNodes.stdout.getClass()    
+      println listNodes.toString()
       for (node in listNodes.stdout) {
        
         println node.getClass()
