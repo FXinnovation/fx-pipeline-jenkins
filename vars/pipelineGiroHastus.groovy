@@ -161,7 +161,7 @@ def call(Map config = [:]) {
         runbook: 'Run-Orchestrator',
         automationAccountName: 'girozca2pgenaa000',
         tenantId: '5748501a-0f16-478b-a990-e53164e32fa8',
-        runbookOptions: "CLIENTNAME=${giroFxClientName.stdout};ENVIRONMENT=${environment};LOCATION=${location};RESOURCEGROUPNUMBER=${versions['clientNumber'].toString().padLeft(2,'0')};CURRENTDEPLOYMENTTYPE=app,sql;TAGVERSION=${versions['giro-cloud-orchestration']}"
+        runbookOptions: "CLIENTNAME=${giroFxClientName.stdout};ENVIRONMENT=${environment};LOCATION=${location};RESOURCEGROUPNUMBER=${versions['clientNumber'].toString().padLeft(2,'0').padRight(3,'1')};CURRENTDEPLOYMENTTYPE=app,sql;TAGVERSION=${versions['giro-cloud-orchestration']}"
       )
     },
   ],
