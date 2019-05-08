@@ -116,8 +116,8 @@ def call(Map config = [:]) {
       )
 
       def nodes = []
-      def location = ""
-      def environment = ""
+      def location = ''
+      def environment = ''
 
       def listNodes = execute (
         script: "ls output/*.txt | sed -e 's/\\.txt\$//g' |sed -e 's/^output\\///g'"
@@ -127,9 +127,6 @@ def call(Map config = [:]) {
         
         parsingNode = node.split(/\./)
 
-        println parsingNode.getClass()
-        println parsingNode.toString()
-        
         if('stg' != parsingNode[3]) {
           def nodeDetails = [:]
           nodeDetails.put('name', parsingNode[2])
@@ -139,7 +136,6 @@ def call(Map config = [:]) {
 
           environment = parsingNode[0]
           location = parsingNode[1]
-          println environment
         }
       }
 
