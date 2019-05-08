@@ -7,7 +7,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'tenantId', CharSequence, '', '“tenantId” parameter is mandatory.')
   mapAttributeCheck(config, 'subscriptionId', CharSequence, '', '“subscriptionId” parameter is mandatory.')
   mapAttributeCheck(config, 'libFolder', CharSequence, 'fxinnovation-common-scripts-powershell')
-  mapAttributeCheck(config, 'libVersion', CharSequence, '0.0.21')
+  mapAttributeCheck(config, 'libVersion', CharSequence, '0.0.22')
   mapAttributeCheck(config, 'powershellDockerImage', CharSequence, 'fxinnovation/powershell:latest')
   mapAttributeCheck(config, 'scriptParameters', CharSequence, '')
 
