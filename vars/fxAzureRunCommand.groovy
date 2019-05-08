@@ -5,6 +5,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'vitualMachineName', CharSequence, '', '“virtualMachineName” parameter is mandatory.')
   mapAttributeCheck(config, 'scriptName', CharSequence, '', '“scriptName” parameter is mandatory.')
   mapAttributeCheck(config, 'tenantId', CharSequence, '', '“tenantId” parameter is mandatory.')
+  mapAttributeCheck(config, 'subscriptionId', CharSequence, '', '“subscriptionId” parameter is mandatory.')
   mapAttributeCheck(config, 'libFolder', CharSequence, 'fxinnovation-common-scripts-powershell')
   mapAttributeCheck(config, 'libVersion', CharSequence, '0.0.21')
   mapAttributeCheck(config, 'powershellDockerImage', CharSequence, 'fxinnovation/powershell:latest')
@@ -30,7 +31,7 @@ def call(Map config = [:]) {
   ]) {
     executePowershell([
       dockerImage: config.powershellDockerImage,
-      script: "/data/${config.libFolder}/CodeSnipetCICD/Run-AzureCommand.ps1 -ResourceGroupName \"${config.resourceGroupName}\" -VirtualMachineName \"${config.vitualMachineName}\" -ScriptPath \"/data/${config.scriptName}\" -Tenant \"${config.tenantId}\" -AppId \"${appId}\" -Password \"${servicePrincipalPassword}\" ${config.scriptParameters} -Verbose "
+      script: "/data/${config.libFolder}/CodeSnipetCICD/Run-AzureCommand.ps1 -ResourceGroupName \"${config.resourceGroupName}\" -VirtualMachineName \"${config.vitualMachineName}\" -subscriptionId \"${config.subscriptionId}\" -ScriptPath \"/data/${config.scriptName}\" -Tenant \"${config.tenantId}\" -AppId \"${appId}\" -Password \"${servicePrincipalPassword}\" ${config.scriptParameters} -Verbose "
     ])
   }
 }
