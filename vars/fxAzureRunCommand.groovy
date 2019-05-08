@@ -1,5 +1,4 @@
 def call(Map config = [:]) {
-
   mapAttributeCheck(config, 'credentialAzure', CharSequence, '', '“credentialAzure” parameter is mandatory.')
   mapAttributeCheck(config, 'resourceGroupName', CharSequence, '', '“resourceGroupName” parameter is mandatory.')
   mapAttributeCheck(config, 'vitualMachineName', CharSequence, '', '“virtualMachineName” parameter is mandatory.')
