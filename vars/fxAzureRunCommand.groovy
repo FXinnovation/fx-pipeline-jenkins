@@ -11,7 +11,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'scriptParameters', CharSequence, '')
 
   if('' != config.scriptParameters) {
-    config.scriptParameters = "-Parameters \"${config.runbookOptions}\""
+    config.scriptParameters = "-Parameters \"${config.scriptParameters}\""
   }
 
   // This is temporary since we need to create nugget repo
