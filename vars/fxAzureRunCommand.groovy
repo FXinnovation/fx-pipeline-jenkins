@@ -29,7 +29,7 @@ def call(Map config = [:]) {
       passwordVariable: 'servicePrincipalPassword'
     )
   ]) {
-    executePowershell([
+  return executePowershell([
       dockerImage: config.powershellDockerImage,
       script: "/data/${config.libFolder}/CodeSnipetCICD/Run-AzureCommand.ps1 -ResourceGroupName \"${config.resourceGroupName}\" -VirtualMachineName \"${config.vitualMachineName}\" -Subscription \"${config.subscriptionId}\" -ScriptPath \"/data/${config.scriptName}\" -Tenant \"${config.tenantId}\" -AppId \"${appId}\" -Password \"${servicePrincipalPassword}\" ${config.scriptParameters} -Verbose "
     ])
