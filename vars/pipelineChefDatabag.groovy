@@ -1,4 +1,6 @@
 def call(Map config = [:], Map closures = [:]){
+  println "config : " + config.getClass()
+  println "config.knifeConfig : " + config.knifeConfig.getClass()
   mapAttributeCheck(config, 'publish', Boolean, false)
   mapAttributeCheck(config, 'knifeConfig', Map, '“knifeConfig” parameter is mandatory.')
   mapAttributeCheck(config.knifeConfig, 'commandTarget', CharSequence, '“knifeConfig.commandTarget” parameter is mandatory.')
