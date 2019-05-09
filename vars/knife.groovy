@@ -1,4 +1,4 @@
-def databagShow(Map config[:]) {
+def databagShow(Map config = [:]) {
   config.subCommand = 'databag show'
   validParameters = [
     'dockerImage':'',
@@ -17,7 +17,7 @@ def databagShow(Map config[:]) {
   return knife(config)
 }
 
-def databagFromFile(Map config[:]) {
+def databagFromFile(Map config = [:]) {
   config.subCommand = 'databag from file'
   validParameters = [
     'dockerImage':'',
