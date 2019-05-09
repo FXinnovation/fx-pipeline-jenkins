@@ -77,7 +77,7 @@ def call(Map config = [:], Map closures = [:]){
   }
   stage('publish'){
     if (config.publish){
-      if (true == bagExists) {
+      if (false == bagExists) {
         println "Creating bag ${config.bag} first ..."
         configBag = [
           'credentialId': config.knifeConfig.credentialId,
