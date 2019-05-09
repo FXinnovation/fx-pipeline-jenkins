@@ -3,7 +3,7 @@ def call(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'bag', CharSequence, '“databag” parameter is mandatory.')
   mapAttributeCheck(config, 'knifeConfig', Map, '“knifeConfig” parameter is mandatory.')
   mapAttributeCheck(config.knifeConfig, 'commandTarget', CharSequence, '“knifeConfig.commandTarget” parameter is mandatory.')
-  mapAttributeCheck(config.knifeConfig, 'secretId', CharSequence, '“knifeConfig.secretId” parameter is mandatory.')
+  mapAttributeCheck(config, 'secretId', CharSequence, '“knifeConfig.secretId” parameter is mandatory.')
    
   for (closure in closures){
     if (!closure instanceof Closure){
@@ -88,7 +88,7 @@ def call(Map config = [:], Map closures = [:]){
       }
       withCredentials([
         string(
-          credentialsId: config.knifeConfig.secretId,
+          credentialsId: config.secretId,
           variable: 'tmpSecretName',
         )
       ]) {
