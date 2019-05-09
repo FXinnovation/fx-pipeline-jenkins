@@ -71,7 +71,7 @@ def call(Map config = [:], Map closures = [:]){
   }
   stage('publish'){
     if (config.publish){
-      config.knifeConfig = "${config.bag} ${config.knifeConfig.commandTarget}"
+      config.knifeConfig.commandTarget = "${config.bag} ${config.knifeConfig.commandTarget}"
       knife.databagFromFile(config.knifeConfig)
     }else{
       println "Publish step is skipped"
