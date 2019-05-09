@@ -1,11 +1,10 @@
 def call(Map config = [:], Map closures = [:]){
-  println "config : " + config.getClass()
-  println "config.knifeConfig : " + config.knifeConfig.getClass()
+  println "test : " + config.databag.getClass()
   mapAttributeCheck(config, 'publish', Boolean, false)
+  mapAttributeCheck(config, 'bag', CharSequence, '“databag” parameter is mandatory.')
   mapAttributeCheck(config, 'knifeConfig', Map, '“knifeConfig” parameter is mandatory.')
   mapAttributeCheck(config.knifeConfig, 'commandTarget', CharSequence, '“knifeConfig.commandTarget” parameter is mandatory.')
   mapAttributeCheck(config.knifeConfig, 'secret', CharSequence, '“knifeConfig.secret” parameter is mandatory.')
-  mapAttributeCheck(config.databag, 'bag', CharSequence, '“databag” parameter is mandatory.')
    
   for (closure in closures){
     if (!closure instanceof Closure){
