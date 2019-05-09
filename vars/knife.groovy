@@ -1,3 +1,22 @@
+def databagList(Map config = [:]){
+  config.subCommand = 'data bag list'
+  config.commandTarget = ''
+  validParameters = [
+    'dockerImage':'',
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+    'format':'',
+  ]
+  for ( parameter in config ) {
+    if (!validParameters.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagList\", please remove it!")
+    }
+  }
+  return knife(config)
+}
+
 def databagFromFile(Map config[:]) {
   config.subCommand = 'databag from file'
   validParameters = [
