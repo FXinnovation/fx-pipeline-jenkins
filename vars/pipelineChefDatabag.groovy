@@ -86,14 +86,13 @@ def call(Map config = [:], Map closures = [:]){
         ]
         knife.databagCreateBag(configBag) 
       }
-      tmpSecretName = config.knifeConfig.secret
       withCredentials([
         string(
-          credentialsId: tmpSecretName,
-          variable: 'config.knifeConfig.secret',
+          credentialsId: config.knifeConfig.secret,
+          variable: 'tmpSecretName',
         )
       ]) {
-        println "key = " + config.knifeConfig.secret 
+        println "key = " + tmpSecretName
         config.knifeConfig.commandTarget = "${config.bag} ${config.knifeConfig.commandTarget}"
         knife.databagFromFile(config.knifeConfig)
       }
