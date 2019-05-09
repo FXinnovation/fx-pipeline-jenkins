@@ -1,3 +1,21 @@
+def databagList(Map config = [:]) {
+  config.subCommand = 'data bag list'
+  validParameters = [
+    'dockerImage':'',
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+    'format':'',
+  ]
+  for ( parameter in config ) {
+    if (!validParameters.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagList\", please remove it!")
+    }
+  }
+  return knife(config)
+}
+
 def databagShow(Map config = [:]) {
   config.subCommand = 'data bag show'
   validParameters = [
@@ -11,7 +29,7 @@ def databagShow(Map config = [:]) {
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagList\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagShow\", please remove it!")
     }
   }
   return knife(config)
