@@ -34,7 +34,7 @@ def call(Map config = [:], Map closures = [:]){
     databagList = readJSON text: knife.databagShow(
       serverUrl: config.knifeConfig.serverUrl,
       credentialId: config.knifeConfig.credentialId,
-      commandTarget: config.databag,
+      commandTarget: config.bag,
       format: 'json'
     ).stdout
     databagList.each {
