@@ -1,3 +1,20 @@
+def databagFromFile(Map config[:]) {
+  config.subCommand = 'databag from file'
+  validParameters = [
+    'dockerImage':'',
+    'subCommand':'',
+    'credentialId': '',
+    'serverUrl': '',
+    'commandTarget':'',
+    'secret':'',
+  ]
+  for ( parameter in config ) {
+    if (!validParameters.containsKey(parameter.key)){
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagFromFile\", please remove it!")
+    }
+  }
+  return knife(config)
+}
 def environmentFromFile(Map config = [:]){
   config.subCommand = 'environment from file'
   validParameters = [
@@ -94,49 +111,32 @@ def cookbookUpload(Map config = [:]){
 def call (Map config = [:]){
   optionsString = ''
   
-  if (!config.containsKey('commandTarget') && !(config.commandTarget instanceof CharSequence)){
-    error('commandTarget parameter is mandatory and must be of type CharSequence')
-  }
-  
-  if (!config.containsKey('credentialId') && !(config.credentialId instanceof CharSequence)){
-    error('"credentialId" parameter is mandatory and must be of type CharSequence')
-  }
-  
-  if (!config.containsKey('dockerImage') && !(config.dockerImage instanceof CharSequence)){
-    config.dockerImage = 'fxinnovation/chefdk:latest'
-  }
-  
-  if (!config.containsKey('serverUrl') && !(config.serverUrl instanceof CharSequence)){
-    error('serverUrl parameter is mandatory and must be of type CharSequence')
-  }
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '', '“commandTarget” parameter is mandatory.')
+  mapAttributeCheck(config, 'credentialId', CharSequence, '', '“credentialId” parameter is mandatory.')
+  mapAttributeCheck(config, 'serverUrl', CharSequence, '', '“serverUrl” parameter is mandatory.')
+  mapAttributeCheck(config, 'subCommand', CharSequence, '', '“subCommand” parameter is mandatory.')
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/chefdk:latest')
+  mapAttributeCheck(config, 'format', CharSequence, '')
+  mapAttributeCheck(config, 'freeze', Boolean, false)
+  mapAttributeCheck(config, 'cookbookPath', CharSequence, '')
+  mapAttributeCheck(config, 'secret', CharSequence, '')
 
-  if (!config.containsKey('subCommand') && !(config.subCommand instanceof CharSequence)){
-    error('subCommand parameter is mandatory and must be of type CharSequence')
-  }
-  
-  if (config.containsKey('format')){
-    if (!config.format instanceof CharSequence){
-      error('format parameter must of type CharSequence')
-    }
+  if ('' != config.format){
     optionsString += "--format ${config.format} "
   }
-  if (config.containsKey('freeze')){
-    if (!(config.freeze instanceof Boolean)){
-      error('freeze parameter must be of type Boolean')
-    }
-    if (config.freeze) {
-      optionsString += '--freeze ' 
-    }
-  }
-  if (config.containsKey('cookbookPath')){
-    if (!(config.cookbookPath instanceof CharSequence)){
-      error('cookbookPath parameter must be of type CharSequence')
-    }
-    if (config.cookbookPath){
-       optionsString += "--cookbook-path ${config.cookbookPath} "
-    }
+
+  if (true == config.freeze){
+    optionsString += '--freeze '
   }
   
+  if ('' != config.cookbookPath){
+    optionsString += "--cookbook-path ${config.cookbookPath} "
+  }
+  
+  if ('' != config.secret){
+    optionsString += "--secret ${config.secret} "
+  }
+
   optionsString += "--server-url ${config.serverUrl} "
 
   // Adding options because of CI environment. In a CI environment it is impossbile to edit the file on the fly.
