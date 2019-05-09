@@ -65,9 +65,9 @@ def call(Map config = [:], Map closures = [:]){
       println "Bag ${config.bag} does not exist. Need to create it first."
     }
     if (true == databagExists){
-      println "Item ${databag.name} exist. This will be updated."
+      println "Item ${databag.id} exist. This will be updated."
     }else{
-      println "Item ${databag.name} does not exist. This will be created."
+      println "Item ${databag.id} does not exist. This will be created."
     }
   }
   if (closures.containsKey('postPlan')){
@@ -84,7 +84,7 @@ def call(Map config = [:], Map closures = [:]){
           'serverUrl': config.knifeConfig.serverUrl,
           'commandTarget': config.bag,
         ]
-        knife.databagCreateBag(config.configBag) 
+        knife.databagCreateBag(configBag) 
       }
       withCredentials([
         string(
