@@ -191,7 +191,7 @@ def getRepositoriesByOrganization(Map config = [:]) {
   return call(config)
 }
 
-def getOrganization(Map config = [:]) {
+def getOrganizations(Map config = [:]) {
   config.apiPath = 'user/orgs'
   config.httpMode = 'GET'
 
