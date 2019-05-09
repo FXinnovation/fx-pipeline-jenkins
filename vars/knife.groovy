@@ -1,5 +1,5 @@
 def databagShow(Map config = [:]) {
-  config.subCommand = 'databag show'
+  config.subCommand = 'data bag show'
   validParameters = [
     'dockerImage':'',
     'subCommand':'',
@@ -18,7 +18,7 @@ def databagShow(Map config = [:]) {
 }
 
 def databagFromFile(Map config = [:]) {
-  config.subCommand = 'databag from file'
+  config.subCommand = 'data bag from file'
   validParameters = [
     'dockerImage':'',
     'subCommand':'',
