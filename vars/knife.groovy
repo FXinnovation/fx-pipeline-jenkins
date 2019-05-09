@@ -1,6 +1,5 @@
-def databagList(Map config = [:]){
-  config.subCommand = 'data bag list'
-  config.commandTarget = ''
+def databagShow(Map config[:]) {
+  config.subCommand = 'databag show'
   validParameters = [
     'dockerImage':'',
     'subCommand':'',
@@ -8,6 +7,7 @@ def databagList(Map config = [:]){
     'serverUrl': '',
     'commandTarget':'',
     'format':'',
+    'secret':'',
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
@@ -34,6 +34,7 @@ def databagFromFile(Map config[:]) {
   }
   return knife(config)
 }
+
 def environmentFromFile(Map config = [:]){
   config.subCommand = 'environment from file'
   validParameters = [
