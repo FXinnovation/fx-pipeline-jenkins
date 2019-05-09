@@ -1,5 +1,4 @@
 def call(Map config = [:], Map closures = [:]){
-  println "test : " + config.databag.getClass()
   mapAttributeCheck(config, 'publish', Boolean, false)
   mapAttributeCheck(config, 'bag', CharSequence, '“databag” parameter is mandatory.')
   mapAttributeCheck(config, 'knifeConfig', Map, '“knifeConfig” parameter is mandatory.')
