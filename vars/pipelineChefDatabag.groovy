@@ -3,7 +3,7 @@ def call(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'bag', CharSequence, '“databag” parameter is mandatory.')
   mapAttributeCheck(config, 'knifeConfig', Map, '“knifeConfig” parameter is mandatory.')
   mapAttributeCheck(config.knifeConfig, 'commandTarget', CharSequence, '“knifeConfig.commandTarget” parameter is mandatory.')
-  mapAttributeCheck(config.knifeConfig, 'secret', CharSequence, '“knifeConfig.secret” parameter is mandatory.')
+  mapAttributeCheck(config.knifeConfig, 'secretId', CharSequence, '“knifeConfig.secretId” parameter is mandatory.')
    
   for (closure in closures){
     if (!closure instanceof Closure){
@@ -88,12 +88,12 @@ def call(Map config = [:], Map closures = [:]){
       }
       withCredentials([
         string(
-          credentialsId: config.knifeConfig.secret,
+          credentialsId: config.knifeConfig.secretId,
           variable: 'tmpSecretName',
         )
       ]) {
-        println "key = " + tmpSecretName
         config.knifeConfig.commandTarget = "${config.bag} ${config.knifeConfig.commandTarget}"
+        config.knifeConfig.secret = tmpSecretName
         knife.databagFromFile(config.knifeConfig)
       }
     }else{
