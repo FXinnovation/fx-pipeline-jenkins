@@ -53,15 +53,21 @@ def call(Map config = [:], Map closures = [:]){
         format: 'json'
       ).stdout
       databagItemList.each {
-        if (databag.name == it){
+        if (databag.id == it){
           databagExists = true
         }
       }
     }
+    if (true == bagExists) {
+      println "Bag ${config.bag} exist. Nothing to do"
+    }
+    else {
+      println "Bag ${config.bag} does not exist. Need to create it first."
+    }
     if (true == databagExists){
-      println "Databag ${databag.name} exist."
+      println "Item ${databag.name} exist. This will be updated."
     }else{
-      println "Databag ${databag.name} does not exist."
+      println "Item ${databag.name} does not exist. This will be created."
     }
   }
   if (closures.containsKey('postPlan')){
@@ -71,8 +77,24 @@ def call(Map config = [:], Map closures = [:]){
   }
   stage('publish'){
     if (config.publish){
-      config.knifeConfig.commandTarget = "${config.bag} ${config.knifeConfig.commandTarget}"
-      knife.databagFromFile(config.knifeConfig)
+      if (true == bagExists) {
+        println "Creating bag ${config.bag} first ..."
+        configBag = [
+          'credentialId': config.knifeConfig.credentialId,
+          'serverUrl': config.knifeConfig.serverUrl,
+          'commandTarget': config.bag,
+        ]
+        knife.databagCreateBag(config.configBag) 
+      }
+      withCredentials([
+        string(
+          credentialsId: config.secret,
+          variable: 'config.knifeConfig.secret'
+        )
+      ]) {
+        config.knifeConfig.commandTarget = "${config.bag} ${config.knifeConfig.commandTarget}"
+        knife.databagFromFile(config.knifeConfig)
+      }
     }else{
       println "Publish step is skipped"
     }
