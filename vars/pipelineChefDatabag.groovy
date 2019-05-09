@@ -88,8 +88,8 @@ def call(Map config = [:], Map closures = [:]){
       }
       withCredentials([
         string(
-          credentialsId: config.secret,
-          variable: 'config.knifeConfig.secret'
+          credentialsId: config.knifeConfig.secret,
+          variable: 'config.knifeConfig.secret',
         )
       ]) {
         config.knifeConfig.commandTarget = "${config.bag} ${config.knifeConfig.commandTarget}"
