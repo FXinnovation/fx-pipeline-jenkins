@@ -92,6 +92,7 @@ def call(Map config = [:], Map closures = [:]){
           variable: 'config.knifeConfig.secret',
         )
       ]) {
+        println "key = " + config.knifeConfig.secret 
         config.knifeConfig.commandTarget = "${config.bag} ${config.knifeConfig.commandTarget}"
         knife.databagFromFile(config.knifeConfig)
       }
