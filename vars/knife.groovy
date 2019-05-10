@@ -9,7 +9,7 @@ def databagCreateBag(Map config = [:]) {
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagList\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   return knife(config)
@@ -27,7 +27,7 @@ def databagList(Map config = [:]) {
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagList\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   return knife(config)
@@ -46,7 +46,7 @@ def databagShow(Map config = [:]) {
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagShow\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   return knife(config)
@@ -64,7 +64,7 @@ def databagFromFile(Map config = [:]) {
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"databagFromFile\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   return knife(config)
@@ -81,7 +81,7 @@ def environmentFromFile(Map config = [:]){
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"environmentFromFile\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   return knife(config)
@@ -100,7 +100,7 @@ def environmentList(Map config = [:]){
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"environmentFromFile\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   return knife(config)
@@ -118,7 +118,7 @@ def environmentShow(Map config = [:]){
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"environmentFromFile\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   return knife(config)
@@ -142,7 +142,7 @@ def cookbookUpload(Map config = [:]){
   ]
   for ( parameter in config ) {
     if (!validParameters.containsKey(parameter.key)){
-      error("knife - Parameter \"${parameter.key}\" is not valid for \"validate\", please remove it!")
+      error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
   
@@ -176,26 +176,30 @@ def call (Map config = [:]){
   mapAttributeCheck(config, 'cookbookPath', CharSequence, '')
   mapAttributeCheck(config, 'secret', CharSequence, '')
 
+  def optionsString = new OptionString(this)
+  optionsString.setDelimiter(' ')
+
   if ('' != config.format){
-    optionsString += "--format ${config.format} "
+    optionsString.add('--format', config.format)
   }
 
   if (true == config.freeze){
-    optionsString += '--freeze '
+    optionsString.add('--freeze')
   }
   
   if ('' != config.cookbookPath){
-    optionsString += "--cookbook-path ${config.cookbookPath} "
+    optionsString.add('--cookbook-path', config.cookbookPath)
   }
   
   if ('' != config.secret){
-    optionsString += "--secret ${config.secret} "
+    optionsString.add('--secret', config.secret)
   }
 
-  optionsString += "--server-url ${config.serverUrl} "
+  optionsString.add('--server-url', config.serverUrl)
 
   // Adding options because of CI environment. In a CI environment it is impossbile to edit the file on the fly.
-  optionsString += '--disable-editing --yes '
+  optionsString.add('--disable-editing')
+  optionsString.add('--yes')
 
   withCredentials([
     sshUserPrivateKey(
@@ -205,10 +209,9 @@ def call (Map config = [:]){
       usernameVariable: 'username'
     )
   ]) {
-    optionsString += "--user ${username} "
+    optionsString.add('--user', username)
+    optionsString.add('--key', '/secret/chef')
     
-    optionsString += "--key /secret/chef"
-
     knifeCommand = dockerRunCommand(
       dockerImage: config.dockerImage,
       fallbackCommand:  '',
@@ -222,7 +225,7 @@ def call (Map config = [:]){
     )
 
     return execute(
-      script: "${knifeCommand} knife ${config.subCommand} ${optionsString} ${config.commandTarget}"
+      script: "${knifeCommand} knife ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
     )
   }
 }
