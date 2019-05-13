@@ -1,3 +1,5 @@
+import com.fxinnovation.utils.OptionString
+
 def databagCreateBag(Map config = [:]) {
   config.subCommand = 'data bag create'
   validParameters = [
