@@ -1,5 +1,25 @@
 import com.fxinnovation.utils.OptionString
 
+def output(Map config = [:]){
+  config.subCommand = 'output'
+  validParameters = [
+    'noColor':'',
+    'json':'',
+    'module':'',
+    'state': '',
+    'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+    }
+  }
+  terraform(config)
+}
+
 def validate(Map config = [:]){
   config.subCommand = 'validate'
   validParameters = [
@@ -335,6 +355,12 @@ def call(Map config = [:]){
   }
   if ( config.containsKey('verifyPlugins') ){
     optionsString.add('-verify-plugins', config.verifyPlugins, Boolean)
+  }
+  if ( config.containsKey('json') ){
+    optionsString.add('-json', config.json, Boolean)
+  }
+  if ( config.containsKey('module')&& config.module ){
+    optionsString.add('-module', config.module)
   }
 
   terraformCommand = dockerRunCommand(
