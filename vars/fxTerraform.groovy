@@ -139,9 +139,7 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
   )
 
   if (deployFileExists) {
-    terraform.output(
-      json: true,
-    )
+    terraform.output()
   }
 
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
