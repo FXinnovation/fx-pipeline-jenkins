@@ -1,7 +1,7 @@
 import com.fxinnovation.utils.OptionString
 
 def output(Map config = [:]){
-  config.subCommand = 'validate'
+  config.subCommand = 'output'
   validParameters = [
     'noColor':'',
     'json':'',
