@@ -138,6 +138,13 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy) {
     vars: config.publishPlanVars,
   )
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
+    if (toDeploy) {
+      terraform.output(
+        commandTarget: commandTarget,
+        out: 'plan.out',
+        vars: config.publishPlanVars,
+      )
+    }
     println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
     return
   }
