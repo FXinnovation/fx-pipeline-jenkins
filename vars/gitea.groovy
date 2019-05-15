@@ -183,9 +183,9 @@ def getIssueComments(Map config = [:]){
 }
 
 def getRepositoriesByOrganization(Map config = [:]) {
-  mapAttributeCheck(config, 'organizationId', CharSequence, '')
+  mapAttributeCheck(config, 'organizationId', Interger, '')
 
-  config.apiPath = "/orgs/{$config.organizationId}/repos"
+  config.apiPath = "/orgs/{$config.organizationId.toString()}/repos"
   config.httpMode = 'GET'
 
   return call(config)
