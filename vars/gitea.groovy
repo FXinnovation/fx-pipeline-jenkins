@@ -15,6 +15,7 @@ def call(Map config = [:]){
   }
 
   encodedUrl = config.url + '/api/v1/' + config.apiPath
+
   withCredentials([
     usernamePassword(
       credentialsId: config.credentialId,
@@ -185,7 +186,7 @@ def getIssueComments(Map config = [:]){
 def getRepositoriesByOrganization(Map config = [:]) {
   mapAttributeCheck(config, 'organizationName', CharSequence, '')
 
-  config.apiPath = "/orgs/${config.organizationName.toString()}/repos"
+  config.apiPath = "orgs/${config.organizationName.toString()}/repos"
   config.httpMode = 'GET'
 
   return call(config)
