@@ -172,7 +172,7 @@ def call (Map config = [:]){
   mapAttributeCheck(config, 'credentialId', CharSequence, '', '“credentialId” parameter is mandatory.')
   mapAttributeCheck(config, 'serverUrl', CharSequence, '', '“serverUrl” parameter is mandatory.')
   mapAttributeCheck(config, 'subCommand', CharSequence, '', '“subCommand” parameter is mandatory.')
-  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/chefdk:latest')
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/chefdk:3.3.0')
   mapAttributeCheck(config, 'format', CharSequence, '')
   mapAttributeCheck(config, 'freeze', Boolean, false)
   mapAttributeCheck(config, 'cookbookPath', CharSequence, '')
