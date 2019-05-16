@@ -140,8 +140,7 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
 
   if (deployFileExists) {
     terraform.show(
-      vars: config.publishPlanVars,
-      commandTarget: 'plan.out'      
+      commandTarget: 'plan.out',
     )
   }
 
