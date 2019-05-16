@@ -139,10 +139,10 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
   )
 
   if (deployFileExists) {
-    terraform.refresh(
+    terraform.show(
       vars: config.publishPlanVars,
+      commandTarget: 'plan.out'      
     )
-    terraform.output()
   }
 
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
