@@ -217,7 +217,7 @@ def apply(Map config = [:]){
     'subCommand':'',
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
-    'commandTarget':''
+    'commandTarget':'',
     'throwError':'',
   ]
   for ( parameter in config ) {
@@ -249,7 +249,7 @@ def destroy(Map config = [:]){
     'subCommand':'',
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
-    'commandTarget':''
+    'commandTarget':'',
     'throwError':'',
   ]
   for ( parameter in config ) {
