@@ -15,6 +15,7 @@ def call(Map config = [:]){
   }
 
   encodedUrl = config.url + '/api/v1/' + config.apiPath
+
   withCredentials([
     usernamePassword(
       credentialsId: config.credentialId,
@@ -177,6 +178,22 @@ def getIssueComments(Map config = [:]){
   }
 
   config.apiPath = "repos/${config.owner}/${config.repository}/issues/${config.issueId}/comments"
+  config.httpMode = 'GET'
+
+  return call(config)
+}
+
+def getRepositoriesByOrganization(Map config = [:]) {
+  mapAttributeCheck(config, 'organizationName', CharSequence, '')
+
+  config.apiPath = "orgs/${config.organizationName.toString()}/repos"
+  config.httpMode = 'GET'
+
+  return call(config)
+}
+
+def getOrganizations(Map config = [:]) {
+  config.apiPath = 'user/orgs'
   config.httpMode = 'GET'
 
   return call(config)
