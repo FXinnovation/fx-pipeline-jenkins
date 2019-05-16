@@ -1,5 +1,24 @@
 import com.fxinnovation.utils.OptionString
 
+def show(Map config = [:]){
+  config.subCommand = 'show'
+  validParameters = [
+    'noColor':'',
+    'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
+    'commandTarget':'',
+    'throwError':'',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+    }
+  }
+  terraform(config)
+}
+
 def output(Map config = [:]){
   config.subCommand = 'output'
   validParameters = [
@@ -12,6 +31,7 @@ def output(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -33,6 +53,7 @@ def validate(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -59,6 +80,7 @@ def refresh(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -85,6 +107,7 @@ def slowRefresh(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -135,6 +158,7 @@ def init(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -164,6 +188,7 @@ def plan(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -193,6 +218,7 @@ def apply(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':''
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -224,6 +250,7 @@ def destroy(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':''
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -246,6 +273,7 @@ def fmt(Map config = [:]){
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
+    'throwError':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -261,8 +289,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
-
-  def throwError = true
+  mapAttributeCheck(config, 'throwError', Boolean, true)
 
   def optionsString = new OptionString(this)
   optionsString.setDelimiter('=')
@@ -366,11 +393,6 @@ def call(Map config = [:]){
     optionsString.add('-module', config.module)
   }
 
-  //Terraform output will throw error is no outputs are defined
-  if ( 'output' == config.subCommand ){
-    throwError = false
-  }
-
   terraformCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand:  'terraform',
@@ -383,7 +405,7 @@ def call(Map config = [:]){
   )
 
   return execute(
-    throwError: throwError,
+    throwError: config.throwError,
     script: "${terraformCommand} ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
   )
 }
