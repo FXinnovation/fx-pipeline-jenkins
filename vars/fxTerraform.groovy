@@ -139,7 +139,9 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
   )
 
   if (deployFileExists) {
-    terraform.refresh()
+    terraform.refresh(
+      vars: config.publishPlanVars,
+    )
     terraform.output()
   }
 
