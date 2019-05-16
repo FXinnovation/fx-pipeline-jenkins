@@ -138,9 +138,12 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
     vars: config.publishPlanVars,
   )
 
-//  if (deployFileExists) {
-//   terraform.output()
-//  }
+  if (deployFileExists) {
+    terraform.refresh(
+      vars: config.publishPlanVars,
+    )
+    terraform.output()
+  }
 
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
     println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
