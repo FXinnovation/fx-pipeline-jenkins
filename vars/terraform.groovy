@@ -11,6 +11,7 @@ def output(Map config = [:]){
     'subCommand':'',
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
+    'commandTarget':'',
   ]
   for ( parameter in config ) {
     if ( !validParameters.containsKey(parameter.key)){
@@ -261,6 +262,8 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
 
+  def throwError = true
+
   def optionsString = new OptionString(this)
   optionsString.setDelimiter('=')
 
@@ -363,6 +366,11 @@ def call(Map config = [:]){
     optionsString.add('-module', config.module)
   }
 
+  //Terraform output will throw error is no outputs are defined
+  if ( 'output' == config.subCommand ){
+    throwError = false
+  }
+
   terraformCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand:  'terraform',
@@ -375,6 +383,7 @@ def call(Map config = [:]){
   )
 
   return execute(
+    throwError: throwError,
     script: "${terraformCommand} ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
   )
 }
