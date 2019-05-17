@@ -1,4 +1,4 @@
-def call() {
+Map call(List forbiddenApprovers = []) {
   numbers = [
     'zero',
     'one',
@@ -17,7 +17,7 @@ def call() {
   thirdNumber = random.nextInt(10)
   foolProofInput = input(
     message: """
-Please enter the following numbers (without spaces, commas, etc) as digits:
+Please enter the following numbers (without spaces, commas, etc) as digits:\n\n
 ${numbers[firstNumber]} ${numbers[secondNumber]} ${numbers[thirdNumber]}""",
     ok: 'Approve',
     parameters: [
@@ -30,7 +30,13 @@ ${numbers[firstNumber]} ${numbers[secondNumber]} ${numbers[thirdNumber]}""",
     ],
     submitterParameter: 'approver'
   )
-  if ( foolProofInput.Response != "${firstNumber}${secondNumber}${thirdNumber}") {
+  if ( foolProofInput.Response != "${firstNumber}${secondNumber}${thirdNumber}" ) {
     error("${foolProofInput.approver} did not put the digits for validation.")
   }
+
+  if( forbiddenApprovers.contains(foolProofInput.approver )) {
+    error("${foolProofInput.approver} is not an authorized approver.")
+  }
+
+  return foolProofInput
 }

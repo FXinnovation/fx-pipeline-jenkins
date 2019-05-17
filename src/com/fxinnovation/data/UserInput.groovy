@@ -4,8 +4,8 @@ class UserInput {
   private groovy.lang.Script context
 
   private String name = 'Undefined'
-  private Object DefaultValue = ''
-  private String description = 'Undefined value'
+  private Object defaultValue = ''
+  private String description = ''
   private Class<?> type = CharSequence
 
   UserInput(groovy.lang.Script context) {
@@ -16,24 +16,29 @@ class UserInput {
     return name
   }
 
-  void setName(String name) {
-    if (3 < name.length()) {
+  UserInput setName(String name) {
+    if (3 > name.length()) {
       this.context.error("Invalid name (“${name}”) for user input. To make sure the name is meaningful, you are required to specify at least 3 characters.")
     }
     this.name = name
+    return this
   }
 
   Object getDefaultValue() {
-    return DefaultValue
+    return this.defaultValue
   }
 
-  UserInput setDefaultValue(Object DefaultValue) {
-    this.DefaultValue = DefaultValue
+  UserInput setDefaultValue(Object defaultValue) {
+    if (!(defaultValue instanceof String)) {
+      this.context.println("Warning: you passed an default value that is not a String (${defaultValue.getClass()}). This might be unwanted and leads to unstable results.")
+    }
+
+    this.defaultValue = defaultValue
     return this
   }
 
   String getDescription() {
-    return description
+    return this.description
   }
 
   UserInput setDescription(String description) {
@@ -42,7 +47,7 @@ class UserInput {
   }
 
   Class<?> getType() {
-    return type
+    return this.type
   }
 
   UserInput setType(Class<?> type) {

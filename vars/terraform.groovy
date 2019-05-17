@@ -63,6 +63,61 @@ def validate(Map config = [:]){
   terraform(config)
 }
 
+Map getRefreshValidParameters() {
+  return [
+    'backup': [
+      type: CharSequence,
+      default: '',
+      description: 'Path to backup the existing state file before modifying. Defaults to the "-state-out" path with .backup" extension. Set to "-" to disable backup.',
+    ],
+    'lock': [
+      type: Boolean,
+      default: true,
+      description: 'Lock the state file when locking is supported.',
+    ],
+    'lockTimeout': [
+      type: CharSequence,
+      default: '0s',
+      description: 'Duration to retry a state lock.',
+    ],
+    'noColor': [
+      type: Boolean,
+      default: 'false',
+      description: 'If specified, output won\'t contain any color.',
+    ],
+    'parallelism': [
+      type: Integer,
+      default: 10,
+      description: 'Limit the number of concurrent operations.',
+    ],
+    'state': [
+      type: CharSequence,
+      default: 'terraform.tfstate',
+      description: 'Path to read and save state (unless state-out is specified).',
+    ],
+    'stateOut': [
+      type: CharSequence,
+      default: '',
+      description: 'Path to write state to that is different than "-state". This can be used to preserve the old state.',
+    ],
+    'targets':  [
+      type: ArrayList,
+      default: '',
+      description: 'Resource to target. Operation will be limited to this resource and its dependencies. This flag can be used multiple times',
+    ],
+    'vars':  [
+      type: ArrayList,
+      default: '',
+      description: 'Set a variable in the Terraform configuration. This flag can be set multiple times',
+    ],
+    'varFile': [
+      type: CharSequence,
+      default: '',
+      description: 'Set variables in the Terraform configuration from a file. If "terraform.tfvars" or any ".auto.tfvars" files are present, they will be automatically loaded.',
+    ]
+  ]
+}
+
 def refresh(Map config = [:]){
   config.subCommand = 'refresh'
   validParameters = [
@@ -83,7 +138,7 @@ def refresh(Map config = [:]){
     'throwError':'',
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if ( !(getRefreshValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
@@ -137,31 +192,80 @@ def slowRefresh(Map config = [:]){
   }
 }
 
+Map getInitValidParameters() {
+  return [
+    'backend': [
+      type: Boolean,
+      default: true,
+      description: 'Configure the backend for this configuration.',
+    ],
+    'backendConfigs': [
+      type: ArrayList,
+      default: '',
+      description: 'This can be either a path to an HCL file with key/value assignments (same format as terraform.tfvars) or a \'key=value\' format. This is merged with what is in the configuration file. This can be specified multiple times. The backend type must be in the configuration itself.',
+    ],
+    'forceCopy': [
+      type: Boolean,
+      default: false,
+      description: 'Suppress prompts about copying state data. This is equivalent to providing a "yes" to all confirmation prompts.',
+    ],
+    'fromModule': [
+      type: CharSequence,
+      default: '',
+      description: 'Copy the contents of the given module into the target directory before initialization.',
+    ],
+    'get': [
+      type: Boolean,
+      default: true,
+      description: 'Download any modules for this configuration.',
+    ],
+    'input': [
+      type: Boolean,
+      default: true,
+      description: 'Ask for input if necessary. If false, will error if input was required.',
+    ],
+    'lock': [
+      type: Boolean,
+      default: true,
+      description: 'Lock the state file when locking is supported.',
+    ],
+    'lockTimeout': [
+      type: CharSequence,
+      default: '0s',
+      description: 'Duration to retry a state lock.',
+    ],
+    'noColor': [
+      type: Boolean,
+      default: 'false',
+      description: 'If specified, output won\'t contain any color.',
+    ],
+    'pluginDirs': [
+      type: CharSequence,
+      default: '',
+      description: 'Directory containing plugin binaries. This overrides all default search paths for plugins, and prevents the automatic installation of plugins. This flag can be used multiple times.',
+    ],
+    'reconfigure': [
+      type: Boolean,
+      default: false,
+      description: 'Reconfigure the backend, ignoring any saved configuration.',
+    ],
+    'upgrade': [
+      type: Boolean,
+      default: false,
+      description: 'If installing modules (-get) or plugins (-get-plugins), ignore previously-downloaded objects and install the latest version allowed within configured constraints.',
+    ],
+    'verifyPlugins': [
+      type: Boolean,
+      default: true,
+      description: 'Verify the authenticity and integrity of automatically downloaded plugins.',
+    ],
+  ]
+}
+
 def init(Map config = [:]){
   config.subCommand = 'init'
-  validParameters = [
-    'backend':'',
-    'backendConfigs':'',
-    'forceCopy':'',
-    'fromModule':'',
-    'get':'',
-    'getPlugins':'',
-    'lock':'',
-    'lockTimeout':'',
-    'noColor':'',
-    'pluginDirs':'',
-    'reconfigure':'',
-    'upgrade':'',
-    'verifyPlugins':'',
-    'dockerImage':'',
-    'subCommand':'',
-    'dockerAdditionalMounts':'',
-    'dockerEnvironmentVariables':'',
-    'commandTarget':'',
-    'throwError':'',
-  ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if ( !(getInitValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
@@ -231,29 +335,70 @@ def apply(Map config = [:]){
 
 }
 
+Map getDestroyValidParameters() {
+  return [
+    'backup': [
+      type: CharSequence,
+      default: '',
+      description: 'Path to backup the existing state file before modifying. Defaults to the "-state-out" path with .backup" extension. Set to "-" to disable backup.',
+    ],
+    'lock': [
+      type: Boolean,
+      default: true,
+      description: 'Lock the state file when locking is supported.',
+    ],
+    'lockTimeout': [
+      type: CharSequence,
+      default: '0s',
+      description: 'Duration to retry a state lock.',
+    ],
+    'noColor': [
+      type: Boolean,
+      default: 'false',
+      description: 'If specified, output won\'t contain any color.',
+    ],
+    'parallelism': [
+      type: Integer,
+      default: 10,
+      description: 'Limit the number of concurrent operations.',
+    ],
+    'refresh': [
+      type: Boolean,
+      default: true,
+      description: 'Update state prior to checking for differences. This has no effect if a plan file is given to apply.',
+    ],
+    'state': [
+      type: CharSequence,
+      default: 'terraform.tfstate',
+      description: 'Path to read and save state (unless state-out is specified).',
+    ],
+    'stateOut': [
+      type: CharSequence,
+      default: '',
+      description: 'Path to write state to that is different than "-state". This can be used to preserve the old state.',
+    ],
+    'targets':  [
+      type: ArrayList,
+      default: '',
+      description: 'Resource to target. Operation will be limited to this resource and its dependencies. This flag can be used multiple times',
+    ],
+    'vars':  [
+      type: ArrayList,
+      default: '',
+      description: 'Set a variable in the Terraform configuration. This flag can be set multiple times',
+    ],
+    'varFile': [
+      type: CharSequence,
+      default: '',
+      description: 'Set variables in the Terraform configuration from a file. If "terraform.tfvars" or any ".auto.tfvars" files are present, they will be automatically loaded.',
+    ]
+  ]
+}
+
 def destroy(Map config = [:]){
   config.subCommand = 'destroy'
-  validParameters = [
-    'backup':'',
-    'lock':'',
-    'lockTimeout':'',
-    'noColor':'',
-    'parallelism':'',
-    'refresh':'',
-    'state':'',
-    'stateOut':'',
-    'targets':'',
-    'vars':'',
-    'varFile':'',
-    'dockerImage':'',
-    'subCommand':'',
-    'dockerAdditionalMounts':'',
-    'dockerEnvironmentVariables':'',
-    'commandTarget':'',
-    'throwError':'',
-  ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if ( !(getDestroyValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
@@ -281,6 +426,17 @@ def fmt(Map config = [:]){
     }
   }
   terraform(config)
+}
+
+Map getCommonValidParameters() {
+  return [
+    'dockerImage':'',
+    'subCommand':'',
+    'dockerAdditionalMounts':'',
+    'dockerEnvironmentVariables':'',
+    'commandTarget':'',
+    'throwError':'',
+  ]
 }
 
 def call(Map config = [:]){
