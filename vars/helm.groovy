@@ -60,6 +60,23 @@ def lint(Map config = [:]){
 //
 //  helm(config)
 //}
+def publish(Map config = [:]){
+  config.subCommand = 'push'
+  validParameters = [
+    'chartFolder':'',
+    'repo': '',
+    'subCommand': '',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("helm - Parameter \"${parameter.key}\" is not valid for \"list\", please remove it!")
+    }
+  }
+
+  config.commandTarget = "./${chartFolder} ${chartName}"
+
+  helm(config)
+}
 
 def list(Map config = [:]){
   config.subCommand = 'list'
