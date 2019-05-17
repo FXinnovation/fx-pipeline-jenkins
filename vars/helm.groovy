@@ -224,7 +224,7 @@ def call(Map config = [:]){
   )
 
   execute(
-    script: 'helm init --client-only'
+    script: 'helm init --client-only --home /root/.helm'
   )
 
   execute(
