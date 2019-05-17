@@ -74,7 +74,7 @@ def publish(Map config = [:]){
     }
   }
 
-  config.commandTarget = "./${chartFolder} ${chartName}"
+  config.commandTarget = "./${config.chartFolder} ${config.repo}"
 
   helm(config)
 }
