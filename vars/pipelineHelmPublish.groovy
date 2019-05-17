@@ -15,7 +15,7 @@ def call(Map config = [:], Map closures = [:]){
   }
   stage('test'){
     lintConfig = [
-      commandTarget = config.chartName
+      commandTarget: config.chartName
     ]
     helm.lint(lintConfig)
   }
