@@ -220,7 +220,7 @@ def call(Map config = [:]){
   // NOTE: We're not using docker because it's very hard to use helm in isolation
   // this might become a future enhancement
   execute(
-    script: 'helm version'
+    script: 'helm version --home /root/.helm'
   )
 
   execute(
@@ -228,10 +228,10 @@ def call(Map config = [:]){
   )
 
   execute(
-    script: 'helm repo update'
+    script: 'helm repo update --home /root/.helm'
   )
 
   return execute(
-    script: "helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart} ${config.commandTarget}"
+    script: "helm --home /root/.helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart} ${config.commandTarget}"
   )
 }
