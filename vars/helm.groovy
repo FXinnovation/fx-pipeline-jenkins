@@ -65,7 +65,7 @@ def publish(Map config = [:]){
   config.subCommand = 'push'
   validParameters = [
     'chartFolder':'',
-    'repo': '',
+    'repository': '',
     'subCommand': '',
   ]
   for ( parameter in config ) {
@@ -74,7 +74,7 @@ def publish(Map config = [:]){
     }
   }
 
-  config.commandTarget = "./${config.chartFolder} ${config.repo}"
+  config.commandTarget = "./${config.chartFolder} ${config.repository}"
 
   helm(config)
 }
