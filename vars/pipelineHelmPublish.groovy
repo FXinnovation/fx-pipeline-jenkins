@@ -31,7 +31,10 @@ def call(Map config = [:], Map closures = [:]){
   }
   stage('publish'){
     if (true == config.deploy){
-      return helm.publish(config)
+      return helm.publish([
+        chartFolder: config.chartName,
+        repo: config.repo
+      ])
     }else{
       println 'Publish stage has been skipped'
     }
