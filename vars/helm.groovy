@@ -40,6 +40,7 @@ def lint(Map config = [:]){
     config.commandTarget = './'
   }
   validParameters = [
+    'subCommand': '',
     'namespace': '',
     'values': '',
     'strict': '',
