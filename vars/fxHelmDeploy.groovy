@@ -15,11 +15,11 @@ def call(Map config = [:]) {
         }
         pipelineHelmDeployment(
           helmConfig: [
-            'values': config.valuesFile,
-            'release': config.release,
-            'chart': config.chart,
-            'version': config.version,
-            'repo': config.repo,
+            values: config.valuesFile,
+            release: config.release,
+            chart: config.chart,
+            version: config.version,
+            repo: config.repo,
             install: true,
             wait: true
           ],
