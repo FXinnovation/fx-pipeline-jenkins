@@ -40,6 +40,7 @@ def lint(Map config = [:]){
     config.commandTarget = './'
   }
   validParameters = [
+    'subCommand': '',
     'namespace': '',
     'values': '',
     'strict': '',
@@ -54,12 +55,23 @@ def lint(Map config = [:]){
   helm(config)
 }
 
-//TODO Implement this
-//def repoAdd(Map config = [:]){
-//  config.subCommand = 'repo add'
-//
-//  helm(config)
-//}
+def publish(Map config = [:]){
+  config.subCommand = 'push'
+  validParameters = [
+    'chartFolder':'',
+    'repository': '',
+    'subCommand': '',
+  ]
+  for ( parameter in config ) {
+    if ( !validParameters.containsKey(parameter.key)){
+      error("helm - Parameter \"${parameter.key}\" is not valid for \"list\", please remove it!")
+    }
+  }
+
+  config.commandTarget = "./${config.chartFolder} ${config.repository}"
+
+  helm(config)
+}
 
 def list(Map config = [:]){
   config.subCommand = 'list'
@@ -202,18 +214,18 @@ def call(Map config = [:]){
   // NOTE: We're not using docker because it's very hard to use helm in isolation
   // this might become a future enhancement
   execute(
-    script: 'helm version'
+    script: 'helm version --home /root/.helm'
   )
 
   execute(
-    script: 'helm init --client-only'
+    script: 'helm init --client-only --home /root/.helm'
   )
 
   execute(
-    script: 'helm repo update'
+    script: 'helm repo update --home /root/.helm'
   )
 
   return execute(
-    script: "helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart} ${config.commandTarget}"
+    script: "helm --home /root/.helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart} ${config.commandTarget}"
   )
 }
