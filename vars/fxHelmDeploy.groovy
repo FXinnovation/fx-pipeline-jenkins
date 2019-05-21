@@ -15,11 +15,11 @@ def call(Map config = [:]) {
         }
         pipelineHelmDeployment(
           helmConfig: [
-            'values':'values.yaml',
-            'release': 'chartmuseum',
-            'chart': 'chartmuseum',
-            'version': '2.3.1',
-            'repo': 'https://kubernetes-charts.storage.googleapis.com/',
+            'values': config.valuesFile,
+            'release': config.release,
+            'chart': config.chart,
+            'version': config.version,
+            'repo': config.repo,
             install: true,
             wait: true
           ],
