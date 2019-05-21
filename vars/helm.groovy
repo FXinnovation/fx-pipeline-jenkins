@@ -55,12 +55,6 @@ def lint(Map config = [:]){
   helm(config)
 }
 
-//TODO Implement this
-//def repoAdd(Map config = [:]){
-//  config.subCommand = 'repo add'
-//
-//  helm(config)
-//}
 def publish(Map config = [:]){
   config.subCommand = 'push'
   validParameters = [
