@@ -43,6 +43,8 @@ def call(Map config = [:]){
   }catch(error){
       throw error
   }finally{
-    sh "rm /tmp/${filePrefix}-*"
+    new File("/tmp/${filePrefix}-stdout.log").delete()
+    new File("/tmp/${filePrefix}-stderr.log").delete()
+    new File("/tmp/${filePrefix}-statuscode").delete()
   }
 }
