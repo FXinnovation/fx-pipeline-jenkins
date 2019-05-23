@@ -6,16 +6,16 @@ def build(Map config = [:]){
 
   optionsString = ''
   config.tags.each { tag ->
-    optionsString += '--tag '
     if (config.containsKey('registries') && [] != config.registries){
       config.registries.each { registry ->
-        optionsString += "${registry}/"
+        optionsString += "--tag ${registry}/"
         if ('' != config.namespace) {
           optionsString += "${config.namespace}/"
         }
         optionsString += "${config.image}:${tag} "
       }
     }else{
+      optionsString += '--tag '
       if ('' != config.namespace) {
         optionsString += "${config.namespace}/"
       }
