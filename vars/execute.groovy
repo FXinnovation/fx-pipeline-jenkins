@@ -32,18 +32,9 @@ def call(Map config = [:]){
          kill \${STDOUT_PID} &> /dev/null
          kill \${STDERR_PID} &> /dev/null
          """
-    response.stdout = sh(
-      returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stdout.log"
-    ).trim()
-    response.stderr = sh(
-      returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-stderr.log"
-    ).trim()
-    response.statusCode = sh(
-      returnStdout: true,
-      script: "set +x; cat /tmp/${filePrefix}-statuscode"
-    ).trim().toInteger()
+    response.stdout = readFile("/tmp/${filePrefix}-stdout.log").trim()
+    response.stderr = readFile("/tmp/${filePrefix}-stderr.log").trim()
+    response.statusCode = readFile("/tmp/${filePrefix}-statuscode").trim().toInteger()
 
     if (config.throwError == true && response.statusCode != 0){
       error(response.stderr)
