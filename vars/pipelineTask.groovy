@@ -6,15 +6,15 @@ def call(Map config = [:], Map closures = [:]){
   }
 
   stage('target selection') {
-    selectTarget(config, closures)
+    selectTargets = selectTarget(config, closures)
   }
 
   stage('command options selection') {
-    commandOptions = selectCommandOptions(config, closures)
+    commandOptions = selectCommandOptions(selectTargets, config, closures)
   }
 
   stage('command execution') {
-    executeCommand(commandOptions, closures)
+    executeCommand(commandOptions, config, closures)
   }
 }
 
@@ -27,10 +27,10 @@ private void selectTarget(Map config = [:], Map closures = [:]){
     }
   }
 
-  closures.selectTarget()
+  closures.selectTarget(config.selectTargetOptions)
 }
 
-private Map selectCommandOptions(Map config = [:], Map closures = [:]){
+private Map selectCommandOptions(Map selectTargets, Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'selectCommandOptionsOptions', Map, [:])
 
   if (!closures.containsKey('selectCommandOptions')){
@@ -39,16 +39,18 @@ private Map selectCommandOptions(Map config = [:], Map closures = [:]){
     }
   }
 
-  return closures.selectCommandOptions()
+  return closures.selectCommandOptions(selectTargets, config.selectCommandOptionsOptions)
 }
 
 
-private void executeCommand(Map commandOptions, Map closures = [:]){
+private void executeCommand(Map commandOptions, Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'executeCommandOptions', Map, [:])
+
   if (!closures.containsKey('executeCommand')){
     closures.executeCommand = {
       println('“executeCommand” step is not defined. Skipping.')
     }
   }
 
-  closures.executeCommand()
+  closures.executeCommand(commandOptions, config.executeCommandOptions)
 }
