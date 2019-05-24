@@ -18,16 +18,17 @@ def call(Map config = [:]){
       returnStdout: config.hideStdout || (null != env.DEBUG),
       script: """
               set +x
-              echo "" > /tmp/${filePrefix}-stdout.log
-              echo "" > /tmp/${filePrefix}-stderr.log
-              echo "" > /tmp/${filePrefix}-statuscode
-              tail -f /tmp/${filePrefix}-stdout.log &
+              mkdir -p /tmp/${filePrefix}
+              echo "" > /tmp/${filePrefix}/stdout.log
+              echo "" > /tmp/${filePrefix}/stderr.log
+              echo "" > /tmp/${filePrefix}/statuscode
+              tail -f /tmp/${filePrefix}/stdout.log &
               STDOUT_PID=\$!
-              tail -f /tmp/${filePrefix}-stderr.log &
+              tail -f /tmp/${filePrefix}/stderr.log &
               STDERR_PID=\$!
               set +e
-              ${config.script} >> /tmp/${filePrefix}-stdout.log 2>> /tmp/${filePrefix}-stderr.log
-              echo \$? > /tmp/${filePrefix}-statuscode
+              ${config.script} >> /tmp/${filePrefix}/stdout.log 2>> /tmp/${filePrefix}/stderr.log
+              echo \$? > /tmp/${filePrefix}/statuscode
               set -e
               # This sleep is needed to make sure both stdout and stderr have been outputed on jenkins... :(
               sleep 1
@@ -36,9 +37,9 @@ def call(Map config = [:]){
               """
     )
 
-    response.stdout = readFile("/tmp/${filePrefix}-stdout.log").trim()
-    response.stderr = readFile("/tmp/${filePrefix}-stderr.log").trim()
-    response.statusCode = readFile("/tmp/${filePrefix}-statuscode").trim().toInteger()
+    response.stdout = readFile("/tmp/${filePrefix}/stdout.log").trim()
+    response.stderr = readFile("/tmp/${filePrefix}/stderr.log").trim()
+    response.statusCode = readFile("/tmp/${filePrefix}/statuscode").trim().toInteger()
 
     if (config.throwError == true && response.statusCode != 0){
       error(response.stderr)
@@ -53,11 +54,8 @@ def call(Map config = [:]){
       }
       throw error
   }finally{
-    def file = new File("/tmp/${filePrefix}-stdout.log")
-    println file
-    file.delete()
-    println file
-    new File("/tmp/${filePrefix}-stderr.log").delete()
-    new File("/tmp/${filePrefix}-statuscode").delete()
+    dir("/tmp/${filePrefix}"){
+      deleteDir()
+    }
   }
 }
