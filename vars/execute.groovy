@@ -19,9 +19,9 @@ def call(Map config = [:]){
       script: """
               set +x
               mkdir -p /tmp/${filePrefix}
-              echo "" > /tmp/${filePrefix}/stdout.log
-              echo "" > /tmp/${filePrefix}/stderr.log
-              echo "" > /tmp/${filePrefix}/statuscode
+              > /tmp/${filePrefix}/stdout.log
+              > /tmp/${filePrefix}/stderr.log
+              > /tmp/${filePrefix}/statuscode
               tail -f /tmp/${filePrefix}/stdout.log &
               STDOUT_PID=\$!
               tail -f /tmp/${filePrefix}/stderr.log &
