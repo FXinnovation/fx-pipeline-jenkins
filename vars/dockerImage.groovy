@@ -48,10 +48,10 @@ def publish(Map config = [:]){
     }
   }
   config.tags.each { tag ->
-    optionsString = ''
+    def optionsString = ''
     if (config.containsKey('registries') && [] != config.registries){
       config.registries.each { registry ->
-        optionsString += "${registry}/"
+        optionsString = "${registry}/"
         if ('' != config.namespace) {
           optionsString += "${config.namespace}/"
         }
@@ -62,12 +62,12 @@ def publish(Map config = [:]){
       }
     }else{
       if ('' != config.namespace) {
-        optionsString += "${config.namespace}/"
+        optionsString = "${config.namespace}/"
       }
       optionsString += "${config.image}:${tag} "
+      execute(
+        script: "docker push ${optionsString}"
+      )
     }
-    execute(
-      script: "docker push ${optionsString}"
-    )
   }
 }
