@@ -51,11 +51,15 @@ def validate(Map config = [:], Map closures = [:]){
           commandTarget: config.commandTarget
         ] + config.validateOptions
       )
-      terraform.fmt([
-          check: true,
-          commandTarget: config.commandTarget,
-        ] + config.fmtOptions
-      )
+      try{
+        terraform.fmt([
+            check: true,
+            commandTarget: config.commandTarget,
+          ] + config.fmtOptions
+        )
+      }catch(errFmt){
+        error "Terraform fmt command has failed!"
+      }
     }
   }
 
