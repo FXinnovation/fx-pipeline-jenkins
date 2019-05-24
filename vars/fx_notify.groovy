@@ -57,7 +57,7 @@ def call(Map config = [:]){
       rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
       rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
     )
-    if (null == rocketUser && !rocketUser.containsKey('username')){
+    if (null == rocketUser || !rocketUser.containsKey('username')){
       rocketUser.username = 'all'
     }
     config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
