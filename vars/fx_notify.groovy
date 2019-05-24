@@ -52,7 +52,8 @@ def call(Map config = [:]){
       returnStdout: true,
       script:       "git log -1 --pretty=format:'%ae'"
     ).trim()
-    def rocketUser = rocketchat.findUserByMail(
+    def rocketUser = [:]
+    rocketUser = rocketchat.findUserByMail(
       mail: email,
       rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
       rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
