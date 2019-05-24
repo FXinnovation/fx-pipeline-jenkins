@@ -32,11 +32,11 @@ def call(Map config = [:]){
     }
   }
 
-  buildCausers = currentBuild.getBuildCauses()
-  foundCausers = false
+  def buildCausers = currentBuild.getBuildCauses()
+  def foundCausers = false
 
   for (i=0; i < buildCausers.size(); i++){
-    currentCause = buildCausers[i]
+    def currentCause = buildCausers[i]
     if (currentCause.userId != null){
       rocketUser = rocketchat.findUserByMail(
         mail: currentCause.userId,
@@ -48,22 +48,22 @@ def call(Map config = [:]){
     }
   }
   if (!foundCausers){
-    email = sh(
+    def email = sh(
       returnStdout: true,
       script:       "git log -1 --pretty=format:'%ae'"
     ).trim()
-    rocketUser = rocketchat.findUserByMail(
+    def rocketUser = rocketchat.findUserByMail(
       mail: email,
       rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
       rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
     )
-    if (!rocketUser.containsKey('username')){
+    if (null == rocketUser && !rocketUser.containsKey('username')){
       rocketUser.username = 'all'
     }
     config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
   }
 
-  message = """
+  def message = """
   ${config.notifiedPeople}
   """
 
