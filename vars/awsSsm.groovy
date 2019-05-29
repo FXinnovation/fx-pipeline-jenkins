@@ -34,7 +34,7 @@ def putParameter(Map config = [:]) {
     optionsString.add('--key-id', config.keyId)
   }
 
-  if(config.overwrite){
+  if (config.overwrite){
     optionsString.add('--overwrite')
   }
 
