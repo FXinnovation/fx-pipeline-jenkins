@@ -1,3 +1,5 @@
+import com.fxinnovation.utils.OptionString
+
 def getParameter(Map config = [:]) {
   mapAttributeCheck(config, 'name', CharSequence, '', '')
   mapAttributeCheck(config, 'withDescription', Boolean, false, '')
@@ -19,13 +21,21 @@ def putParameter(Map config = [:]) {
   mapAttributeCheck(config, 'name', CharSequence, 'ERROR: You must define the parameter name.')
   mapAttributeCheck(config, 'value', CharSequence, '', 'ERROR: You must define a value.')
   mapAttributeCheck(config, 'type', CharSequence, '', 'ERROR: You must define a type.')
+  mapAttributeCheck(config, 'overwrite', Boolean, false, '')
+
+  def optionsString = new OptionString(this)
+  optionsString.setDelimiter(' ')
+
   if ((config.type != 'String') && (config.type != 'StringList') && (config.type != 'SecureString')){
     error('Parameter "type" must be one of ["String", "StringList", "SecureString"]')
   }
-  def optionsString = ''
   if (config.type == 'SecureString'){
     mapAttributeCheck(config, 'keyId', CharSequence, '', 'ERROR: You must define a keyId.')
-    optionsString = "--key-id ${config.keyId}"
+    optionsString.add('--key-id', config.keyId)
+  }
+
+  if(config.overwrite){
+    optionsString.add('--overwrite')
   }
 
   return execute(
