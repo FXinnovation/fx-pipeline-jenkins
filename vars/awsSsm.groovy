@@ -39,6 +39,6 @@ def putParameter(Map config = [:]) {
   }
 
   return execute(
-    script: "aws ssm put-parameter --name ${config.name} --value ${config.value} --type ${config.type} ${optionsString}"
+    script: "aws ssm put-parameter --name ${config.name} --value ${config.value} --type ${config.type} ${optionsString.toString()}"
   )
 }
