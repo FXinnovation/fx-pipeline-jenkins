@@ -63,6 +63,52 @@ def validate(Map config = [:]){
   terraform(config)
 }
 
+
+Map getStateMvValidParameters() {
+  return [
+    'backup': [
+      type: CharSequence,
+      default: '',
+      description: 'Path to backup the existing state file before modifying. Defaults to the "-state-out" path with .backup" extension. Set to "-" to disable backup.',
+    ],
+    'backupOut': [
+      type: CharSequence,
+      default: '',
+      description: 'Path where Terraform should write the backup for the destination state. This can\'t be disabled. If not set, Terraform will write it to the same path as the destination state file with a backup extension. This only needs to be specified if -state-out is set to a different path than -state.',
+    ],
+    'lock': [
+      type: Boolean,
+      default: true,
+      description: 'Lock the state file when locking is supported.',
+    ],
+    'lockTimeout': [
+      type: CharSequence,
+      default: '0s',
+      description: 'Duration to retry a state lock.',
+    ],
+    'state': [
+      type: CharSequence,
+      default: 'terraform.tfstate',
+      description: 'Path to read and save state (unless state-out is specified).',
+    ],
+    'stateOut': [
+      type: CharSequence,
+      default: '',
+      description: 'Path to write state to that is different than "-state". This can be used to preserve the old state.',
+    ],
+  ]
+}
+
+def stateMv(Map config = [:]){
+  config.subCommand = 'state mv'
+  for ( parameter in config ) {
+    if ( !(getStateValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
+      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+    }
+  }
+  terraform(config)
+}
+
 Map getRefreshValidParameters() {
   return [
     'backup': [
@@ -120,23 +166,6 @@ Map getRefreshValidParameters() {
 
 def refresh(Map config = [:]){
   config.subCommand = 'refresh'
-  validParameters = [
-    'backup':'',
-    'lock':'',
-    'lockTimeout':'',
-    'noColor':'',
-    'state':'',
-    'stateOut':'',
-    'targets':'',
-    'vars':'',
-    'varFile':'',
-    'dockerImage':'',
-    'subCommand':'',
-    'dockerAdditionalMounts':'',
-    'dockerEnvironmentVariables':'',
-    'commandTarget':'',
-    'throwError':'',
-  ]
   for ( parameter in config ) {
     if ( !(getRefreshValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
@@ -470,6 +499,9 @@ def call(Map config = [:]){
   }
   if ( config.containsKey('backup') ){
     optionsString.add('-backup', config.backup)
+  }
+  if ( config.containsKey('backupOut') ){
+    optionsString.add('-backend-out', config.backupOut)
   }
   if ( config.containsKey('checkVariables') ){
     optionsString.add('-check-variables', config.checkVariables, Boolean)
