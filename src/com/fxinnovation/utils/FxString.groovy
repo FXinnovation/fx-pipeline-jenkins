@@ -3,7 +3,7 @@ package com.fxinnovation.utils
 /**
  * String decorator
  */
-class FxString implements Serializable {
+class FxString implements Serializable, CharSequence, Comparable<String> {
   private String innerString
 
   FxString(String innerString) {
@@ -20,12 +20,10 @@ class FxString implements Serializable {
   }
 
   /**
-   * Converts the inner string into camel case
-   * @param userInputs
-   * @param option Whether or not to: trim the result of the default values, convert values with EOL to list, etc.
+   * Returns the inner string transformed into CamelCase
    * @return Map
    */
   String toCamelCase() {
-    return this.innerString.split(/[^\w]/).collect { it.toLowerCase().capitalize() }.join("")
+    return this.innerString.split(/[^\w]/).collect { it.toLowerCase().capitalize() }.join('')
   }
 }
