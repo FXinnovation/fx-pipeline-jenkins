@@ -16,12 +16,12 @@ class FxString implements Serializable, CharSequence, Comparable<String> {
    * @param args
    */
   def methodMissing(String methodName, args) {
-    this.innerString."${methodName}"(args)
+    return this.innerString."${methodName}"(args)
   }
 
   /**
-   * Returns the inner string transformed into CamelCase
-   * @return Map
+   * Returns the inner String transformed into CamelCase
+   * @return String
    */
   String toCamelCase() {
     return this.innerString.split(/[^\w]/).collect { it.toLowerCase().capitalize() }.join('')
