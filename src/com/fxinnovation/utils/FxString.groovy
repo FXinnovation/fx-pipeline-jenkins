@@ -26,4 +26,20 @@ class FxString implements Serializable, CharSequence, Comparable<String> {
   String toCamelCase() {
     return this.innerString.split(/[^\w]/).collect { it.toLowerCase().capitalize() }.join('')
   }
+
+  CharSequence subSequence(int arg1, int arg2) {
+    return this.innerString.subSequence(arg1, arg2)
+  }
+
+  int length() {
+    return this.innerString.length()
+  }
+
+  int compareTo(Object arg1) {
+    return this.innerString.compareTo(arg1)
+  }
+
+  char charAt(int arg1) {
+    return this.innerString.charAt(arg1)
+  }
 }
