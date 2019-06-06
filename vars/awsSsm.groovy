@@ -20,7 +20,7 @@ def getParameter(Map config = [:]) {
 
 def putParameter(Map config = [:]) {
   mapAttributeCheck(config, 'name', CharSequence, 'ERROR: You must define the parameter name.')
-  mapAttributeCheck(config, 'value', CharSequence, '', 'ERROR: You must define a value.')
+  mapAttributeCheck(config, 'value', hudson.util.Secret, '', 'ERROR: You must define a value.')
   mapAttributeCheck(config, 'type', CharSequence, '', 'ERROR: You must define a type.')
   mapAttributeCheck(config, 'overwrite', Boolean, false, '')
 
