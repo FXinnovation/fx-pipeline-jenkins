@@ -42,7 +42,7 @@ def putParameter(Map config = [:]) {
 
   
   withEnv([
-      "SSM_PARAM_SECRET=${new FxString(config.value).escapeBashSimpleQuote()}"
+      "SSM_PARAM_SECRET=${config.value}"
   ])
   {
     return execute(
