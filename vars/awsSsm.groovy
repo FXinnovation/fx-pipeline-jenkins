@@ -39,7 +39,9 @@ def putParameter(Map config = [:]) {
     optionsString.add('--overwrite')
   }
 
+  
+  
   return execute(
-    script: "aws ssm put-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' --value '${new FxString(config.value.getPlainText()).escapeBashSimpleQuote()}' --type '${new FxString(config.type).escapeBashSimpleQuote()}' ${optionsString.toString()}"
+    script: "aws ssm put-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' --value '${config.value}' --type '${new FxString(config.type).escapeBashSimpleQuote()}' ${optionsString.toString()}"
   )
 }
