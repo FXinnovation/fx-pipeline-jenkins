@@ -45,7 +45,7 @@ def putParameter(Map config = [:]) {
   ])
   {
     return execute(
-      script: "aws ssm put-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' --value $SSM_PARAM_SECRET --type '${new FxString(config.type).escapeBashSimpleQuote()}' ${optionsString.toString()}"
+      script: "aws ssm put-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' --value \$SSM_PARAM_SECRET --type '${new FxString(config.type).escapeBashSimpleQuote()}' ${optionsString.toString()}"
     )
   }
 }
