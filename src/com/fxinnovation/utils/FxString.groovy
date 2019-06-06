@@ -27,7 +27,7 @@ class FxString implements Serializable, CharSequence, Comparable<String> {
     return this.innerString.split(/[^\w]/).collect { it.toLowerCase().capitalize() }.join('')
   }
 
-  String toPasswordString() {
+  String escapeBashSimpleQuote() {
     return this.innerString.replaceAll("'","\\'\\\\\'\\'")
   }
 

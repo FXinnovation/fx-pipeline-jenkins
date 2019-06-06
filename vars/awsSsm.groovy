@@ -1,4 +1,5 @@
 import com.fxinnovation.utils.OptionString
+import com.fxinnovation.utils.FxString
 
 def getParameter(Map config = [:]) {
   mapAttributeCheck(config, 'name', CharSequence, '', '')
@@ -12,7 +13,7 @@ def getParameter(Map config = [:]) {
 
   return readJSON(
     text: execute(
-      script: "aws ssm get-parameter --name '${config.name}' ${config.option}"
+      script: "aws ssm get-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' ${config.option}"
     ).stdout()
   ).Parameter
 }
@@ -39,6 +40,6 @@ def putParameter(Map config = [:]) {
   }
 
   return execute(
-    script: "aws ssm put-parameter --name '${config.name}' --value '${config.value}' --type '${config.type}' ${optionsString.toString()}"
+    script: "aws ssm put-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' --value '${new FxString(config.value).escapeBashSimpleQuote()}' --type '${new FxString(config.type).escapeBashSimpleQuote()}' ${optionsString.toString()}"
   )
 }
