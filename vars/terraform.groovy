@@ -560,7 +560,7 @@ def call(Map config = [:]){
     optionsString.add('-state-out', config.stateOut)
   }
   if ( config.containsKey('targets') && config.targets ){
-    optionsString.add('-targets', config.targets, ArrayList)
+    optionsString.add('-target', config.targets, ArrayList)
   }
   if ( config.containsKey('upgrade') ){
     optionsString.add('-upgrade', config.upgrade, Boolean)
