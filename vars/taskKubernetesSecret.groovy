@@ -12,7 +12,7 @@ def call(){
             parameters: [
               choice(
                 choices: 'create\ndelete',
-                description: 'Select "create" to create a new secret, select "update" to update an existing secret, select "delete" to destroy an existing secret.',
+                description: 'Select "create" to create a new secret, select "delete" to destroy an existing secret.',
                 name: 'action'
               )
             ],
