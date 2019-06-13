@@ -106,7 +106,7 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
       }
     }
 
-    if (!(scmInfo.repositoryName ==~ /^terraform\-deployment\-[a-z\d]{3,}$/)) {
+    if (!(scmInfo.repositoryName ==~ /^terraform\-deployment\-[a-z\d-]{3,}$/)) {
       error("This build does not meet FX standards: a Terraform module MUST be name “terraform-*(module|ecosystem)*-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
