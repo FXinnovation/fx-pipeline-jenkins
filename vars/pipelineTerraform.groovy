@@ -104,9 +104,71 @@ def test(Map config = [:], Map closures = [:]){
             commandTarget: config.commandTarget,
           ] + config.testPlanOptions
         )
-
         if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
           error('Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
+        }
+        inspecPresent = fileExists(
+          "${config.commantTarget}/inspec.yml"
+        )
+        if (inspecPresent){
+          mapAttributeCheck(config, 'inspecTarget', String, '', 'If you want to have inspec test, please define the inspecTarget')
+          switch (config.inspecTarget) {
+            case: 'aws':
+              envVariables = [
+                AWS_REGION: config.inspecRegion,
+                AWS_ACCESS_KEY_ID: config.inspecUsername,
+                AWS_SECRET_KEY_ID: config.inspecPassword,
+              ]
+              break
+            case: 'azure':
+              envVariables = [
+                AZURE_SUBSCRIPTION_ID: config.inspecSubscriptionId,
+                AZURE_CLIENT_ID: config.inspecUsername,
+                AZURE_CLIENT_SECRET: config.inspecPassword,
+                AZURE_TENANT_ID: config.inspecTenantId
+              ]
+              break
+            case: 'gcp':
+              error('GCP in not supported yet by inspec')
+              break
+            default:
+              error('inspecTarget must be one of (gcp|azure|aws)')
+              break
+          }
+          inspecConfig = """
+          {
+            "reporter": {
+              "cli": {
+                "stdout": true
+              },
+              "junit": {
+                "stdout": false,
+                "file": "inspec-results.xml"
+              }
+            }
+          }
+          """
+          writeFile(
+            file: 'inspec-config.json',
+            text: inspecConfig
+          )
+          try{
+            inspec.exec(
+              target: "${config.inspecTarget}://"
+              jsonConfig: 'inspec-config.json'
+              commandTarget: config.commandTarget
+              environmentVariables: envVariables
+            )
+          }catch(inspecError){
+            throw inspecError
+          }finally{
+            junit(
+              allowEmptyResults: true,
+              testResults: 'inspec-results.xml'
+            )
+          }
+        }else{
+          println 'Did not find inspec tests, skipping them'
         }
       } catch (errorApply) {
         archiveArtifacts(

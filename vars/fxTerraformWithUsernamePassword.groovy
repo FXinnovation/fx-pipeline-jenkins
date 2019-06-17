@@ -34,6 +34,9 @@ def call(Map config = [:]) {
       "${config.providerPasswordVariableName}=${TF_password_publish}",
     ] + config.publishPlanVars
 
+    config.inspecUsername = TF_username_test
+    config.inspecPassword = TF_password_test
+
     fxTerraform(config)
   }
 }

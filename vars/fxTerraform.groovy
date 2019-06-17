@@ -43,6 +43,7 @@ def call(Map config = [:]) {
 
       for(commandTarget in commandTargets) {
         pipelineTerraform(
+          config +
           [
             commandTarget     : commandTarget,
             testPlanOptions   : [
