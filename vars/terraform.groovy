@@ -1,18 +1,24 @@
 import com.fxinnovation.utils.OptionString
 
+Map getShowValidParameters() {
+  return [
+    'noColor': [
+      type: Boolean,
+      default: 'false',
+      description: 'If specified, output won\'t contain any color.',
+    ],
+    'moduleDepth': [
+      type: Integer,
+      default: -1,
+      description: 'Specifies the depth of modules to show in the output. By default this is -1, which will expand all.',
+    ],
+  ]
+}
+
 def show(Map config = [:]){
   config.subCommand = 'show'
-  validParameters = [
-    'noColor':'',
-    'dockerImage':'',
-    'subCommand':'',
-    'dockerAdditionalMounts':'',
-    'dockerEnvironmentVariables':'',
-    'commandTarget':'',
-    'throwError':'',
-  ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if ( !(getShowValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
@@ -577,8 +583,11 @@ def call(Map config = [:]){
   if ( config.containsKey('json') ){
     optionsString.add('-json', config.json, Boolean)
   }
-  if ( config.containsKey('module')&& config.module ){
+  if ( config.containsKey('module') && config.module ){
     optionsString.add('-module', config.module)
+  }
+  if ( config.containsKey('moduleDepth') && config.moduleDepth ){
+    optionsString.add('module-depth', config.moduleDepth, Integer)
   }
 
   terraformCommand = dockerRunCommand(
