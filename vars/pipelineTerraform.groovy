@@ -108,12 +108,15 @@ def test(Map config = [:], Map closures = [:]){
           error('Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
         }
         inspecPresent = fileExists(
-          "${config.commantTarget}/inspec.yml"
+          "${config.commandTarget}/inspec.yml"
         )
         if (inspecPresent){
-          mapAttributeCheck(config, 'inspecTarget', String, '', 'If you want to have inspec test, please define the inspecTarget')
+          mapAttributeCheck(config, 'inspecTarget', String, '', 'Please define the inspecTarget')
+          mapAttributeCheck(config, 'inspecUsername', String, '', 'Please define the inspecUsername')
+          mapAttributeCheck(config, 'inspecPassword', String, '', 'Please define the inspecPassword')
           switch (config.inspecTarget) {
             case: 'aws':
+              mapAttributeCheck(config, 'inspecRegion', String, '', 'Please define the inspecRegion')
               envVariables = [
                 AWS_REGION: config.inspecRegion,
                 AWS_ACCESS_KEY_ID: config.inspecUsername,
@@ -121,6 +124,8 @@ def test(Map config = [:], Map closures = [:]){
               ]
               break
             case: 'azure':
+              mapAttributeCheck(config, 'inspecSubscriptionId', String, '', 'Please define the inspecSubscriptionId')
+              mapAttributeCheck(config, 'inspecTenantId', String, '', 'Please define the inspecTenantId')
               envVariables = [
                 AZURE_SUBSCRIPTION_ID: config.inspecSubscriptionId,
                 AZURE_CLIENT_ID: config.inspecUsername,
