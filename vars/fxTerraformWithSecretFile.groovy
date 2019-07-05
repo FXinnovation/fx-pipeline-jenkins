@@ -20,17 +20,19 @@ def call(Map config = [:]) {
 
   fxTerraform(
     config,
-    postPrepare: {
-      withCredentials([
-        file(
-          credentialsId: config.testEnvironmentCredentialId,
-          variable: 'accountCredentials')
-      ]) {
-        // This can be unsafe, SL-577 in Jira should change this.
-        execute(
-          script: "cp ${accountCredentials} ./account.json"
-        )
+    [
+      postPrepare: {
+        withCredentials([
+          file(
+            credentialsId: config.testEnvironmentCredentialId,
+            variable: 'accountCredentials')
+        ]) {
+          // This can be unsafe, SL-577 in Jira should change this.
+          execute(
+            script: "cp ${accountCredentials} ./account.json"
+          )
+        }
       }
-    }
+    ]
   )
 }
