@@ -475,7 +475,7 @@ Map getCommonValidParameters() {
 }
 
 def call(Map config = [:]){
-  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/terraform:latest')
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'hashicorp/terraform:0.12.3')
   mapAttributeCheck(config, 'subCommand', CharSequence, '', 'ERROR: The subcommand must be defined!')
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
