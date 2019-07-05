@@ -18,7 +18,7 @@ def call(Map config = [:], Map closures = [:]) {
   }
 
   fxJob([
-    postPrepare: closures.postPrepare(scmInfo),
+    postPrepare: closures.postPrepare,
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'
