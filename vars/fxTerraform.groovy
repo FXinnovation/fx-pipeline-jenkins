@@ -1,4 +1,5 @@
-def call(Map config = [:]) {
+def call(Map config = [:], Map closures = [:]) {
+  mapAttributeCheck(closures, 'postPrepare', Closure, {})
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, 'gitea-fx_administrator-key')
@@ -17,6 +18,7 @@ def call(Map config = [:]) {
   }
 
   fxJob([
+    postPrepare: closures.postPrepare(scmInfo),
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'

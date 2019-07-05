@@ -59,7 +59,7 @@ def call(Map closures = [:], List propertiesConfig = []){
             }
             scmInfo = fxCheckout()
             if (closures.containsKey('postPrepare')){
-              closures.postPrepare()
+              closures.postPrepare(scmInfo)
             }
           }
           closures.pipeline(scmInfo)
