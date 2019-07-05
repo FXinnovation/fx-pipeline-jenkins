@@ -8,7 +8,7 @@ def call(Map config = [:]) {
 
   withCredentials([
     file(
-      credentialsId: 'dazzlingwrench-google-service-account',
+      credentialsId: config.testEnvironmentCredentialId,
       variable: 'accountCredentials')
   ]) {
     // This can be unsafe, SL-577 in Jira should change this.
