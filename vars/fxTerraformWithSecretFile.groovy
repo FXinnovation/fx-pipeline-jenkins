@@ -11,10 +11,12 @@ def call(Map config = [:]) {
       credentialsId: config.testEnvironmentCredentialId,
       variable: 'accountCredentials')
   ]) {
+    println 'DEBUG1'
     // This can be unsafe, SL-577 in Jira should change this.
     execute(
       script: "cp ${accountCredentials} ./account.json"
     )
+    println 'DEBUG2'
     config.testPlanVars = [
       "${config.providerSecretFileVariableName}='./account.json'"
     ] + config.testPlanVars
