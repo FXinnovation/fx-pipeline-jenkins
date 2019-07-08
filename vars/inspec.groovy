@@ -23,7 +23,7 @@ def call(Map config = [:]){
     error('commandTarget parameter is mandatory')
   }
   if (!config.containsKey('dockerAdditionalMounts') || !(config.dockerAdditionalMounts instanceof Map)){
-    config.dockerAdditionnalMounts = [:]
+    config.dockerAdditionalMounts = [:]
   }
   if (!config.containsKey('dockerEnvironmentVariables') || !(config.dockerEnvironmentVariables instanceof Map)){
     config.dockerEnvironmentVariables = [:]
