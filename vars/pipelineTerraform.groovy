@@ -115,7 +115,7 @@ def test(Map config = [:], Map closures = [:]){
           mapAttributeCheck(config, 'inspecUsername', String, '', 'Please define the inspecUsername')
           mapAttributeCheck(config, 'inspecPassword', String, '', 'Please define the inspecPassword')
           switch (config.inspecTarget) {
-            case: 'aws':
+            case 'aws':
               mapAttributeCheck(config, 'inspecRegion', String, '', 'Please define the inspecRegion')
               envVariables = [
                 AWS_REGION: config.inspecRegion,
@@ -123,7 +123,7 @@ def test(Map config = [:], Map closures = [:]){
                 AWS_SECRET_KEY_ID: config.inspecPassword,
               ]
               break
-            case: 'azure':
+            case 'azure':
               mapAttributeCheck(config, 'inspecSubscriptionId', String, '', 'Please define the inspecSubscriptionId')
               mapAttributeCheck(config, 'inspecTenantId', String, '', 'Please define the inspecTenantId')
               envVariables = [
@@ -133,7 +133,7 @@ def test(Map config = [:], Map closures = [:]){
                 AZURE_TENANT_ID: config.inspecTenantId
               ]
               break
-            case: 'gcp':
+            case 'gcp':
               error('GCP in not supported yet by inspec')
               break
             default:
