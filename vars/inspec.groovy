@@ -47,16 +47,16 @@ def call(Map config = [:]){
 
   inspecCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand: '',
+    fallbackCommand: 'inspec',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables
   )
 
   execute(
-    script: "${inspecCommand} inspec --version"
+    script: "${inspecCommand} --version"
   )
 
   return execute(
-    script: "${inspecCommand} inspec ${config.subCommand} ${optionsString} ${config.commandTarget}"
+    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
   )
 }
