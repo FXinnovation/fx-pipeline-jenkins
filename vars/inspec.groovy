@@ -57,6 +57,6 @@ def call(Map config = [:]){
   )
 
   return execute(
-    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget}"
+    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget} --chef-license=accept-silent"
   )
 }
