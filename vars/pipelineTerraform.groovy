@@ -162,7 +162,7 @@ def test(Map config = [:], Map closures = [:]){
               target: "${config.inspecTarget}://",
               jsonConfig: 'inspec-config.json',
               commandTarget: config.commandTarget,
-              environmentVariables: envVariables
+              dockerEnvironmentVariables: envVariables
             )
           }catch(inspecError){
             throw inspecError
