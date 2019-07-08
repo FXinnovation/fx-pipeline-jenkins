@@ -29,7 +29,7 @@ def call(Map config = [:]){
     config.dockerEnvironmentVariables = [:]
   }
   if (!config.containsKey('dockerImage') || !(config.dockerImage instanceof CharSequence)){
-    config.dockerImage = 'fxinnovation/chefdk:latest'
+    config.dockerImage = 'fxinnovation/inspec:latest'
   }
   if (config.containsKey('target') && config.target instanceof CharSequence){
     optionsString += "--target=${config.target} "
