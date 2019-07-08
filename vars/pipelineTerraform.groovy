@@ -159,9 +159,9 @@ def test(Map config = [:], Map closures = [:]){
           )
           try{
             inspec.exec(
-              target: "${config.inspecTarget}://"
-              jsonConfig: 'inspec-config.json'
-              commandTarget: config.commandTarget
+              target: "${config.inspecTarget}://",
+              jsonConfig: 'inspec-config.json',
+              commandTarget: config.commandTarget,
               environmentVariables: envVariables
             )
           }catch(inspecError){
