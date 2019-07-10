@@ -11,6 +11,7 @@ def call(Map config = [:], Map closures = [:]) {
   ])
   mapAttributeCheck(config, 'terraformInitBackendConfigsTest', ArrayList, [])
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
+  mapAttributeCheck(config, 'commonOptions', Map, [:])
 
   // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.
   if (config.containsKey('commandTargets')) {
@@ -50,16 +51,16 @@ def call(Map config = [:], Map closures = [:]) {
             commandTarget     : commandTarget,
             testPlanOptions   : [
               vars: config.testPlanVars
-            ],
+            ] + commonOptions,
             validateOptions   : [
               vars: config.validateVars
-            ],
+            ] + commonOptions,
             testDestroyOptions: [
               vars: config.testPlanVars
-            ],
+            ] + commonOptions,
             validateOptions   : [
               vars: config.testPlanVars
-            ],
+            ] + commonOptions,
             publish           : deployFileExists
           ], [
             preValidate: { preValidate(deployFileExists, scmInfo) },
@@ -120,7 +121,7 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
     sh('ssh-add -l')
     sh('mkdir -p ~/.ssh')
     sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-    terraform.init(
+    terraform.init([
       commandTarget: commandTarget,
       dockerAdditionalMounts: [
         '~/.ssh/': '/root/.ssh/',
@@ -130,21 +131,21 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
         'SSH_AUTH_SOCK': '/ssh-agent',
       ],
       backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
-    )
+    ] + config.commonOptions)
   }
 }
 
 def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists) {
-  plan = terraform.plan(
+  plan = terraform.plan([
     commandTarget: commandTarget,
     out: 'plan.out',
-    vars: config.publishPlanVars,
-  )
+    vars: config.publishPlanVars
+  ] + config.commonOptions)
 
   if (deployFileExists) {
-    terraform.show(
+    terraform.show([
       commandTarget: 'plan.out',
-    )
+    ] + config.commonOptions)
   }
 
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
@@ -165,7 +166,7 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
     input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
   }
 
-  terraform.apply(
+  terraform.apply([
     commandTarget: 'plan.out'
-  )
+  ] + commonOptions)
 }
