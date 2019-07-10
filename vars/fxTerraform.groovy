@@ -1,4 +1,5 @@
-def call(Map config = [:]) {
+def call(Map config = [:], Map closures = [:]) {
+  mapAttributeCheck(closures, 'postPrepare', Closure, {})
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, 'gitea-fx_administrator-key')
@@ -10,6 +11,7 @@ def call(Map config = [:]) {
   ])
   mapAttributeCheck(config, 'terraformInitBackendConfigsTest', ArrayList, [])
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
+  mapAttributeCheck(config, 'commonOptions', Map, [:])
 
   // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.
   if (config.containsKey('commandTargets')) {
@@ -17,6 +19,7 @@ def call(Map config = [:]) {
   }
 
   fxJob([
+    postPrepare: closures.postPrepare,
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'
@@ -43,20 +46,22 @@ def call(Map config = [:]) {
 
       for(commandTarget in commandTargets) {
         pipelineTerraform(
+          config +
           [
             commandTarget     : commandTarget,
             testPlanOptions   : [
               vars: config.testPlanVars
-            ],
+            ] + config.commonOptions,
+            testApplyOptions : config.commonOptions,
             validateOptions   : [
               vars: config.validateVars
-            ],
+            ] + config.commonOptions,
             testDestroyOptions: [
               vars: config.testPlanVars
-            ],
+            ] + config.commonOptions,
             validateOptions   : [
               vars: config.testPlanVars
-            ],
+            ] + config.commonOptions,
             publish           : deployFileExists
           ], [
             preValidate: { preValidate(deployFileExists, scmInfo) },
@@ -94,7 +99,7 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “.gitignore” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
 
-    if (!(scmInfo.repositoryName ==~ /^terraform\-(module|ecosystem)\-(aws|azurerm|google|bitbucket|gitlab|github)-[a-z\d]{3,}([a-z\d\-]+)?$/)) {
+    if (!(scmInfo.repositoryName ==~ /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github)-[a-z\d]{3,}([a-z\d\-]+)?$/)) {
       error("This build does not meet FX standards: a Terraform module MUST be name “terraform-*(module|ecosystem)*-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
@@ -117,7 +122,7 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
     sh('ssh-add -l')
     sh('mkdir -p ~/.ssh')
     sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-    terraform.init(
+    terraform.init([
       commandTarget: commandTarget,
       dockerAdditionalMounts: [
         '~/.ssh/': '/root/.ssh/',
@@ -127,21 +132,21 @@ def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists)
         'SSH_AUTH_SOCK': '/ssh-agent',
       ],
       backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
-    )
+    ] + config.commonOptions)
   }
 }
 
 def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists) {
-  plan = terraform.plan(
+  plan = terraform.plan([
     commandTarget: commandTarget,
     out: 'plan.out',
-    vars: config.publishPlanVars,
-  )
+    vars: config.publishPlanVars
+  ] + config.commonOptions)
 
   if (deployFileExists) {
-    terraform.show(
+    terraform.show([
       commandTarget: 'plan.out',
-    )
+    ] + config.commonOptions)
   }
 
   if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
@@ -162,7 +167,7 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
     input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
   }
 
-  terraform.apply(
+  terraform.apply([
     commandTarget: 'plan.out'
-  )
+  ] + commonOptions)
 }

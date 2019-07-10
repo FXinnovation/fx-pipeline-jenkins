@@ -23,13 +23,13 @@ def call(Map config = [:]){
     error('commandTarget parameter is mandatory')
   }
   if (!config.containsKey('dockerAdditionalMounts') || !(config.dockerAdditionalMounts instanceof Map)){
-    config.dockerAdditionnalMounts = [:]
+    config.dockerAdditionalMounts = [:]
   }
   if (!config.containsKey('dockerEnvironmentVariables') || !(config.dockerEnvironmentVariables instanceof Map)){
     config.dockerEnvironmentVariables = [:]
   }
   if (!config.containsKey('dockerImage') || !(config.dockerImage instanceof CharSequence)){
-    config.dockerImage = 'fxinnovation/chefdk:latest'
+    config.dockerImage = 'fxinnovation/inspec:latest'
   }
   if (config.containsKey('target') && config.target instanceof CharSequence){
     optionsString += "--target=${config.target} "
@@ -47,16 +47,16 @@ def call(Map config = [:]){
 
   inspecCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand: '',
+    fallbackCommand: 'inspec',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables
   )
 
   execute(
-    script: "${inspecCommand} inspec --version"
+    script: "${inspecCommand} --version"
   )
 
   return execute(
-    script: "${inspecCommand} inspec ${config.subCommand} ${optionsString} ${config.commandTarget}"
+    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget} --chef-license=accept-silent"
   )
 }
