@@ -51,16 +51,16 @@ def call(Map config = [:], Map closures = [:]) {
             commandTarget     : commandTarget,
             testPlanOptions   : [
               vars: config.testPlanVars
-            ] + commonOptions,
+            ] + config.commonOptions,
             validateOptions   : [
               vars: config.validateVars
-            ] + commonOptions,
+            ] + config.commonOptions,
             testDestroyOptions: [
               vars: config.testPlanVars
-            ] + commonOptions,
+            ] + config.commonOptions,
             validateOptions   : [
               vars: config.testPlanVars
-            ] + commonOptions,
+            ] + config.commonOptions,
             publish           : deployFileExists
           ], [
             preValidate: { preValidate(deployFileExists, scmInfo) },
