@@ -52,6 +52,7 @@ def call(Map config = [:], Map closures = [:]) {
             testPlanOptions   : [
               vars: config.testPlanVars
             ] + config.commonOptions,
+            testApplyOptions : config.commonOptions,
             validateOptions   : [
               vars: config.validateVars
             ] + config.commonOptions,
