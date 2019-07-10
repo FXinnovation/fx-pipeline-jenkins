@@ -73,7 +73,8 @@ def call(Map closures = [:], List propertiesConfig = []){
             closures.preNotify()
           }
           fx_notify(
-            status: status
+            status: status,
+            failOnError: false
           )
           if (closures.containsKey('postNotify')){
             closures.postNotify()
