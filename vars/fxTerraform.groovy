@@ -170,5 +170,5 @@ def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Bool
 
   terraform.apply([
     commandTarget: 'plan.out'
-  ] + commonOptions)
+  ] + config.commonOptions)
 }
