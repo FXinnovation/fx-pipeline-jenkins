@@ -23,8 +23,9 @@ Second, a List of properties:
 Third, a Map of config:
 ```
 [
-  timeoutTime: 10    # Integer
-  timeoutUnit: HOURS # CharSequence - See documentation for more units
+  timeoutTime: 10      # Integer
+  timeoutUnit: 'HOURS' # CharSequence - See documentation for more units
+  slaveSize:   'small' # CharSequence - See code for available sizes
 ]
 ```
 

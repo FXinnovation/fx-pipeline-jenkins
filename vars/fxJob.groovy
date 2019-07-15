@@ -24,6 +24,30 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   }
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
+  mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
+
+  def slaveSizes = [
+    small: [
+      resourceRequestCpu: '100m',
+      resourceLimitCpu: '500m',
+      resourceRequestMemory: '1024Mi',
+      resourceLimitMemory: '1512Mi',
+    ]
+    medium: [
+      resourceRequestCpu: '500m',
+      resourceLimitCpu: '1',
+      resourceRequestMemory: '1512Mi',
+      resourceLimitMemory: '2048Mi',
+    ]
+    large: [
+      resourceRequestCpu: '1500m',
+      resourceLimitCpu: '2',
+      resourceRequestMemory: '2048Mi',
+      resourceLimitMemory: '3072Mi',
+    ]
+  ]
+
+  def chosenSlaveSize = slaveSizes[config.slaveSize]
 
   properties(defaultPropertiesConfig + propertiesConfig)
   status='SUCCESS'
@@ -45,10 +69,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
         privileged: true,
         alwaysPullImage: true,
         workingDir: '/home/jenkins',
-        resourceRequestCpu: '100m',
-        resourceLimitCpu: '1',
-        resourceRequestMemory: '1024Mi',
-        resourceLimitMemory: '2048Mi'
+        resourceRequestCpu: chosenSlaveSize.resourceRequestCpu,
+        resourceLimitCpu: chosenSlaveSize.resourceLimitCpu,
+        resourceRequestMemory: chosenSlaveSize.resourceRequestMemory,
+        resourceLimitMemory: chosenSlaveSize.resourceLimitMemory
       )
     ]
   ){
