@@ -4,7 +4,7 @@ This is a skeleton to be used in all FX pipelines.
 
 It will prepare the pipeline (get code), execute the pipeline and notify + cleanup.
 
-The function takes two parameters.
+The function takes three parameters.
 
 First, a Map of closures:
 
@@ -19,6 +19,14 @@ First, a Map of closures:
 Second, a List of properties:
 
 *Look at Jenkins properties() function for possible options*
+
+Third, a Map of config:
+```
+[
+  timeoutTime: 10    # Integer
+  timeoutUnit: HOURS # CharSequence - See documentation for more units
+]
+```
 
 Output:
 String
