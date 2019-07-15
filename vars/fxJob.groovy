@@ -32,13 +32,13 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
       resourceLimitCpu: '500m',
       resourceRequestMemory: '1024Mi',
       resourceLimitMemory: '1512Mi',
-    ]
+    ],
     medium: [
       resourceRequestCpu: '500m',
       resourceLimitCpu: '1',
       resourceRequestMemory: '1512Mi',
       resourceLimitMemory: '2048Mi',
-    ]
+    ],
     large: [
       resourceRequestCpu: '1500m',
       resourceLimitCpu: '2',
