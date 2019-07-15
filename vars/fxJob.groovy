@@ -77,7 +77,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
     ]
   ){
     node(label){
-      timeout(config.timeoutTime, config.timeoutUnit){
+      timeout(
+        time: config.timeoutTime,
+        unit: config.timeoutUnit
+      ){
         try{
           ansiColor('xterm') {
             stage('prepare'){
