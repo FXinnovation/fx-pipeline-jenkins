@@ -1,4 +1,4 @@
-def call(Map closures = [:], List propertiesConfig = []){
+def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   defaultPropertiesConfig = [
     buildDiscarder(
       logRotator(
@@ -22,6 +22,8 @@ def call(Map closures = [:], List propertiesConfig = []){
   if (!closures.containsKey('pipeline')){
     error('pipeline closure is mandatory.')
   }
+  mapAttributeCheck(config, 'timeoutTime', Integer, 10)
+  mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
 
   properties(defaultPropertiesConfig + propertiesConfig)
   status='SUCCESS'
@@ -51,42 +53,44 @@ def call(Map closures = [:], List propertiesConfig = []){
     ]
   ){
     node(label){
-      try{
-        ansiColor('xterm') {
-          stage('prepare'){
-            if (closures.containsKey('prePrepare')){
-              closures.prePrepare()
+      timeout(config.timeoutTime, config.timeoutUnit){
+        try{
+          ansiColor('xterm') {
+            stage('prepare'){
+              if (closures.containsKey('prePrepare')){
+                closures.prePrepare()
+              }
+              scmInfo = fxCheckout()
+              if (closures.containsKey('postPrepare')){
+                closures.postPrepare(scmInfo)
+              }
             }
-            scmInfo = fxCheckout()
-            if (closures.containsKey('postPrepare')){
-              closures.postPrepare(scmInfo)
+            closures.pipeline(scmInfo)
+          }
+        }catch(error){
+           status='FAILURE'
+           throw error
+        }finally{
+          stage('notify'){
+            if (closures.containsKey('preNotify')){
+              closures.preNotify()
+            }
+            fx_notify(
+              status: status,
+              failOnError: false
+            )
+            if (closures.containsKey('postNotify')){
+              closures.postNotify()
             }
           }
-          closures.pipeline(scmInfo)
-        }
-      }catch(error){
-         status='FAILURE'
-         throw error
-      }finally{
-        stage('notify'){
-          if (closures.containsKey('preNotify')){
-            closures.preNotify()
-          }
-          fx_notify(
-            status: status,
-            failOnError: false
-          )
-          if (closures.containsKey('postNotify')){
-            closures.postNotify()
-          }
-        }
-        stage('cleanup'){
-          if (closures.containsKey('preCleanup')){
-            closures.preCleanup()
-          }
-          cleanWs()
-          if (closures.containsKey('postCleanup')){
-            closures.postCleanup()
+          stage('cleanup'){
+            if (closures.containsKey('preCleanup')){
+              closures.preCleanup()
+            }
+            cleanWs()
+            if (closures.containsKey('postCleanup')){
+              closures.postCleanup()
+            }
           }
         }
       }
