@@ -9,7 +9,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
       )
     ),
     pipelineTriggers(
-      [cron('@midnight')]
+      [cron('@weekly')]
     )
   ]
 
