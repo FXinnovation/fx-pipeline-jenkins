@@ -148,7 +148,7 @@ def test(Map config = [:], Map closures = [:]){
               },
               "junit": {
                 "stdout": false,
-                "file": "inspec-results.xml"
+                "file": "${config.commandTarget}-inspec-results.xml"
               }
             }
           }
@@ -169,7 +169,7 @@ def test(Map config = [:], Map closures = [:]){
           }finally{
             junit(
               allowEmptyResults: true,
-              testResults: 'inspec-results.xml'
+              testResults: "${config.commandTarget}-inspec-results.xml"
             )
           }
         }else{
