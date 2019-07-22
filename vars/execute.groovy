@@ -42,7 +42,7 @@ def call(Map config = [:]){
     response.statusCode = readFile("/tmp/${filePrefix}/statuscode").trim().toInteger()
 
     if (config.throwError == true && response.statusCode != 0){
-      error(response.stderr)
+      error("Script returned an error:\nStatus Code: ${response.statusCode}\nStderr:\n${response.stderr}")
     }
     if (env.DEBUG){
       println "### DEBUG ###\n${response}"
