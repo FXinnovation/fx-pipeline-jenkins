@@ -7,7 +7,7 @@ class PowershellModuleRepository extends NexusRepository {
 
     public static PowershellModuleRepository getReleaseRepository(groovy.lang.Script context, config){
         context.mapAttributeCheck(config, 'nexusUrl', CharSequence, NexusDefaultValues.NexusUrl)
-        context.mapAttributeCheck(config, 'powershellModulePublishUnstableRepository', CharSequence, NexusDefaultValues.PowershellModuleReleaseRepository)
+        context.mapAttributeCheck(config, 'powershellApplicationReleaseRepository', CharSequence, NexusDefaultValues.PowershellModuleReleaseRepository)
     
         return new PowershellModuleRepository(config.nexusUrl,config.powershellApplicationReleaseRepository)
     }
