@@ -21,11 +21,15 @@ def buildModule(Map config = [:]){
 
     addFXNexusRepository(config)
 
-    executePowershell([
-        dockerImage: config.powershellDockerImage,
-        script: "-command \"Build-FXModule -RootFolder '${config.rootFolder}' -ModuleName '${config.moduleName}' -Version '${config.version}' -Description '${config.description}'\""
-    ])
-    nunit testResultsPattern: '_artefacts/**/test-result.xml'
+    try{
+        executePowershell([
+            dockerImage: config.powershellDockerImage,
+            script: "-command \"Build-FXModule -RootFolder '${config.rootFolder}' -ModuleName '${config.moduleName}' -Version '${config.version}' -Description '${config.description}'\""
+        ])
+    }
+    finally{
+        nunit testResultsPattern: '_artefacts/**/test-result.xml'
+    }
 }
 
 def buildApplication(Map config = [:]){
@@ -36,11 +40,15 @@ def buildApplication(Map config = [:]){
 
     addFXNexusRepository(config)
 
-    executePowershell([
-        dockerImage: config.powershellDockerImage,
-        script: "-command \"Build-FXApplication -RootFolder '${config.rootFolder}' -ApplicationName '${config.applicationName}'\""
-    ])
-    nunit testResultsPattern: '_artefacts/**/test-result.xml'
+    try{
+        executePowershell([
+            dockerImage: config.powershellDockerImage,
+            script: "-command \"Build-FXApplication -RootFolder '${config.rootFolder}' -ApplicationName '${config.applicationName}'\""
+        ])
+    }
+    finally{
+        nunit testResultsPattern: '_artefacts/**/test-result.xml'
+    }
 }
 
 def publishModule(Map config = [:]){  
