@@ -100,7 +100,7 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “.gitignore” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
 
-    if (!(scmInfo.repositoryName ==~ /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github)-[a-z\d]{3,}([a-z\d\-]+)?$/)) {
+    if (!(scmInfo.repositoryName ==~ /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github|kubernetes|multi)-[a-z\d]{3,}([a-z\d\-]+)?$/)) {
       error("This build does not meet FX standards: a Terraform module MUST be name “terraform-*(module|ecosystem)*-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
