@@ -46,7 +46,7 @@ def call(Map config = [:], Map closures =[:]){
               zipFile: zipfilePath
             )
 
-            execute(script: "cp -rpvf _repository/src/* src")
+            execute(script: "cp -rpvf _repository/* src")
             execute(script: "rm -rf _repository")
           }
 
