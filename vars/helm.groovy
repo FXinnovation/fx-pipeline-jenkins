@@ -184,6 +184,9 @@ def call(Map config = [:]){
   if (config.containsKey('repo') && (config.repo instanceof CharSequence)){
     optionsString += "--repo ${config.repo} "
   }
+  if (!config.containsKey('revision')){
+    config.revision = ''
+  }
   // TODO: Reserve is a reserved word in groovy, need to find a workaround
   //if (config.containsKey('reverse') && (config.reverse instanceof Boolean) && config.reverse){
   //  optionsString += '--reserve '
@@ -209,8 +212,6 @@ def call(Map config = [:]){
   if (config.containsKey('wait') && (config.wait instanceof Boolean) && config.wait){
     optionsString += "--wait "
   }
-  // TODO: Add revision
-
   // NOTE: We're not using docker because it's very hard to use helm in isolation
   // this might become a future enhancement
   execute(
@@ -226,6 +227,6 @@ def call(Map config = [:]){
   )
 
   return execute(
-    script: "helm --home /root/.helm ${config.subCommand} ${optionsString} ${config.release} ${config.chart} ${config.commandTarget}"
+    script: "helm --home /root/.helm ${config.subCommand} ${optionsString} ${config.release} ${config.revision} ${config.chart} ${config.commandTarget}"
   )
 }
