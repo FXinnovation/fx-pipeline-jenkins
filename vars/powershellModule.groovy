@@ -28,7 +28,7 @@ def buildModule(Map config = [:]){
         ])
     }
     finally{
-        nunit testResultsPattern: '_artefacts/**/test-result.xml'
+        nunit failIfNoResults: false, testResultsPattern: '_artefacts/**/test-result.xml'
     }
 }
 
@@ -47,7 +47,7 @@ def buildApplication(Map config = [:]){
         ])
     }
     finally{
-        nunit testResultsPattern: '_artefacts/**/test-result.xml'
+        nunit failIfNoResults: false, testResultsPattern: '_artefacts/**/test-result.xml' 
     }
 }
 
