@@ -34,7 +34,7 @@ def call(Map config = [:], Map closures =[:]){
       stage('build'){
         if(config.dependencies){
           printDebug("----- Dependencies found -----")
-          execute("cp -rpv src _backupsrc")
+          execute(script: "cp -rpv src _backupsrc")
           for (dependency in config.dependencies) {
             def item = PowershellApplicationRepository.getItemFromMap(this, dependency)
 
@@ -46,11 +46,11 @@ def call(Map config = [:], Map closures =[:]){
               zipFile: zipfilePath
             )
 
-            execute("cp -rpvf _repository/src/* src")
-            execute("rm -rf _repository")
+            execute(script: "cp -rpvf _repository/* src")
+            execute(script: "rm -rf _repository")
           }
 
-          execute("cp -rpvf _backupsrc/* src")
+          execute(script: "cp -rpvf _backupsrc/* src")
         }
 
         printDebug('----- Building -----')

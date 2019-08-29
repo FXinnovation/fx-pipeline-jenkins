@@ -46,7 +46,7 @@ class MavenItem implements Serializable  {
     }
     public String getFile(groovy.lang.Script context, String destinationFolder){
 
-        context.execute("mkdir -p ${destinationFolder}")
+        context.execute(script: "mkdir -p ${destinationFolder}")
 
         def destinationFile = "${destinationFolder}/${getFileName()}"
         context.httpRequest(
