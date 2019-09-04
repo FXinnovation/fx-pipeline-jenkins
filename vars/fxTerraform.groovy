@@ -128,10 +128,12 @@ private fmt(Map config = [:], List commandTargets) {
   printDebug('Global format to workaround a Terraform bug making fmt pass even if some sub-modules are incorrectly formatted.')
 
   pipelineTerraform.fmt(
-    commandTarget : '.',
-    fmtOptions    : [
-      vars: config.testPlanVars
-    ],
+    config: config + [
+      commandTarget : '.',
+      fmtOptions    : [
+        vars: config.testPlanVars
+      ],
+    ]
   )
 }
 
