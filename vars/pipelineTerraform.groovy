@@ -73,7 +73,7 @@ def validate(Map config = [:], Map closures = [:]){
 def fmt(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'fmtOptions', Map, [:])
 
-  if (!closures.containsKey('validate')){
+  if (!closures.containsKey('fmt')){
     closures.fmt = {
       try{
         terraform.fmt(
