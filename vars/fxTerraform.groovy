@@ -42,6 +42,8 @@ def call(Map config = [:], Map closures = [:]) {
         commandTargets = ['.']
       }
 
+      fmt(config, commandTargets)
+
       printDebug('commandTargets: ' + commandTargets)
 
       for(commandTarget in commandTargets) {
@@ -119,6 +121,21 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
 }
 
 def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists) {
+private fmt(Map config = [:], List commandTargets) {
+  if ('.' == commandTargets[0]) {
+    return
+  }
+
+  printDebug('Global format to workaround a Terraform bug making fmt pass even if some sub-modules are incorrectly formatted.')
+
+  pipelineTerraform.fmt(
+    commandTarget : '.',
+    fmtOptions    : [
+      vars: config.testPlanVars
+    ],
+  )
+}
+
   sshagent([config.initSSHCredentialId]) {
     sh('ssh-add -l')
     sh('mkdir -p ~/.ssh')
