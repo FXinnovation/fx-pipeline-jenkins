@@ -29,7 +29,7 @@ def call(Map config = [:], Map closures = [:]) {
         toDeploy = true
       }
 
-      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
+      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
 
       commandTargets = []
       try {
@@ -84,7 +84,7 @@ def call(Map config = [:], Map closures = [:]) {
   ])
 }
 
-def preValidate(Boolean deployFileExists, Map scmInfo) {
+private preValidate(Boolean deployFileExists, Map scmInfo) {
   if (!deployFileExists) {
     if (!fileExists('main.tf')) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “main.tf” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
@@ -120,7 +120,6 @@ def preValidate(Boolean deployFileExists, Map scmInfo) {
   }
 }
 
-def init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists) {
 private fmt(Map config = [:], List commandTargets) {
   if ('.' == commandTargets[0]) {
     return
@@ -136,6 +135,7 @@ private fmt(Map config = [:], List commandTargets) {
   )
 }
 
+private init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists) {
   sshagent([config.initSSHCredentialId]) {
     sh('ssh-add -l')
     sh('mkdir -p ~/.ssh')
@@ -154,7 +154,7 @@ private fmt(Map config = [:], List commandTargets) {
   }
 }
 
-def publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists) {
+private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists) {
   plan = terraform.plan([
     commandTarget: commandTarget,
     out: 'plan.out',
