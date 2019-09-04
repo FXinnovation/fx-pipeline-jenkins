@@ -6,12 +6,13 @@ def call(Map config = [:], Map closures = [:]){
   }
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
 
-  stage('init “' + config.commandTarget+ '”') {
+  stage('init “' + config.commandTarget + '”') {
     init(config, closures)
   }
 
   stage('test “' + config.commandTarget + '”') {
     validate(config, closures)
+    fmt(config, closures)
     test(config, closures)
   }
 
@@ -43,22 +44,17 @@ def init(Map config = [:], Map closures = [:]){
 
 def validate(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'validateOptions', Map, [:])
-  mapAttributeCheck(config, 'fmtOptions', Map, [:])
 
   if (!closures.containsKey('validate')){
     closures.validate = {
-      terraform.validate([
-          commandTarget: config.commandTarget
-        ] + config.validateOptions
-      )
-      try{
-        terraform.fmt([
-            check: true,
-            commandTarget: config.commandTarget,
-          ] + config.fmtOptions
+      try {
+        terraform.validate(
+          [
+            commandTarget: config.commandTarget
+          ] + config.validateOptions
         )
-      }catch(errFmt){
-        error "Terraform fmt command has failed!"
+      }catch(errValidate){
+        error "Terraform validate command has failed!"
       }
     }
   }
@@ -71,6 +67,35 @@ def validate(Map config = [:], Map closures = [:]){
 
   if (closures.containsKey('postValidate')){
     closures.postValidate()
+  }
+}
+
+def fmt(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'fmtOptions', Map, [:])
+
+  if (!closures.containsKey('validate')){
+    closures.fmt = {
+      try{
+        terraform.fmt(
+          [
+            check: true,
+            commandTarget: config.commandTarget,
+          ] + config.fmtOptions
+        )
+      }catch(errFmt){
+        error "Terraform fmt command has failed!"
+      }
+    }
+  }
+
+  if (closures.containsKey('preFmt')){
+    closures.preFmt()
+  }
+
+  closures.fmt()
+
+  if (closures.containsKey('postFmt')){
+    closures.postFmt()
   }
 }
 
