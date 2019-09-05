@@ -54,6 +54,7 @@ def validate(Map config = [:], Map closures = [:]){
           ] + config.validateOptions
         )
       }catch(errValidate){
+        printDebug(errValidate)
         error "Terraform validate command has failed!"
       }
     }
@@ -83,6 +84,7 @@ def fmt(Map config = [:], Map closures = [:]){
           ] + config.fmtOptions
         )
       }catch(errFmt){
+        printDebug(errFmt)
         error "Terraform fmt command has failed!"
       }
     }
