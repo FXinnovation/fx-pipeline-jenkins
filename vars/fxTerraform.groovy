@@ -127,7 +127,7 @@ private fmt(Map config = [:], List commandTargets) {
 
   printDebug('Global format to workaround a Terraform bug making fmt pass even if some sub-modules are incorrectly formatted.')
 
-  pipelineTerraform.fmt('.', config)
+  pipelineTerraform.fmt('.', config.commonOptions)
 }
 
 private init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists) {
