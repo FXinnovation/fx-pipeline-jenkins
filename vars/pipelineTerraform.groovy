@@ -5,6 +5,7 @@ def call(Map config = [:], Map closures = [:]){
     }
   }
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
+  mapAttributeCheck(config, 'fmtOptions', Map, [:])
 
   stage('init “' + config.commandTarget + '”') {
     init(config, closures)
@@ -12,7 +13,7 @@ def call(Map config = [:], Map closures = [:]){
 
   stage('test “' + config.commandTarget + '”') {
     validate(config, closures)
-    fmt(config, closures)
+    fmt(config.commandTarget, config.fmtOptions, closures)
     test(config, closures)
   }
 
@@ -71,17 +72,15 @@ def validate(Map config = [:], Map closures = [:]){
   }
 }
 
-def fmt(Map config = [:], Map closures = [:]){
-  mapAttributeCheck(config, 'fmtOptions', Map, [:])
-
+def fmt(CharSequence commandTarget = '.', Map fmtOptions = [:], Map closures = [:]){
   if (!closures.containsKey('fmt')){
     closures.fmt = {
       try{
         terraform.fmt(
           [
             check: true,
-            commandTarget: config.commandTarget,
-          ] + config.fmtOptions
+            commandTarget: commandTarget,
+          ] + fmtOptions
         )
       }catch(errFmt){
         printDebug(errFmt)
