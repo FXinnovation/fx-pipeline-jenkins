@@ -92,6 +92,14 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
                 closures.postPrepare(scmInfo)
               }
             }
+
+            if (fileExists('pre-commit-config.yaml') || fileExists('pre-commit-config.yml')) {
+              terraformCommand = dockerRunCommand(
+                dockerImage: 'fxinnovation/pre-commit',
+                fallbackCommand: 'pre-commit',
+                command: 'run -a',
+              )
+            }
             closures.pipeline(scmInfo)
           }
         }catch(error){
