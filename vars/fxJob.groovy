@@ -84,6 +84,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
         unit: config.timeoutUnit
       ){
         ansiColor('xterm') {
+          println "\u001b[35m"
           println """
 /!\\ PULL REQUEST /!\\
 
