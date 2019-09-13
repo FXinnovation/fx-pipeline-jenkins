@@ -93,7 +93,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
               }
             }
 
-            if (fileExists('pre-commit-config.yaml') || fileExists('pre-commit-config.yml')) {
+            if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
               terraformCommand = dockerRunCommand(
                 dockerImage: 'fxinnovation/pre-commit',
                 fallbackCommand: 'pre-commit',
