@@ -25,6 +25,8 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
+  mapAttributeCheck(config, 'preCommitDockerImageName', CharSequence, 'fxinnovation/pre-commit:latest')
+
 
   def slaveSizes = [
     small: [
@@ -95,7 +97,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
 
             if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
               preCommitCommand = dockerRunCommand(
-                dockerImage: 'fxinnovation/pre-commit',
+                dockerImage: config.preCommitDockerImageName,
                 fallbackCommand: 'pre-commit',
                 command: 'run -a',
               )

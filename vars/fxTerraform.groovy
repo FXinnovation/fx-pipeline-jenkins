@@ -81,7 +81,8 @@ def call(Map config = [:], Map closures = [:]) {
     }
   ], [
     disableConcurrentBuilds()
-  ])
+  ],
+  config)
 }
 
 private preValidate(Boolean deployFileExists, Map scmInfo) {
