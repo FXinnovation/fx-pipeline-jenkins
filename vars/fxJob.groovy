@@ -94,10 +94,14 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
             }
 
             if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
-              terraformCommand = dockerRunCommand(
+              preCommitCommand = dockerRunCommand(
                 dockerImage: 'fxinnovation/pre-commit',
                 fallbackCommand: 'pre-commit',
                 command: 'run -a',
+              )
+
+              execute(
+                script: "${preCommitCommand}"
               )
             }
             closures.pipeline(scmInfo)
