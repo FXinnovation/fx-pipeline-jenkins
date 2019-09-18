@@ -105,10 +105,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
             if (closures.containsKey('notify')){
               closures.notify()
             }else{
-              fx_notify(
-                status: status,
-                failOnError: false
-              )
+              //fx_notify(
+              //  status: status,
+              //  failOnError: false
+              //)
             }
             if (closures.containsKey('postNotify')){
               closures.postNotify()
