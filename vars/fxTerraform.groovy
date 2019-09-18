@@ -12,6 +12,14 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'terraformInitBackendConfigsTest', ArrayList, [])
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
   mapAttributeCheck(config, 'commonOptions', Map, [:])
+  if (!closures.containsKey('notify')){
+    closures.notify = {
+      fx_notify(
+        status: status,
+        failOnError: false
+      )
+    }
+  }
 
   // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.
   if (config.containsKey('commandTargets')) {
@@ -20,6 +28,7 @@ def call(Map config = [:], Map closures = [:]) {
 
   fxJob([
     postPrepare: closures.postPrepare,
+    notify: closures.notify,
     pipeline: { Map scmInfo ->
       def isTagged = '' != scmInfo.tag
       def deployFileExists = fileExists 'deploy.tf'
