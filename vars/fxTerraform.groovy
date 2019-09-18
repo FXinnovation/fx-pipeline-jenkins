@@ -172,9 +172,9 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
     return
   }
 
-  fx_notify(
-    status: 'PENDING'
-  )
+  //fx_notify(
+  //  status: 'PENDING'
+  //)
 
   timeout(activity: true, time: 20) {
     input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'
