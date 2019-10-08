@@ -132,7 +132,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
               preCommitCommand = dockerRunCommand(
                 dockerImage: config.preCommitDockerImageName,
                 fallbackCommand: 'pre-commit',
-                command: 'run -a',
+                command: 'run -a --color=always',
               )
 
               execute(
