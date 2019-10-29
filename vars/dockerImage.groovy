@@ -8,6 +8,9 @@ def build(Map config = [:]){
   config.tags.each { tag ->
     if (config.containsKey('registries') && [] != config.registries){
       config.registries.each { registry ->
+        if (this.isPublishable(registry, config.namespace,  config.image + tag)) {
+          return
+        }
         optionsString += "--tag ${registry}/"
         if ('' != config.namespace) {
           optionsString += "${config.namespace}/"
@@ -70,4 +73,21 @@ def publish(Map config = [:]){
       )
     }
   }
+}
+
+private boolean isPublishable(CharSequence registry, CharSequence namespace, CharSequence tag) {
+  return(
+    this.dockerTagIsMaster(tag) ||
+    this.dockerTagExists(registry, namespace, tag)
+  )
+}
+
+private boolean dockerTagIsMaster(CharSequence tag) {
+  return 'master' === tag
+}
+
+private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
+  return execute(
+    script: "curl --silent -f -lSL ${registry}/${namespace}/tags/${tag} > /dev/null"
+  )
 }
