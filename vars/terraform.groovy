@@ -592,7 +592,7 @@ def call(Map config = [:]){
 
   // We're bind mounting the docker socket as well to support doing
   // local-exec with terraform.
-  config.dockerAdditionalMounts.put('/var/run/docker.sock': '/var/run/docker.sock')
+  config.dockerAdditionalMounts.put('/var/run/docker.sock', '/var/run/docker.sock')
 
   terraformCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
