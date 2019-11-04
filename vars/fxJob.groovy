@@ -33,7 +33,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
       resourceRequestCpu: '100m',
       resourceLimitCpu: '500m',
       resourceRequestMemory: '1024Mi',
-      resourceLimitMemory: '1512Mi',
+      resourceLimitMemory: '2048Mi',
     ],
     medium: [
       resourceRequestCpu: '500m',
@@ -95,8 +95,8 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
  |        o     \\ ___  _,,,,_     _.--.
   \\      `^`    /`_.-"~      `~-;`     \\
    \\_      _  .'                 `,     |
-     |`-                           \\'__/ 
-    /                      ,_       \\  `'-. 
+     |`-                           \\'__/
+    /                      ,_       \\  `'-.
    /    .-""~~--.            `"-,   ;_    /
   |              \\               \\  | `""`
    \\__.--'`"-.   /_               |'
@@ -107,8 +107,8 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
                                  `"~"`
 This is Tedi.
 Tedi is a bear, and, Tedi is lazy.
-His favorite activity is watching the soothing passage of log outputs.  
-Because he's a bear, Tedi doesn't need to review \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m. 
+His favorite activity is watching the soothing passage of log outputs.
+Because he's a bear, Tedi doesn't need to review \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m.
 Please, do not be like Tedi, don't stay here to watch logs scrolling. He will take care of that for you.
 You can click on the following link to review you \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m assigned while tedi watch logs for you.
 
