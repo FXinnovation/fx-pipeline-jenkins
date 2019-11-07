@@ -1,4 +1,4 @@
-import com.fxinnovation.utils.OptionString
+import com.fxinnovation.factory.OptionStringFactory
 
 def build(Map config = [:]){
   config.subCommand = 'build'
@@ -59,44 +59,44 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
 
-  def optionsString = new OptionString(this)
-  optionsString.setDelimiter('=')
+  def optionStringFactory = new OptionStringFactory(this)
+  optionStringFactory.createOptionString('=')
 
   if (config.containsKey('color')){
-    optionsString.add('-color', config.color, Boolean)
+    optionStringFactory.addOption('-color', config.color, Boolean)
   }
   if (config.containsKey('debug') && config.debug){
-    optionsString.add('-debug')
+    optionStringFactory.addOption('-debug')
   }
   if (config.containsKey('except')){
-    optionsString.add('-except', config.except)
+    optionStringFactory.addOption('-except', config.except)
   }
   if (config.containsKey('only')){
-    optionsString.add('-only', config.only)
+    optionStringFactory.addOption('-only', config.only)
   }
   if (config.containsKey('force') && config.force){
-    optionsString.add('-force')
+    optionStringFactory.addOption('-force')
   }
   if (config.containsKey('machineReadable') && config.machineReadable){
-    optionsString.add('-machine-readable')
+    optionStringFactory.addOption('-machine-readable')
   }
   if (config.containsKey('onError')){
     if (!config.onError != 'cleanup' || !config.onError != 'abort'){
       error('"onError" parameter must be either "cleanup" or "abort"')
     }
-    optionsString.add('-on-error', config.onError)
+    optionStringFactory.addOption('-on-error', config.onError)
   }
   if (config.containsKey('parallel')){
-    optionsString.add('-parallel', config.parallel, Boolean)
+    optionStringFactory.addOption('-parallel', config.parallel, Boolean)
   }
   if (config.containsKey('syntaxOnly') && config.syntaxOnly){
-    optionsString.add('-syntax-only')
+    optionStringFactory.addOption('-syntax-only')
   }
   if ( config.containsKey('varFile') ){
-    optionsString.add('-var-file', config.varFile)
+    optionStringFactory.addOption('-var-file', config.varFile)
   }
   if ( config.containsKey('vars') && config.vars){
-    optionsString.add('-var', config.vars, ArrayList)
+    optionStringFactory.addOption('-var', config.vars, ArrayList)
   }
 
   packerCommand = dockerRunCommand(
@@ -111,6 +111,6 @@ def call(Map config = [:]){
   )
 
   return execute(
-    script: "${packerCommand} ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
+    script: "${packerCommand} ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}"
   )
 }

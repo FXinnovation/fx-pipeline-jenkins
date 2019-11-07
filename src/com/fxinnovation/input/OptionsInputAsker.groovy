@@ -1,4 +1,4 @@
-package com.fxinnovation.utils
+package com.fxinnovation.input
 
 import com.fxinnovation.data.UserInput
 import org.jenkinsci.plugins.structs.describable.UninstantiatedDescribable

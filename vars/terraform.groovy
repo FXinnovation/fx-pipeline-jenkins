@@ -1,4 +1,4 @@
-import com.fxinnovation.utils.OptionString
+import com.fxinnovation.utils.OptionStringFactory
 
 Map getShowValidParameters() {
   return [
@@ -482,112 +482,112 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
 
-  def optionsString = new OptionString(this)
-  optionsString.setDelimiter('=')
+  def optionStringFactory = new OptionStringFactory(this)
+  optionStringFactory.createOptionString('=')
 
   if ( config.containsKey('backend') ){
-    optionsString.add('-backend', config.backend, Boolean)
+    optionStringFactory.addOption('-backend', config.backend, Boolean)
   }
   if ( config.containsKey('check') ){
-    optionsString.add('-check', config.check, Boolean)
+    optionStringFactory.addOption('-check', config.check, Boolean)
   }
   if ( config.containsKey('list') ){
-    optionsString.add('-list', config.list, Boolean)
+    optionStringFactory.addOption('-list', config.list, Boolean)
   }
   if ( config.containsKey('diff') ){
-    optionsString.add('-diff', config.diff, Boolean)
+    optionStringFactory.addOption('-diff', config.diff, Boolean)
   }
   if ( config.containsKey('write') ){
-    optionsString.add('-write', config.write, Boolean)
+    optionStringFactory.addOption('-write', config.write, Boolean)
   }
   if ( config.containsKey('backendConfigs') && config.backendConfigs ){
-    optionsString.add('-backend-config', config.backendConfigs, ArrayList)
+    optionStringFactory.addOption('-backend-config', config.backendConfigs, ArrayList)
   }
   if ( config.containsKey('backup') ){
-    optionsString.add('-backup', config.backup)
+    optionStringFactory.addOption('-backup', config.backup)
   }
   if ( config.containsKey('backupOut') ){
-    optionsString.add('-backend-out', config.backupOut)
+    optionStringFactory.addOption('-backend-out', config.backupOut)
   }
   if ( config.containsKey('checkVariables') ){
-    optionsString.add('-check-variables', config.checkVariables, Boolean)
+    optionStringFactory.addOption('-check-variables', config.checkVariables, Boolean)
   }
   if ( config.containsKey('force') && config.force ){
-    optionsString.add('-force')
+    optionStringFactory.addOption('-force')
   }
   if ( config.containsKey('forceCopy') && config.forceCopy ){
-    optionsString.add('-force-copy')
+    optionStringFactory.addOption('-force-copy')
   }
   if ( config.containsKey('fromModule') && config.fromModule ){
-    optionsString.add('-from-module', config.fromModule)
+    optionStringFactory.addOption('-from-module', config.fromModule)
   }
   if ( config.containsKey('get') ){
-    optionsString.add('-get', config.get, Boolean)
+    optionStringFactory.addOption('-get', config.get, Boolean)
   }
   if ( config.containsKey('getPlugins') ){
-    optionsString.add('-get-plugins', config.getPlugins, Boolean)
+    optionStringFactory.addOption('-get-plugins', config.getPlugins, Boolean)
   }
   if ( config.containsKey('input') ){
     // NOTE: Since this is jenkins executing it, if input has been set, it must
     // be forced set to false.
-    optionsString.add('-input', 'false')
+    optionStringFactory.addOption('-input', 'false')
   }
   if ( config.containsKey('lock') ){
-    optionsString.add('-lock', config.lock, Boolean)
+    optionStringFactory.addOption('-lock', config.lock, Boolean)
   }
   if ( config.containsKey('lockTimeout') && config.lockTimeout){
-    optionsString.add('-lock-timeout', config.lockTimeout)
+    optionStringFactory.addOption('-lock-timeout', config.lockTimeout)
   }
   if ( config.containsKey('moduleDepth') && config.moduleDepth ){
-    optionsString.add('-module-depth', config.moduleDepth, Integer)
+    optionStringFactory.addOption('-module-depth', config.moduleDepth, Integer)
   }
   if ( config.containsKey('noColor') && config.noColor ){
-    optionsString.add('-no-color')
+    optionStringFactory.addOption('-no-color')
   }
   if ( config.containsKey('out') && config.out ){
-    optionsString.add('-out', config.out)
+    optionStringFactory.addOption('-out', config.out)
   }
   if ( config.containsKey('parallelism') && config.parallelism ){
-    optionsString.add('-parallelism', config.parallelism, Integer)
+    optionStringFactory.addOption('-parallelism', config.parallelism, Integer)
   }
   if ( config.containsKey('pluginDirs') && config.pluginDirs ){
-    optionsString.add('-plugin-dir', config.pluginDirs, ArrayList)
+    optionStringFactory.addOption('-plugin-dir', config.pluginDirs, ArrayList)
   }
   if ( config.containsKey('reconfigure') && config.reconfigure ){
-    optionsString.add('-reconfigure')
+    optionStringFactory.addOption('-reconfigure')
   }
   if ( config.containsKey('refresh') ){
-    optionsString.add('-refresh', config.refresh, Boolean)
+    optionStringFactory.addOption('-refresh', config.refresh, Boolean)
   }
   if ( config.containsKey('state') && config.state ){
-    optionsString.add('-state', config.state)
+    optionStringFactory.addOption('-state', config.state)
   }
   if ( config.containsKey('stateOut') ){
-    optionsString.add('-state-out', config.stateOut)
+    optionStringFactory.addOption('-state-out', config.stateOut)
   }
   if ( config.containsKey('targets') && config.targets ){
-    optionsString.add('-target', config.targets, ArrayList)
+    optionStringFactory.addOption('-target', config.targets, ArrayList)
   }
   if ( config.containsKey('upgrade') ){
-    optionsString.add('-upgrade', config.upgrade, Boolean)
+    optionStringFactory.addOption('-upgrade', config.upgrade, Boolean)
   }
   if ( config.containsKey('varFile') && config.varFile ){
-    optionsString.add('-var-file', config.varFile)
+    optionStringFactory.addOption('-var-file', config.varFile)
   }
   if ( config.containsKey('vars') && config.vars ){
-    optionsString.add('-var', config.vars, ArrayList)
+    optionStringFactory.addOption('-var', config.vars, ArrayList)
   }
   if ( config.containsKey('verifyPlugins') ){
-    optionsString.add('-verify-plugins', config.verifyPlugins, Boolean)
+    optionStringFactory.addOption('-verify-plugins', config.verifyPlugins, Boolean)
   }
   if ( config.containsKey('json') ){
-    optionsString.add('-json', config.json, Boolean)
+    optionStringFactory.addOption('-json', config.json, Boolean)
   }
   if ( config.containsKey('module') && config.module ){
-    optionsString.add('-module', config.module)
+    optionStringFactory.addOption('-module', config.module)
   }
   if ( config.containsKey('moduleDepth') && config.moduleDepth ){
-    optionsString.add('module-depth', config.moduleDepth, Integer)
+    optionStringFactory.addOption('module-depth', config.moduleDepth, Integer)
   }
 
   // We're bind mounting the docker socket as well to support doing
@@ -607,6 +607,6 @@ def call(Map config = [:]){
 
   return execute(
     throwError: config.throwError,
-    script: "${terraformCommand} ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
+    script: "${terraformCommand} ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}"
   )
 }

@@ -1,4 +1,4 @@
-package com.fxinnovation.utils
+package com.fxinnovation.type
 
 /**
  * String decorator

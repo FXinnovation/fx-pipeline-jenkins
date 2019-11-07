@@ -1,4 +1,4 @@
-import com.fxinnovation.utils.OptionString
+import com.fxinnovation.factory.OptionStringFactory
 
 def databagCreateBag(Map config = [:]) {
   config.subCommand = 'data bag create'
@@ -178,30 +178,30 @@ def call (Map config = [:]){
   mapAttributeCheck(config, 'cookbookPath', CharSequence, '')
   mapAttributeCheck(config, 'secret', CharSequence, '')
 
-  def optionsString = new OptionString(this)
-  optionsString.setDelimiter(' ')
+  def optionStringFactory = new OptionStringFactory(this)
+  optionStringFactory.createOptionString(' ')
 
   if ('' != config.format){
-    optionsString.add('--format', config.format)
+    optionStringFactory.addOption('--format', config.format)
   }
 
   if (true == config.freeze){
-    optionsString.add('--freeze')
+    optionStringFactory.addOption('--freeze')
   }
   
   if ('' != config.cookbookPath){
-    optionsString.add('--cookbook-path', config.cookbookPath)
+    optionStringFactory.addOption('--cookbook-path', config.cookbookPath)
   }
   
   if ('' != config.secret){
-    optionsString.add('--secret', config.secret)
+    optionStringFactory.addOption('--secret', config.secret)
   }
 
-  optionsString.add('--server-url', config.serverUrl)
+  optionStringFactory.addOption('--server-url', config.serverUrl)
 
   // Adding options because of CI environment. In a CI environment it is impossbile to edit the file on the fly.
-  optionsString.add('--disable-editing')
-  optionsString.add('--yes')
+  optionStringFactory.addOption('--disable-editing')
+  optionStringFactory.addOption('--yes')
 
   withCredentials([
     sshUserPrivateKey(
@@ -211,8 +211,8 @@ def call (Map config = [:]){
       usernameVariable: 'username'
     )
   ]) {
-    optionsString.add('--user', username)
-    optionsString.add('--key', '/secret/chef')
+    optionStringFactory.addOption('--user', username)
+    optionStringFactory.addOption('--key', '/secret/chef')
     
     knifeCommand = dockerRunCommand(
       dockerImage: config.dockerImage,
@@ -227,7 +227,7 @@ def call (Map config = [:]){
     )
 
     return execute(
-      script: "${knifeCommand} knife ${config.subCommand} ${optionsString.toString()} ${config.commandTarget}"
+      script: "${knifeCommand} knife ${config.subCommand} ${optionsString.getOptionString().toString()} ${config.commandTarget}"
     )
   }
 }

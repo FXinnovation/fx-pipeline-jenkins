@@ -1,5 +1,5 @@
-import com.fxinnovation.utils.OptionString
-import com.fxinnovation.utils.FxString
+import com.fxinnovation.factory.OptionStringFactory
+import com.fxinnovation.type.FxString
 
 def getParameter(Map config = [:]) {
   mapAttributeCheck(config, 'name', CharSequence, '', '')
@@ -28,25 +28,25 @@ def putParameter(Map config = [:]) {
     error('Parameter "type" must be one of ["String", "StringList", "SecureString"]')
   }
 
-  def optionsString = new OptionString(this)
-  optionsString.setDelimiter(' ')
+  def optionStringFactory = new OptionStringFactory(this)
+
+  def optionsString = optionStringFactory.createOptionString(' ')
 
   if (config.type == 'SecureString'){
     mapAttributeCheck(config, 'keyId', CharSequence, '', 'ERROR: You must define a keyId.')
-    optionsString.add('--key-id', config.keyId)
+    optionStringFactory.addOption('--key-id', config.keyId)
   }
 
   if (config.overwrite){
-    optionsString.add('--overwrite')
+    optionStringFactory.addOption('--overwrite')
   }
 
-  
   withEnv([
       "SSM_PARAM_SECRET=${config.value}"
   ])
   {
     return execute(
-      script: "aws ssm put-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' --value \$SSM_PARAM_SECRET --type '${new FxString(config.type).escapeBashSimpleQuote()}' ${optionsString.toString()}"
+      script: "aws ssm put-parameter --name '${new FxString(config.name).escapeBashSimpleQuote()}' --value \$SSM_PARAM_SECRET --type '${new FxString(config.type).escapeBashSimpleQuote()}' ${optionStringFactory.getOptionString().toString()}"
     )
   }
 }
