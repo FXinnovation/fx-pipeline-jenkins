@@ -1,4 +1,4 @@
-import com.fxinnovation.utils.OptionStringFactory
+import com.fxinnovation.factory.OptionStringFactory
 
 Map getShowValidParameters() {
   return [
