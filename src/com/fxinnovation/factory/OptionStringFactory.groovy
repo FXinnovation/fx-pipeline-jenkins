@@ -16,13 +16,10 @@ class OptionStringFactory {
       this.context.error("Cannot add option “${optionName}” to the option string. It is expected to be “${expectedOptionType}”, given: “${optionValue.getClass()}”.")
     }
 
-    this.context.println(optionValue.getClass())
     if (optionValue instanceof java.util.AbstractCollection) {
-      this.context.println(optionValue.getClass())
-
       for(singleOptionValue in optionValue) {
         this.checkOption(optionName, singleOptionValue)
-        this.optionString.addOption(optionName, optionValue)
+        this.optionString.addOption(optionName, singleOptionValue)
       }
 
       return
