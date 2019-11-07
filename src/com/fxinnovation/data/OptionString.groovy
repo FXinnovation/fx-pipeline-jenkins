@@ -24,7 +24,7 @@ class OptionString implements Serializable {
     return this.value
   }
 
-  void addOption(CharSequence optionName, CharSequence optionValue) {
+  void addOption(CharSequence optionName, Object optionValue) {
     this.value += optionName.toString()
 
     if (optionValue) {
