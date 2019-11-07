@@ -17,7 +17,9 @@ class OptionStringFactory {
     }
 
     this.context.println(optionValue.getClass())
-    if (optionValue instanceof AbstractCollection) {
+    if (optionValue instanceof java.util.AbstractCollection) {
+      this.context.println(optionValue.getClass())
+
       for(singleOptionValue in optionValue) {
         this.checkOption(optionName, singleOptionValue)
         this.optionString.addOption(optionName, optionValue)
