@@ -16,6 +16,7 @@ class OptionStringFactory {
       this.context.error("Cannot add option “${optionName}” to the option string. It is expected to be “${expectedOptionType}”, given: “${optionValue.getClass()}”.")
     }
 
+    this.context.println(optionValue.getClass())
     if (optionValue instanceof AbstractCollection) {
       for(singleOptionValue in optionValue) {
         this.checkOption(optionName, singleOptionValue)
@@ -25,6 +26,7 @@ class OptionStringFactory {
       return
     }
 
+    this.checkOption(optionName, optionValue)
     this.optionString.addOption(optionName, optionValue)
   }
 
