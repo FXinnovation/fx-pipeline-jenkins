@@ -28,7 +28,7 @@ class OptionString implements Serializable {
     this.value += optionName.toString()
 
     if (optionValue) {
-      this.value += this.delimiter.toString() + optionValue.toString()
+      this.value += this.getDelimiter() + optionValue.toString()
     }
 
     this.value += ' '
