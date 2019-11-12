@@ -227,7 +227,7 @@ def call (Map config = [:]){
     )
 
     return execute(
-      script: "${knifeCommand} knife ${config.subCommand} ${optionsString.getOptionString().toString()} ${config.commandTarget}"
+      script: "${knifeCommand} knife ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}"
     )
   }
 }
