@@ -166,8 +166,6 @@ def cookbookUpload(Map config = [:]){
 }
 
 def call (Map config = [:]){
-  optionsString = ''
-  
   mapAttributeCheck(config, 'commandTarget', CharSequence, '', '“commandTarget” parameter is mandatory.')
   mapAttributeCheck(config, 'credentialId', CharSequence, '', '“credentialId” parameter is mandatory.')
   mapAttributeCheck(config, 'serverUrl', CharSequence, '', '“serverUrl” parameter is mandatory.')
