@@ -22,7 +22,9 @@ def show(Map config = [:]){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
-  terraform(config)
+  // NOTE: This has been commented out becasue of https://github.com/hashicorp/terraform/issues/23377
+  // it can be activated again when the bug is resolved. (not too long I hope)
+  // terraform(config)
 }
 
 def output(Map config = [:]){
