@@ -1,5 +1,4 @@
 def call(Map config = [:], Map closures = [:]) {
-  mapAttributeCheck(config, 'ansiblelintConfig',      Map,          [:])
   mapAttributeCheck(config, 'ansiblelintOutputFile',  CharSequence, 'ansible-lint.txt')
   mapAttributeCheck(config, 'kitchenAwsCredentialId', CharSequence, 'itoa-application-awscollectors-awscred')
   mapAttributeCheck(config, 'kitchenConcurrency',     Integer,      5)
@@ -12,6 +11,7 @@ def call(Map config = [:], Map closures = [:]) {
     '|1|+TYoo5BCu7BRQZl0+TXEK2f6JW8=|zfDEKwHmsNmNGPY1bNj1CNjOPLQ= ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAZ3HVe71Jte8O3B6CnnCojmCtQJidELmlSiKbxZphEwnhl6Wr7iF0GH+Oo5k34Q8toPHvmIRPh9UcNTr4g5dHI=',
     '|1|6Kd9WNT+MUC06McJma+j91Fxfik=|aHMHcoEUNdmmgU75HWXfkIGTUWA= ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnKb68pJWPerdWlT9m2DraaFalb7K562kUO4SHtpyaL',
   ])
+  mapAttributeCheck(config, 'lintOptions',            CharSequence, '-p --parseable-severity -x 204 -x 305')
 
   fxJob([
     pipeline: { Map scmInfo ->
@@ -64,14 +64,14 @@ def call(Map config = [:], Map closures = [:]) {
 
           pipelinePlaybook(
             [
-              ansiblelintConfig:     config.ansiblelintConfig,
               galaxySSHHostKeys:     config.initSSHHostKeys,
               galaxyAgentSocket:     '\$(readlink -f $SSH_AUTH_SOCK)',
               awsSSHKeyId:           "${config.kitchenSshCredentialId}",
               awsAccessKeyId:        "${access_key}",
               awsSecretAccessKey:    "${secret_key}",
               kitchenPrivateKeyPath: "${kitchenKey}",
-              publish:               config.publish
+              publish:               config.publish,
+              lintOptions:           "${config.lintOptions}"
             ],
             closures
           )
