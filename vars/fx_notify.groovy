@@ -93,4 +93,11 @@ def call(Map config = [:]){
       videoUrl: ''
     ]]
   )
+
+  office365ConnectorSend(
+    color: 'RED',
+    message: message,
+    status: config,status,
+    webhookUrl: 'https://outlook.office.com/webhook/5dcddcdb-f3b6-4525-abeb-70923810e553@219647b6-1ea6-409d-b9cc-0893cb535884/JenkinsCI/d507bf9f26b247d29c1acd3bcbed58ad/28a8f8a0-8b85-4ec6-a8db-3ad985265e84'
+  )
 }
