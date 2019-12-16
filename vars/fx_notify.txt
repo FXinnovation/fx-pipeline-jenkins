@@ -2,7 +2,7 @@ The fx_notify variable allows you to notify build results to the current chat sy
 
 It takes the following parameters:
 
-*failOnError*: defaults to true
+*failOnError*: defaults to false
 
 *rawMessage*: default to true
 
