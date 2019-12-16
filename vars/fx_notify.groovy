@@ -35,35 +35,41 @@ def call(Map config = [:]){
   def buildCausers = currentBuild.getBuildCauses()
   def foundCausers = false
 
-  for (i=0; i < buildCausers.size(); i++){
-    def currentCause = buildCausers[i]
-    if (currentCause.userId != null){
+  try {
+    for (i=0; i < buildCausers.size(); i++){
+      def currentCause = buildCausers[i]
+      if (currentCause.userId != null){
+        rocketUser = rocketchat.findUserByMail(
+          mail: currentCause.userId,
+          rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
+          rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
+        )
+        config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
+        foundCausers = true
+      }
+    }
+    if (!foundCausers){
+      def email = sh(
+        returnStdout: true,
+        script:       "git log -1 --pretty=format:'%ae'"
+      ).trim()
+      def rocketUser = [:]
       rocketUser = rocketchat.findUserByMail(
-        mail: currentCause.userId,
+        mail: email,
         rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
         rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
       )
+      if (null == rocketUser || !rocketUser.containsKey('username')){
+        rocketUser = [
+          username: 'all'
+        ]
+      }
       config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
-      foundCausers = true
     }
-  }
-  if (!foundCausers){
-    def email = sh(
-      returnStdout: true,
-      script:       "git log -1 --pretty=format:'%ae'"
-    ).trim()
-    def rocketUser = [:]
-    rocketUser = rocketchat.findUserByMail(
-      mail: email,
-      rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
-      rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
-    )
-    if (null == rocketUser || !rocketUser.containsKey('username')){
-      rocketUser = [
-        username: 'all'
-      ]
-    }
-    config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
+  } catch(ex) {
+    println("Error finding people to notify")
+    println(ex.getMessage());
+    println(ex.toString());
   }
 
   def message = """
@@ -74,30 +80,42 @@ def call(Map config = [:]){
     message = message + "\nMessage: ${config.message}"
   }
 
-  rocketSend(
-    failOnError: config.failOnError,
-    message:     message,
-    rawMessage:  config.rawMessage,
-    avatar:      config.avatar,
-    attachments: [[
-      audioUrl: '',
-      authorIcon: '',
-      authorName: '',
-      color: config.color,
-      imageUrl: '',
-      messageLink: '',
-      text: config.status,
-      thumbUrl: '',
-      title: "${env.JOB_NAME} #${env.BUILD_NUMBER}",
-      titleLink: env.BUILD_URL,
-      videoUrl: ''
-    ]]
-  )
+  try {
+    rocketSend(
+      failOnError: config.failOnError,
+      message:     message,
+      rawMessage:  config.rawMessage,
+      avatar:      config.avatar,
+      attachments: [[
+        audioUrl: '',
+        authorIcon: '',
+        authorName: '',
+        color: config.color,
+        imageUrl: '',
+        messageLink: '',
+        text: config.status,
+        thumbUrl: '',
+        title: "${env.JOB_NAME} #${env.BUILD_NUMBER}",
+        titleLink: env.BUILD_URL,
+        videoUrl: ''
+      ]]
+    )
+  } catch(ex) {
+    println("Error sending to rocket chat")
+    println(ex.getMessage());
+    println(ex.toString());
+  }
 
-  office365ConnectorSend(
-    color: config.color,
-    message: message,
-    status: config.status,
-    webhookUrl: 'https://outlook.office.com/webhook/5dcddcdb-f3b6-4525-abeb-70923810e553@219647b6-1ea6-409d-b9cc-0893cb535884/JenkinsCI/d507bf9f26b247d29c1acd3bcbed58ad/28a8f8a0-8b85-4ec6-a8db-3ad985265e84'
-  )
+  try {
+    office365ConnectorSend(
+      color: config.color,
+      message: message,
+      status: config.status,
+      webhookUrl: 'https://outlook.office.com/webhook/5dcddcdb-f3b6-4525-abeb-70923810e553@219647b6-1ea6-409d-b9cc-0893cb535884/JenkinsCI/d507bf9f26b247d29c1acd3bcbed58ad/28a8f8a0-8b85-4ec6-a8db-3ad985265e84'
+    )
+  } catch(ex) {
+    println("Error sending to office 365 connector")
+    println(ex.getMessage());
+    println(ex.toString());
+  }
 }
