@@ -1,6 +1,6 @@
 def call(Map config = [:]){
   if ( !config.containsKey('failOnError') ){
-    config.failOnError = true
+    config.failOnError = false
   }
   if ( !config.containsKey('rawMessage') ){
     config.rawMessage = true
