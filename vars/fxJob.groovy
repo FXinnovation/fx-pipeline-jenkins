@@ -157,12 +157,13 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
             }
             if (closures.containsKey('notify')){
               closures.notify()
-            }else{
-              fx_notify(
-                status: status,
-                failOnError: false
-              )
             }
+           // else{
+           //   fx_notify(
+           //     status: status,
+           //     failOnError: false
+           //   )
+           // }
             if (closures.containsKey('postNotify')){
               closures.postNotify()
             }
