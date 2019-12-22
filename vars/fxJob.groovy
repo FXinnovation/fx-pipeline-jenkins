@@ -26,6 +26,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
   mapAttributeCheck(config, 'preCommitDockerImageName', CharSequence, 'fxinnovation/pre-commit:latest')
+  mapAttributeCheck(config, 'pod_cloud', CharSequence, 'kubernetes')
+  mapAttributeCheck(config, 'pod_name', CharSequence, 'jenkins-slave-linux')
+  mapAttributeCheck(config, 'pod_namespace', CharSequence, 'default')
+  mapAttributeCheck(config, 'pod_nodeUsageMode', CharSequence, 'NORMAL')
 
 
   def slaveSizes = [
