@@ -31,6 +31,8 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'pod_namespace', CharSequence, 'default')
   mapAttributeCheck(config, 'pod_nodeUsageMode', CharSequence, 'NORMAL')
 
+  //THIS MUST BE REMOVE BEFORE MERGE:
+  config.pod_namespace = 'jenkins-swift'
 
   def slaveSizes = [
     small: [
@@ -59,10 +61,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   status='SUCCESS'
   def label = UUID.randomUUID().toString()
   podTemplate(
-    cloud: 'kubernetes',
-    name:  'jenkins-slave-linux',
-    namespace: 'default',
-    nodeUsageMode: 'NORMAL',
+    cloud: config.pod_cloud,
+    name:  config.pod_name,
+    namespace: config.pod_namespace,
+    nodeUsageMode: config.pod_nodeUsageMode,
     idleMinutes: 0,
     slaveConnectTimeout: 100,
     podRetention: never(),
