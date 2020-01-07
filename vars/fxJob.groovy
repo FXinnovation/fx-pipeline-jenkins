@@ -26,13 +26,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
   mapAttributeCheck(config, 'preCommitDockerImageName', CharSequence, 'fxinnovation/pre-commit:latest')
-  mapAttributeCheck(config, 'pod_cloud', CharSequence, 'kubernetes')
-  mapAttributeCheck(config, 'pod_name', CharSequence, 'jenkins-slave-linux')
-  mapAttributeCheck(config, 'pod_namespace', CharSequence, 'default')
-  mapAttributeCheck(config, 'pod_nodeUsageMode', CharSequence, 'NORMAL')
-
-  //THIS MUST BE REMOVE BEFORE MERGE:
-  //config.pod_namespace = 'jenkins-swift'
+  mapAttributeCheck(config, 'podCloud', CharSequence, 'kubernetes')
+  mapAttributeCheck(config, 'podName', CharSequence, 'jenkins-slave-linux')
+  mapAttributeCheck(config, 'podNamespace', CharSequence, 'default')
+  mapAttributeCheck(config, 'podNodeUsageMode', CharSequence, 'NORMAL')
 
   def slaveSizes = [
     small: [
@@ -61,10 +58,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   status='SUCCESS'
   def label = UUID.randomUUID().toString()
   podTemplate(
-    cloud: config.pod_cloud,
-    name:  config.pod_name,
-    namespace: config.pod_namespace,
-    nodeUsageMode: config.pod_nodeUsageMode,
+    cloud: config.podCloud,
+    name:  config.podName,
+    namespace: config.podNamespace,
+    nodeUsageMode: config.podNodeUsageMode,
     idleMinutes: 0,
     slaveConnectTimeout: 100,
     podRetention: never(),
@@ -159,10 +156,11 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
               closures.notify()
             }
             else{
-              fx_notify(
-                status: status,
-                failOnError: false
-              )
+              println "nope"
+              //fx_notify(
+              //  status: status,
+              //  failOnError: false
+              //)
             }
             if (closures.containsKey('postNotify')){
               closures.postNotify()
