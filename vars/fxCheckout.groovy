@@ -3,7 +3,7 @@ import com.fxinnovation.data.SCMInfo
 def call(Map config = [:]){
   checkout scm
 
-  return new SCMInfo(
+  scmInfo = new SCMInfo(
     this.getCommitId(),
     this.getLastCommitId(),
     this.getBranch(),
@@ -12,6 +12,10 @@ def call(Map config = [:]){
     this.getLatestTag(),
     this.getRepositoryName(scm)
   )
+
+  printDebug(scmInfo)
+
+  return scmInfo
 }
 
 private String getCommitId() {
