@@ -1,6 +1,8 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]) {
   fxJob([
-    pipeline: { Map scmInfo ->
+    pipeline: { ScmInfo scmInfo ->
       def listCustomer = execute (
         script: "ls -d */ |sed -e 's/\\///g'"
       )
@@ -20,15 +22,15 @@ def call(Map config = [:]) {
       def versionFileExists = fileExists("${customer}/version.yml")
       def manifestFileExists = fileExists("${customer}/manifest.xml")
   
-      def isTagged = '' != scmInfo.tag
-      def isMaster = 'master' == scmInfo.branch
+      def isTagged = '' != scmInfo.getTag()
+      def isMaster = 'master' == scmInfo.getBranch()
       def publish = false
   
       if (isTagged && isMaster) {
         publish = true
       }
 
-      if ('tst' == scmInfo.branch) {
+      if ('tst' == scmInfo.getBranch()) {
         publish = true
       }
   

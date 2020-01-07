@@ -1,8 +1,9 @@
 import com.fxinnovation.nexus.PowershellApplicationRepository
+import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:], Map closures =[:]){
   fxJob([
-    pipeline: { Map scmInfo ->
+    pipeline: { ScmInfo scmInfo ->
     
       printDebug('----- fxPowershellApplication -----')
 
@@ -11,12 +12,12 @@ def call(Map config = [:], Map closures =[:]){
       config.applicationName = config.applicationName.toLowerCase()
 
       def repository
-      if (  'master' == scmInfo.branch && '' != scmInfo.tag ){
-        config['version'] = scmInfo.tag
+      if (  'master' == scmInfo.getBranch() && '' != scmInfo.getTag() ){
+        config['version'] = scmInfo.getTag()
         repository = PowershellApplicationRepository.getReleaseRepository(this, config)
       }
       else{
-        config['version'] = "latest-${scmInfo.branch.replace("\\", "-").replace("/", "-").replace(" ", "_").toLowerCase()}"
+        config['version'] = "latest-${scmInfo.getBranch().replace("\\", "-").replace("/", "-").replace(" ", "_").toLowerCase()}"
         repository = PowershellApplicationRepository.getUnstableRepository(this, config)
       }
 

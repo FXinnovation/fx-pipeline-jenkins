@@ -1,3 +1,5 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]){
   if (!config.containsKey('image') && !(config.image instanceof CharSequence)){
     error('image parameter is mandatory and must be of type CharSequence')
@@ -11,17 +13,12 @@ def call(Map config = [:]){
 
   fxJob(
     [
-      pipeline: { Map scmInfo ->
-        tags = [scmInfo.branch.replace('/','_')]
-        if ( 'master' == scmInfo.branch || '' != scmInfo.tag){
-          publish = true
-        }else{
-          publish = false
+      pipeline: { ScmInfo scmInfo ->
+        tags = [scmInfo.getBranch().replace('/','_')]
+        if ( scmInfo.isTagged() ){
+          tags.add(scmInfo.getTag())
         }
-        if ( '' != scmInfo.tag ){
-          tags.add(scmInfo.tag)
-        }
-        if (config.pushLatest && scmInfo.isLastTag){
+        if (config.pushLatest && scmInfo.isPublishableAsLatest()){
           tags.add('latest')
         }
         pipelineDocker(
@@ -38,7 +35,7 @@ def call(Map config = [:]){
               namespace: config.namespace,
               credentialId: 'jenkins-fxinnovation-dockerhub'
             ],
-            publish: publish
+            publish: scmInfo.isPublishable() || scmInfo.isPublishableAsDev()
           ],
           [
             postBuild: {
