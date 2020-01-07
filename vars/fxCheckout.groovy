@@ -1,4 +1,4 @@
-import com.fxinnovation.data.SCMInfo
+import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:]){
   checkout scm
