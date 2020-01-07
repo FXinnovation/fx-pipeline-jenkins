@@ -1,31 +1,51 @@
+import com.fxinnovation.data.SCMInfo
+
 def call(Map config = [:]){
   checkout scm
-  def scmInfo = [:]
-  scmInfo.commitId = execute(
-    script: 'git rev-parse HEAD'
-  ).stdout.trim()
-  scmInfo.branch = execute(
-    script: 'echo "${BRANCH_NAME}"'
-  ).stdout.trim()
-  try{
-    scmInfo.tag = execute(
-    script: 'git describe --tags --exact-match'
-    ).stdout.trim()
-  }catch(error){
-    scmInfo.tag = ''
-  }
-  try{
-    latestTag = execute(
-      script: 'git describe --tags $(git rev-list --tags --max-count=1)'
-    ).stdout.trim()
-    scmInfo.isLastTag = (latestTag == scmInfo.tag)
-  }catch(error){
-    scmInfo.isLastTag = false
-  }
-  scmInfo.isPullRequest = scmInfo.branch.matches('^PR-[0-9]*$')
-  scmInfo.repositoryName = scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
 
-  printDebug(scmInfo)
+  return new SCMInfo(
+    this.getCommitId(),
+    this.getLastCommitId(),
+    this.getBranch(),
+    this.getDefaultBranch(),
+    this.getTag(),
+    this.getLatestTag(),
+    this.getRepositoryName(scm)
+  )
+}
 
-  return scmInfo
+private String getCommitId() {
+  return executeCommand('git rev-parse HEAD')
+}
+
+private String getLastCommitId() {
+  return executeCommand('git rev-parse origin/'+this.getDefaultBranch())
+}
+
+private String getBranch() {
+  return executeCommand('echo "${BRANCH_NAME}"')
+}
+
+private String getTag() {
+  return executeCommand('git describe --tags --exact-match')
+}
+
+private String getLatestTag() {
+  return executeCommand('git describe --tags $(git rev-list --tags --max-count=1)')
+}
+
+private String getRepositoryName(scm) {
+  return scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
+}
+
+private String getDefaultBranch() {
+  return executeCommand("git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'")
+}
+
+private String executeCommand(String command) {
+  try{
+    return execute(script: command).stdout.trim()
+  }catch(error){
+    return ''
+  }
 }
