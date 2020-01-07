@@ -1,24 +1,22 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]) {
+  mapAttributeCheck(config, 'version', CharSequence, '3')
 
-    mapAttributeCheck(config, 'version', CharSequence, '3')
+  fxJob([
+    pipeline: { ScmInfo scmInfo ->
+      def MakefileFileExists = fileExists 'Makefile'
+      def toDeploy = false
 
+      if (scmInfo.isPublishable() && MakefileFileExists && jobInfo.isManuallyTriggered()) {
+        toDeploy = true
+      }
 
-    fxJob([
-            pipeline: { Map scmInfo ->
-                def isTagged = '' != scmInfo.tag
-                def MakefileFileExists = fileExists 'Makefile'
-                def toDeploy = false
+      printDebug("isPublishable: ${scmInfo.isPublishable()} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
 
-                if (isTagged && MakefileFileExists && jobInfo.isManuallyTriggered()) {
-                    toDeploy = true
-                }
-
-                printDebug("isTagged: ${isTagged} | MakefileFileExists: ${MakefileFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy:${toDeploy}")
-
-                pipelinePython([
-                        version: config.version
-                ])
-
-            }
-    ])
+      pipelinePython([
+        version: config.version
+      ])
+    }
+  ])
 }

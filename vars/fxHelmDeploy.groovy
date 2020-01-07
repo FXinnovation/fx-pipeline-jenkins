@@ -1,3 +1,5 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]) {
   mapAttributeCheck(config, 'release', CharSequence, '', '')
   mapAttributeCheck(config, 'chart', CharSequence, '', '')
@@ -7,12 +9,7 @@ def call(Map config = [:]) {
 
   fxJob(
     [
-      pipeline: { Map scmInfo ->
-        if ( '' == scmInfo.tag || 'master' != scmInfo.branch ){
-          deploy = false
-        }else{
-          deploy = true
-        }
+      pipeline: { ScmInfo scmInfo ->
         pipelineHelmDeployment(
           helmConfig: [
             values: config.valuesFile,
@@ -23,7 +20,7 @@ def call(Map config = [:]) {
             install: true,
             wait: true
           ],
-          deploy: deploy
+          deploy: scmInfo.isPublishable()
         )
       }
     ]

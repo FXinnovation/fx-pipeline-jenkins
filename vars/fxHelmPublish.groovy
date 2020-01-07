@@ -1,19 +1,16 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]) {
   mapAttributeCheck(config, 'repo', CharSequence, 'http://chartmuseum-chartmuseum:8080')
   mapAttributeCheck(config, 'chartName', CharSequence, '', 'chartName parameter is mandatory')
 
   fxJob(
     [
-      pipeline: { Map scmInfo ->
-        if ( '' == scmInfo.tag || 'master' != scmInfo.branch ){
-          deploy = false
-        }else{
-          deploy = true
-        }
+      pipeline: { ScmInfo scmInfo ->
         pipelineHelmPublish(
           chartName: config.chartName,
           repo: config.repo,
-          deploy: deploy
+          deploy: scmInfo.isPublishable()
         )
       }
     ]

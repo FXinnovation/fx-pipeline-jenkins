@@ -1,7 +1,9 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]){
   fxJob([
     pipeline: {
-      Map scmInfo ->
+      ScmInfo scmInfo ->
       pipelineNodeJsYarn(
         [:],
         [

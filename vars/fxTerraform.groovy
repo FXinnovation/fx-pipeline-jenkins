@@ -1,3 +1,5 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(closures, 'postPrepare', Closure, {})
   mapAttributeCheck(config, 'testPlanVars', List, [])
@@ -20,16 +22,15 @@ def call(Map config = [:], Map closures = [:]) {
 
   fxJob([
     postPrepare: closures.postPrepare,
-    pipeline: { Map scmInfo ->
-      def isTagged = '' != scmInfo.tag
+    pipeline: { ScmInfo scmInfo ->
       def deployFileExists = fileExists 'deploy.tf'
       def toDeploy = false
 
-      if (isTagged && deployFileExists && jobInfo.isManuallyTriggered()){
+      if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()){
         toDeploy = true
       }
 
-      printDebug("isTagged: ${isTagged} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
+      printDebug("isPublishable: ${scmInfo.isPublishable()} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
 
       commandTargets = []
       try {
@@ -85,7 +86,7 @@ def call(Map config = [:], Map closures = [:]) {
   config)
 }
 
-private preValidate(Boolean deployFileExists, Map scmInfo) {
+private preValidate(Boolean deployFileExists, ScmInfo scmInfo) {
   if (!deployFileExists) {
     if (!fileExists('main.tf')) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “main.tf” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
@@ -103,7 +104,7 @@ private preValidate(Boolean deployFileExists, Map scmInfo) {
       error("This build does not meet FX standards: a Terraform module MUST contain a “.gitignore” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
     }
 
-    if (!(scmInfo.repositoryName ==~ /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github|kubernetes|multi)-[a-z\d]{3,}([a-z\d\-]+)?$/)) {
+    if (!(scmInfo.getRepositoryName() ==~ /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github|kubernetes|multi)-[a-z\d]{3,}([a-z\d\-]+)?$/)) {
       error("This build does not meet FX standards: a Terraform module MUST be name “terraform-*(module|ecosystem)*-*provider*-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
@@ -115,7 +116,7 @@ private preValidate(Boolean deployFileExists, Map scmInfo) {
       }
     }
 
-    if (!(scmInfo.repositoryName ==~ /^terraform\-deployment\-[a-z\d-]{3,}$/)) {
+    if (!(scmInfo.getRepositoryName() ==~ /^terraform\-deployment\-[a-z\d-]{3,}$/)) {
       error("This build does not meet FX standards: a Terraform deployment MUST be name “terraform-deployment-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
