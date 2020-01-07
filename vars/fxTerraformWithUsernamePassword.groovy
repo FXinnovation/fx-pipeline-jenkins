@@ -1,4 +1,4 @@
-def call(Map config = [:]) {
+def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '“testEnvironmentCredentialId” parameter is mandatory.')
   mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)
   mapAttributeCheck(config, 'providerUsernameVariableName', CharSequence, 'access_key')
@@ -37,6 +37,6 @@ def call(Map config = [:]) {
     config.inspecUsername = TF_username_test
     config.inspecPassword = TF_password_test
 
-    fxTerraform(config)
+    fxTerraform(config, closures)
   }
 }

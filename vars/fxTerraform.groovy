@@ -2,6 +2,7 @@ import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(closures, 'postPrepare', Closure, {})
+  mapAttributeCheck(closures, 'notify', Closure, {fx_notify(status: status, failOnError: false)})
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, 'gitea-fx_administrator-key')
@@ -21,6 +22,7 @@ def call(Map config = [:], Map closures = [:]) {
   }
 
   fxJob([
+    notify: closures.notify,
     postPrepare: closures.postPrepare,
     pipeline: { ScmInfo scmInfo ->
       def deployFileExists = fileExists 'deploy.tf'
@@ -79,7 +81,7 @@ def call(Map config = [:], Map closures = [:]) {
       if (config.containsKey('commandTargets')) {
         print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
       }
-    }
+    },
   ], [
     disableConcurrentBuilds()
   ],
