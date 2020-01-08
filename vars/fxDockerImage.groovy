@@ -18,7 +18,7 @@ def call(Map config = [:]){
         if ( scmInfo.isTagged() ){
           tags.add(scmInfo.getTag())
         }
-        if (config.pushLatest && scmInfo.isPublishableAsLatest()){
+        if (config.pushLatest && scmInfo.isPublishable()){
           tags.add('latest')
         }
         pipelineDocker(
