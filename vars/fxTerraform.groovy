@@ -67,13 +67,13 @@ def call(Map config = [:], Map closures = [:]) {
         ], [
           preValidate: { preValidate(deployFileExists, scmInfo) },
           init       : { init(config, commandTarget, deployFileExists) },
-          publish    : { publish(config, commandTarget, toDeploy, deployFileExists) }
+          publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closures) }
         ]
       )
     }
   }
 
-  closures.postNotify = {
+  closures.postNotification = {
     if (config.containsKey('commandTargets')) {
       print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
     }
@@ -153,7 +153,7 @@ private init(Map config = [:], CharSequence commandTarget, Boolean deployFileExi
   }
 }
 
-private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists) {
+private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists, Map closures = [:]) {
   plan = terraform.plan([
     commandTarget: commandTarget,
     out: 'plan.out',
@@ -176,9 +176,14 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
     return
   }
 
-  fx_notify(
-    status: 'PENDING'
-  )
+  if (closures.containsKey("notification")) {
+    closures.notification('PENDING')
+  }
+  else {
+    fx_notify(
+      status: 'PENDING'
+    )
+  }
 
   timeout(activity: true, time: 20) {
     input 'WARNING: You are about to deploy the displayed plan in. Do you want to apply it?'

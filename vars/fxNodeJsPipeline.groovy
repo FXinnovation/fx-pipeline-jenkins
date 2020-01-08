@@ -15,7 +15,7 @@ def call(Map config = [:]){
         ]
       )
     },
-    preNotify: {
+    preNotification: {
       junit 'xunit.xml'
       cobertura(
         autoUpdateHealth: false,

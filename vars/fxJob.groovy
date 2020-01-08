@@ -148,12 +148,13 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
            status='FAILURE'
            throw error
         }finally{
-          stage('notify'){
-            if (closures.containsKey('preNotify')){
-              closures.preNotify()
+          stage('notification'){
+            if (closures.containsKey('preNotification')){
+              closures.preNotification()
             }
+            // We use notification because notify is a reserved keyword in groovy.
             if (closures.containsKey('notification')){
-              closures.notification()
+              closures.notification(status)
             }
             else{
               fx_notify(
@@ -161,8 +162,8 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
                 failOnError: false
               )
             }
-            if (closures.containsKey('postNotify')){
-              closures.postNotify()
+            if (closures.containsKey('postNotification')){
+              closures.postNotification()
             }
           }
           stage('cleanup'){
