@@ -20,6 +20,7 @@ def call(Map config = [:], Map closures = [:]) {
   }
 
   closures.pipeline = { ScmInfo scmInfo ->
+    println scmInfo
     def deployFileExists = fileExists 'deploy.tf'
     def toDeploy = false
 
