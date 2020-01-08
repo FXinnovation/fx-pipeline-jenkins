@@ -11,6 +11,7 @@ First, a Map of closures:
 *prepare*: Do a scmCheckout()
 
 *notification*: Do a fx_notify()
+If a closure notification is defined, the function must accept an argument (String). This argument is the status of the build.
 
 *cleanup*: Do a WSClean()
 
