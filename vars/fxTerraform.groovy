@@ -1,8 +1,6 @@
 import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:], Map closures = [:]) {
-  mapAttributeCheck(closures, 'postPrepare', Closure, {})
-  mapAttributeCheck(closures, 'notify', Closure, {fx_notify(status: status, failOnError: false)})
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, 'gitea-fx_administrator-key')
@@ -21,71 +19,73 @@ def call(Map config = [:], Map closures = [:]) {
     print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
   }
 
-  fxJob([
-    notify: closures.notify,
-    postPrepare: closures.postPrepare,
-    pipeline: { ScmInfo scmInfo ->
-      def deployFileExists = fileExists 'deploy.tf'
-      def toDeploy = false
+  closures,pipeline: { ScmInfo scmInfo ->
+    def deployFileExists = fileExists 'deploy.tf'
+    def toDeploy = false
 
-      if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()){
-        toDeploy = true
+    if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()){
+      toDeploy = true
+    }
+
+    printDebug("isPublishable: ${scmInfo.isPublishable()} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
+
+    commandTargets = []
+    try {
+      execute(script: "[ -d examples ]")
+
+      for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
+        commandTargets += commandTarget
       }
+    } catch (error) {
+      commandTargets = ['.']
+    }
 
-      printDebug("isPublishable: ${scmInfo.isPublishable()} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
+    fmt(config, commandTargets)
 
-      commandTargets = []
-      try {
-        execute(script: "[ -d examples ]")
+    printDebug('commandTargets: ' + commandTargets)
 
-        for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
-          commandTargets += commandTarget
-        }
-      } catch (error) {
-        commandTargets = ['.']
-      }
+    for(commandTarget in commandTargets) {
+      pipelineTerraform(
+        config +
+        [
+          commandTarget     : commandTarget,
+          testPlanOptions   : [
+            vars: config.testPlanVars
+          ] + config.commonOptions,
+          testApplyOptions : config.commonOptions,
+          fmtOptions: config.commonOptions,
+          validateOptions   : [
+            vars: config.validateVars
+          ] + config.commonOptions,
+          testDestroyOptions: [
+            vars: config.testPlanVars
+          ] + config.commonOptions,
+          validateOptions   : [
+            vars: config.testPlanVars
+          ] + config.commonOptions,
+          publish           : deployFileExists
+        ], [
+          preValidate: { preValidate(deployFileExists, scmInfo) },
+          init       : { init(config, commandTarget, deployFileExists) },
+          publish    : { publish(config, commandTarget, toDeploy, deployFileExists) }
+        ]
+      )
+    }
+  }
 
-      fmt(config, commandTargets)
+  closures.postNotify = {
+    if (config.containsKey('commandTargets')) {
+      print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
+    }
+  }
 
-      printDebug('commandTargets: ' + commandTargets)
-
-      for(commandTarget in commandTargets) {
-        pipelineTerraform(
-          config +
-          [
-            commandTarget     : commandTarget,
-            testPlanOptions   : [
-              vars: config.testPlanVars
-            ] + config.commonOptions,
-            testApplyOptions : config.commonOptions,
-            fmtOptions: config.commonOptions,
-            validateOptions   : [
-              vars: config.validateVars
-            ] + config.commonOptions,
-            testDestroyOptions: [
-              vars: config.testPlanVars
-            ] + config.commonOptions,
-            validateOptions   : [
-              vars: config.testPlanVars
-            ] + config.commonOptions,
-            publish           : deployFileExists
-          ], [
-            preValidate: { preValidate(deployFileExists, scmInfo) },
-            init       : { init(config, commandTarget, deployFileExists) },
-            publish    : { publish(config, commandTarget, toDeploy, deployFileExists) }
-          ]
-        )
-      }
-    },
-    postNotify: {
-      if (config.containsKey('commandTargets')) {
-        print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
-      }
-    },
-  ], [
-    disableConcurrentBuilds()
-  ],
-  config)
+  fxJob(
+    closures,
+    [
+      disableConcurrentBuilds()
+    ],
+    config
+  )
 }
 
 private preValidate(Boolean deployFileExists, ScmInfo scmInfo) {
