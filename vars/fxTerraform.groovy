@@ -19,7 +19,7 @@ def call(Map config = [:], Map closures = [:]) {
     print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
   }
 
-  closures.pipeline: { ScmInfo scmInfo ->
+  closures.pipeline = { ScmInfo scmInfo ->
     def deployFileExists = fileExists 'deploy.tf'
     def toDeploy = false
 
