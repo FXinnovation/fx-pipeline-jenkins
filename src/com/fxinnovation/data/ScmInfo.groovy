@@ -35,7 +35,6 @@ class ScmInfo implements Serializable {
       "\nIs a pull request: "+ this.isPullRequest() +
       "\nHas semver tag: "+ this.hasSemverTag() +
       "\nIs publishable: "+ this.isPublishable() +
-      "\nIs publishable as LATEST: "+ this.isPublishableAsLatest() +
       "\nIs publishable as DEV version: "+ this.isPublishableAsDev()
     )
   }
@@ -122,21 +121,12 @@ class ScmInfo implements Serializable {
    **/
   Boolean isPublishable() {
     return (
-      this.isPublishableAsLatest() &&
-      this.isCurrentTagLatest()
-    )
-  }
-
-  /**
-   * Whether or not the current commit is publishable as the latest version
-   **/
-  Boolean isPublishableAsLatest() {
-    return (
       this.defaultBranch == this.branch &&
       this.commitId == this.lastCommitId &&
       this.isTagged() &&
       this.hasSemverTag() &&
-      '' == this.getPreReleaseTag()
+      '' == this.getPreReleaseTag() &&
+      this.isCurrentTagLatest()
     )
   }
 
