@@ -117,6 +117,16 @@ class ScmInfo implements Serializable {
   }
 
   /**
+   * Whether or not the current commit is publishable as a tagged version, dev version or anything
+   **/
+  Boolean isPublishableAsAnything() {
+    return (
+      this.isPublishable() ||
+      this.isPublishableAsDev()
+    )
+  }
+
+  /**
    * Whether or not the current commit is publishable as a tagged version
    **/
   Boolean isPublishable() {
