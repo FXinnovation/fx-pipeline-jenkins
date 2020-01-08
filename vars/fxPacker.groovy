@@ -1,13 +1,9 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]){
   fxJob(
     [
-      pipeline: { Map scmInfo ->
-        publish = false
-
-        if ( '' != scmInfo.tag ){
-          publish = true
-        }
- 
+      pipeline: { ScmInfo scmInfo ->
         pipelinePacker(
           [
             validateConfig: [
@@ -16,7 +12,7 @@ def call(Map config = [:]){
             buildConfig: [
               config.buildConfig
             ],
-            publish: publish
+            publish: scmInfo.isPublishable()
           ]
         )
       }

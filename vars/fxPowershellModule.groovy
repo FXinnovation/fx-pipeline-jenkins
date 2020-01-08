@@ -1,18 +1,19 @@
 import com.fxinnovation.nexus.PowershellModuleRepository
+import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:], Map closures =[:]){
   fxJob([
-    pipeline: { Map scmInfo ->
+    pipeline: { ScmInfo scmInfo ->
 
       printDebug('----- fxPowershellModule -----')
 
-      if (  'master' == scmInfo.branch && '' != scmInfo.tag ){
-        config['version'] = scmInfo.tag
+      if (  'master' == scmInfo.getBranch() && '' != scmInfo.getTag() ){
+        config['version'] = scmInfo.getTag()
         config['isRelease'] = true
         config['publishRepository'] = PowershellModuleRepository.getReleaseRepository(this,config)
       }
       else{
-        config['version'] = "${scmInfo.branch.replace("\\", "").replace("/", "").replace(" ", "").replace("-", "").toLowerCase()}"
+        config['version'] = "${scmInfo.getBranch().replace("\\", "").replace("/", "").replace(" ", "").replace("-", "").toLowerCase()}"
         config['isRelease'] = false
         config['publishRepository'] = PowershellModuleRepository.getUnstableRepository(this,config)
       }

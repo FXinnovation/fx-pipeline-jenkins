@@ -1,3 +1,5 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'ansiblelintOutputFile',  CharSequence, 'ansible-lint.txt')
   mapAttributeCheck(config, 'kitchenAwsCredentialId', CharSequence, 'itoa-application-awscollectors-awscred')
@@ -14,7 +16,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'lintOptions',            CharSequence, '-p --parseable-severity -x 204 -x 305')
 
   fxJob([
-    pipeline: { Map scmInfo ->
+    pipeline: { ScmInfo scmInfo ->
       withCredentials([
         sshUserPrivateKey(
           credentialsId:   config.scmSshCredentialId,

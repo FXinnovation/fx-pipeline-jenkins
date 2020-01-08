@@ -1,3 +1,5 @@
+import com.fxinnovation.data.ScmInfo
+
 def call(Map config = [:]){
   if (!config.containsKey('credentialId') || !(config.credentialId instanceof CharSequence)){
     config.credentialId = 'chef-server-demo'
@@ -10,15 +12,10 @@ def call(Map config = [:]){
   }
   fxJob(
     [
-      pipeline: { Map scmInfo ->
-        if ( '' != scmInfo.tag ){
-          publish = true
-        }else{
-          publish = false
-        }
+      pipeline: { ScmInfo scmInfo ->
         pipelineChefEnvironment(
           [
-            publish: publish,
+            publish: scmInfo.isPublishable(),
             knifeConfig: [
               credentialId: config.credentialId,
               serverUrl: config.serverUrl,
