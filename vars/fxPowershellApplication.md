@@ -39,7 +39,7 @@ Will deploy to this repository if not on master or the commit have not been tagg
 
 ## client
 
-This field is used as a groupid in nexus. 
+This field is used as a groupid in nexus.
 
     Default : 'com.fxinnovation'
 
@@ -57,7 +57,7 @@ It contains all requirements :
     - .Net core 2.+
     - FX Powershell build modules
 
-    Default : 'fxinnovation/powershell-build'
+    Default : 'fxinnovation/powershell-build:1.1.4'
 
 ## dependencies
 
@@ -65,7 +65,7 @@ This parameter is used to merge applications togetter.
 
 The content of src will become the content of all applications + the current items of src. The order matter.
 
-    parameters : 
+    parameters :
         - nexusUrl
         - powershellApplicationReleaseRepository
         - powershellApplicationUnstableRepository
@@ -77,7 +77,7 @@ The content of src will become the content of all applications + the current ite
 
 # Jenkins file
 
-## Minimal requirements 
+## Minimal requirements
 
 ```groovy
 fxPowershellApplication(
@@ -94,7 +94,7 @@ fxPowershellApplication(
    nexusUrl: 'https://artifacts.dazzlingwrench.fxinnovation.com',
    powershellApplicationReleaseRepository: 'powershell-application',
    powershellApplicationUnstableRepository: 'powershell-application-featurebranches',
-   powershellDockerImage: 'fxinnovation/powershell-build',
+   powershellDockerImage: 'fxinnovation/powershell-build:1.1.4',
    powershellModuleRepository: 'https://artifacts.dazzlingwrench.fxinnovation.com/repository/powershell-module/',
    dependencies: [
       [
