@@ -98,7 +98,7 @@ class ScmInfo implements Serializable {
    */
   String getPreReleaseTag() {
     if (!this.isTagged()) {
-      return null
+      return ''
     }
 
     return  (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][7] : ''
