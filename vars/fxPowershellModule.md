@@ -31,11 +31,11 @@ It contains all requirements :
     - .Net core 2.+
     - FX Powershell build modules
 
-    Default : 'fxinnovation/powershell-build'
+    Default : 'fxinnovation/powershell-build:1.1.4'
 
 # Jenkins file
 
-## Minimal requirements 
+## Minimal requirements
 
 ```groovy
 fxPowershellModule(
@@ -49,7 +49,7 @@ fxPowershellModule(
 fxPowershellApplication(
    applicationName: 'mymodule',
    description: 'This is a dummy module that is completly useless',
-   powershellDockerImage: 'fxinnovation/powershell-build',
+   powershellDockerImage: 'fxinnovation/powershell-build:1.1.4',
    powershellModuleRepository: 'https://artifacts.dazzlingwrench.fxinnovation.com/repository/powershell-module/'
  )
  ```

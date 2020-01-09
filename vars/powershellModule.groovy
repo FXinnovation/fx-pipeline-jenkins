@@ -11,10 +11,10 @@ def addFXNexusRepository(Map config = [:]){
 }
 
 def buildModule(Map config = [:]){
-    mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build",  '')
+    mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build:1.1.4",  '')
 
     mapAttributeCheck(config, 'rootFolder', CharSequence, '/data/', '')
-    
+
     mapAttributeCheck(config, 'moduleName', CharSequence, '',  '“moduleName” parameter is mandatory.')
     mapAttributeCheck(config, 'version', CharSequence, '',  '“version” parameter is mandatory.')
     mapAttributeCheck(config, 'description', CharSequence, '',  '')
@@ -33,7 +33,7 @@ def buildModule(Map config = [:]){
 }
 
 def buildApplication(Map config = [:]){
-    mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build",  '')
+    mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build:1.1.4",  '')
 
     mapAttributeCheck(config, 'rootFolder', CharSequence, '/data/', '')
     mapAttributeCheck(config, 'applicationName', CharSequence, '',  '“applicationName” parameter is mandatory.')
@@ -47,13 +47,13 @@ def buildApplication(Map config = [:]){
         ])
     }
     finally{
-        nunit failIfNoResults: false, testResultsPattern: '_artefacts/**/test-result.xml' 
+        nunit failIfNoResults: false, testResultsPattern: '_artefacts/**/test-result.xml'
     }
 }
 
-def publishModule(Map config = [:]){  
-    mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build",  '')  
-    
+def publishModule(Map config = [:]){
+    mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build:1.1.4",  '')
+
     mapAttributeCheck(config, 'rootFolder', CharSequence, '/data/', '')
     mapAttributeCheck(config, 'nuGetApiKey', CharSequence, '',  'nuGetApiKey must be set')
     mapAttributeCheck(config, 'publishRepository', PowershellModuleRepository, '',  'publishRepository must be set')
