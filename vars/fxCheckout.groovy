@@ -43,7 +43,9 @@ private String getRepositoryName(scm) {
 }
 
 private String getDefaultBranch() {
-  return executeCommand("git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'")
+  // This is not robust as “master” might not be the default branch
+  // However Jenkins is unable to get HEAD pointer on remote, thus making it hard to get default branch
+  return 'master'
 }
 
 private String executeCommand(String command) {
