@@ -1,33 +1,27 @@
+import com.fxinnovation.factory.OptionStringFactory
+
 def build(Map config = [:]){
   mapAttributeCheck(config, 'image', CharSequence, '', 'The image key must be defined')
   mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
   mapAttributeCheck(config, 'registries', List, [])
   mapAttributeCheck(config, 'namespace', CharSequence, '')
 
-  optionsString = ''
+  optionsStringFactory = new OptionStringFactory()
   config.tags.each { tag ->
-    if (config.containsKey('registries') && [] != config.registries){
+    if (this.configContainsRegistries(config)) {
       config.registries.each { registry ->
         if (this.isPublishable(registry, config.namespace,  config.image + tag)) {
           return
         }
-        optionsString += "--tag ${registry}/"
-        if ('' != config.namespace) {
-          optionsString += "${config.namespace}/"
-        }
-        optionsString += "${config.image}:${tag} "
+        optionStringFactory.addOption('--tag', this.buildDockerTagOption(config, registry, tag))
       }
-    }else{
-      optionsString += '--tag '
-      if ('' != config.namespace) {
-        optionsString += "${config.namespace}/"
-      }
-      optionsString += "${config.image}:${tag} "
+    } else {
+      optionStringFactory.addOption('--tag', this.buildDockerTagOption(config, '', tag))
     }
   }
 
   execute(
-    script: "docker build ${optionsString} ./"
+    script: "docker build ${optionsStringFactory.toString()} ./"
   )
 }
 
@@ -75,15 +69,27 @@ def publish(Map config = [:]){
   }
 }
 
-private boolean isPublishable(CharSequence registry, CharSequence namespace, CharSequence tag) {
-  return(
-    this.dockerTagIsMaster(tag) ||
-    this.dockerTagExists(registry, namespace, tag)
-  )
+private String buildDockerTagOption(Map config, String registry, String tag) {
+  def tagOption = ''
+
+  if ('' != registry) {
+    tagOption = "${registry}/"
+  }
+
+  if ('' != config.namespace) {
+    tagOption += "${config.namespace}/"
+  }
+
+  tagOption += "${config.image}:${tag} "
+
+  return tagOption
 }
 
-private boolean dockerTagIsMaster(CharSequence tag) {
-  return 'master' === tag
+private boolean configContainsRegistries(Map config) {
+  return (
+    config.containsKey('registries') &&
+    [] != config.registries
+  )
 }
 
 private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
