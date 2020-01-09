@@ -50,11 +50,11 @@ class ScmInfo implements Serializable {
    * Get the full tag (MAJOR.MINOR.PATCH) without the pre-release.
    */
   String getPatchTag() {
-    if (!this.isTagged()) {
+    if (!this.hasSemverTag()) {
       return ''
     }
 
-    return (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][1] : ''
+    return (this.tag =~ this.SEMVER_REGEXP)[0][1] instanceof CharSequence ? (this.tag =~ this.SEMVER_REGEXP)[0][1] : ''
   }
 
   /**
@@ -68,11 +68,11 @@ class ScmInfo implements Serializable {
    * Get the minor tag (MAJOR.MINOR) without patch and the pre-release.
    */
   String getMinorTag() {
-    if (!this.isTagged()) {
+    if (!this.hasSemverTag()) {
       return ''
     }
 
-    return  (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][2] : ''
+    return (this.tag =~ this.SEMVER_REGEXP)[0][2] instanceof CharSequence ? (this.tag =~ this.SEMVER_REGEXP)[0][2] : ''
   }
 
   /**
@@ -86,22 +86,22 @@ class ScmInfo implements Serializable {
    * Get the major tag (MAJOR) without minor, patch and the pre-release.
    */
   String getMajorTag() {
-    if (!this.isTagged()) {
+    if (!this.hasSemverTag()) {
       return ''
     }
 
-    return  (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][3] : ''
+    return (this.tag =~ this.SEMVER_REGEXP)[0][3] instanceof CharSequence ? (this.tag =~ this.SEMVER_REGEXP)[0][3] : ''
   }
 
   /**
    * Get the pre-release tag (PRE-RELEASE) without major, minor and patch.
    */
   String getPreReleaseTag() {
-    if (!this.isTagged()) {
+    if (!this.hasSemverTag()) {
       return ''
     }
 
-    return  (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][7] : ''
+    return (this.tag =~ this.SEMVER_REGEXP)[0][7] instanceof CharSequence ? (this.tag =~ this.SEMVER_REGEXP)[0][7] : ''
   }
 
   /**
