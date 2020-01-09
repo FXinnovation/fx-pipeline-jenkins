@@ -50,6 +50,10 @@ class ScmInfo implements Serializable {
    * Get the full tag (MAJOR.MINOR.PATCH) without the pre-release.
    */
   String getPatchTag() {
+    if (!this.isTagged()) {
+      return ''
+    }
+
     return (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][1] : ''
   }
 
@@ -64,6 +68,10 @@ class ScmInfo implements Serializable {
    * Get the minor tag (MAJOR.MINOR) without patch and the pre-release.
    */
   String getMinorTag() {
+    if (!this.isTagged()) {
+      return ''
+    }
+
     return  (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][2] : ''
   }
 
@@ -78,6 +86,10 @@ class ScmInfo implements Serializable {
    * Get the major tag (MAJOR) without minor, patch and the pre-release.
    */
   String getMajorTag() {
+    if (!this.isTagged()) {
+      return ''
+    }
+
     return  (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][3] : ''
   }
 
@@ -85,6 +97,10 @@ class ScmInfo implements Serializable {
    * Get the pre-release tag (PRE-RELEASE) without major, minor and patch.
    */
   String getPreReleaseTag() {
+    if (!this.isTagged()) {
+      return null
+    }
+
     return  (this.tag =~ this.SEMVER_REGEXP) ? (this.tag =~ this.SEMVER_REGEXP)[0][7] : ''
   }
 
@@ -135,7 +151,7 @@ class ScmInfo implements Serializable {
       this.commitId == this.lastCommitId &&
       this.isTagged() &&
       this.hasSemverTag() &&
-      null == this.getPreReleaseTag() &&
+      '' == this.getPreReleaseTag() &&
       this.isCurrentTagLatest()
     )
   }
