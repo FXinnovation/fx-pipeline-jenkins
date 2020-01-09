@@ -135,7 +135,7 @@ class ScmInfo implements Serializable {
       this.commitId == this.lastCommitId &&
       this.isTagged() &&
       this.hasSemverTag() &&
-      '' == this.getPreReleaseTag() &&
+      null == this.getPreReleaseTag() &&
       this.isCurrentTagLatest()
     )
   }
