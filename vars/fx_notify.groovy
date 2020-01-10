@@ -81,32 +81,6 @@ def call(Map config = [:]){
   }
 
   try {
-    rocketSend(
-      failOnError: config.failOnError,
-      message:     message,
-      rawMessage:  config.rawMessage,
-      avatar:      config.avatar,
-      attachments: [[
-        audioUrl: '',
-        authorIcon: '',
-        authorName: '',
-        color: config.color,
-        imageUrl: '',
-        messageLink: '',
-        text: config.status,
-        thumbUrl: '',
-        title: "${env.JOB_NAME} #${env.BUILD_NUMBER}",
-        titleLink: env.BUILD_URL,
-        videoUrl: ''
-      ]]
-    )
-  } catch(ex) {
-    println("Error sending to rocket chat")
-    println(ex.getMessage());
-    println(ex.toString());
-  }
-
-  try {
     office365ConnectorSend(
       color: config.color,
       message: message,
