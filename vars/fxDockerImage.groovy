@@ -21,6 +21,9 @@ def call(Map config = [:]){
         if (config.pushLatest && scmInfo.isPublishable()){
           tags.add('latest')
         }
+
+        currentBuild.displayName = "#${BUILD_NUMBER} - ${tags.join(", ")}"
+
         pipelineDocker(
           [
             dockerBuild: [
