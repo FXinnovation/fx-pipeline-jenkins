@@ -8,7 +8,13 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   closureHelper = new ClosureHelper(closures)
 
-  closureHelper.executeWithinStage('preBuild')
+  if (this.isDefined('preBuild')) {
+    stage('preBuild') {
+      return this.execute('preBuild', args)
+    }
+  }
+
+//  closureHelper.executeWithinStage()
 
   stage('build') {
     for (registry in config.dockerPublish.registries) {
@@ -16,7 +22,11 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
     }
   }
 
-  closureHelper.executeWithinStage('postBuild')
+  if (this.isDefined('postBuild')) {
+    stage('postBuild') {
+      return this.execute('postBuild', args)
+    }
+  }
 
   if (!config.disablePublish) {
     println 'Skip publication because “disablePublish” = true.'
@@ -26,12 +36,20 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
     println 'Skip publication because this commit is not publishable as anything.'
   }
 
-  closureHelper.executeWithinStage('prePublish')
+  if (this.isDefined('prePublish')) {
+    stage('prePublish') {
+      return this.execute('prePublish', args)
+    }
+  }
 
   this.publish(config, scmInfo)
   this.publishDev(config, scmInfo)
 
-  closureHelper.executeWithinStage('postPublish')
+  if (this.isDefined('postPublish')) {
+    stage('postPublish') {
+      return this.execute('postPublish', args)
+    }
+  }
 }
 
 private void publish(Map config, ScmInfo scmInfo) {
