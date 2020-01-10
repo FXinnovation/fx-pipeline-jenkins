@@ -17,15 +17,16 @@ def publish(Map config = [:]){
     }
   }
 
-  execute(script: "docker push ${this.buildDockerOptionString(config)}")
+  execute(script: "docker push ${this.buildDockerOptionString(config, '')}")
 }
 
 /**
  * Builds the options string for "docker build" and "docker push".
  * @param Map config
+ * @param String optionName
  * @return String
  */
-private String buildDockerOptionString(Map config) {
+private String buildDockerOptionString(Map config, String optionName = '--tag') {
   mapAttributeCheck(config, 'image', CharSequence, '', 'The image key must be defined')
   mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
   mapAttributeCheck(config, 'registries', List, [])
@@ -38,8 +39,8 @@ private String buildDockerOptionString(Map config) {
         optionStringFactory.addOption('', this.buildDockerTagOption(config, registry, tag))
       }
     } else {
-      optionStringFactory.addOption('', this.buildDockerTagOption(config, '', tag))
     }
+    optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
   }
 
   return optionsStringFactory.toString()
