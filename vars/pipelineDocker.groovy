@@ -65,8 +65,11 @@ private void publishDev(Map config, ScmInfo scmInfo) {
 }
 
 private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
+  def arguments = [registry, namespace, 'tags', tag]
+  arguments.removeAll([''])
+
   return execute(
-    script: "curl --silent -f -lSL ${[registry, namespace, 'tags', tag].removeAll(['']).join('/')} > /dev/null"
+    script: "curl --silent -f -lSL ${arguments.join('/')} > /dev/null"
   )
 }
 

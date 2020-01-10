@@ -42,5 +42,8 @@ private String buildDockerOptionString(Map config, String optionName = '--tag') 
 }
 
 private String buildDockerTagOption(Map config, String tag) {
-  return [config.registry, config.namespace, "${config.image}:${tag} "].removeAll(['']).join('/')
+  def tagOptions = [config.registry, config.namespace, "${config.image}:${tag} "]
+  tagOptions.removeAll([''])
+
+  return tagOptions.join('/')
 }
