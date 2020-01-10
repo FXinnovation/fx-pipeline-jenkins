@@ -8,11 +8,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   closureHelper = new ClosureHelper(closures)
 
-  if (closureHelper.isDefined('preBuild')) {
-    stage('preBuild') {
-      closures.preBuild()
-    }
-  }
+  closureHelper.executeWithinStage('preBuild')
 
   stage('build') {
     for (registry in config.dockerPublish.registries) {
