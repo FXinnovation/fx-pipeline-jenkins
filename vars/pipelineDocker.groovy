@@ -16,7 +16,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   stage('build') {
     for (registry in config.dockerPublish.registries) {
-      dockerImage.build(config.dockerBuild + [tags: this.getAllTags()] + [registry: registry])
+      dockerImage.build(config.dockerBuild + [tags: this.getAllTags(scmInfo)] + [registry: registry])
     }
   }
 
@@ -62,7 +62,7 @@ private void publish(Map config, ScmInfo scmInfo) {
         println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
         return
       }
-      dockerImage.publish(config.dockerPublish + [tags: this.getAllTags()] + [registry: registry])
+      dockerImage.publish(config.dockerPublish + [tags: this.getAllTags(scmInfo)] + [registry: registry])
     }
   }
 }
