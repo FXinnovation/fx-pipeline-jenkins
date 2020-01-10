@@ -34,37 +34,23 @@ def call(Map config = [:]){
 
   def buildCausers = currentBuild.getBuildCauses()
   def foundCausers = false
+  def email = ""
 
   try {
     for (i=0; i < buildCausers.size(); i++){
       def currentCause = buildCausers[i]
       if (currentCause.userId != null){
-        rocketUser = rocketchat.findUserByMail(
-          mail: currentCause.userId,
-          rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
-          rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
-        )
-        config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
+        email =  currentCause.userId
         foundCausers = true
       }
     }
     if (!foundCausers){
-      def email = sh(
+      email = sh(
         returnStdout: true,
         script:       "git log -1 --pretty=format:'%ae'"
       ).trim()
-      def rocketUser = [:]
-      rocketUser = rocketchat.findUserByMail(
-        mail: email,
-        rocketChatUrl: 'https://gossip.dazzlingwrench.fxinnovation.com',
-        rocketChatCredentialId: 'gossip.dazzlingwrench.fxinnovation.com-bot'
-      )
-      if (null == rocketUser || !rocketUser.containsKey('username')){
-        rocketUser = [
-          username: 'all'
-        ]
-      }
-      config.notifiedPeople = config.notifiedPeople + " @" + rocketUser.username
+    }
+    config.notifiedPeople = config.notifiedPeople + " @" + email
     }
   } catch(ex) {
     println("Error finding people to notify")
