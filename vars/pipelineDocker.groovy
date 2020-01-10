@@ -16,7 +16,13 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   stage('build') {
     for (registry in config.dockerPublish.registries) {
-      dockerImage.build(config.dockerBuild + [tags: this.getAllTags()] + [registry: registry])
+      dockerImage.build(config.dockerBuild + [tags: [
+        scmInfo.getBranchAsDockerTag(),
+        scmInfo.getMajorTag(),
+        scmInfo.getMinorTag(),
+        scmInfo.getTag(),
+        'latest',
+      ]] + [registry: registry])
     }
   }
 
@@ -47,11 +53,19 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   stage('publish') {
     for (registry in config.dockerPublish.registries) {
-      if (this.dockerTagExists(config.dockerPublish.namespace, registry, scmInfo.getPatchTag())) {
+      if (execute(
+        script: "curl --silent -f -lSL ${[registry, namespace, 'tags', tag].removeAll(['']).join('/')} > /dev/null"
+      )) {
         println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
         return
       }
-      dockerImage.publish(config.dockerPublish + [tags: this.getAllTags()] + [registry: registry])
+      dockerImage.publish(config.dockerPublish + [tags: [
+        scmInfo.getBranchAsDockerTag(),
+        scmInfo.getMajorTag(),
+        scmInfo.getMinorTag(),
+        scmInfo.getTag(),
+        'latest',
+      ]] + [registry: registry])
     }
   }
 
@@ -74,28 +88,4 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
       closures.postPublish()
     }
   }
-}
-
-private void publish(Map config, ScmInfo scmInfo) {
-
-}
-
-private void publishDev(Map config, ScmInfo scmInfo) {
-
-}
-
-private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
-  return execute(
-    script: "curl --silent -f -lSL ${[registry, namespace, 'tags', tag].removeAll(['']).join('/')} > /dev/null"
-  )
-}
-
-private getAllTags(ScmInfo scmInfo) {
-  return [
-    scmInfo.getBranchAsDockerTag(),
-    scmInfo.getMajorTag(),
-    scmInfo.getMinorTag(),
-    scmInfo.getTag(),
-    'latest',
-  ]
 }
