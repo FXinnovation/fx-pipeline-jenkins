@@ -46,19 +46,7 @@ private String buildDockerOptionString(Map config) {
 }
 
 private String buildDockerTagOption(Map config, String registry, String tag) {
-  def tagOption = ''
-
-  if ('' != registry) {
-    tagOption = "${registry}/"
-  }
-
-  if ('' != config.namespace) {
-    tagOption += "${config.namespace}/"
-  }
-
-  tagOption += "${config.image}:${tag} "
-
-  return tagOption
+  return [registry, config.namespace, "${config.image}:${tag} "].removeAll(['']).join('/')
 }
 
 private boolean configContainsRegistries(Map config) {
@@ -67,9 +55,3 @@ private boolean configContainsRegistries(Map config) {
     [] != config.registries
   )
 }
-
-//private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
-//  return execute(
-//    script: "curl --silent -f -lSL ${registry}/${namespace}/tags/${tag} > /dev/null"
-//  )
-//}
