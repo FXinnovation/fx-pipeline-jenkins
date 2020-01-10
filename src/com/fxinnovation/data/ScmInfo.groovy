@@ -122,7 +122,10 @@ class ScmInfo implements Serializable {
    * Checks whether or not the current tag is the latest tag
    */
   Boolean isCurrentTagLatest() {
-    return this.latestTag == this.tag
+    return (
+      this.latestTag == this.tag &&
+      '' == this.getPreReleaseTag()
+    )
   }
 
   /**
@@ -161,6 +164,7 @@ class ScmInfo implements Serializable {
    **/
   Boolean isPublishableAsDev() {
     return (
+      this.isTagged() &&
       this.hasSemverTag() &&
       '' != this.getPreReleaseTag() &&
       this.tag =~ /-dev[\d]*$/
