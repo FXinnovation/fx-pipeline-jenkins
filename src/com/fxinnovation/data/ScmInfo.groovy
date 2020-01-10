@@ -114,6 +114,13 @@ class ScmInfo implements Serializable {
   }
 
   /**
+   * Get the current branch formatted to be a valid docker tag
+   */
+  String getBranchAsDockerTag() {
+    return this.getBranch().replace('/','_')
+  }
+
+  /**
    * Checks whether or not the current branch has a tag following SEMVER standard.
    **/
   Boolean hasSemverTag() {
