@@ -10,11 +10,9 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   if (this.isDefined('preBuild')) {
     stage('preBuild') {
-      return this.execute('preBuild', args)
+      closures.preBuild()
     }
   }
-
-//  closureHelper.executeWithinStage()
 
   stage('build') {
     for (registry in config.dockerPublish.registries) {
@@ -24,7 +22,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   if (this.isDefined('postBuild')) {
     stage('postBuild') {
-      return this.execute('postBuild', args)
+      closures.postBuild()
     }
   }
 
@@ -38,7 +36,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   if (this.isDefined('prePublish')) {
     stage('prePublish') {
-      return this.execute('prePublish', args)
+      closures.prePublish()
     }
   }
 
@@ -47,7 +45,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   if (this.isDefined('postPublish')) {
     stage('postPublish') {
-      return this.execute('postPublish', args)
+      closures.postPublish()
     }
   }
 }
