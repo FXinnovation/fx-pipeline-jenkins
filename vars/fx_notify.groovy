@@ -51,7 +51,6 @@ def call(Map config = [:]){
       ).trim()
     }
     config.notifiedPeople = config.notifiedPeople + " @" + email
-    }
   } catch(ex) {
     println("Error finding people to notify")
     println(ex.getMessage());
