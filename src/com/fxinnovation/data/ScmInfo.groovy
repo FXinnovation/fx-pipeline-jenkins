@@ -31,7 +31,9 @@ class ScmInfo implements Serializable {
       "\nTag: "+ this.getTag() +
       "\nPre release tag: "+ this.getPreReleaseTag() +
       "\nLatest tag: "+ this.getLatestTag() +
+      "\nTag is SEMVER: "+ this.hasSemverTag() +
       "\nTag is latest: "+ this.isCurrentTagLatest() +
+      "\nCommit is latest: "+ this.isCurrentCommitLatest() +
       "\nIs a pull request: "+ this.isPullRequest() +
       "\nHas semver tag: "+ this.hasSemverTag() +
       "\nIs publishable: "+ this.isPublishable() +
@@ -129,6 +131,15 @@ class ScmInfo implements Serializable {
   }
 
   /**
+   * Checks whether or not the current commit is the latest commit
+   */
+  Boolean isCurrentCommitLatest() {
+    return (
+      this.commitId == this.lastCommitId
+    )
+  }
+
+  /**
    * Checks whether release is tagged or not.
    **/
   Boolean isTagged() {
@@ -151,7 +162,7 @@ class ScmInfo implements Serializable {
   Boolean isPublishable() {
     return (
       this.defaultBranch == this.branch &&
-      this.commitId == this.lastCommitId &&
+      this.isCurrentCommitLatest() &&
       this.isTagged() &&
       this.hasSemverTag() &&
       '' == this.getPreReleaseTag() &&
