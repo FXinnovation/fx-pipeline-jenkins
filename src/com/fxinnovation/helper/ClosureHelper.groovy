@@ -3,10 +3,10 @@ package com.fxinnovation.helper
 import groovy.lang.Script
 
 class ClosureHelper {
-  private Map closures
   private Script context
+  private Map closures
 
-  ClosureHelper(Map closures) {
+  ClosureHelper(Script context, Map closures) {
     this.closures = closures
     this.context = context
   }

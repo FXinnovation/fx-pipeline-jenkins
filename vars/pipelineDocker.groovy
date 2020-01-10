@@ -6,7 +6,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
   mapAttributeCheck(config, 'dockerBuild', Map, [:], 'dockerBuild Map options are needed.')
   mapAttributeCheck(config, 'dockerPublish', Map, [:], 'dockerPublish Map options are needed.')
 
-  closureHelper = new ClosureHelper(closures)
+  closureHelper = new ClosureHelper(this, closures)
 
   closureHelper.executeWithinStage('preBuild')
 
@@ -16,11 +16,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
     }
   }
 
-  if (closureHelper.isDefined('postBuild')) {
-    stage('postBuild') {
-      closures.postBuild()
-    }
-  }
+  closureHelper.executeWithinStage('postBuild')
 
   if (!config.disablePublish) {
     println 'Skip publication because “disablePublish” = true.'
@@ -30,20 +26,12 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
     println 'Skip publication because this commit is not publishable as anything.'
   }
 
-  if (closureHelper.isDefined('prePublish')) {
-    stage('prePublish') {
-      closures.prePublish()
-    }
-  }
+  closureHelper.executeWithinStage('prePublish')
 
   this.publish(config, scmInfo)
   this.publishDev(config, scmInfo)
 
-  if (closureHelper.isDefined('postPublish')) {
-    stage('postPublish') {
-      closures.postPublish()
-    }
-  }
+  closureHelper.executeWithinStage('postPublish')
 }
 
 private void publish(Map config, ScmInfo scmInfo) {
