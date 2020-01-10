@@ -8,7 +8,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   closureHelper = new ClosureHelper(closures)
 
-  if (this.isDefined('preBuild')) {
+  if (closureHelper.isDefined('preBuild')) {
     stage('preBuild') {
       closures.preBuild()
     }
@@ -20,7 +20,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
     }
   }
 
-  if (this.isDefined('postBuild')) {
+  if (closureHelper.isDefined('postBuild')) {
     stage('postBuild') {
       closures.postBuild()
     }
@@ -34,23 +34,12 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
     println 'Skip publication because this commit is not publishable as anything.'
   }
 
-  if (this.isDefined('prePublish')) {
+  if (closureHelper.isDefined('prePublish')) {
     stage('prePublish') {
       closures.prePublish()
     }
   }
 
-  this.publish(config, scmInfo)
-  this.publishDev(config, scmInfo)
-
-  if (this.isDefined('postPublish')) {
-    stage('postPublish') {
-      closures.postPublish()
-    }
-  }
-}
-
-private void publish(Map config, ScmInfo scmInfo) {
   if (!scmInfo.isPublishable()) {
     println 'Skip *latest tag* publication because this commit is not publishable as latest version.'
     return
@@ -65,9 +54,10 @@ private void publish(Map config, ScmInfo scmInfo) {
       dockerImage.publish(config.dockerPublish + [tags: this.getAllTags()] + [registry: registry])
     }
   }
-}
 
-private void publishDev(Map config, ScmInfo scmInfo) {
+//  this.publish(config, scmInfo)
+//  this.publishDev(config, scmInfo)
+
   if (!scmInfo.isPublishableAsDev()) {
     println 'Skip *dev* publication because this commit is not publishable as a development version.'
     return
@@ -78,6 +68,20 @@ private void publishDev(Map config, ScmInfo scmInfo) {
       dockerImage.publish(config.dockerPublish + [tags: [scmInfo.getTag()]] + [registry: registry])
     }
   }
+
+  if (closureHelper.isDefined('postPublish')) {
+    stage('postPublish') {
+      closures.postPublish()
+    }
+  }
+}
+
+private void publish(Map config, ScmInfo scmInfo) {
+
+}
+
+private void publishDev(Map config, ScmInfo scmInfo) {
+
 }
 
 private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
