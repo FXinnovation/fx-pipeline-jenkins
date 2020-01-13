@@ -50,7 +50,7 @@ private String getDefaultBranch() {
 
 private String executeCommand(String command) {
   try{
-    return execute(script: command).stdout.trim()
+    return execute(script: command, hideStdout: true).stdout.trim()
   }catch(error){
     return ''
   }
