@@ -69,7 +69,7 @@ private boolean dockerTagExists(CharSequence registry, CharSequence namespace, C
   arguments.removeAll(['', null])
 
   return execute(
-    script: "curl --silent -f -lSL ${arguments.join('/')} > /dev/null"
+    script: "curl --silent -f -lSL https://${arguments.join('/')} > /dev/null"
   )
 }
 
