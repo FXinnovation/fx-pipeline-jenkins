@@ -13,7 +13,7 @@ def call(Map config = [:]){
     this.getRepositoryName(scm)
   )
 
-  printDebug(scmInfo)
+  printDebug(scmInfo.toString())
 
   return scmInfo
 }
