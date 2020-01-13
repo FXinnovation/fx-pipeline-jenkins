@@ -45,7 +45,7 @@ class ScmInfo implements Serializable {
    * Checks whether or not the current checkout is a pull request or not
    */
   Boolean isPullRequest() {
-    return this.branch =~ /^PR-[0-9]*$/
+    return this.branch ==~ /^PR-[0-9]*$/
   }
 
   /**
@@ -124,7 +124,7 @@ class ScmInfo implements Serializable {
    * Checks whether or not the current branch has a tag following SEMVER standard.
    **/
   Boolean hasSemverTag() {
-    return this.tag =~ this.SEMVER_REGEXP
+    return this.tag ==~ this.SEMVER_REGEXP
   }
 
   /**
