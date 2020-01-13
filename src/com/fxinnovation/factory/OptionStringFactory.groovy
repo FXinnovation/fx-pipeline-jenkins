@@ -11,6 +11,10 @@ class OptionStringFactory {
     this.context = context
   }
 
+  String toString() {
+    return this.optionString
+  }
+
   void addOption(String optionName, Object optionValue = '', Class<?> expectedOptionType = CharSequence) {
     this.checkOptionString()
     this.checkOptionValueType(optionValue, expectedOptionType)
