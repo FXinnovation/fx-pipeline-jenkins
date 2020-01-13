@@ -12,7 +12,7 @@ class OptionStringFactory {
   }
 
   String toString() {
-    return this.optionString
+    return this.optionString.toString()
   }
 
   void addOption(String optionName, Object optionValue = '', Class<?> expectedOptionType = CharSequence) {
