@@ -26,16 +26,15 @@ class ScmInfo implements Serializable {
       "\nRepository: "+ this.getRepositoryName() +
       "\nCommit: "+ this.getCommitId() +
       "\nLatest commit: "+ this.getLastCommitId() +
+      "\nCommit is latest: "+ this.isCurrentCommitLatest() +
       "\nBranch: "+ this.getBranch() +
       "\nDefault branch: "+ this.getDefaultBranch() +
       "\nTag: "+ this.getTag() +
       "\nPre release tag: "+ this.getPreReleaseTag() +
       "\nLatest tag: "+ this.getLatestTag() +
-      "\nTag is SEMVER: "+ this.hasSemverTag() +
+      "\nTag is semver: "+ this.hasSemverTag() +
       "\nTag is latest: "+ this.isCurrentTagLatest() +
-      "\nCommit is latest: "+ this.isCurrentCommitLatest() +
       "\nIs a pull request: "+ this.isPullRequest() +
-      "\nHas semver tag: "+ this.hasSemverTag() +
       "\nIs publishable: "+ this.isPublishable() +
       "\nIs publishable as DEV version: "+ this.isPublishableAsDev()
     )
