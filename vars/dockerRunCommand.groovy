@@ -5,22 +5,12 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'command', CharSequence, '')
   mapAttributeCheck(config, 'environmentVariables', Map, [:])
 
-  try {
-    execute(
-      script: 'docker version'
-    )
-  } catch(dockerVersionError) {
-    if ( '' == config.fallbackCommand ){
-      println 'Docker is not available, assuming the tool is installed.'
-    }else{
-      println "Docker is not available, assuming ${config.fallbackCommand} is installed."
-    }
+  if (!this.isDockerInstalled()) {
+    println "Docker is not available, assuming the tool “${config.fallbackCommand}” is installed."
     return config.fallbackCommand
   }
 
-  execute(
-    script: "docker pull ${config.dockerImage}"
-  )
+  execute(script: "docker pull ${config.dockerImage}")
 
   def additionalMounts = ''
 
@@ -33,4 +23,13 @@ def call(Map config = [:]) {
   }
 
   return "docker run --rm -v \$(pwd):/data ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
+}
+
+private Boolean isDockerInstalled() {
+  try {
+    execute(script: 'docker version')
+    return true
+  } catch(dockerVersionError) {
+    return false
+  }
 }
