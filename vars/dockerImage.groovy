@@ -32,14 +32,14 @@ private String buildDockerOptionString(Map config, String optionName = '--tag') 
   mapAttributeCheck(config, 'registry', CharSequence, '')
   mapAttributeCheck(config, 'namespace', CharSequence, '')
 
-  def optionsStringFactory = new OptionStringFactory(this)
+  def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString(' ')
 
   for (tag in config.tags) {
-    optionsStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
+    optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
   }
 
-  return optionsStringFactory.toString()
+  return optionStringFactory.toString()
 }
 
 private String buildDockerTagOption(Map config, String tag) {
