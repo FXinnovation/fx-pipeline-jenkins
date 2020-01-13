@@ -12,9 +12,8 @@ class OptionStringFactory {
   }
 
   void addOption(String optionName, Object optionValue = '', Class<?> expectedOptionType = CharSequence) {
-    if (!(expectedOptionType.isInstance(optionValue))) {
-      this.context.error("Cannot add option “${optionName}” to the option string. It is expected to be “${expectedOptionType}”, given: “${optionValue.getClass()}”.")
-    }
+    this.checkOptionString()
+    this.checkOptionValueType(optionValue, expectedOptionType)
 
     if (optionValue instanceof java.util.AbstractCollection) {
       for(singleOptionValue in optionValue) {
@@ -43,6 +42,18 @@ class OptionStringFactory {
   private void checkOption(String optionName, Object optionValue) {
     if (!(optionValue instanceof Serializable)) {
       this.context.error("Cannot add option “${optionName}” to the option string. The given value is does not implement Serializable, thus it cannot be converted to a string. (given: “${optionValue.getClass()}”).")
+    }
+  }
+
+  private void checkOptionString() {
+    if (null == this.optionString) {
+      this.context.error("Cannot call method on object ${this.getClass()} since “createOptionString” was not called. Please call “createOptionString” before manipulating this object.")
+    }
+  }
+
+  private void checkOptionValueType(Object optionValue, Class<?> expectedOptionType) {
+    if (!(expectedOptionType.isInstance(optionValue))) {
+      this.context.error("Cannot add option “${optionName}” to the option string. It is expected to be “${expectedOptionType}”, given: “${optionValue.getClass()}”.")
     }
   }
 }
