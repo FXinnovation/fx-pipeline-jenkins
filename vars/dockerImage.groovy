@@ -34,6 +34,8 @@ private String buildDockerOptionString(Map config, String optionName = '--tag') 
 
   def optionsStringFactory = new OptionStringFactory(this)
 
+  println(optionsStringFactory)
+
   for (tag in config.tags) {
     optionsStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
   }
