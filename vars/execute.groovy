@@ -44,15 +44,11 @@ def call(Map config = [:]){
     if (config.throwError == true && response.statusCode != 0){
       error("Script returned an error:\nStatus Code: ${response.statusCode}\nStderr:\n${response.stderr}")
     }
-    if (env.DEBUG){
-      println "### DEBUG ###\n${response}"
-    }
+    printDebug("### DEBUG ###\n${response}")
     return response
   }catch(error){
-      if (env.DEBUG){
-        println "### DEBUG ###\n${response}"
-      }
-      throw error
+    printDebug("### DEBUG ###\n${response}")
+    throw error
   }finally{
     dir("/tmp/${filePrefix}"){
       deleteDir()

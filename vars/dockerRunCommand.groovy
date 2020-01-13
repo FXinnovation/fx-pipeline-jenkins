@@ -27,7 +27,7 @@ def call(Map config = [:]) {
 
 private Boolean isDockerInstalled() {
   try {
-    execute(script: 'docker version')
+    execute(script: 'docker version', hideStdout: true)
     return true
   } catch(dockerVersionError) {
     return false
