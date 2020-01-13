@@ -1,3 +1,4 @@
+@NonCps
 def call(Object message){
   // The try/catch with silent catch is to simulate a check “is_variable_defined” that does not exist in groovy
   try {
