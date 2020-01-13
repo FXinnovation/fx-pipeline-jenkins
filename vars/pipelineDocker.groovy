@@ -42,7 +42,7 @@ private void publish(Map config, ScmInfo scmInfo) {
 
   stage('publish') {
     for (registry in config.dockerPublish.registries) {
-      if (this.dockerTagExists(config.dockerPublish.namespace, registry, scmInfo.getPatchTag())) {
+      if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag())) {
         println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
         return
       }
@@ -66,7 +66,7 @@ private void publishDev(Map config, ScmInfo scmInfo) {
 
 private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
   def arguments = [registry, namespace, 'tags', tag]
-  arguments.removeAll([''])
+  arguments.removeAll(['', null])
 
   return execute(
     script: "curl --silent -f -lSL ${arguments.join('/')} > /dev/null"
