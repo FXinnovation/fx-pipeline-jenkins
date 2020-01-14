@@ -5,6 +5,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
   mapAttributeCheck(config, 'disablePublish', Boolean, false)
   mapAttributeCheck(config, 'dockerBuild', Map, [:], 'dockerBuild Map options are needed.')
   mapAttributeCheck(config, 'dockerPublish', Map, [:], 'dockerPublish Map options are needed.')
+  mapAttributeCheck(config, 'authToken', CharSequence, '')
 
   closureHelper = new ClosureHelper(this, closures)
 
@@ -42,7 +43,7 @@ private void publish(Map config, ScmInfo scmInfo) {
 
   stage('publish') {
     for (registry in config.dockerPublish.registries) {
-      if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag())) {
+      if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag(), config.authToken)) {
         println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
         return
       }
@@ -64,12 +65,17 @@ private void publishDev(Map config, ScmInfo scmInfo) {
   }
 }
 
-private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
+private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag, CharSequence authToken = null) {
   def arguments = [registry, namespace, 'tags', tag]
   arguments.removeAll(['', null])
 
+  def authHeader = ''
+  if ('' != authToken) {
+    authHeader = "-H \"Authorization: Basic ${authToken}\""
+  }
+
   return execute(
-    script: "curl --silent -f -lSL https://${arguments.join('/')} > /dev/null"
+    script: "curl --silent ${authHeader} -f -lSL https://${arguments.join('/')} > /dev/null"
   )
 }
 
