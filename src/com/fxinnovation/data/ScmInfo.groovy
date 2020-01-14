@@ -131,8 +131,7 @@ class ScmInfo implements Serializable {
    */
   Boolean isCurrentTagLatest() {
     return (
-      this.latestTag == this.tag &&
-      '' == this.getPreReleaseTag()
+      this.latestTag == this.tag
     )
   }
 
