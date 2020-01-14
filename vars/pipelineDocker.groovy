@@ -42,10 +42,6 @@ private void publish(Map config, ScmInfo scmInfo) {
 
   stage('publish') {
     config.dockerPublish.registries.each { registry ->
-      if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag())) {
-        println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
-        return
-      }
       dockerImage.publish(config.dockerPublish + [tags: this.getAllTags(scmInfo)] + [registry: registry])
     }
   }
@@ -61,17 +57,6 @@ private void publishDev(Map config, ScmInfo scmInfo) {
     config.dockerPublish.registries.each { registry ->
       dockerImage.publish(config.dockerPublish + [tags: [scmInfo.getTag()]] + [registry: registry])
     }
-  }
-}
-
-private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
-  def arguments = [registry, namespace, 'tags', tag]
-  arguments.removeAll(['', null])
-
-  def checkResult = execute(script: "curl --silent -f -lSL https://${arguments.join('/')} > /dev/null", throwError: false)
-  // 22 means UNAUTHORIZED - for technical difficulties, the pipeline will not check private registries
-  if (0 != checkResult.statusCode || 22 != checkResult.statusCode) {
-    error("Couldn’t check whether or not docker tag “${tag}” exists. Error: ${checkResult.stderr}")
   }
 }
 
