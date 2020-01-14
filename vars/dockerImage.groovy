@@ -1,11 +1,15 @@
 import com.fxinnovation.factory.OptionStringFactory
 
-def build(Map config = [:]){
-  execute(script: "docker build ${this.buildDockerOptionString(config)} ./")
+def build(Map config = [:]) {
+  mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
+
+  execute(script: "docker build ${this.buildDockerOptionString(config, config.tags)} ./")
 }
 
-def publish(Map config = [:]){
-  if (config.containsKey('credentialId')){
+def publish(Map config = [:]) {
+  mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
+
+  if (config.containsKey('credentialId')) {
     withCredentials([
       usernamePassword(
         credentialsId: config.credentialId,
@@ -19,25 +23,27 @@ def publish(Map config = [:]){
     }
   }
 
-  execute(script: "docker push ${this.buildDockerOptionString(config, '')}")
+  for (tag in config.tags) {
+    execute(script: "docker push ${this.buildDockerOptionString(config, [tag],'')}")
+  }
 }
 
 /**
  * Builds the options string for "docker build" and "docker push".
  * @param Map config
+ * @param List tag
  * @param String optionName
  * @return String
  */
-private String buildDockerOptionString(Map config, String optionName = '--tag') {
+private String buildDockerOptionString(Map config, List tags, String optionName = '--tag') {
   mapAttributeCheck(config, 'image', CharSequence, '', 'The image key must be defined')
-  mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
   mapAttributeCheck(config, 'registry', CharSequence, '')
   mapAttributeCheck(config, 'namespace', CharSequence, '')
 
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString(' ')
 
-  for (tag in config.tags) {
+  for (tag in tags) {
     optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
   }
 
