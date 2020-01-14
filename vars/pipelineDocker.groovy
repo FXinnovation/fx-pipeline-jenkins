@@ -5,6 +5,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
   mapAttributeCheck(config, 'disablePublish', Boolean, false)
   mapAttributeCheck(config, 'dockerBuild', Map, [:], 'dockerBuild Map options are needed.')
   mapAttributeCheck(config, 'dockerPublish', Map, [:], 'dockerPublish Map options are needed.')
+  // format: [registry: tokenForRegistry, registry2: tokenForRegistry2…]
   mapAttributeCheck(config, 'authTokens', Map, [:])
 
   closureHelper = new ClosureHelper(this, closures)
