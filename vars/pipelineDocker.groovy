@@ -56,9 +56,9 @@ private void publishDev(Map config, ScmInfo scmInfo) {
   }
 
   stage('publish dev') {
-    config.dockerPublish.registries.each { registry ->
-      dockerImage.publish(config.dockerPublish + [tags: [scmInfo.getTag()]] + [registry: registry])
-    }
+//    config.dockerPublish.registries.each { registry ->
+      dockerImage.publish(config.dockerPublish + [tags: [scmInfo.getTag()]] + [registry: ''])
+//    }
   }
 }
 
