@@ -150,8 +150,8 @@ class ScmInfo implements Serializable {
    */
   Boolean isValidPreReleaseVersion() {
     return (
-      this.tag ==~ /-dev[\d]*$/ ||
-      this.tag ==~ /-rc[\d]*$/
+      this.tag ==~ /.*-dev[\d]*$/ ||
+      this.tag ==~ /.*-rc[\d]*$/
     )
   }
 
