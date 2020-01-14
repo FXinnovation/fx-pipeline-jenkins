@@ -32,7 +32,7 @@ def call(Map config = [:]){
             postBuild: {
               fxInspecDockerImage(
                 image: config.image,
-                tag: tags[0],
+                tag: scmInfo.getBranchAsDockerTag(),
                 namespace: config.namespace
               )
             }
