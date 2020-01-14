@@ -14,23 +14,14 @@ def call(Map config = [:]){
   fxJob(
     [
       pipeline: { ScmInfo scmInfo ->
-        tags = [scmInfo.getBranch().replace('/','_')]
-        if ( scmInfo.isTagged() ){
-          tags.add(scmInfo.getTag())
-        }
-        if (config.pushLatest && scmInfo.isPublishable()){
-          tags.add('latest')
-        }
         pipelineDocker(
           [
             dockerBuild: [
               image: config.image,
-              tags: tags,
               namespace: config.namespace
             ],
             dockerPublish: [
               image: config.image,
-              tags: tags,
               registry: '',
               namespace: config.namespace,
               credentialId: 'jenkins-fxinnovation-dockerhub'
@@ -45,7 +36,8 @@ def call(Map config = [:]){
                 namespace: config.namespace
               )
             }
-          ]
+          ],
+          scmInfo
         )
       }
     ]
