@@ -5,8 +5,6 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
   mapAttributeCheck(config, 'disablePublish', Boolean, false)
   mapAttributeCheck(config, 'dockerBuild', Map, [:], 'dockerBuild Map options are needed.')
   mapAttributeCheck(config, 'dockerPublish', Map, [:], 'dockerPublish Map options are needed.')
-  // format: [registry: tokenForRegistry, registry2: tokenForRegistry2…]
-  mapAttributeCheck(config, 'authTokens', Map, [:])
 
   closureHelper = new ClosureHelper(this, closures)
 
@@ -43,12 +41,8 @@ private void publish(Map config, ScmInfo scmInfo) {
   }
 
   stage('publish') {
-    println(config.authTokens)
-    config.dockerPublish.registries.each { account, registry ->
-      println(account)
-      println(registry)
-      def authToken = config.authTokens.containsKey(account) ? config.authTokens[account] : ''
-      if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag(), authToken)) {
+    config.dockerPublish.registries.each { registry ->
+      if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag())) {
         println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
         return
       }
@@ -70,18 +64,15 @@ private void publishDev(Map config, ScmInfo scmInfo) {
   }
 }
 
-private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag, CharSequence authToken = '') {
+private boolean dockerTagExists(CharSequence registry, CharSequence namespace, CharSequence tag) {
   def arguments = [registry, namespace, 'tags', tag]
   arguments.removeAll(['', null])
 
-  def authHeader = ''
-  if ('' != authToken) {
-    authHeader = "-H \"Authorization: Basic ${authToken}\""
+  def checkResult = execute(script: "curl --silent -f -lSL https://${arguments.join('/')} > /dev/null", throwError: false)
+  // 22 means UNAUTHORIZED - for technical difficulties, the pipeline will not check private registries
+  if (0 != checkResult.statusCode || 22 != checkResult.statusCode) {
+    error("Couldn’t check whether or not docker tag “${tag}” exists. Error: ${checkResult.stderr}")
   }
-
-  return execute(
-    script: "curl --silent ${authHeader} -f -lSL https://${arguments.join('/')} > /dev/null"
-  )
 }
 
 private getAllTags(ScmInfo scmInfo) {
