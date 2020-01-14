@@ -25,8 +25,7 @@ def call(Map config = [:]){
               registry: '',
               namespace: config.namespace,
               credentialId: 'jenkins-fxinnovation-dockerhub'
-            ],
-            publish: scmInfo.isPublishable() || scmInfo.isPublishableAsDev()
+            ]
           ],
           [
             postBuild: {
