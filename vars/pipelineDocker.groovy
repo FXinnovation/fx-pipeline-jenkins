@@ -44,12 +44,12 @@ private void publish(Map config, ScmInfo scmInfo) {
 
   stage('publish') {
     for (registry in config.dockerPublish.registries) {
-      def authToken = config.authTokens.containsKey(registry) ? config.authTokens[registry] : ''
-      if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag(), authToken)) {
-        println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
+      def authToken = config.authTokens.containsKey(registry.key) ? config.authTokens[registry.key] : ''
+      if (this.dockerTagExists(registry.value, config.dockerPublish.namespace, scmInfo.getPatchTag(), authToken)) {
+        println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry.value}” because this version was already published."
         return
       }
-      dockerImage.publish(config.dockerPublish + [tags: this.getAllTags(scmInfo)] + [registry: registry])
+      dockerImage.publish(config.dockerPublish + [tags: this.getAllTags(scmInfo)] + [registry: registry.value])
     }
   }
 }
