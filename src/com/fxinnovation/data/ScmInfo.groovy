@@ -32,11 +32,12 @@ class ScmInfo implements Serializable {
       "\nTag: "+ this.getTag() +
       "\nPre release tag: "+ this.getPreReleaseTag() +
       "\nLatest tag: "+ this.getLatestTag() +
+      "\nHas valid pre-release: "+ this.isValidPreReleaseVersion() +
       "\nTag is semver: "+ this.hasSemverTag() +
       "\nTag is latest: "+ this.isCurrentTagLatest() +
       "\nIs a pull request: "+ this.isPullRequest() +
       "\nIs publishable: "+ this.isPublishable() +
-      "\nIs publishable as DEV version: "+ this.isPublishableAsDev()
+      "\nIs publishable as dev/rc/… versions: "+ this.isPublishableAsPreRelease()
     )
   }
 
@@ -145,6 +146,16 @@ class ScmInfo implements Serializable {
   }
 
   /**
+   * Checks whether or not the current commit has a valid pre-release version
+   */
+  Boolean isValidPreReleaseVersion() {
+    return (
+      this.tag ==~ /-dev[\d]*$/ ||
+      this.tag ==~ /-rc[\d]*$/
+    )
+  }
+
+  /**
    * Checks whether release is tagged or not.
    **/
   Boolean isTagged() {
@@ -157,7 +168,7 @@ class ScmInfo implements Serializable {
   Boolean isPublishableAsAnything() {
     return (
       this.isPublishable() ||
-      this.isPublishableAsDev()
+      this.isPublishableAsPreRelease()
     )
   }
 
@@ -176,14 +187,14 @@ class ScmInfo implements Serializable {
   }
 
   /**
-   * Whether or not the current commit is publishable as a development/testing version
+   * Whether or not the current commit is publishable as a development/testing/rc version
    **/
-  Boolean isPublishableAsDev() {
+  Boolean isPublishableAsPreRelease() {
     return (
       this.isTagged() &&
       this.hasSemverTag() &&
       '' != this.getPreReleaseTag() &&
-      this.tag ==~ /-dev[\d]*$/
+      this.isValidPreReleaseVersion()
     )
   }
 
