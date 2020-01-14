@@ -18,12 +18,14 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
 
   closureHelper.executeWithinStage('postBuild')
 
-  if (!config.disablePublish) {
+  if (config.disablePublish) {
     println 'Skip publication because “disablePublish” = true.'
+    return
   }
 
   if (!scmInfo.isPublishableAsAnything()) {
     println 'Skip publication because this commit is not publishable as anything.'
+    return
   }
 
   closureHelper.executeWithinStage('prePublish')
