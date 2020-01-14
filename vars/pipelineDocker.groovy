@@ -43,7 +43,10 @@ private void publish(Map config, ScmInfo scmInfo) {
   }
 
   stage('publish') {
+    println(config.authTokens)
     config.dockerPublish.registries.each { account, registry ->
+      println(account)
+      println(registry)
       def authToken = config.authTokens.containsKey(account) ? config.authTokens[account] : ''
       if (this.dockerTagExists(registry, config.dockerPublish.namespace, scmInfo.getPatchTag(), authToken)) {
         println "Skip publication for “${scmInfo.getPatchTag()}” in “${registry}” because this version was already published."
