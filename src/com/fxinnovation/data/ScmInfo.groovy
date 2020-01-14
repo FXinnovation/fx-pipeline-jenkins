@@ -183,7 +183,7 @@ class ScmInfo implements Serializable {
       this.isTagged() &&
       this.hasSemverTag() &&
       '' != this.getPreReleaseTag() &&
-      this.tag =~ /-dev[\d]*$/
+      this.tag ==~ /-dev[\d]*$/
     )
   }
 
