@@ -35,21 +35,29 @@ def publish(Map config = [:]) {
  */
 private String buildDockerOptionString(Map config, List tags, String optionName = '--tag') {
   mapAttributeCheck(config, 'image', CharSequence, '', 'The image key must be defined')
-  mapAttributeCheck(config, 'registry', CharSequence, '')
+  mapAttributeCheck(config, 'registries', List, [])
   mapAttributeCheck(config, 'namespace', CharSequence, '')
 
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString(' ')
 
-  for (tag in tags) {
-    optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
+  if ([] == config.registries) {
+    for (tag in tags) {
+      optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
+    }
+  }
+
+  for (registry in registries) {
+    for (tag in tags) {
+      optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag, registry))
+    }
   }
 
   return optionStringFactory.getOptionString().toString()
 }
 
-private String buildDockerTagOption(Map config, String tag) {
-  def tagOptions = [config.registry, config.namespace, "${config.image}:${tag} "]
+private String buildDockerTagOption(Map config, String tag, String registry = '') {
+  def tagOptions = [registry, config.namespace, "${config.image}:${tag} "]
   tagOptions.removeAll([''])
 
   return tagOptions.join('/')

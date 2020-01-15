@@ -11,9 +11,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
   closureHelper.executeWithinStage('preBuild')
 
   stage('build') {
-    for (registry in config.dockerPublish.registries) {
-      dockerImage.build(config.dockerBuild + [tags: this.getAllTags(scmInfo)] + [registry: registry])
-    }
+    dockerImage.build(config.dockerBuild + [tags: this.getAllTags(scmInfo)])
   }
 
   closureHelper.executeWithinStage('postBuild')
@@ -43,9 +41,7 @@ private void publish(Map config, ScmInfo scmInfo) {
   }
 
   stage('publish') {
-    config.dockerPublish.registries.each { registry ->
-      dockerImage.publish(config.dockerPublish + [tags: this.getAllTags(scmInfo)] + [registry: registry])
-    }
+    dockerImage.publish(config.dockerPublish + [tags: this.getAllTags(scmInfo)])
   }
 }
 
@@ -56,9 +52,7 @@ private void publishDev(Map config, ScmInfo scmInfo) {
   }
 
   stage('publish dev') {
-//    config.dockerPublish.registries.each { registry ->
-      dockerImage.publish(config.dockerPublish + [tags: [scmInfo.getTag()]] + [registry: ''])
-//    }
+    dockerImage.publish(config.dockerPublish + [tags: [scmInfo.getTag()]])
   }
 }
 
