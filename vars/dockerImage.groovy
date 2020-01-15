@@ -17,9 +17,7 @@ def publish(Map config = [:]) {
         usernameVariable: 'username'
       )
     ]) {
-      execute(script: "echo \'${password}\' > password_file", printCommand: false)
-      execute(script: "cat password_file | docker login --username \'${username}\' --password-stdin ${config.registry}")
-      execute(script: "rm password_file", printCommand: false)
+      execute(script: "docker login --username \'${username}\' --password \'${password}\' ${config.registry}")
     }
   }
 
