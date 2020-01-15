@@ -47,7 +47,7 @@ private String buildDockerOptionString(Map config, List tags, String optionName 
     }
   }
 
-  for (registry in registries) {
+  for (registry in config.registries) {
     for (tag in tags) {
       optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag, registry))
     }
