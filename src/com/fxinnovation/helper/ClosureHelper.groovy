@@ -16,15 +16,20 @@ class ClosureHelper {
   }
 
   public execute(String closureName, ...args) {
-    // As today (2020-01) CPS does not support spread: “spread not yet supported for CPS transformation”.
-    // Therefore, passing variables to closure is not yet supported. Arguments passed to closure below should be “*args” (works in vanilla groovy).
+    if ([] != args) {
+      this.context.println(
+        "WARNING: some variables were passed to closure “${closureName}”, this will probably create an error. " +
+        'As today (2020-01) CPS workflow does not support spread syntax: “spread not yet supported for CPS transformation” (*args). ' +
+        "Therefore, passing arguments to closures using the “${this.getClass()}” is not yet supported. " +
+        "To solve this issue either remove arguments from closure call or call the closure without using the “${this.getClass()}” object."
+      )
+    }
     return this.closures[closureName]()
   }
 
   public executeWithinStage(String closureName, ...args) {
     if (this.isDefined(closureName)) {
       this.context.stage(closureName) {
-        // @See the comment at the execute method of this object. Arguments passed to closure below should be “*args” (works in vanilla groovy).
         return this.execute(closureName, args)
       }
     }
