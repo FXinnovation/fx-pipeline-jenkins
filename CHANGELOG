@@ -1,4 +1,11 @@
 
+0.14.1 / 2020-01-16
+==================
+
+  * fix: (dockerImage) makes sure push is done one by one
+  * refactor: (dockerImage) reorganizes mapAttributeCheck for deduplication
+  * feat: (docker) adds check on config.registry when credentialsId are given
+
 0.14.0 / 2020-01-15
 ==================
 
