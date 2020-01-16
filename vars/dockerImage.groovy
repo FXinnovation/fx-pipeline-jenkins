@@ -3,7 +3,7 @@ import com.fxinnovation.factory.OptionStringFactory
 def build(Map config = [:]) {
   this.checkConfig(config)
 
-  execute(script: "docker build ${this.buildDockerOptionString(config, config.tags)} ./")
+  execute(script: "docker build ${this.buildDockerOptionString(config, config.tags, config.registries)} ./")
 }
 
 def publish(Map config = [:]) {
