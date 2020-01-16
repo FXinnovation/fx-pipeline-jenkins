@@ -27,7 +27,7 @@ def publish(Map config = [:]) {
 
   for (registry in config.registries) {
     for (tag in config.tags) {
-      execute(script: "docker push ${this.buildDockerOptionString(config, [registry], [tag], '')}")
+      execute(script: "docker push ${this.buildDockerOptionString(config, [tag], [registry], '')}")
     }
   }
 }
