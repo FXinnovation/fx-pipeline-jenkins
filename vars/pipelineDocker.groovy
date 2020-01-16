@@ -47,7 +47,7 @@ private void publish(Map config, ScmInfo scmInfo) {
 
 private void publishDev(Map config, ScmInfo scmInfo) {
   if (!scmInfo.isPublishableAsPreRelease()) {
-    println 'Skip *pre-release* publication because this commit is not publishable as a development version.'
+    println 'Skip *pre-release* publication because this commit is not publishable as a development/pre-release version.'
     return
   }
 
