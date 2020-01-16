@@ -57,11 +57,15 @@ private void publishDev(Map config, ScmInfo scmInfo) {
 }
 
 private getAllTags(ScmInfo scmInfo) {
-  return [
+  tags= [
     scmInfo.getBranchAsDockerTag(),
     scmInfo.getMajorTag(),
     scmInfo.getMinorTag(),
     scmInfo.getTag(),
     'latest',
   ]
+
+  tags.removeAll(['', null])
+
+  return tags
 }
