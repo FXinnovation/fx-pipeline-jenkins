@@ -22,7 +22,7 @@ def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
   }
 
   if (!scmInfo.isPublishableAsAnything()) {
-    println 'Skip publication because this commit is not publishable as anything.'
+    println 'Skip publication because this commit is not publishable (the commit didn’t respect the FX tagging requirement, see the wiki for more information).'
     return
   }
 
