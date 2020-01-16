@@ -10,6 +10,7 @@ def publish(Map config = [:]) {
   mapAttributeCheck(config, 'tags', List, [], 'This tags key must be defined')
 
   if (config.containsKey('credentialId')) {
+    mapAttributeCheck(config, 'registry', CharSequence, '', 'Because config.credentialId is defined, config.registry must also be defined.')
     withCredentials([
       usernamePassword(
         credentialsId: config.credentialId,
