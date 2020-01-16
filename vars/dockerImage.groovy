@@ -22,8 +22,10 @@ def publish(Map config = [:]) {
     }
   }
 
-  config.registries += [config.registry]
-  config.registries.unique()
+  if (null != config.registry) {
+    config.registries += [config.registry]
+    config.registries.unique()
+  }
 
   for (registry in config.registries) {
     for (tag in config.tags) {
