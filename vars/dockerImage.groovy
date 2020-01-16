@@ -21,9 +21,10 @@ def publish(Map config = [:]) {
       execute(script: "docker login --username \'${username}\' --password \'${password}\' ${config.registry}")
     }
   }
-
-  for (tag in config.tags) {
-    execute(script: "docker push ${this.buildDockerOptionString(config, [tag],'')}")
+  for (registry in registries) {
+    for (tag in config.tags) {
+      execute(script: "docker push ${this.buildDockerOptionString(config, [registry], [tag], '')}")
+    }
   }
 }
 
@@ -31,20 +32,21 @@ def publish(Map config = [:]) {
  * Builds the options string for "docker build" and "docker push".
  * @param Map config
  * @param List tags
+ * @param List registries
  * @param String optionName
  * @return String
  */
-private String buildDockerOptionString(Map config, List tags, String optionName = '--tag') {
+private String buildDockerOptionString(Map config, List tags, List registries, String optionName = '--tag') {
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString(' ')
 
-  if ([] == config.registries) {
+  if ([] == registries) {
     for (tag in tags) {
       optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag))
     }
   }
 
-  for (registry in config.registries) {
+  for (registry in registries) {
     for (tag in tags) {
       optionStringFactory.addOption(optionName, this.buildDockerTagOption(config, tag, registry))
     }
