@@ -1,8 +1,43 @@
+0.15.0 / 2020-01-17
+==================
+
+  * feat: adds fxAzureTerraform for a standard pipeline for Azure in FX
+  
+0.14.2 / 2020-01-16
+==================
+
+  * fix: (dockerImage) makes sure no empty tag is used to build or publish
+
+0.14.1 / 2020-01-16
+==================
+
+  * fix: (dockerImage) makes sure push is done one by one
+  * refactor: (dockerImage) reorganizes mapAttributeCheck for deduplication
+  * feat: (docker) adds check on config.registry when credentialsId are given
 
 0.14.0 / 2020-01-15
 ==================
 
-  * feat: adds fxAzureTerraform for a standard pipeline for Azure in FX
+  * feat: allows publishing as rc
+  * fix: fixes ScmInfo condition
+  * fix: fixes isCurrentTagLatest
+  * fix: ScmInfo Boolean functions returns booleans
+  * fix: explictly calls toString on printDebug
+  * feat: hides command outputs in fxCheckout as it can be seen with debug
+  * feat: adds toString() to OptionStringFactory
+  * refactor: improves execute and dockerRunImage
+  * refactor: simplifies dockerRunCommand pipeline
+  * fix: passes the context to OptionStringFactory
+  * fix: passes scmInfo at getAllTags()
+  * fix: changes scope of optionStringFactory
+  * fix: makes sure docker build also have tags
+  * feat: create ClosureHelper to deduplicate closures calls
+  * feat: adds getBranchAsDockerTag for ScmInfo
+  * refactor: gives more information about ScmInfo for debug
+  * feat: for tag to be latest, it must not have pre-release
+  * refactor: deduplicates more code in dockerImage
+  * refactor: deduplicates code in dockerImage.build
+  * doc: adds basic dockerImage documentation
 
 0.13.2 / 2020-01-09
 ===================
