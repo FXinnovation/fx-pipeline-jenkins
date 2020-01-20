@@ -30,6 +30,37 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'podName', CharSequence, 'jenkins-slave-linux')
   mapAttributeCheck(config, 'podNamespace', CharSequence, 'default')
   mapAttributeCheck(config, 'podNodeUsageMode', CharSequence, 'NORMAL')
+  mapAttributeCheck(config, 'headerMessage', CharSequence, """
+\u001b[35m
+/!\\ PULL REQUEST /!\\
+
+
+  _,-""`""-~`)
+(`~_,=========\\
+ |---,___.-.__,\\
+ |        o     \\ ___  _,,,,_     _.--.
+  \\      `^`    /`_.-"~      `~-;`     \\
+   \\_      _  .'                 `,     |
+     |`-                           \\'__/
+    /                      ,_       \\  `'-.
+   /    .-""~~--.            `"-,   ;_    /
+  |              \\               \\  | `""`
+   \\__.--'`"-.   /_               |'
+              `"`  `~~~---..,     |
+                             \\ _.-'`-.
+                              \\       \\
+                               '.     /
+                                 `"~"`
+This is Tedi.
+Tedi is a bear, and, Tedi is lazy.
+His favorite activity is watching the soothing passage of log outputs.
+Because he's a bear, Tedi doesn't need to review \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m.
+Please, do not be like Tedi, don't stay here to watch logs scrolling. He will take care of that for you.
+You can click on the following link to review you \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m assigned while tedi watch logs for you.
+
+https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&state=open
+\u001B[0m
+  """)
 
   def slaveSizes = [
     small: [
@@ -86,38 +117,10 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
         time: config.timeoutTime,
         unit: config.timeoutUnit
       ){
-        ansiColor('xterm') {
-          println "\u001b[35m"
-          println """
-/!\\ PULL REQUEST /!\\
-
-
-  _,-""`""-~`)
-(`~_,=========\\
- |---,___.-.__,\\
- |        o     \\ ___  _,,,,_     _.--.
-  \\      `^`    /`_.-"~      `~-;`     \\
-   \\_      _  .'                 `,     |
-     |`-                           \\'__/
-    /                      ,_       \\  `'-.
-   /    .-""~~--.            `"-,   ;_    /
-  |              \\               \\  | `""`
-   \\__.--'`"-.   /_               |'
-              `"`  `~~~---..,     |
-                             \\ _.-'`-.
-                              \\       \\
-                               '.     /
-                                 `"~"`
-This is Tedi.
-Tedi is a bear, and, Tedi is lazy.
-His favorite activity is watching the soothing passage of log outputs.
-Because he's a bear, Tedi doesn't need to review \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m.
-Please, do not be like Tedi, don't stay here to watch logs scrolling. He will take care of that for you.
-You can click on the following link to review you \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m assigned while tedi watch logs for you.
-
-https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&state=open
-    """
-          println"\u001B[0m"
+        if("" != config.headerMessage) {
+          ansiColor('xterm') {
+            println config.headerMessage
+          }
         }
         try{
           ansiColor('xterm') {
@@ -142,7 +145,16 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
                 script: "${preCommitCommand}"
               )
             }
+
+            if (closures.containsKey('prePipeline')){
+              closures.prePipeline()
+            }
+
             closures.pipeline(scmInfo)
+
+            if (closures.containsKey('postPipeline')){
+              closures.postPipeline()
+            }
           }
         }catch(error){
            status='FAILURE'
