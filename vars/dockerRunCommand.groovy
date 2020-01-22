@@ -25,12 +25,18 @@ def call(Map config = [:]) {
     key, value -> environmentVariables += "-e ${key}=\"${value}\" "
   }
 
+  if (null != env.DEBUG){
+    execute(
+      script: 'docker version'
+    )
+  }
+
   return "docker run --rm -v \$(pwd):/data ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
 }
 
 private Boolean isDockerInstalled() {
   try {
-    execute(script: 'docker version', hideStdout: true)
+    execute(script: 'which docker', hideStdout: true)
     return true
   } catch(dockerVersionError) {
     return false

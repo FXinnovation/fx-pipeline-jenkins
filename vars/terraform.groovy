@@ -603,9 +603,11 @@ def call(Map config = [:]){
     environmentVariables: config.dockerEnvironmentVariables,
   )
 
-  execute(
-    script: "${terraformCommand} version"
-  )
+  if (null != env.DEBUG) {
+    execute(
+      script: "${terraformCommand} version"
+    )
+  }
 
   return execute(
     throwError: config.throwError,
