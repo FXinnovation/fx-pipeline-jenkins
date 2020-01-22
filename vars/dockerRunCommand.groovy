@@ -4,13 +4,16 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'additionalMounts', Map, [:])
   mapAttributeCheck(config, 'command', CharSequence, '')
   mapAttributeCheck(config, 'environmentVariables', Map, [:])
+  mapAttributeCheck(config, 'forcePullImage', Boolean, false)
 
   if (!this.isDockerInstalled()) {
     println "Docker is not available, assuming the tool “${config.fallbackCommand}” is installed."
     return config.fallbackCommand
   }
 
-  execute(script: "docker pull ${config.dockerImage}")
+  if (config.forcePullImage) {
+    execute(script: "docker pull ${config.dockerImage}")
+  }
 
   def additionalMounts = ''
 
