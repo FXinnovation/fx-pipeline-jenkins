@@ -1,4 +1,5 @@
 import com.fxinnovation.nexus.PowershellApplicationRepository
+import com.fxinnovation.nexus.PowershellModuleRepository
 import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:], Map closures =[:]){
