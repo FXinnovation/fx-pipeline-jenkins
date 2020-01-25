@@ -44,15 +44,19 @@ def call(Map config = [:], Map closures =[:]){
             stage('build'){
                 printDebug('----- Building -----')
 
-                executePowershell([
+                powershellCommand = dockerRunCommand(
                     dockerImage: config.powershellDockerImage,
-                    script: "build '${config.version}'",
-                    dockerEnvironmentVariables: [
-                        FXNexusUrl: "${readModuleRepository.getBaseUrl()}"
-                    ]
-                ])
+                    environmentVariables:  [
+                                        FXNexusUrl: "${readModuleRepository.getBaseUrl()}"
+                                    ],
+                    additionalMounts: [:],
+                    fallbackCommand:  'pwsh',
+                )
 
-                powershellModule.buildApplication(config)
+                execute(
+                    script: "${powershellCommand} build '${config.version}'"
+                )
+
                 printDebug('----- Building Done-----')
             }
             if (closures.containsKey('postBuild') && closures.postBuild instanceof Closure){
@@ -70,14 +74,19 @@ def call(Map config = [:], Map closures =[:]){
             stage('publish'){
                 printDebug('----- Publishing from image-----')
                 withCredentials([string(credentialsId: config.nuGetApiKey, variable: 'mysecret')]){
-                    executePowershell([
+                    powershellCommand = dockerRunCommand(
                         dockerImage: config.powershellDockerImage,
-                        script: "publish"
-                    ])
-                    dockerEnvironmentVariables: [
-                        PublishModuleUri: "${publishModuleRepository.getBaseUrl()}",
-                        NuGetApiKey: "${mysecret}"
-                    ]
+                        environmentVariables:  [
+                            PublishModuleUri: "${publishModuleRepository.getBaseUrl()}",
+                            NuGetApiKey: "${mysecret}"
+                        ],
+                        additionalMounts: [:],
+                        fallbackCommand:  'pwsh',
+                    )
+
+                    execute(
+                        script: "${powershellCommand} publish"
+                    )
                 }
 
                 printDebug('----- Publishing Maven-----')
