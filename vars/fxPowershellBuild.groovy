@@ -47,7 +47,7 @@ def call(Map config = [:], Map closures =[:]){
                 powershellCommand = dockerRunCommand(
                     dockerImage: config.powershellDockerImage,
                     environmentVariables:  [
-                                        FXNexusUrl: "${readModuleRepository.getBaseUrl()}"
+                                        FXNexusUrl: "${readModuleRepository.getBaseUrl()}/"
                                     ],
                     additionalMounts: [:],
                     fallbackCommand:  'pwsh',
@@ -77,7 +77,7 @@ def call(Map config = [:], Map closures =[:]){
                     powershellCommand = dockerRunCommand(
                         dockerImage: config.powershellDockerImage,
                         environmentVariables:  [
-                            PublishModuleUri: "${publishModuleRepository.getBaseUrl()}",
+                            PublishModuleUri: "${publishModuleRepository.getBaseUrl()}/",
                             NuGetApiKey: "${mysecret}"
                         ],
                         additionalMounts: [:],
