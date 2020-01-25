@@ -8,7 +8,7 @@ def call(Map config = [:], Map closures =[:]){
 
             printDebug('----- fxPowershellBuild -----')
 
-            mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build:2.0.0",  '')
+            mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build:latest",  '') //Fix version when tests are done
 
             def mavenrepository
             def publishModuleRepository
