@@ -74,7 +74,7 @@ def call(Map config = [:], Map closures =[:]){
                         script: "publish"
                     ])
                     dockerEnvironmentVariables: [
-                        PublishModuleUri: "${publishModuleRepository.getBaseUrl()}"
+                        PublishModuleUri: "${publishModuleRepository.getBaseUrl()}",
                         NuGetApiKey: "${mysecret}"
                     ]
                 }
