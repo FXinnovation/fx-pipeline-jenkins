@@ -99,7 +99,7 @@ def call(Map config = [:], Map closures =[:]){
                 def zips = findFiles(glob: '_artefacts/*.zip')
                 if(zips.length != 0){
                     item.publish(this,zips.path)
-                    currentBuild.description = "Artefact is available at \n${item.getUrl()}"
+                    currentBuild.description = "Artefact is available at \n${item.getUrl().toLowerCase()}"
                 }
                 printDebug('----- Publishing Done -----')
             }
