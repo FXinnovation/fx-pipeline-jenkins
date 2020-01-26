@@ -91,6 +91,8 @@ def call(Map config = [:], Map closures =[:]){
                 }
 
                 printDebug('----- Publishing Maven-----')
+                def prop = readJSON file: 'PowershellDefinition.json'
+                mapAttributeCheck(config, 'applicationName', CharSequence, prop.Name)
 
                 def item = mavenrepository.newItem(this, config)
 
