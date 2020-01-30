@@ -1,31 +1,19 @@
-def call(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('publish') || !(config.publish instanceof Boolean)){
-    config.publish = false
-  }
-  for (closure in closures){
-    if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a Closure")
-    }
-  }
+import com.fxinnovation.helper.ClosureHelper
 
-  if (closures.containsKey('preTest')){
-    stage('pre-test'){
-      closures.preTest()
-    }
-  }
+def call(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'publish', Boolean, false)
+
+  closureHelper = new ClosureHelper(this, closures)
+
+  closureHelper.executeWithinStage('preTest')
+
   stage('test'){
     packer.validate(config.validateConfig)
   }
-  if (closures.containsKey('postTest')){
-    stage('post-test'){
-      closures.postTest()
-    }
-  }
-  if (closures.containsKey('prePublish')){
-    stage('pre-publish'){
-      closures.prePublish()
-    }
-  }
+
+  closureHelper.executeWithinStage('postTest')
+  closureHelper.executeWithinStage('prePublish')
+ 
   stage('publish'){
     if (config.publish){
       packer.build(config.buildConfig)
@@ -33,9 +21,6 @@ def call(Map config = [:], Map closures = [:]){
       println "Publish step is skipped"
     }
   }
-  if (closures.containsKey('postPublish')){
-    stage('post-publish'){
-      closures.postPublish()
-    }
-  }
+
+  closureHelper.executeWithinStage('postPublish')
 }

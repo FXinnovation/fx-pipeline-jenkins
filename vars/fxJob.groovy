@@ -1,27 +1,8 @@
+import com.fxinnovation.helper.ClosureHelper
+
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
-  defaultPropertiesConfig = [
-    buildDiscarder(
-      logRotator(
-        artifactDaysToKeepStr: '',
-        artifactNumToKeepStr: '10',
-        daysToKeepStr: '',
-        numToKeepStr: '10'
-      )
-    ),
-    pipelineTriggers(
-      [cron('@weekly')]
-    )
-  ]
 
-  for (closure in closures){
-    if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a Closure")
-    }
-  }
-
-  if (!closures.containsKey('pipeline')){
-    error('pipeline closure is mandatory.')
-  }
+  mapAttributeCheck(closures, 'pipeline', Closure, {}, '“pipeline” closure is mandatory. Please defined it.')
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
@@ -30,6 +11,8 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'podName', CharSequence, 'jenkins-slave-linux')
   mapAttributeCheck(config, 'podNamespace', CharSequence, 'default')
   mapAttributeCheck(config, 'podNodeUsageMode', CharSequence, 'NORMAL')
+  mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
+  mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
   mapAttributeCheck(config, 'headerMessage', CharSequence, """
 \u001b[35m
 /!\\ PULL REQUEST /!\\
@@ -62,6 +45,22 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
 \u001B[0m
   """)
 
+  closureHelper = new ClosureHelper(this, closures)
+
+  defaultPropertiesConfig = [
+    buildDiscarder(
+      logRotator(
+        artifactDaysToKeepStr: '',
+        artifactNumToKeepStr: '10',
+        daysToKeepStr: '',
+        numToKeepStr: '10'
+      )
+    ),
+    pipelineTriggers(
+      [cron('@weekly')]
+    )
+  ]
+
   def slaveSizes = [
     small: [
       resourceRequestCpu: '100m',
@@ -86,8 +85,10 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
   def chosenSlaveSize = slaveSizes[config.slaveSize]
 
   properties(defaultPropertiesConfig + propertiesConfig)
-  status='SUCCESS'
+
+  def status='SUCCESS'
   def label = UUID.randomUUID().toString()
+
   podTemplate(
     cloud: config.podCloud,
     name:  config.podName,
@@ -100,7 +101,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     containers: [
       containerTemplate(
         name: 'jnlp',
-        image: "fxinnovation/jenkinsk8sslave:latest",
+        image: '${config.podImageName}:${config.podImageVersion}',
         args: '${computer.jnlpmac} ${computer.name}',
         privileged: true,
         alwaysPullImage: true,
@@ -125,11 +126,12 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
         try{
           ansiColor('xterm') {
             stage('prepare'){
-              if (closures.containsKey('prePrepare')){
-                closures.prePrepare()
-              }
+              closureHelper.execute('prePrepare')
+
               scmInfo = fxCheckout()
-              if (closures.containsKey('postPrepare')){
+              
+              // We can't use the closure helper because there is a bug with CPS workflow
+              if (closureHelper.isDefined('postPrepare')){
                 closures.postPrepare(scmInfo)
               }
             }
@@ -140,32 +142,30 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
                 fallbackCommand: 'pre-commit',
                 command: 'run -a --color=always',
               )
-
-              execute(
-                script: "${preCommitCommand}"
-              )
+              
+              stage('preCommit') {
+                execute(script: "${preCommitCommand}")
+              }
             }
 
-            if (closures.containsKey('prePipeline')){
-              closures.prePipeline()
+            closureHelper.executeWithinStage('prePipeline')
+
+            stage('pipeline') {
+              closures.pipeline(scmInfo)
             }
 
-            closures.pipeline(scmInfo)
-
-            if (closures.containsKey('postPipeline')){
-              closures.postPipeline()
-            }
+            closureHelper.executeWithinStage('postPipeline')
           }
         }catch(error){
            status='FAILURE'
            throw error
         }finally{
           stage('notification'){
-            if (closures.containsKey('preNotification')){
-              closures.preNotification()
-            }
+            closureHelper.execute('preNotification')
+
             // We use notification because notify is a reserved keyword in groovy.
-            if (closures.containsKey('notification')){
+            // We can't use the closure helper because there is a bug with CPS workflow
+            if (closureHelper.isDefined('notification')){
               closures.notification(status)
             }
             else{
@@ -174,18 +174,13 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
                 failOnError: false
               )
             }
-            if (closures.containsKey('postNotification')){
-              closures.postNotification()
-            }
+
+            closureHelper.execute('postNotification')
           }
           stage('cleanup'){
-            if (closures.containsKey('preCleanup')){
-              closures.preCleanup()
-            }
+            closureHelper.execute('preCleanup')
             cleanWs()
-            if (closures.containsKey('postCleanup')){
-              closures.postCleanup()
-            }
+            closureHelper.execute('postCleanup')
           }
         }
       }

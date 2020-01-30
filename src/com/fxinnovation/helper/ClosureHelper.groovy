@@ -38,4 +38,22 @@ class ClosureHelper {
   Map getClosures() {
     return closures
   }
+
+  public void addClosure(String closureName, Closure closure) {
+     if('' == closureName) {
+       this.context.println("“closureName” can not be empty")
+       return
+     }
+
+     this.closures[closureName] = closure
+  }
+
+  public void addClosureOnlyIfNotDefined(String closureName, Closure closure) {
+     if(this.isDefined(closureName)) {
+       this.context.printdebug("“" + closureName + "” is already defined.")
+       return
+     }
+
+     this.addClosure(closureName, closure)
+  }
 }

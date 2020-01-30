@@ -1,16 +1,20 @@
+import com.fxinnovation.helper.ClosureHelper
+
 def call(Map config = [:], Map closures = [:]){
-  if (!closures.containsKey('publish')){
-    if (!config.containsKey('supermarketCredentialsId')){
-      error ('supermarketCredentialsId parameter is mandatory.')
-    }
-    closures.publish = {
-      stove(
-        credentialsId: config.supermarketCredentialsId
-      )
-    }
+  closureHelper = new ClosureHelper(this, closures)
+
+  if(!closureHelper.isDefined('publish')) {
+    mapAttributeCheck(config, 'supermarketCredentialsId', CharSequence, '', '“supermarketCredentialsId” is mandatory')
+
+    closureHelper.addClosure('publish', {
+        stove(
+          credentialsId: config.supermarketCredentialsId
+        )
+      }
+    )
   }
   pipelineCookbook(
     config,
-    closures
+    closureHelper.getCLosures()
   )
 }

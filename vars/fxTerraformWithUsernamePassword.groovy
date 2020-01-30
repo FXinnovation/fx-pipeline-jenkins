@@ -1,3 +1,5 @@
+import com.fxinnovation.helper.ClosureHelper
+
 def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '“testEnvironmentCredentialId” parameter is mandatory.')
   mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)
@@ -6,6 +8,8 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
+
+  closureHelper = new ClosureHelper(this, closures)
 
   withCredentials([
     usernamePassword(
@@ -37,6 +41,6 @@ def call(Map config = [:], Map closures = [:]) {
     config.inspecUsername = TF_username_test
     config.inspecPassword = TF_password_test
 
-    fxTerraform(config, closures)
+   fxTerraform(config, closureHelper.getClosures())
   }
 }

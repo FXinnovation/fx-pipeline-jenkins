@@ -1,4 +1,5 @@
 import com.fxinnovation.data.ScmInfo
+import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'testPlanVars', List, [])
@@ -14,73 +15,77 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
   mapAttributeCheck(config, 'commonOptions', Map, [:])
 
+  closureHelper = new ClosureHelper(this, closures)
+
   // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.
   if (config.containsKey('commandTargets')) {
     print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
   }
 
-  closures.pipeline = { ScmInfo scmInfo ->
-    def deployFileExists = fileExists 'deploy.tf'
-    def toDeploy = false
+  closureHelper.addClosure('publish', { ScmInfo scmInfo ->
+      def deployFileExists = fileExists 'deploy.tf'
+      def toDeploy = false
 
-    if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()){
-      toDeploy = true
-    }
-
-    printDebug("isPublishable: ${scmInfo.isPublishable()} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
-
-    commandTargets = []
-    try {
-      execute(script: "[ -d examples ]")
-
-      for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
-        commandTargets += commandTarget
+      if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()){
+        toDeploy = true
       }
-    } catch (error) {
-      commandTargets = ['.']
+
+      printDebug("isPublishable: ${scmInfo.isPublishable()} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
+
+      commandTargets = []
+      try {
+        execute(script: "[ -d examples ]")
+
+        for (commandTarget in execute(script: "ls examples | sed -e 's/.*/examples\\/\\0/g'").stdout.split()) {
+          commandTargets += commandTarget
+        }
+      } catch (error) {
+        commandTargets = ['.']
+      }
+
+      fmt(config, commandTargets)
+
+      printDebug('commandTargets: ' + commandTargets)
+
+      for(commandTarget in commandTargets) {
+        pipelineTerraform(
+          config +
+          [
+            commandTarget     : commandTarget,
+            testPlanOptions   : [
+              vars: config.testPlanVars
+            ] + config.commonOptions,
+            testApplyOptions : config.commonOptions,
+            fmtOptions: config.commonOptions,
+            validateOptions   : [
+              vars: config.validateVars
+            ] + config.commonOptions,
+            testDestroyOptions: [
+              vars: config.testPlanVars
+            ] + config.commonOptions,
+            validateOptions   : [
+              vars: config.testPlanVars
+            ] + config.commonOptions,
+            publish           : deployFileExists
+          ], [
+            preValidate: { preValidate(deployFileExists, scmInfo) },
+            init       : { init(config, commandTarget, deployFileExists) },
+            publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures()) }
+          ]
+        )
+      }
     }
+  )
 
-    fmt(config, commandTargets)
-
-    printDebug('commandTargets: ' + commandTargets)
-
-    for(commandTarget in commandTargets) {
-      pipelineTerraform(
-        config +
-        [
-          commandTarget     : commandTarget,
-          testPlanOptions   : [
-            vars: config.testPlanVars
-          ] + config.commonOptions,
-          testApplyOptions : config.commonOptions,
-          fmtOptions: config.commonOptions,
-          validateOptions   : [
-            vars: config.validateVars
-          ] + config.commonOptions,
-          testDestroyOptions: [
-            vars: config.testPlanVars
-          ] + config.commonOptions,
-          validateOptions   : [
-            vars: config.testPlanVars
-          ] + config.commonOptions,
-          publish           : deployFileExists
-        ], [
-          preValidate: { preValidate(deployFileExists, scmInfo) },
-          init       : { init(config, commandTarget, deployFileExists) },
-          publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closures) }
-        ]
-      )
+  closureHelper.addClosure('postNotification', {
+      if (config.containsKey('commandTargets')) {
+        print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
+      }
     }
-  }
-
-  closures.postNotification = {
-    if (config.containsKey('commandTargets')) {
-      print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
-    }
-  }
+  )
 
   fxJob(
-    closures,
+    closureHelper.getClosures(),
     [
       disableConcurrentBuilds()
     ],

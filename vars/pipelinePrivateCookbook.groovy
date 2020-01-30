@@ -1,31 +1,28 @@
+import com.fxinnovation.helper.ClosureHelper
+
 def call(Map config = [:], Map closures = [:]){
-  if (!closures.containsKey('publish')){
-    if (!config.containsKey('credentialId') && !(config.credentialId instanceof CharSequence)){
-      error ('credentialId parameter is mandatory and must be of type CharSequence')
-    }
-    if (!config.containsKey('serverUrl') && !(config.serverUrl instanceof CharSequence)) {
-      error ('serverUrl parameter is mandatory and must be of type CharSequence')
-    }
-    if (!config.containsKey('cookbookName') && !(config.cookbookName instanceof CharSequence)) {
-      error ('cookbookName parameter is mandatory and must be of type CharSequence')
-    }
-    if (!config.containsKey('cookbookPath') && !(config.cookbookPath instanceof CharSequence)) {
-      error ('cookbookPath parameter is mandatory and must be of type CharSequence')
-    }
-    
-    closures.publish = {
-      cookbookUploadOutput = knife.cookbookUpload([
-        credentialId: config.credentialId,
-        serverUrl: config.serverUrl,
-        commandTarget: config.cookbookName,
-        cookbookPath: config.cookbookPath,
-       ]
-      ) 
-      
-      if (cookbookUploadOutput.stderr =~ /ERROR: Could not find cookbook/) {
-        error(cookbookUploadOutput.stderr)
-      } 
-    }
+  closureHelper = new ClosureHelper(this, closures)
+
+  if (!closureHelper.isDefined('publish')){
+    mapAttributeCheck(config, 'credentialId', CharSequence, '', '“credentialId” is mandatory')
+    mapAttributeCheck(config, 'serverUrl', CharSequence, '', '“serverUrl” is mandatory')
+    mapAttributeCheck(config, 'cookbookName', CharSequence, '', '“cookbookName” is mandatory')
+    mapAttributeCheck(config, 'cookbookPath', CharSequence, '', '“cookbookPath” is mandatory')
+
+    closureHelper.addClosure('publish', {
+        cookbookUploadOutput = knife.cookbookUpload([
+          credentialId: config.credentialId,
+          serverUrl: config.serverUrl,
+          commandTarget: config.cookbookName,
+          cookbookPath: config.cookbookPath,
+         ]
+        ) 
+        
+        if (cookbookUploadOutput.stderr =~ /ERROR: Could not find cookbook/) {
+          error(cookbookUploadOutput.stderr)
+        } 
+      }
+    )
   }
   if (!config.containsKey('foodcritic')){
     config.foodcritic = [
@@ -34,6 +31,6 @@ def call(Map config = [:], Map closures = [:]){
   }
   pipelineCookbook(
     config,
-    closures
+    closureHelper.getClosures()
   )
 }

@@ -1,33 +1,21 @@
-def call(Map config = [:], Map closures = [:]){
-  if (!config.containsKey('deploy') || !(config.deploy instanceof Boolean)){
-    config.deploy = false
-  }
-  for (closure in closures){
-    if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a Closure")
-    }
-  }
+import com.fxinnovation.helper.ClosureHelper
 
-  if (closures.containsKey('preTest')){
-    stage('pre-test'){
-      closures.preTest()
-    }
-  }
+def call(Map config = [:], Map closures = [:]){
+  mapAttributeCheck(config, 'deploy', Boolean, false)
+
+  closureHelper = new ClosureHelper(this, closures)
+
+  closureHelper.executeWithinStage('preTest')
+  
   stage('test'){
     helmTestConfig = config.helmConfig.clone()
     helmTestConfig.dryRun = true
     helm.upgrade(helmTestConfig)
   }
-  if (closures.containsKey('postTest')){
-    stage('post-test'){
-      closures.postTest()
-    }
-  }
-  if (closures.containsKey('preDeploy')){
-    stage('pre-deploy'){
-      closures.preDeploy()
-    }
-  }
+
+  closureHelper.executeWithinStage('postTest')
+  closureHelper.executeWithinStage('preDeploy')
+
   stage('deploy'){
     try {
       if (true == config.deploy){
@@ -56,9 +44,6 @@ def call(Map config = [:], Map closures = [:]){
       throw error
     }
   }
-  if (closures.containsKey('postDeploy')){
-    stage('post-deploy'){
-      closures.postDeploy()
-    }
-  }
+
+  closureHelper.executeWithinStage('postDeploy')
 }

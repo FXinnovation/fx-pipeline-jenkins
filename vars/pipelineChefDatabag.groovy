@@ -1,44 +1,34 @@
+import com.fxinnovation.helper.ClosureHelper
+
 def call(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'publish', Boolean, false)
   mapAttributeCheck(config, 'bag', CharSequence, '“databag” parameter is mandatory.')
   mapAttributeCheck(config, 'knifeConfig', Map, '“knifeConfig” parameter is mandatory.')
   mapAttributeCheck(config.knifeConfig, 'commandTarget', CharSequence, '“knifeConfig.commandTarget” parameter is mandatory.')
   mapAttributeCheck(config, 'secretId', CharSequence, '“knifeConfig.secretId” parameter is mandatory.')
-   
-  for (closure in closures){
-    if (!closure instanceof Closure){
-      error("${closure.key} has to be a Closure")
-    }
+  
+  closureHelper = new ClosureHelper(this, closures)   
+
+  closureHelper.executeWithinStage('preTest')
+  
+  stage('test'){
+    databag = readJSON(file: config.knifeConfig.commandTarget)
   }
 
-  if (closures.containsKey('preTest')){
-    stage('pre-test'){
-      closures.preTest()
-    }
-  }
-  stage('test'){
-    databag = readJSON file: config.knifeConfig.commandTarget
-  }
-  if (closures.containsKey('postTest')){
-    stage('post-test'){
-      closures.postTest()
-    }
-  }
-  if (closures.containsKey('prePlan')){
-    stage('pre-plan'){
-      closures.prePlan()
-    }
-  }
+  closureHelper.executeWithinStage('preTest')
+  closureHelper.executeWithinStage('prePlan')
+
   stage('plan'){
     databagExists = false
     bagExists = false
 
-    databagBagList = readJSON text: knife.databagList(
+    databagBagList = readJSON(text: knife.databagList(
         serverUrl: config.knifeConfig.serverUrl,
         credentialId: config.knifeConfig.credentialId,
         commandTarget: config.bag,
         format: 'json'
       ).stdout
+    )
     databagBagList.each {
       if (config.bag == it){
         bagExists = true
@@ -46,12 +36,13 @@ def call(Map config = [:], Map closures = [:]){
     }
     
     if (true == bagExists) {
-      databagItemList = readJSON text: knife.databagShow(
-        serverUrl: config.knifeConfig.serverUrl,
-        credentialId: config.knifeConfig.credentialId,
-        commandTarget: config.bag,
-        format: 'json'
-      ).stdout
+      databagItemList = readJSON(text: knife.databagShow(
+          serverUrl: config.knifeConfig.serverUrl,
+          credentialId: config.knifeConfig.credentialId,
+          commandTarget: config.bag,
+          format: 'json'
+        ).stdout
+      )
       databagItemList.each {
         if (databag.id == it){
           databagExists = true
@@ -60,8 +51,7 @@ def call(Map config = [:], Map closures = [:]){
     }
     if (true == bagExists) {
       println "Bag ${config.bag} exist. Nothing to do"
-    }
-    else {
+    }else {
       println "Bag ${config.bag} does not exist. Need to create it first."
     }
     if (true == databagExists){
@@ -70,11 +60,10 @@ def call(Map config = [:], Map closures = [:]){
       println "Item ${databag.id} does not exist. This will be created."
     }
   }
-  if (closures.containsKey('postPlan')){
-    stage('post-plan'){
-      closures.postPlan()
-    }
-  }
+
+  closureHelper.executeWithinStage('postPlan')
+  closureHelper.executeWithinStage('prePublish')
+
   stage('publish'){
     if (config.publish){
       if (false == bagExists) {
@@ -100,9 +89,6 @@ def call(Map config = [:], Map closures = [:]){
       println "Publish step is skipped"
     }
   }
-  if (closures.containsKey('postPublish')){
-    stage('post-publish'){
-      closures.postPublish()
-    }
-  }
+
+  closureHelper.executeWithinStage('postPublish')
 }

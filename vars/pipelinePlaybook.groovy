@@ -1,67 +1,57 @@
+import com.fxinnovation.helper.ClosureHelper
+
 def call(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
 
-  for (closure in closures){
-    if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a java.lang.Closure.")
-    }
-  }
+  closureHelper = new ClosureHelper(this, closures)
 
   stage('test “' + config.commandTarget + '”') {
-    lint(config, closures)
-    galaxy(config, closures)
-    converge(config, closures)
-    test(config, closures)
+    lint(config, closureHelper)
+    galaxy(config, closureHelper)
+    converge(config, closureHelper)
+    test(config, closureHelper)
   }
 
-  publish(config, closures)
+  publish(config, closureHelper)
 }
 
 
-def lint(Map config = [:], Map closures = [:]){
+def lint(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'lintOptions',    CharSequence, '-p --parseable-severity')
   mapAttributeCheck(config, 'lintOutputFile', CharSequence, 'ansible-lint.txt')
 
-  if (!closures.containsKey('lint')){
-    closures.lint = {
-      try {
-        ansibleLint(
-          options: config.lintOptions,
-          commandTarget: config.commandTarget
-        )
-      } catch(error) {
-        writeFile(
-          file: config.lintOutputFile,
-          text: error.getMessage()
-        )
-        archiveArtifacts(
-          artifacts: config.lintOutputFile
-        )
+  closureHelper.addClosureOnlyIfNotDefined('lint', {
+    try {
+       ansibleLint(
+         options: config.lintOptions,
+         commandTarget: config.commandTarget
+       )
+     } catch(error) {
+       writeFile(
+         file: config.lintOutputFile,
+         text: error.getMessage()
+       )
+       archiveArtifacts(
+         artifacts: config.lintOutputFile
+       )
 
-        throw(error)
-      }
+       throw(error)
+     }
     }
-  }
+  )
 
-  if (closures.containsKey('preLint')){
-    closures.preLint()
-  }
-
-  closures.lint()
-
-  if (closures.containsKey('postLint')){
-    closures.postLint()
-  }
+  closureHelper.execute('preLint')
+  closureHelper.execute('lint')
+  closureHelper.execute('postLint')
 }
 
-def galaxy(Map config = [:], Map closures = [:]){
-  mapAttributeCheck(config, 'galaxySSHHostKeys', List,         [])
+def galaxy(Map config = [:], ClosureHelper closureHelper){
+  mapAttributeCheck(config, 'galaxySSHHostKeys', List, [])
   mapAttributeCheck(config, 'galaxyAgentSocket', CharSequence, '')
-  mapAttributeCheck(config, 'galaxyReqFile',     CharSequence, 'requirements.yml')
-  mapAttributeCheck(config, 'galaxyRolesPath',   CharSequence, 'roles/')
+  mapAttributeCheck(config, 'galaxyReqFile', CharSequence, 'requirements.yml')
+  mapAttributeCheck(config, 'galaxyRolesPath', CharSequence, 'roles/')
 
-  if (!closures.containsKey('galaxy')){
-    closures.galaxy = {
+  closureHelper.addOnlyIfNotExist('galaxy', {
       if (fileExists(config.galaxyReqFile)) {
         ansibleGalaxy.install([
           sshHostKeys:    config.galaxySSHHostKeys,
@@ -73,75 +63,48 @@ def galaxy(Map config = [:], Map closures = [:]){
         print "The requirement file doesn't exist : ${config.galaxyReqFile}, skip"
       }
     }
-  }
+  )
 
-  if (closures.containsKey('preGalaxy')){
-    closures.preGalaxy()
-  }
-
-  closures.galaxy()
-
-  if (closures.containsKey('postGalaxy')){
-    closures.postGalaxy()
-  }
+  closureHelper.execute('preGalaxy')
+  closureHelper.execute('galaxy')
+  closureHelper.execute('postGalaxy')
 }
 
-def converge(Map config = [:], Map closures = [:]){
+def converge(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'convergeOptions', Map, [:])
 
-  if (!closures.containsKey('converge')){
-    closures.converge = {
+  closureHelper.addOnlyIfNotExist('converge', {
       println('No Ansible “converge” step define yet.')
     }
-  }
+  )
 
-  if (closures.containsKey('preConverge')){
-    closures.preConverge()
-  }
-
-  closures.converge()
-
-  if (closures.containsKey('postConverge')){
-    closures.postConverge()
-  }
+  closureHelper.execute('preConverge')
+  closureHelper.execute('converge')
+  closureHelper.execute('postConverge')
 }
 
-def test(Map config = [:], Map closures = [:]){
+def test(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'testOptions', Map, [:])
 
-  if (!closures.containsKey('test')){
-    closures.test = {
+  closureHelper.addOnlyIfNotExist('test', {
       println('No Ansible “test” step define yet.')
     }
-  }
+  )
 
-  if (closures.containsKey('preTest')){
-    closures.preTest()
-  }
-
-  closures.test()
-
-  if (closures.containsKey('postTest')){
-    closures.postTest()
-  }
+  closureHelper.execute('preTest')
+  closureHelper.execute('test')
+  closureHelper.execute('postTest')
 }
 
-def publish(Map config = [:], Map closures = [:]){
+def publish(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'publish', Boolean, false)
 
-  if (config.publish) {
-    stage('publish') {
-      if (closures.containsKey('prePublish')) {
-        closures.prePublish()
-      }
-
-      closures.publish()
-
-      if (closures.containsKey('postPublish')) {
-        closures.postPublish()
-      }
+  closureHelper.addOnlyIfNotExist('publish', {
+      println('No Ansible “publish” step define yet.')
     }
-  }else{
-    println('Publish step is skipped because "config.publish" is false.')
-  }
+  )
+
+  closureHelper.execute('prePublish')
+  closureHelper.execute('publish')
+  closureHelper.execute('postPublish')
 }

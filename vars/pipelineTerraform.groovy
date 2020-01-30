@@ -1,53 +1,44 @@
+import com.fxinnovation.helper.ClosureHelper
+
 def call(Map config = [:], Map closures = [:]){
-  for (closure in closures){
-    if (!closure.value instanceof Closure){
-      error("${closure.key} has to be a java.lang.Closure.")
-    }
-  }
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
   mapAttributeCheck(config, 'fmtOptions', Map, [:])
 
+  closureHelper = new ClosureHelper(this, closures)
+
   stage('init “' + config.commandTarget + '”') {
-    init(config, closures)
+    init(config, closureHelper)
   }
 
   stage('test “' + config.commandTarget + '”') {
-    validate(config, closures)
-    fmt(config.commandTarget, config.fmtOptions, closures)
-    test(config, closures)
+    validate(config, closureHelper)
+    fmt(config.commandTarget, config.fmtOptions, closureHelper)
+    test(config, closureHelper)
   }
 
-  publish(config, closures)
+  publish(config, closureHelper)
 }
 
-def init(Map config = [:], Map closures = [:]){
+def init(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'initOptions', Map, [:])
 
-  if (!closures.containsKey('init')){
-    closures.init = {
+  closureHelper.addClosureOnlyIfNotDefined('init', {
       terraform.init([
           commandTarget: config.commandTarget
         ] + config.initOptions
       )
     }
-  }
+  )
 
-  if (closures.containsKey('preInit')){
-    closures.preInit()
-  }
-
-  closures.init()
-
-  if (closures.containsKey('postInit')){
-    closures.postInit()
-  }
+  closureHelper.execute('preInit')
+  closureHelper.execute('init')
+  closureHelper.execute('postInit')
 }
 
-def validate(Map config = [:], Map closures = [:]){
+def validate(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'validateOptions', Map, [:])
 
-  if (!closures.containsKey('validate')){
-    closures.validate = {
+  closureHelper.addClosureOnlyIfNotDefined('validate', {
       try {
         terraform.validate(
           [
@@ -59,22 +50,15 @@ def validate(Map config = [:], Map closures = [:]){
         error "Terraform validate command has failed!"
       }
     }
-  }
+  )
 
-  if (closures.containsKey('preValidate')){
-    closures.preValidate()
-  }
-
-  closures.validate()
-
-  if (closures.containsKey('postValidate')){
-    closures.postValidate()
-  }
+  closureHelper.execute('preValidate')
+  closureHelper.execute('validate')
+  closureHelper.execute('postValidate')
 }
 
-def fmt(CharSequence commandTarget = '.', Map fmtOptions = [:], Map closures = [:]){
-  if (!closures.containsKey('fmt')){
-    closures.fmt = {
+def fmt(CharSequence commandTarget = '.', Map fmtOptions = [:], ClosureHelper closureHelper){
+  closureHelper.addClosureOnlyIfNotDefined('fmt', {
       try{
         terraform.fmt(
           [
@@ -87,27 +71,20 @@ def fmt(CharSequence commandTarget = '.', Map fmtOptions = [:], Map closures = [
         error "Terraform fmt command has failed!"
       }
     }
-  }
+  )
 
-  if (closures.containsKey('preFmt')){
-    closures.preFmt()
-  }
-
-  closures.fmt()
-
-  if (closures.containsKey('postFmt')){
-    closures.postFmt()
-  }
+  closureHelper.execute('preFmt')
+  closureHelper.execute('fmt')
+  closureHelper.execute('postFmt')
 }
 
-def test(Map config = [:], Map closures = [:]){
+def test(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'testPlanOptions', Map, [:])
   mapAttributeCheck(config, 'testApplyOptions', Map, [:])
   mapAttributeCheck(config, 'testDestroyOptions', Map, [:])
   mapAttributeCheck(config, 'publish', Boolean, false)
 
-  if (!closures.containsKey('test')){
-    closures.test = {
+  closureHelper.addClosureOnlyIfNotDefined('test', {
       if (config.publish) {
         return
       }
@@ -218,35 +195,23 @@ def test(Map config = [:], Map closures = [:]){
         sh 'rm -f test.out'
       }
     }
-  }
+  )
 
-  if (closures.containsKey('preTest')){
-    closures.preTest()
-  }
-
-  closures.test()
-
-  if (closures.containsKey('postTest')){
-    closures.postTest()
-  }
+  closureHelper.execute('preTest')
+  closureHelper.execute('test')
+  closureHelper.execute('postTest')
 }
 
-def publish(Map config = [:], Map closures = [:]){
+def publish(Map config = [:], Map ClosureHelper closureHelper){
   mapAttributeCheck(config, 'publishPlanOptions', Map, [:])
   mapAttributeCheck(config, 'publishApplyOptions', Map, [:])
   mapAttributeCheck(config, 'publish', Boolean, false)
 
   if (config.publish) {
     stage('publish') {
-      if (closures.containsKey('prePublish')) {
-        closures.prePublish()
-      }
-
-      closures.publish()
-
-      if (closures.containsKey('postPublish')) {
-        closures.postPublish()
-      }
+      closureHelper.execute('prePublish')
+      closureHelper.execute('publish')
+      closureHelper.execute('postPublish')
     }
   }else{
     println 'Publish step is skipped because "config.publish" is false.'
