@@ -41,7 +41,7 @@ class ClosureHelper {
 
   public void addClosure(String closureName, Closure closure) {
      if('' == closureName) {
-       this.context.println("“closureName” can not be empty")
+       this.context.println("“closureName” cannot be empty")
        return
      }
 

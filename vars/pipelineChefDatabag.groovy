@@ -51,12 +51,12 @@ def call(Map config = [:], Map closures = [:]){
     }
     if (true == bagExists) {
       println "Bag ${config.bag} exist. Nothing to do"
-    }else {
+    } else {
       println "Bag ${config.bag} does not exist. Need to create it first."
     }
     if (true == databagExists){
       println "Item ${databag.id} exist. This will be updated."
-    }else{
+    } else {
       println "Item ${databag.id} does not exist. This will be created."
     }
   }
@@ -85,7 +85,7 @@ def call(Map config = [:], Map closures = [:]){
         config.knifeConfig.secret = tmpSecretName
         knife.databagFromFile(config.knifeConfig)
       }
-    }else{
+    } else {
       println "Publish step is skipped"
     }
   }

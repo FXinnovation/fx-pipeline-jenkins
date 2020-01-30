@@ -130,7 +130,6 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
 
               scmInfo = fxCheckout()
               
-              // We can't use the closure helper because there is a bug with CPS workflow
               if (closureHelper.isDefined('postPrepare')){
                 closures.postPrepare(scmInfo)
               }
@@ -164,7 +163,6 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
             closureHelper.execute('preNotification')
 
             // We use notification because notify is a reserved keyword in groovy.
-            // We can't use the closure helper because there is a bug with CPS workflow
             if (closureHelper.isDefined('notification')){
               closures.notification(status)
             }

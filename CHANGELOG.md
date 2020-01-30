@@ -1,9 +1,14 @@
 # Changelog
 
-## 0.17.0
+## 0.18.0
 
-* Feat: refactor pipeline to use closureHelper when it's possible (issue #36)
-* Feat: Add method addClosure and addClosureOnlyIfNotDefined
+* Tech: refactor pipeline to use closureHelper when it's possible (issue #36)
+
+* ClosureHelper:
+  * Feat: Add method addClosure and addClosureOnlyIfNotDefined
+
+* fxJob: 
+  * Add possibility to change pod slave docker image (attribute `podImageName`) and version (attribute `podImageVersion`)
 
 ## 0.16.0
 
