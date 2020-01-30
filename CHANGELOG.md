@@ -1,6 +1,11 @@
 # Changelog
 
-# 0.16.0
+## 0.17.0
+
+* Feat: refactor pipeline to use closureHelper when it's possible (issue #36)
+* Feat: Add method addClosure and addClosureOnlyIfNotDefined
+
+## 0.16.0
 
 * fxJob:
   * Feat: Add pod options: podCloud, podName, podNamespace and podNodeUsageMode
