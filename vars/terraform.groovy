@@ -485,7 +485,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
 
-  def debbuger = new Debugger(this)
+  def debugger = new Debugger(this)
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString('=')
 
