@@ -20,7 +20,6 @@ class Debugger {
 
   /**
    * Checks whether or not the debug variable is set.
-   * @return
    */
   Boolean debugVarExists() {
     // The silent try/catch simulate a check “is_variable_defined” that does not exist in Groovy
