@@ -1,21 +1,24 @@
+import com.fxinnovation.io.Debugger
+
 def call(Map config = [:]){
   mapAttributeCheck(config, 'script', CharSequence, '', '"script" parameter is mandatory and must be a String (implements CharSequence).')
   mapAttributeCheck(config, 'throwError', Boolean, true)
   mapAttributeCheck(config, 'printCommand', Boolean, true)
   mapAttributeCheck(config, 'hideStdout', Boolean, false)
 
+  def debugger = new Debugger(this)
   def filePrefix = UUID.randomUUID().toString()
   def response = [
     stdout: null,
     stderr: null,
     statusCode: null
   ]
-  if (config.printCommand || (null != env.DEBUG)) {
+  if (config.printCommand || debugger.debugVarExists()) {
     println "Executing: '${config.script}'"
   }
   try{
     sh(
-      returnStdout: config.hideStdout || (null != env.DEBUG),
+      returnStdout: config.hideStdout || debugger.debugVarExists(),
       script: """
               set +x
               mkdir -p /tmp/${filePrefix}

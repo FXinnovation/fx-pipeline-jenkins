@@ -1,4 +1,5 @@
 import com.fxinnovation.factory.OptionStringFactory
+import com.fxinnovation.io.Debugger
 
 Map getShowValidParameters() {
   return [
@@ -484,6 +485,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
 
+  def debbuger = new Debugger(this)
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString('=')
 
@@ -603,7 +605,7 @@ def call(Map config = [:]){
     environmentVariables: config.dockerEnvironmentVariables,
   )
 
-  if (null != env.DEBUG) {
+  if (debugger.debugVarExists()) {
     execute(
       script: "${terraformCommand} version"
     )
