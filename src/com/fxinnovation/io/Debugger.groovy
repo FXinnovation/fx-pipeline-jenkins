@@ -14,7 +14,9 @@ class Debugger {
    */
   void printDebug(Object content) {
     if (this.debugVarExists()) {
+      this.context.println('### DEBUG ###')
       this.context.println(content)
+      this.context.println('### END DEBUG ###')
     }
   }
 

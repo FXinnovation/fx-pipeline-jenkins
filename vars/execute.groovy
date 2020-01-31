@@ -47,10 +47,10 @@ def call(Map config = [:]){
     if (config.throwError == true && response.statusCode != 0){
       error("Script returned an error:\nStatus Code: ${response.statusCode}\nStderr:\n${response.stderr}")
     }
-    printDebug("### DEBUG ###\n${response}")
+    printDebug(response)
     return response
   }catch(error){
-    printDebug("### DEBUG ###\n${response}")
+    printDebug(response)
     throw error
   }finally{
     dir("/tmp/${filePrefix}"){
