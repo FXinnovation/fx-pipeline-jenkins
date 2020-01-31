@@ -12,7 +12,7 @@ class Debugger {
   /**
    * Prints a content only if the debug exists.
    */
-  print(Serializable content) {
+  printDebug(Object content) {
     if (this.debugVarExists()) {
       this.context.println(content)
     }
