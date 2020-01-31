@@ -50,7 +50,7 @@ def call(Map config = [:]){
     printDebug(response)
     return response
   }catch(error){
-    printDebug(response)
+    println('ERROR: '.response)
     throw error
   }finally{
     dir("/tmp/${filePrefix}"){
