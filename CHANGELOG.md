@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.18.0
+## 0.19.0
 
 * Tech: refactor pipeline to use closureHelper when it's possible (issue #36)
 

@@ -2,7 +2,6 @@ import com.fxinnovation.helper.ClosureHelper
 
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
 
-  mapAttributeCheck(closures, 'pipeline', Closure, {}, '“pipeline” closure is mandatory. Please defined it.')
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
@@ -46,6 +45,8 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
   """)
 
   closureHelper = new ClosureHelper(this, closures)
+
+  closureHelper.throwErrorIfNotDefined('pipeline')
 
   defaultPropertiesConfig = [
     buildDiscarder(
@@ -101,7 +102,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     containers: [
       containerTemplate(
         name: 'jnlp',
-        image: '${config.podImageName}:${config.podImageVersion}',
+        image: "${config.podImageName}:${config.podImageVersion}",
         args: '${computer.jnlpmac} ${computer.name}',
         privileged: true,
         alwaysPullImage: true,

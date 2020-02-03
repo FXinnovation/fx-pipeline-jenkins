@@ -15,16 +15,24 @@ class ClosureHelper {
     return this.closures.containsKey(closureName) && Closure.isInstance(this.closures[closureName])
   }
 
-  public execute(String closureName, ...args) {
-    if ([] != args) {
-      this.context.println(
-        "WARNING: some variables were passed to closure “${closureName}”, this will probably create an error. " +
-        'As today (2020-01) CPS workflow does not support spread syntax: “spread not yet supported for CPS transformation” (*args). ' +
-        "Therefore, passing arguments to closures using the “${this.getClass()}” is not yet supported. " +
-        "To solve this issue either remove arguments from closure call or call the closure without using the “${this.getClass()}” object."
-      )
+  void throwErrorIfNotDefined(String closureName) {
+    if (!this.isDefined(closureName)) {
+      this.context.error("Closure “${closureName}” is mandatory !")
     }
-    return this.closures[closureName]()
+  }
+
+  public execute(String closureName, ...args) {
+    if(this.isDefined(closureName)) {
+      if ([] != args) {
+        this.context.println(
+          "WARNING: some variables were passed to closure “${closureName}”, this will probably create an error. " +
+          'As today (2020-01) CPS workflow does not support spread syntax: “spread not yet supported for CPS transformation” (*args). ' +
+          "Therefore, passing arguments to closures using the “${this.getClass()}” is not yet supported. " +
+          "To solve this issue either remove arguments from closure call or call the closure without using the “${this.getClass()}” object."
+        )
+      }
+      return this.closures[closureName]()
+    }
   }
 
   public executeWithinStage(String closureName, ...args) {
@@ -39,7 +47,7 @@ class ClosureHelper {
     return closures
   }
 
-  public void addClosure(String closureName, Closure closure) {
+  void addClosure(String closureName, Closure closure) {
      if('' == closureName) {
        this.context.println("“closureName” cannot be empty")
        return
@@ -48,9 +56,9 @@ class ClosureHelper {
      this.closures[closureName] = closure
   }
 
-  public void addClosureOnlyIfNotDefined(String closureName, Closure closure) {
+  void addClosureOnlyIfNotDefined(String closureName, Closure closure) {
      if(this.isDefined(closureName)) {
-       this.context.printdebug("“" + closureName + "” is already defined.")
+       this.context.printDebug("“" + closureName + "” is already defined.")
        return
      }
 

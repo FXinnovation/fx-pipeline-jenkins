@@ -202,7 +202,7 @@ def test(Map config = [:], ClosureHelper closureHelper){
   closureHelper.execute('postTest')
 }
 
-def publish(Map config = [:], Map ClosureHelper closureHelper){
+def publish(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'publishPlanOptions', Map, [:])
   mapAttributeCheck(config, 'publishApplyOptions', Map, [:])
   mapAttributeCheck(config, 'publish', Boolean, false)
