@@ -43,7 +43,7 @@ def call(Map config = [:], Map closures = [:]) {
         commandTargets = ['.']
       }
 
-      fmt(config, commandTargets)
+      fmt(config, commandTargets, closureHelper)
 
       printDebug('commandTargets: ' + commandTargets)
 
@@ -129,14 +129,14 @@ private preValidate(Boolean deployFileExists, ScmInfo scmInfo) {
   }
 }
 
-private fmt(Map config = [:], List commandTargets) {
+private fmt(Map config = [:], List commandTargets, ClosureHelper closureHelper) {
   if ('.' == commandTargets[0]) {
     return
   }
 
   printDebug('Global format to workaround a Terraform bug making fmt pass even if some sub-modules are incorrectly formatted.')
 
-  pipelineTerraform.fmt('.', config.commonOptions)
+  pipelineTerraform.fmt('.', config.commonOptions, closureHelper)
 }
 
 private init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists) {

@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.19.0
+## 0.20.1
+
+* Fix: Wrong `pipelineTerraform.fmt` signature when called in `fxTerraform` method.  
+
+## 0.20.0
 
 * Tech: refactor pipeline to use closureHelper when it's possible (issue #36)
 
