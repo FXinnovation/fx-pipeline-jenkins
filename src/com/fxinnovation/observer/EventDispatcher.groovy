@@ -14,14 +14,20 @@ class EventDispatcher {
    * @param String eventName
    * @param EventDataInterface eventData
    */
-  void dispatch(String eventName, EventDataInterface eventData = null) {
+  EventDataInterface dispatch(String eventName, EventDataInterface eventData = null) {
     for (eventListener in this.eventListenerBag.findOrderedListenersForEvent(eventName)) {
-      eventListener.run(eventData)
+      def runData = eventListener.run(eventData)
+
+      if (null != runData) {
+         eventData = runData
+      }
 
       if (eventListener.stopPropagationAfterRun()) {
         break
       }
     }
+
+    return eventData
   }
 
   /**
