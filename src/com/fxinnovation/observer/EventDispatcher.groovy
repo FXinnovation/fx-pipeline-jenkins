@@ -12,11 +12,11 @@ class EventDispatcher {
   /**
    * Dispatches an event
    * @param String eventName
-   * @param EventDataInterface eventDate
+   * @param EventDataInterface eventData
    */
   void dispatch(String eventName, EventDataInterface eventData = null) {
     for (eventListener in this.eventListenerBag.findOrderedListenersForEvent(eventName)) {
-      eventListener.run()
+      eventListener.run(eventData)
 
       if (eventListener.stopPropagationAfterRun()) {
         break

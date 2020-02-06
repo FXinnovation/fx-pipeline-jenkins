@@ -3,23 +3,26 @@ package com.fxinnovation.observer
 import com.fxinnovation.observer.AbstractEventListener
 
 class EventListenerBag {
-  private List<AbstractEventListener> eventListeners
+  private List<AbstractEventListener> eventListeners = []
+
+  String toString() {
+    return this.eventListeners
+  }
 
   /**
    * Finds Event Listeners that listens to given eventName, ordered.
    * @param String eventName
-   * @return Map<AbstractEventListener>
+   * @return List<AbstractEventListener>
    */
-  Map<AbstractEventListener> findOrderedListenersForEvent(String eventName) {
+  List<AbstractEventListener> findOrderedListenersForEvent(String eventName) {
     def orderedListeners = [:]
     for (eventListener in this.eventListeners) {
       if (eventListener.supports(eventName)) {
-        orderedListeners[eventListener.getOrder()] = eventListener
+        orderedListeners[this.findNextAvailablePosition(orderedListeners, eventListener)] = eventListener
       }
     }
-    orderedListeners.sort()*.key
 
-    return orderedListeners
+    return new ArrayList<AbstractEventListener>(orderedListeners.sort().values())
   }
 
   /**
@@ -27,17 +30,18 @@ class EventListenerBag {
    * @param AbstractEventListener eventListener
    */
   void addEventListener(AbstractEventListener eventListener) {
-    this.eventListeners[this.findNextAvailablePosition(eventListener)] = eventListener
+    this.eventListeners.add(eventListener)
   }
 
   /**
-   * Finds the next available position in the bag for the given eventListener.
+   * Finds the next available position in a Map for the given eventListener.
+   * @param Map map
    * @param AbstractEventListener eventListener
    * @return Integer
    */
-  private Integer findNextAvailablePosition(AbstractEventListener eventListener) {
+  private Integer findNextAvailablePosition(Map map, AbstractEventListener eventListener) {
     def eventPosition = eventListener.getOrder()
-    while (this.eventPositionExists(eventPosition)) {
+    while (this.eventPositionExists(map, eventPosition)) {
       eventPosition++
     }
 
@@ -45,11 +49,12 @@ class EventListenerBag {
   }
 
   /**
-   * Checks whether or not the position given is occupied.
+   * Checks whether or not the position given is occupied in the map.
+   * @param Map map
    * @param Integer position
    * @return Boolean
    */
-  private Boolean eventPositionExists(Integer position) {
-    return this.eventListeners.containsKey(position)
+  private Boolean eventPositionExists(Map map, Integer position) {
+    return map.containsKey(position)
   }
 }

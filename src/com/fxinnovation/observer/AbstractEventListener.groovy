@@ -3,10 +3,10 @@ package com.fxinnovation.observer
 abstract class AbstractEventListener {
   /**
    * Runs the event.
-   * @param EventData eventData
-   * @return EventData
+   * @param EventDataInterface eventData
+   * @return EventDataInterface
    */
-  abstract EventData run(EventData eventData = null)
+  abstract EventDataInterface run(EventDataInterface eventData = null)
 
   /**
    * Returns the event name for which this listener listens to.
@@ -18,7 +18,7 @@ abstract class AbstractEventListener {
    * Returns event names for which this Listener listens to.
    * @return String[]
    */
-  abstract String[] getSubscribedEvents()
+  abstract List<String> getSubscribedEvents()
 
   /**
    * Checks whether or not this listener supports the kind of event passed as argument.

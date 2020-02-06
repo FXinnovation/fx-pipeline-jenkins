@@ -1,19 +1,19 @@
 package com.fxinnovation.event
 
 class PipelineEvents {
-  public final PRE_PREPARE = 'prePrepare'
-  public final PREPARE = 'prepare'
-  public final POST_PREPARE = 'postPrepare'
+  public final static PRE_PREPARE = 'prePrepare'
+  public final static PREPARE = 'prepare'
+  public final static POST_PREPARE = 'postPrepare'
 
-  public final PRE_BUILD = 'preBuild'
-  public final BUILD = 'build'
-  public final POST_BUILD = 'postBuild'
+  public final static PRE_BUILD = 'preBuild'
+  public final static BUILD = 'build'
+  public final static POST_BUILD = 'postBuild'
 
-  public final PRE_TEST = 'preTest'
-  public final TEST = 'test'
-  public final POST_TEST = 'postTest'
+  public final static PRE_TEST = 'preTest'
+  public final static TEST = 'test'
+  public final static POST_TEST = 'postTest'
 
-  public final PRE_PUBLISH = 'prePublish'
-  public final PUBLISH = 'publish'
-  public final POST_PUBLISH = 'postPublish'
+  public final static PRE_PUBLISH = 'prePublish'
+  public final static PUBLISH = 'publish'
+  public final static POST_PUBLISH = 'postPublish'
 }
