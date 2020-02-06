@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.21.0
+
+* feat: Add classes to set Observer pattern (to replace closure system in the future)
+
 ## 0.20.1
 
 * Fix: Wrong `pipelineTerraform.fmt` signature when called in `fxTerraform` method.  
