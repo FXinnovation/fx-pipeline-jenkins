@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.22.0
+
+* feat: Add `DeprecatedMessage` and `DeprecatedFunction` classes to manage library deprecation
+* feat: Add `fxAzureTerraformPipeline` for specific tests on FX azure account
+* feat: Add `standardAzureTerraformPipeline` for generic use
+* Breaking : `fxAzureTerraform` is now deprecated and will be deleted in the future
+
 ## 0.21.0
 
 * feat: Add classes to set Observer pattern (to replace closure system in the future)
