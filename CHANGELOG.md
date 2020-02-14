@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.0
+
+* feat: Add a Dependency Injection component (`IOC` class)
+
 ## 0.23.1
 
 * hotfix: Wrong default join on groovy Map 
