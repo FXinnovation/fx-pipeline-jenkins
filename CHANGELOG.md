@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.22.1
+
+* pipelinePlaybook: fix call to addOnlyIfNotExist -> addClosureOnlyIfNotDefined
+
 ## 0.22.0
 
 * feat: Add `DeprecatedMessage` and `DeprecatedFunction` classes to manage library deprecation

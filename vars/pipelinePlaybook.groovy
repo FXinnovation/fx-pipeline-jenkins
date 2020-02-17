@@ -51,7 +51,7 @@ def galaxy(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'galaxyReqFile', CharSequence, 'requirements.yml')
   mapAttributeCheck(config, 'galaxyRolesPath', CharSequence, 'roles/')
 
-  closureHelper.addOnlyIfNotExist('galaxy', {
+  closureHelper.addClosureOnlyIfNotDefined('galaxy', {
       if (fileExists(config.galaxyReqFile)) {
         ansibleGalaxy.install([
           sshHostKeys:    config.galaxySSHHostKeys,
@@ -73,7 +73,7 @@ def galaxy(Map config = [:], ClosureHelper closureHelper){
 def converge(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'convergeOptions', Map, [:])
 
-  closureHelper.addOnlyIfNotExist('converge', {
+  closureHelper.addClosureOnlyIfNotDefined('converge', {
       println('No Ansible “converge” step define yet.')
     }
   )
@@ -86,7 +86,7 @@ def converge(Map config = [:], ClosureHelper closureHelper){
 def test(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'testOptions', Map, [:])
 
-  closureHelper.addOnlyIfNotExist('test', {
+  closureHelper.addClosureOnlyIfNotDefined('test', {
       println('No Ansible “test” step define yet.')
     }
   )
@@ -99,7 +99,7 @@ def test(Map config = [:], ClosureHelper closureHelper){
 def publish(Map config = [:], ClosureHelper closureHelper){
   mapAttributeCheck(config, 'publish', Boolean, false)
 
-  closureHelper.addOnlyIfNotExist('publish', {
+  closureHelper.addClosureOnlyIfNotDefined('publish', {
       println('No Ansible “publish” step define yet.')
     }
   )
