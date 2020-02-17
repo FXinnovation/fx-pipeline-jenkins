@@ -1,0 +1,28 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+repositories {
+  mavenCentral()
+  maven {
+    url 'https://repo.jenkins-ci.org/public/'
+  }
+}
+
+sourceSets {
+  main {
+    groovy {
+      srcDirs = ['src', 'vars']
+    }
+  }
+  test {
+    groovy {
+      srcDirs = ['test']
+    }
+  }
+}
+
+dependencies {
+  compile 'org.jenkins-ci.plugins:structs:1.20'
+  compile 'com.cloudbees:groovy-cps:1.31'
+  compile 'org.codehaus.groovy:groovy-all:2.5.9'
+}

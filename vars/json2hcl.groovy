@@ -54,7 +54,7 @@ def call( Map config = [:] ){
       return text_output
       break
     case 'object':
-      return readJSON text: text_output
+      return readJSON(text: text_output)
       break
     default:
       error("json2hcl - output parameter value '${config.output}' is not valid!")
