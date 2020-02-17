@@ -1,50 +1,74 @@
 package com.fxinnovation.di
 
-import com.cloudbees.groovy.cps.NonCPS
-
 class IOC {
   protected static registry = [:]
   protected static registryForSingleton = [:]
   protected static instances = [:]
 
-  @NonCPS
   static void register(String className, Closure resolve) {
     this.registry[className] = resolve
   }
 
-  @NonCPS
   static void registerSingleton(String className, Closure resolve) {
     this.registryForSingleton[className] = resolve
   }
 
-  @NonCPS
-  static resolve(String className, ...args) {
+  static get(String className, ...args) {
     if (!this.isRegistered(className) && !this.isRegisteredAsSingleton(className)) {
       throw new IOCException('No class registered with the name “'+className+'”.')
     }
 
     if (this.isRegisteredAsSingleton(className)) {
       if(!this.isInstanciated(className)) {
-        this.instances[className] = this.registryForSingleton[className](*args)
+        // This is because CPS pipelines does not handle spread syntax
+        switch(args.size()) {
+          case 0:
+            this.instances[className] = this.registryForSingleton[className]()
+            break
+          case 1:
+            this.instances[className] = this.registryForSingleton[className](args[0])
+            break
+          case 2:
+            this.instances[className] = this.registryForSingleton[className](args[0], args[1])
+            break
+          case 3:
+            this.instances[className] = this.registryForSingleton[className](args[0], args[1], args[2])
+            break
+          default:
+            new Exception('Cannot pass more that 3 arguments to get class “'+className+'”. This is because CPS pipeline does not handle spread. Lower your number of arguments or add more argument to the IOC class.')
+        }
       }
 
       return this.instances[className]
     }
 
-    return this.registry[className](*args)
+    // This is because CPS pipelines does not handle spread syntax
+    switch(args.size()) {
+      case 0:
+        return this.registry[className]()
+        break
+      case 1:
+        return this.registry[className](args[0])
+        break
+      case 2:
+        return this.registry[className](args[0], args[1])
+        break
+      case 3:
+        return this.registry[className](args[0], args[1], args[2])
+        break
+      default:
+        new Exception('Cannot pass more that 3 arguments to get class “'+className+'”. This is because CPS pipeline does not handle spread. Lower your number of arguments or add more argument to the IOC class.')
+    }
   }
 
-  @NonCPS
   static Boolean isRegistered(String name) {
     return this.registry.containsKey(name)
   }
 
-  @NonCPS
   static Boolean isRegisteredAsSingleton(String name) {
     return this.registryForSingleton.containsKey(name)
   }
 
-  @NonCPS
   static Boolean isInstanciated(String name) {
     return this.instances.containsKey(name)
   }

@@ -1,6 +1,7 @@
 import com.fxinnovation.helper.ClosureHelper
 
 import com.fxinnovation.di.ServiceContainer
+import groovy.transform.Field
 
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
@@ -46,7 +47,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
 \u001B[0m
   """)
 
-  serviceContainer = new ServiceContainer()
+  ServiceContainer serviceContainer = new ServiceContainer()
   serviceContainer.registerAllClasses(this)
 
   closureHelper = new ClosureHelper(this, closures)

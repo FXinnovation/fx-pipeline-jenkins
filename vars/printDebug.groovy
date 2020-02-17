@@ -1,9 +1,10 @@
+import com.fxinnovation.di.IOC
 import com.fxinnovation.io.Debugger
 
-import com.cloudbees.groovy.cps.NonCPS
-
-@NonCPS
 def call(Object message) {
-  def debbuger = serviceContainer.get(Debugger.class.getClass())
+  def Debugger debbuger = IOC.get(Debugger.class.getName())
+//  def Debugger debbuger = new Debugger(this)
+//
+//  println(debbuger.getName())
   debbuger.printDebug(message)
 }
