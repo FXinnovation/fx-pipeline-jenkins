@@ -7,6 +7,7 @@ Documentation for each helper is located next the library and will be available 
 ### Run tests on linux
 
 Testing needs gradle.
+For convenience, use https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/docker-gradle
 
 ```bash
 gradle test
