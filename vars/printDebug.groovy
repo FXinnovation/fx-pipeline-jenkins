@@ -4,6 +4,6 @@ import com.cloudbees.groovy.cps.NonCPS
 
 @NonCPS
 def call(Object message) {
-  def debbuger = new Debugger(this)
+  def debbuger = serviceContainer.get(Debugger.class.getClass())
   debbuger.printDebug(message)
 }

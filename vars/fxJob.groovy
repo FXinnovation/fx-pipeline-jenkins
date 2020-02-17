@@ -1,7 +1,8 @@
 import com.fxinnovation.helper.ClosureHelper
 
-def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
+import com.fxinnovation.di.ServiceContainer
 
+def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
@@ -44,6 +45,9 @@ You can click on the following link to review you \033[0;4m\033[0;1m\u001b[35mPU
 https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&state=open
 \u001B[0m
   """)
+
+  serviceContainer = new ServiceContainer()
+  serviceContainer.registerAllClasses(this)
 
   closureHelper = new ClosureHelper(this, closures)
 
