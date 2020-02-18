@@ -2,12 +2,11 @@ import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
 
 def call(Map config = [:]) {
+  registerServices()
 
   def legacyFunction = {
     mapAttributeCheck(config, 'testPlanVars', List, [])
     mapAttributeCheck(config, 'publishPlanVars', List, [])
-
-    registerServices()
 
     println("“fxAzureTerrafrom” is now replace by “fxAzureTerraformPipeline” for fx tests. For other tests/publish, please use “standardAzureTerraformPipeline”")
     fxTerraformWithUsernamePassword(
