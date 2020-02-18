@@ -3,6 +3,8 @@
 ## 0.24.0
 
 * feat: Add a Dependency Injection component (`IOC` class)
+* feat: Add gradle configuration file for library loading
+* feat: Add first implementation of unit testing
 
 ## 0.23.1
 
