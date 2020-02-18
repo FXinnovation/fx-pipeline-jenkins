@@ -3,11 +3,11 @@ package com.fxinnovation.di
 import com.fxinnovation.di.IOC
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDispatcher
-import groovy.lang.Script
 import com.fxinnovation.observer.EventListenerBag
 import com.fxinnovation.factory.OptionStringFactory
 import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.deprecation.DeprecatedMessage
+import groovy.lang.Script
 
 class ServiceRegisterer {
   static alreadyRegister = false
@@ -26,7 +26,7 @@ class ServiceRegisterer {
   }
 
   void registerDebugger(Script context) {
-    IOC.registerSingleton(Debugger.class.getName(),{
+    IOC.registerSingleton(Debugger.class.getName(), {
       return new Debugger(context)
     })
   }
