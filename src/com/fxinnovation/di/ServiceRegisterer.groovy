@@ -9,7 +9,7 @@ import com.fxinnovation.factory.OptionStringFactory
 import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.deprecation.DeprecatedMessage
 
-class ServiceContainer {
+class ServiceRegisterer {
   static alreadyRegister = false
 
   void registerAllClasses(Script context) {

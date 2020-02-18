@@ -1,6 +1,6 @@
-import com.fxinnovation.di.ServiceContainer
+import com.fxinnovation.di.ServiceRegisterer
 
 def call() {
-  ServiceContainer serviceContainer = new ServiceContainer()
-  serviceContainer.registerAllClasses(this)
+  ServiceRegisterer serviceRegisterer = new ServiceRegisterer()
+  serviceRegisterer.registerAllClasses(this)
 }
