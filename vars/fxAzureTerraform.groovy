@@ -1,5 +1,5 @@
 import com.fxinnovation.deprecation.DeprecatedFunction
-import com.fxinnovation.deprecation.DeprecatedMessage
+import com.fxinnovation.di.IOC
 
 def call(Map config = [:]) {
 
@@ -27,6 +27,6 @@ def call(Map config = [:]) {
     )
   }
 
-  def deprecatedFunction = new DeprecatedFunction(this, new DeprecatedMessage(this))
+  def deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
   deprecatedFunction.execute(legacyFunction, 'fxAzureTerrafrom', 'fxAzureTerraformPipeline', '12-05-2020')
 }
