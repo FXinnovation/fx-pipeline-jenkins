@@ -12,7 +12,7 @@ class IOCTest {
       return new IOC()
     })
 
-    assert IOC.resolve('ioc') != IOC.resolve('ioc')
+    assert IOC.get('ioc') != IOC.get('ioc')
   }
 
   @Test
@@ -21,13 +21,13 @@ class IOCTest {
       return new IOC()
     })
 
-    assert IOC.resolve('iocSingleton') == IOC.resolve('iocSingleton')
+    assert IOC.get('iocSingleton') == IOC.get('iocSingleton')
   }
 
   @Test
-  void testResolveException() {
+  void testGetException() {
     def exception = shouldFail {
-      IOC.resolve('notExistingClass')
+      IOC.get('notExistingClass')
     }
 
     assert exception instanceof IOCException
