@@ -1,4 +1,6 @@
 def call(Map config = [:], Map closures = [:]){
+  registerServices()
+
   for (closure in closures){
     if (!closure.value instanceof Closure){
       error("${closure.key} has to be a java.lang.Closure.")

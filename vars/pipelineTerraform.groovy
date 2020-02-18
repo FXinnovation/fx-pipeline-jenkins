@@ -1,6 +1,8 @@
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]){
+  registerServices()
+
   mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
   mapAttributeCheck(config, 'fmtOptions', Map, [:])
 

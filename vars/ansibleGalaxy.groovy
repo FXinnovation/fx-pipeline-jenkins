@@ -8,6 +8,8 @@ def install(Map config = [:]) {
 }
 
 def call(Map config = [:]){
+  registerServices()
+
   mapAttributeCheck(config, 'dockerImage',    CharSequence, 'fxinnovation/ansible:latest')
   mapAttributeCheck(config, 'options',        CharSequence, '')
   mapAttributeCheck(config, 'sshHostKeys',    List,         [])

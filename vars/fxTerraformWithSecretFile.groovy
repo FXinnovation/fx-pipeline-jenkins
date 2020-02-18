@@ -1,4 +1,6 @@
 def call(Map config = [:]) {
+  registerServices()
+
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '“testEnvironmentCredentialId” parameter is mandatory.')
   mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)
   mapAttributeCheck(config, 'providerSecretFileVariableName', CharSequence, 'credentials')

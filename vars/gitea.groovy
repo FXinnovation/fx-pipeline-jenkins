@@ -1,6 +1,8 @@
 import groovy.json.JsonBuilder
 
 def call(Map config = [:]){
+  registerServices()
+
   if (!config.containsKey('url')){
     error('url parameter is mandatory.')
   }

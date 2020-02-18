@@ -2,6 +2,8 @@ import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]) {
+  registerServices()
+
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, 'gitea-fx_administrator-key')
@@ -16,8 +18,6 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'commonOptions', Map, [:])
   mapAttributeCheck(config, 'runKind', Boolean, false)
   mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
-
-  registerServices()
 
   closureHelper = new ClosureHelper(this, closures)
 

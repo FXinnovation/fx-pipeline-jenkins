@@ -1,5 +1,7 @@
 
 def call(Map config = [:]) {
+  registerServices()
+
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', "“testEnvironmentCredentialId” is mandatory")
   mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)
   mapAttributeCheck(config, 'initSSHCredentialId', CharSequence, '', "“initSSHCredentialId” is mandatory")
@@ -8,8 +10,6 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'publishPlanVars', List, [])
   mapAttributeCheck(config, 'inspecSubscriptionId', CharSequence, '')
   mapAttributeCheck(config, 'inspecTenantId', CharSequence, '')
-
-  registerServices()
 
   fxTerraformWithUsernamePassword(
     testEnvironmentCredentialId: config.testEnvironmentCredentialId,

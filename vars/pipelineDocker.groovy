@@ -2,6 +2,8 @@ import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
+  registerServices()
+
   mapAttributeCheck(config, 'disablePublish', Boolean, false)
   mapAttributeCheck(config, 'dockerBuild', Map, [:], 'dockerBuild Map options are needed.')
   mapAttributeCheck(config, 'dockerPublish', Map, [:], 'dockerPublish Map options are needed.')

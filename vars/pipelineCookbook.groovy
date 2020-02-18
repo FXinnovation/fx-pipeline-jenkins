@@ -1,6 +1,8 @@
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]){
+  registerServices()
+
   mapAttributeCheck(config, 'publish', Boolean, false)
   mapAttributeCheck(config, 'cookstyle', Map, [:])
   mapAttributeCheck(config, 'foodcritic', Map, [:])

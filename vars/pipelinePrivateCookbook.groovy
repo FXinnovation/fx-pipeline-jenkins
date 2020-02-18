@@ -1,6 +1,8 @@
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]){
+  registerServices()
+
   closureHelper = new ClosureHelper(this, closures)
 
   if (!closureHelper.isDefined('publish')){

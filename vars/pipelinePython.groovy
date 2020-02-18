@@ -1,6 +1,8 @@
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]) {
+  registerServices()
+
   mapAttributeCheck(config, 'version', CharSequence, '3')
 
   closureHelper = new ClosureHelper(this, closures)
