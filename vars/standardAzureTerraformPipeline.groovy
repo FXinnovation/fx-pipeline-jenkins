@@ -9,6 +9,8 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'inspecSubscriptionId', CharSequence, '')
   mapAttributeCheck(config, 'inspecTenantId', CharSequence, '')
 
+  registerServices()
+
   fxTerraformWithUsernamePassword(
     testEnvironmentCredentialId: config.testEnvironmentCredentialId,
     publishEnvironmentCredentialId: config.publishEnvironmentCredentialId,

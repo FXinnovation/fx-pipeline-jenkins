@@ -3,6 +3,8 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])
 
+  registerServices()
+
   def subscriptionId = '7c6f67f4-4c27-42ea-bed3-1e4e988172ee'
   def tenantId = '4475f4e1-e2c3-42ec-9ffa-d341a5292a6a'
 

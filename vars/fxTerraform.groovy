@@ -17,6 +17,8 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'runKind', Boolean, false)
   mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
 
+  registerServices()
+
   closureHelper = new ClosureHelper(this, closures)
 
   // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.

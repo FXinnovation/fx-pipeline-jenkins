@@ -13,10 +13,16 @@ class ServiceContainer {
   static alreadyRegister = false
 
   void registerAllClasses(Script context) {
+    if (true == this.alreadyRegister) {
+      return
+    }
+
     this.registerObserver()
     this.registerDebugger(context)
     this.registerFactories(context)
     this.registerDeprecation(context)
+
+    this.alreadyRegister = true
   }
 
   void registerDebugger(Script context) {
@@ -47,7 +53,7 @@ class ServiceContainer {
     })
 
     IOC.registerSingleton(DeprecatedFunction.class.getName(), {
-      return new DeprecatedFunction(IOC.get(DeprecatedMessage.class.getName()))
+      return new DeprecatedFunction(context, IOC.get(DeprecatedMessage.class.getName()))
     })
   }
 }
