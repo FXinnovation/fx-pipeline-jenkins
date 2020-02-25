@@ -12,6 +12,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'podNodeUsageMode', CharSequence, 'NORMAL')
   mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
   mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
+  mapAttributeCheck(config, 'podVolumes', List, [])
   mapAttributeCheck(config, 'headerMessage', CharSequence, """
 \u001b[35m
 /!\\ PULL REQUEST /!\\
@@ -113,10 +114,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
         resourceLimitMemory: chosenSlaveSize.resourceLimitMemory,
       )
     ],
-    volumes: [ 
-      hostPathVolume(mountPath: '/lib/modules', hostPath: '/lib/modules'),
-      hostPathVolume(mountPath: '/sys/fs/cgroup', hostPath: '/sys/fs/cgroup'),
-    ]
+    volumes: config.podVolumes
   ){
     node(label){
       timeout(

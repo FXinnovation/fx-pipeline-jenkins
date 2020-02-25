@@ -26,6 +26,10 @@ def call(Map config = [:], Map closures = [:]) {
 
   if (config.runKind) {
     config.slaveSize = 'large'
+    config.podVolumes = [
+      hostPathVolume(mountPath: '/lib/modules', hostPath: '/lib/modules', readOnly: true),
+      hostPathVolume(mountPath: '/sys/fs/cgroup', hostPath: '/sys/fs/cgroup'),
+    ]
   }
 
   closureHelper.addClosure('pipeline', { ScmInfo scmInfo ->
