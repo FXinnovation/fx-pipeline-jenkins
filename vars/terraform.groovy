@@ -333,7 +333,7 @@ def plan(Map config = [:]){
     'throwError':'',
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if ( !(validParameters.containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
@@ -363,7 +363,7 @@ def apply(Map config = [:]){
     'throwError':'',
   ]
   for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+    if ( !(validParameters.containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
@@ -472,6 +472,7 @@ Map getCommonValidParameters() {
     'subCommand':'',
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
+    'dockerNetwork': '',
     'commandTarget':'',
     'throwError':'',
   ]
@@ -482,6 +483,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'subCommand', CharSequence, '', 'ERROR: The subcommand must be defined!')
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
+  mapAttributeCheck(config, 'dockerNetwork', CharSequence, 'bridge')
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
 
@@ -603,6 +605,7 @@ def call(Map config = [:]){
     fallbackCommand:  'terraform',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables,
+    network: config.dockerNetwork,
   )
 
   if (debugger.debugVarExists()) {

@@ -5,6 +5,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'fallbackCommand', CharSequence, '', 'dockerRunCommand - "fallbackCommand" parameter must exists and be a String (implements CharSequence).')
   mapAttributeCheck(config, 'additionalMounts', Map, [:])
   mapAttributeCheck(config, 'command', CharSequence, '')
+  mapAttributeCheck(config, 'network', CharSequence, 'bridge')
   mapAttributeCheck(config, 'environmentVariables', Map, [:])
   mapAttributeCheck(config, 'forcePullImage', Boolean, false)
 
@@ -35,7 +36,7 @@ def call(Map config = [:]) {
     )
   }
 
-  return "docker run --rm -v \$(pwd):/data ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
+  return "docker run --rm -v \$(pwd):/data --network ${config.network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
 }
 
 private Boolean isDockerInstalled() {

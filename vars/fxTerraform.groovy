@@ -27,7 +27,7 @@ def call(Map config = [:], Map closures = [:]) {
   if (config.runKind) {
     config.slaveSize = 'large'
     config.podVolumes = [
-      hostPathVolume(mountPath: '/lib/modules', hostPath: '/lib/modules', readOnly: true),
+      hostPathVolume(mountPath: '/lib/modules', hostPath: '/lib/modules'),
       hostPathVolume(mountPath: '/sys/fs/cgroup', hostPath: '/sys/fs/cgroup'),
     ]
   }
@@ -58,32 +58,32 @@ def call(Map config = [:], Map closures = [:]) {
       printDebug('commandTargets: ' + commandTargets)
 
       def kindDockerVolume = [:]
-
+      def terraformNetwork = 'bridge'
       try {
         if(config.runKind) {
           execute(
-            script: "docker info && mkdir -p /data/.kube && \
+            script: "mkdir -p /data/.kube && \
               docker run -d \
               --privileged \
               --network host \
               -v /data/.kube:/root/.kube \
-              -v /lib/modules:/lib/modules \
+              -v /lib/modules:/lib/modules:ro \
               -v /sys/fs/cgroup:/sys/fs/cgroup \
               -e DOCKERD_PORT=2376 \
               --name kind \
               fxinnovation/kind:0.1.1-rc1 \
-              && sleep 120 \
-              && docker inspect kind \
-              && docker logs kind"
+              && sleep 120"
           )
 
+          terraformNetwork = 'host'
           kindDockerVolume = [
             '/data/.kube':'/root/.kube',
           ]
         }
 
-        def dockerAdditionalMounts = kindDockerVolume + config.commonOptions.dockerAdditionalMounts
-        
+        def dockerAdditionalMounts = ['dockerAdditionalMounts': (kindDockerVolume + config.commonOptions.dockerAdditionalMounts)]
+        def dockerNetwork = ['dockerNetwork': terraformNetwork]
+
         for(commandTarget in commandTargets) {
           pipelineTerraform(
             config +
@@ -91,15 +91,15 @@ def call(Map config = [:], Map closures = [:]) {
               commandTarget     : commandTarget,
               testPlanOptions   : [
                 vars: config.testPlanVars,
-              ] + config.commonOptions + ['dockerAdditionalMounts': dockerAdditionalMounts],
-              testApplyOptions : config.commonOptions + ['dockerAdditionalMounts': dockerAdditionalMounts],
+              ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
+              testApplyOptions : config.commonOptions + dockerAdditionalMounts + dockerNetwork,
               fmtOptions: config.commonOptions,
               validateOptions   : [
                 vars: config.validateVars
               ] + config.commonOptions,
               testDestroyOptions: [
                 vars: config.testPlanVars,
-              ] + config.commonOptions + ['dockerAdditionalMounts': dockerAdditionalMounts],
+              ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
               publish           : deployFileExists, 
             ], [
               preValidate: { preValidate(deployFileExists, scmInfo) },
@@ -115,7 +115,7 @@ def call(Map config = [:], Map closures = [:]) {
             throwError: false
           )
         }
-        error('ERROR :' + error.toString())
+        throw new Exception()
       }
       finally {
         if(config.runKind) {
