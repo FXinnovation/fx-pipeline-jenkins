@@ -14,12 +14,18 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'terraformInitBackendConfigsTest', ArrayList, [])
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
   mapAttributeCheck(config, 'commonOptions', Map, [:])
+  mapAttributeCheck(config, 'runKind', Boolean, false)
+  mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
 
   closureHelper = new ClosureHelper(this, closures)
 
   // commandTargets is deprecated - to be removed once Jenkinsfile are update not to contain commandTargets.
   if (config.containsKey('commandTargets')) {
     print('DEPRECATED WARNING: please remove “commandTargets” attribute from your Jenkinsfile as it’s not used anymore. Once all Jenkinsfiles are updated, remove this message.')
+  }
+
+  if (config.runKind) {
+    config.slaveSize = 'large'
   }
 
   closureHelper.addClosure('pipeline', { ScmInfo scmInfo ->
@@ -47,32 +53,73 @@ def call(Map config = [:], Map closures = [:]) {
 
       printDebug('commandTargets: ' + commandTargets)
 
-      for(commandTarget in commandTargets) {
-        pipelineTerraform(
-          config +
-          [
-            commandTarget     : commandTarget,
-            testPlanOptions   : [
-              vars: config.testPlanVars
-            ] + config.commonOptions,
-            testApplyOptions : config.commonOptions,
-            fmtOptions: config.commonOptions,
-            validateOptions   : [
-              vars: config.validateVars
-            ] + config.commonOptions,
-            testDestroyOptions: [
-              vars: config.testPlanVars
-            ] + config.commonOptions,
-            validateOptions   : [
-              vars: config.testPlanVars
-            ] + config.commonOptions,
-            publish           : deployFileExists
-          ], [
-            preValidate: { preValidate(deployFileExists, scmInfo) },
-            init       : { init(config, commandTarget, deployFileExists) },
-            publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures()) }
+      def kindDockerVolume = [:]
+
+      try {
+        if(config.runKind) {
+          execute(
+            script: "docker info && mkdir -p /data/.kube && \
+              docker run -d \
+              --privileged \
+              --network host \
+              -v /data/.kube:/root/.kube \
+              -v /lib/modules:/lib/modules \
+              -v /sys/fs/cgroup:/sys/fs/cgroup \
+              -e DOCKERD_PORT=2376 \
+              --name kind \
+              fxinnovation/kind:0.1.1-rc1 \
+              && sleep 120 \
+              && docker inspect kind \
+              && docker logs kind"
+          )
+
+          kindDockerVolume = [
+            '/data/.kube':'/root/.kube',
           ]
-        )
+        }
+
+        def dockerAdditionalMounts = kindDockerVolume + config.commonOptions.dockerAdditionalMounts
+        
+        for(commandTarget in commandTargets) {
+          pipelineTerraform(
+            config +
+            [
+              commandTarget     : commandTarget,
+              testPlanOptions   : [
+                vars: config.testPlanVars,
+              ] + config.commonOptions + ['dockerAdditionalMounts': dockerAdditionalMounts],
+              testApplyOptions : config.commonOptions + ['dockerAdditionalMounts': dockerAdditionalMounts],
+              fmtOptions: config.commonOptions,
+              validateOptions   : [
+                vars: config.validateVars
+              ] + config.commonOptions,
+              testDestroyOptions: [
+                vars: config.testPlanVars,
+              ] + config.commonOptions + ['dockerAdditionalMounts': dockerAdditionalMounts],
+              publish           : deployFileExists, 
+            ], [
+              preValidate: { preValidate(deployFileExists, scmInfo) },
+              init       : { init(config, commandTarget, deployFileExists) },
+              publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures()) }
+            ]
+          )
+        }
+      } catch(error) {
+        if(config.runKind) {
+          execute(
+            script: 'docker logs kind && docker inspect kind',
+            throwError: false
+          )
+        }
+        error('ERROR :' + error.toString())
+      }
+      finally {
+        if(config.runKind) {
+          execute(
+            script: 'docker stop kind && docker rm kind',
+            throwError: false
+          )
+        }
       }
     }
   )

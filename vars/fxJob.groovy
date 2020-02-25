@@ -110,8 +110,12 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
         resourceRequestCpu: chosenSlaveSize.resourceRequestCpu,
         resourceLimitCpu: chosenSlaveSize.resourceLimitCpu,
         resourceRequestMemory: chosenSlaveSize.resourceRequestMemory,
-        resourceLimitMemory: chosenSlaveSize.resourceLimitMemory
+        resourceLimitMemory: chosenSlaveSize.resourceLimitMemory,
       )
+    ],
+    volumes: [ 
+      hostPathVolume(mountPath: '/lib/modules', hostPath: '/lib/modules'),
+      hostPathVolume(mountPath: '/sys/fs/cgroup', hostPath: '/sys/fs/cgroup'),
     ]
   ){
     node(label){
