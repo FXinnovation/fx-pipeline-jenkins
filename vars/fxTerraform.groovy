@@ -68,10 +68,10 @@ def call(Map config = [:], Map closures = [:]) {
               --network host \
               -v /data/.kube:/root/.kube \
               -v /lib/modules:/lib/modules:ro \
-              -v /sys/fs/cgroup:/sys/fs/cgroup \
+              -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
               -e DOCKERD_PORT=2376 \
               --name kind \
-              fxinnovation/kind:0.1.1-rc1 \
+              fxinnovation/kind:0.1.1 \
               && sleep 120"
           )
 
@@ -120,7 +120,7 @@ def call(Map config = [:], Map closures = [:]) {
       finally {
         if(config.runKind) {
           execute(
-            script: 'docker stop kind && docker rm kind',
+            script: 'docker stop --time 60 kind && docker rm kind',
             throwError: false
           )
         }

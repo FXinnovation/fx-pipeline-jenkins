@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.23.0
+
+feat: Add possibility to run kind (Kubernates IN Docker) on terraform pipeline. This allow use to test kubernates generic module directly on a local test cluster.
+
+* fxJob: 
+  * feat: Add `podVolumes` option
+
+* fxTerraform:
+  * feat: Add `runKind` option.
+
+* terraform:
+  * feat: Add `dockerNetwork` option
+  * fix: missing global configuration check on `plan` and `apply` functions
+
+* dockerRunCommand:
+  * feat: Add `network` option
+
 ## 0.22.1
 
 * pipelinePlaybook: fix call to addOnlyIfNotExist -> addClosureOnlyIfNotDefined
