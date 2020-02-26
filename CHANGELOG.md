@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.23.1
+
+* hotfix: Wrong default join on groovy Map 
+
 ## 0.23.0
 
 feat: Add possibility to run kind (Kubernates IN Docker) on terraform pipeline. This allow use to test kubernates generic module directly on a local test cluster.

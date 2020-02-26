@@ -195,7 +195,7 @@ private init(Map config = [:], CharSequence commandTarget, Boolean deployFileExi
     sh('ssh-add -l')
     sh('mkdir -p ~/.ssh')
     sh('echo "' + config.initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-    terraform.init([
+    terraform.init(additionJoin([
       commandTarget: commandTarget,
       dockerAdditionalMounts: [
         '~/.ssh/': '/root/.ssh/',
@@ -205,7 +205,7 @@ private init(Map config = [:], CharSequence commandTarget, Boolean deployFileExi
         'SSH_AUTH_SOCK': '/ssh-agent',
       ],
       backendConfigs: deployFileExists ? config.terraformInitBackendConfigsPublish : config.terraformInitBackendConfigsTest
-    ] + config.commonOptions)
+    ], config.commonOptions))
   }
 }
 
@@ -249,3 +249,18 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
     commandTarget: 'plan.out'
   ] + config.commonOptions)
 }
+
+//This is temporary, will be remove soon
+public Map additionJoin(Map firstMap, Map secondMap) {  
+  secondMap.each { key, value ->     
+    if( firstMap[key])     {    
+      firstMap[key] = firstMap[key] + secondMap[key]    
+    }
+    else {
+      firstMap[key] = secondMap[key]
+    }
+  }
+
+  return firstMap
+}  
+  
