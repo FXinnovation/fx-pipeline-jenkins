@@ -36,7 +36,29 @@ def call(Map config = [:]) {
     )
   }
 
-  return "docker run --rm -v \$(pwd):/data --network ${config.network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
+  def network = ''
+
+  switch(config.network) { 
+   case 'host':
+     network = '--network host'
+     break;
+   case 'overlay':
+     network = '--network overlay'
+     break;
+   case 'macvlan':
+     network = '--network macvlan'
+     break;
+   case 'none':
+     network = '--network none'
+     break;
+   case 'bridge':
+     break;
+   default:
+     error(config.network + ' is not a valid value for docker network.')
+     break;
+  } 
+
+  return "docker run --rm -v \$(pwd):/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
 }
 
 private Boolean isDockerInstalled() {

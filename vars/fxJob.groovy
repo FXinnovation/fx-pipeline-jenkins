@@ -12,6 +12,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
   mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
   mapAttributeCheck(config, 'podVolumes', List, [])
+  mapAttributeCheck(config, 'runKind', Boolean, false)
   mapAttributeCheck(config, 'headerMessage', CharSequence, """
 \u001b[35m
 /!\\ PULL REQUEST /!\\
@@ -84,8 +85,44 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
       resourceLimitMemory: '3072Mi',
     ]
   ]
-
+  
   def chosenSlaveSize = slaveSizes[config.slaveSize]
+
+  def jnlpContainerTemplate = containerTemplate(
+    name: 'jnlp',
+    image: "${config.podImageName}:${config.podImageVersion}",
+    args: '${computer.jnlpmac} ${computer.name}',
+    privileged: true,
+    alwaysPullImage: true,
+    workingDir: '/home/jenkins',
+    resourceRequestCpu: chosenSlaveSize.resourceRequestCpu,
+    resourceLimitCpu: chosenSlaveSize.resourceLimitCpu,
+    resourceRequestMemory: chosenSlaveSize.resourceRequestMemory,
+    resourceLimitMemory: chosenSlaveSize.resourceLimitMemory,
+  )
+
+  def kindContainerTemplate = containerTemplate(
+    name: 'kind',
+    image: "fxinnovation/kind:0.2.0-dev1",
+    privileged: true,
+    alwaysPullImage: true,
+    workingDir: '/data',
+    envVars: [
+        envVar(key: 'DOCKERD_PORT', value: '2376'),
+        envVar(key: 'KIND_LOGLEVEL', value: 'debug'),
+    ],
+    resourceRequestCpu: slaveSizes.large.resourceRequestCpu,
+    resourceLimitCpu: slaveSizes.large.resourceLimitCpu,
+    resourceRequestMemory: slaveSizes.large.resourceRequestMemory,
+    resourceLimitMemory: slaveSizes.large.resourceLimitMemory,
+  )
+
+  def podContainers = [jnlpContainerTemplate]
+
+  println config.runKind.toString()
+  if(config.runKind) {
+    podContainers << kindContainerTemplate
+  }
 
   properties(defaultPropertiesConfig + propertiesConfig)
 
@@ -101,90 +138,82 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     slaveConnectTimeout: 100,
     podRetention: never(),
     label: label,
-    containers: [
-      containerTemplate(
-        name: 'jnlp',
-        image: "${config.podImageName}:${config.podImageVersion}",
-        args: '${computer.jnlpmac} ${computer.name}',
-        privileged: true,
-        alwaysPullImage: true,
-        workingDir: '/home/jenkins',
-        resourceRequestCpu: chosenSlaveSize.resourceRequestCpu,
-        resourceLimitCpu: chosenSlaveSize.resourceLimitCpu,
-        resourceRequestMemory: chosenSlaveSize.resourceRequestMemory,
-        resourceLimitMemory: chosenSlaveSize.resourceLimitMemory,
-      )
-    ],
+    containers: podContainers,
     volumes: config.podVolumes
   ){
     node(label){
-      timeout(
-        time: config.timeoutTime,
-        unit: config.timeoutUnit
-      ){
-        if("" != config.headerMessage) {
-          ansiColor('xterm') {
-            println config.headerMessage
+      container('jnlp') {
+        timeout(
+          time: config.timeoutTime,
+          unit: config.timeoutUnit
+        ){
+          if("" != config.headerMessage) {
+            ansiColor('xterm') {
+              println config.headerMessage
+            }
+          }
+          try{
+            ansiColor('xterm') {
+              stage('prepare'){
+                closureHelper.execute('prePrepare')
+
+                scmInfo = fxCheckout()
+                
+                if (closureHelper.isDefined('postPrepare')){
+                  closures.postPrepare(scmInfo)
+                }
+              }
+
+              if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
+                preCommitCommand = dockerRunCommand(
+                  dockerImage: config.preCommitDockerImageName,
+                  fallbackCommand: 'pre-commit',
+                  command: 'run -a --color=always',
+                )
+                
+                stage('preCommit') {
+                  execute(script: "${preCommitCommand}")
+                }
+              }
+
+              closureHelper.executeWithinStage('prePipeline')
+
+              stage('pipeline') {
+                closures.pipeline(scmInfo)
+              }
+
+              closureHelper.executeWithinStage('postPipeline')
+            }
+          }catch(error){
+             status='FAILURE'
+             throw error
+          }finally{
+            stage('notification'){
+              closureHelper.execute('preNotification')
+
+              // We use notification because notify is a reserved keyword in groovy.
+              if (closureHelper.isDefined('notification')){
+                closures.notification(status)
+              }
+              else{
+                fx_notify(
+                  status: status,
+                  failOnError: false
+                )
+              }
+
+              closureHelper.execute('postNotification')
+            }
+            stage('cleanup'){
+              closureHelper.execute('preCleanup')
+              cleanWs()
+              closureHelper.execute('postCleanup')
+            }
           }
         }
-        try{
-          ansiColor('xterm') {
-            stage('prepare'){
-              closureHelper.execute('prePrepare')
-
-              scmInfo = fxCheckout()
-              
-              if (closureHelper.isDefined('postPrepare')){
-                closures.postPrepare(scmInfo)
-              }
-            }
-
-            if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
-              preCommitCommand = dockerRunCommand(
-                dockerImage: config.preCommitDockerImageName,
-                fallbackCommand: 'pre-commit',
-                command: 'run -a --color=always',
-              )
-              
-              stage('preCommit') {
-                execute(script: "${preCommitCommand}")
-              }
-            }
-
-            closureHelper.executeWithinStage('prePipeline')
-
-            stage('pipeline') {
-              closures.pipeline(scmInfo)
-            }
-
-            closureHelper.executeWithinStage('postPipeline')
-          }
-        }catch(error){
-           status='FAILURE'
-           throw error
-        }finally{
-          stage('notification'){
-            closureHelper.execute('preNotification')
-
-            // We use notification because notify is a reserved keyword in groovy.
-            if (closureHelper.isDefined('notification')){
-              closures.notification(status)
-            }
-            else{
-              fx_notify(
-                status: status,
-                failOnError: false
-              )
-            }
-
-            closureHelper.execute('postNotification')
-          }
-          stage('cleanup'){
-            closureHelper.execute('preCleanup')
-            cleanWs()
-            closureHelper.execute('postCleanup')
-          }
-        }
+      }
+      container('kind') {
+        execute('kind delete cluster')
       }
     }
   }
