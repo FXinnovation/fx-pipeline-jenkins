@@ -17,6 +17,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'terraformInitBackendConfigsPublish', ArrayList, [])
   mapAttributeCheck(config, 'commonOptions', Map, [:])
   mapAttributeCheck(config, 'runKind', Boolean, false)
+  mapAttributeCheck(config, 'kindCreationTimeout', Integer, 600)
   mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
 
   closureHelper = new ClosureHelper(this, closures)
@@ -64,19 +65,40 @@ def call(Map config = [:], Map closures = [:]) {
       try {
         if(config.runKind) {
           execute(
-            script: "mkdir -p /data/.kube && \
+            script: "mkdir -p /data/.kube && mkdir -p /var/tmp/lib-docker && \
               docker run -d \
               --privileged \
               --network host \
               -v /data/.kube:/root/.kube \
               -v /lib/modules:/lib/modules:ro \
-              -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+              -v /sys/fs/cgroup:/sys/fs/cgroup \
+              -v /var/tmp/lib-docker:/var/lib/docker \
               -e DOCKERD_PORT=2376 \
               --name kind \
-              fxinnovation/kind:0.1.1 \
-              && sleep 120"
+              fxinnovation/kind:0.1.1"
           )
 
+          execute(
+            script: """
+set -e
+timeout_count=0
+while [ ! -f /data/.kube/config ];
+do
+  if [ "\$timeout_count" -gt $config.kindCreationTimeout ]; then
+    echo "KIND cluster creation timeout."
+    exit 1
+  fi
+
+  if [[ \$((\$timeout_count % 10)) -eq 0 ]]; then
+       echo "Waiting until KIND cluster creation... (\$timeout_count s elapsed)"
+   fi
+  
+  sleep 1
+  
+  timeout_count=\$(( \$timeout_count + 1 ))
+done
+"""
+          )
           terraformNetwork = 'host'
           kindDockerVolume = [
             '/data/.kube':'/root/.kube',
@@ -117,7 +139,7 @@ def call(Map config = [:], Map closures = [:]) {
             throwError: false
           )
         }
-        throw new Exception()
+        throw new Exception(error)
       }
       finally {
         if(config.runKind) {
