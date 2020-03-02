@@ -120,17 +120,7 @@ done
           )
         }
       } catch(error) {
-        if(config.runKind) {
-          containerLog(
-            name: 'kind'
-          )
-        }
         throw new Exception(error)
-      }
-      finaly {
-        containerLog(
-          name: 'kind'
-        )
       }
     }
   )

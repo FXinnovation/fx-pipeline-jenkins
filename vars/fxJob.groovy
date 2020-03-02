@@ -85,7 +85,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
       resourceLimitMemory: '3072Mi',
     ]
   ]
-  
+ 
   def chosenSlaveSize = slaveSizes[config.slaveSize]
 
   def jnlpContainerTemplate = containerTemplate(
@@ -103,7 +103,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
 
   def kindContainerTemplate = containerTemplate(
     name: 'kind',
-    image: "fxinnovation/kind:0.2.0-dev1",
+    image: "fxinnovation/kind:0.2.0",
     privileged: true,
     alwaysPullImage: true,
     workingDir: '/data',
@@ -118,10 +118,31 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
   )
 
   def podContainers = [jnlpContainerTemplate]
+  def podInit = ""
 
-  println config.runKind.toString()
   if(config.runKind) {
     podContainers << kindContainerTemplate
+    podInit = """
+apiVersion: v1
+kind: Pod
+spec:
+  initContainers:
+  - name: init-inotify
+    image: alpine:latest
+    command: ["sysctl", "-w", "fs.inotify.max_user_watches=524288"]
+    hostNetwork: true
+    hostPID: true
+    hostIPC: true
+    securityContext:
+      privileged: true
+    volumeMounts:
+      - mountPath: "/sys"
+        name: "sys" 
+  volumes:
+  - hostPath:
+      path: "/sys"
+    name: "sys"
+"""
   }
 
   properties(defaultPropertiesConfig + propertiesConfig)
@@ -139,6 +160,8 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     podRetention: never(),
     label: label,
     containers: podContainers,
+    yaml: podInit,
+    yamlMergeStrategy: merge(),
     volumes: config.podVolumes
   ){
     node(label){
@@ -209,11 +232,16 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
               cleanWs()
               closureHelper.execute('postCleanup')
             }
+
+            if(config.runKind) {
+              stage('kindlogs'){
+                containerLog(
+                  name: 'kind'
+                )
+              }
+            }
           }
         }
-      }
-      container('kind') {
-        execute('kind delete cluster')
       }
     }
   }

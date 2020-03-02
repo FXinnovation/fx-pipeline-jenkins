@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.25.0
+
+* fix: Review pod architecture to start a new container
+* fix: Do not disply docker network when bridge
+* feat: Add a waiting kind to be ready
+* tech: pin fxinnovation/kind docker image to 0.2.0
+* feat: Add an initPod to increase inotify max user watches to 524288 (see https://github.com/kubernetes/test-infra/pull/13515)
+
 ## 0.24.0
 
 * feat: Add a Dependency Injection component (`IOC` class)
@@ -12,7 +20,7 @@
 
 ## 0.23.0
 
-feat: Add possibility to run kind (Kubernates IN Docker) on terraform pipeline. This allow use to test kubernates generic module directly on a local test cluster.
+feat: Add possibility to run kind (Kubernetes IN Docker) on terraform pipeline. This allow use to test kubernates generic module directly on a local test cluster.
 
 * fxJob: 
   * feat: Add `podVolumes` option
