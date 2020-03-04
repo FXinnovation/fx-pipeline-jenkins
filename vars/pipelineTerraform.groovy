@@ -1,4 +1,10 @@
+import com.fxinnovation.deprecation.DeprecatedFunction
+import com.fxinnovation.di.IOC
 import com.fxinnovation.helper.ClosureHelper
+import com.fxinnovation.io.Debugger
+import com.fxinnovation.observer.EventDispatcher
+import com.fxinnovation.event.TerraformEvents
+import com.fxinnovation.event_data.TerraformEventData
 
 def call(Map config = [:], Map closures = [:]){
   registerServices()
@@ -21,20 +27,17 @@ def call(Map config = [:], Map closures = [:]){
   publish(config, closureHelper)
 }
 
-def init(Map config = [:], ClosureHelper closureHelper){
-  mapAttributeCheck(config, 'initOptions', Map, [:])
+def init(Map config = [:], ClosureHelper closureHelper) {
+  def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
+  def TerraformEventData terraformEventData = new TerraformEventData([config.commandTarget], config.initOptions)
+  def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
-  closureHelper.addClosureOnlyIfNotDefined('init', {
-      terraform.init([
-          commandTarget: config.commandTarget
-        ] + config.initOptions
-      )
-    }
-  )
-
-  closureHelper.execute('preInit')
-  closureHelper.execute('init')
-  closureHelper.execute('postInit')
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_INIT, terraformEventData)
+  deprecatedFunction.execute(closureHelper.execute('preInit'), 'closureHelper.execute(\'preInit\')', 'Listen to '+TerraformEvents.PRE_INIT+' event.', '01-05-2020')
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.INIT, terraformEventData)
+  deprecatedFunction.execute(closureHelper.execute('init'), 'closureHelper.execute(\'init\')', 'Listen to '+TerraformEvents.INIT+' event.', '01-05-2020')
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_INIT, terraformEventData)
+  deprecatedFunction.execute(closureHelper.execute('init'), 'closureHelper.execute(\'postInit\')', 'Listen to '+TerraformEvents.POST_INIT+' event.', '01-05-2020')
 }
 
 def validate(Map config = [:], ClosureHelper closureHelper){
