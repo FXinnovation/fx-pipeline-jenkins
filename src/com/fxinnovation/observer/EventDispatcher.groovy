@@ -1,12 +1,15 @@
 package com.fxinnovation.observer
 
 import com.fxinnovation.observer.AbstractEventListener
+import com.fxinnovation.io.Debugger
 
 class EventDispatcher {
   private EventListenerBag eventListenerBag
+  private Debugger debugger
 
-  EventDispatcher(EventListenerBag eventListenerBag) {
+  EventDispatcher(EventListenerBag eventListenerBag, Debugger debugger) {
     this.eventListenerBag = eventListenerBag
+    this.debugger = debugger
   }
 
   /**

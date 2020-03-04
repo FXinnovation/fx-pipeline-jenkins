@@ -27,8 +27,7 @@ class TerraformValidateListener extends EventListener {
 
   private TerraformEventData doRun(TerraformEventData eventData) {
     try {
-      this.context.terraform.validate(
-        [
+      this.context.terraform.validate([
           commandTarget: eventData.getCommandTarget()
         ] + eventData.getOptions()
       )
