@@ -9,10 +9,10 @@ import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.deprecation.DeprecatedMessage
 
 class ServiceRegisterer {
-  static alreadyRegister = false
+  static alreadyRegistered = false
 
   void registerAllClasses(Script context) {
-    if (true == this.alreadyRegister) {
+    if (true == this.alreadyRegistered) {
       return
     }
 
@@ -22,7 +22,7 @@ class ServiceRegisterer {
     this.registerListeners(context)
     this.registerFactories(context)
 
-    this.alreadyRegister = true
+    this.alreadyRegistered = true
   }
 
   void registerDebugger(Script context) {
