@@ -24,7 +24,7 @@ class EventDispatcher {
       this.debugger.printDebug("\u001b[36m~~~> End of listener: “\033[0;4m\033[0;1m"+ eventListener.class.getName() +"\u001b[0m\u001b[36m”\u001b[0m")
 
       if (null != runData) {
-         eventData = runData
+        eventData = runData
       }
 
       if (eventListener.stopPropagationAfterRun()) {

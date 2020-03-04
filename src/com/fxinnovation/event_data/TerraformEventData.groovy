@@ -4,18 +4,18 @@ import com.fxinnovation.observer.EventDataInterface
 
 class TerraformEventData implements EventDataInterface {
   private String commandTarget
-  private Map<String,String> options
+  private Map<String,String> terraformOptions
 
-  TerraformEventData(String commandTarget, Map<String, String> options) {
+  TerraformEventData(String commandTarget, Map<String, String> terraformOptions) {
     this.commandTarget = commandTarget
-    this.options = options
+    this.terraformOptions = terraformOptions
   }
 
   List<String> getCommandTarget() {
     return commandTarget
   }
 
-  Map<String, String> getOptions() {
-    return options
+  Map<String, String> getTerraformOptions() {
+    return terraformOptions
   }
 }

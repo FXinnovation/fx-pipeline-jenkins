@@ -29,7 +29,7 @@ class TerraformValidateListener extends EventListener {
     try {
       this.context.terraform.validate([
           commandTarget: eventData.getCommandTarget()
-        ] + eventData.getOptions()
+        ] + eventData.getTerraformOptions()
       )
     }catch(validateError){
       this.context.printDebug(validateError)

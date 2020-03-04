@@ -28,6 +28,8 @@ def call(Map config = [:], Map closures = [:]){
 }
 
 def init(Map config = [:], ClosureHelper closureHelper) {
+  mapAttributeCheck(config, 'initOptions', Map, [:])
+
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
   def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.initOptions)
   def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
@@ -47,12 +49,13 @@ def init(Map config = [:], ClosureHelper closureHelper) {
 }
 
 def validate(Map config = [:], ClosureHelper closureHelper){
+  mapAttributeCheck(config, 'validateOptions', Map, [:])
 
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
   def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.validateOptions)
   def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
-  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_VALIDATET, terraformEventData)
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_VALIDATE, terraformEventData)
   deprecatedFunction.execute({
     closureHelper.execute('preValidate')
   }, 'closureHelper.execute(\'preValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
