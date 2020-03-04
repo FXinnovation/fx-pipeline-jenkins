@@ -26,6 +26,12 @@ class TerraformInitListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
+    this.context.println('OKOKOKOK')
+    this.context.println(eventData.getCommandTarget())
+    this.context.println(eventData.getCommandTarget().getClass())
+    this.context.println(eventData.getOptions())
+    this.context.println(eventData.getOptions().getClass())
+
     this.context.terraform.init([
         commandTarget: eventData.getCommandTarget()
       ] + eventData.getExtraOptions()
