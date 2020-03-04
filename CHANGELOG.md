@@ -20,7 +20,7 @@
 
 ## 0.23.0
 
-feat: Add possibility to run kind (Kubernetes IN Docker) on terraform pipeline. This allow use to test kubernates generic module directly on a local test cluster.
+feat: Add possibility to run kind (Kubernetes IN Docker) on terraform pipeline. This allow use to test kubernetes generic module directly on a local test cluster.
 
 * fxJob: 
   * feat: Add `podVolumes` option
