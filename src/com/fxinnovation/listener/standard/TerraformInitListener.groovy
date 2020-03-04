@@ -22,10 +22,6 @@ class TerraformInitListener extends EventListener {
    * @return TerraformEventData
    */
   EventDataInterface run(EventDataInterface eventData = null) {
-    return this.doRun(eventData)
-  }
-
-  private TerraformEventData doRun(TerraformEventData eventData) {
     this.context.terraform.init([
         commandTarget: eventData.getCommandTarget()
       ] + eventData.getExtraOptions()
