@@ -14,7 +14,7 @@ class TerraformFmtListener extends EventListener {
 
   @Override
   String listenTo() {
-    return TerraformEvents.VALIDATE
+    return TerraformEvents.FMT
   }
 
   /**
@@ -30,10 +30,10 @@ class TerraformFmtListener extends EventListener {
       this.context.terraform.fmt([
           check: true,
           commandTarget: eventData.getCommandTarget(),
-        ] + eventData.getTerraformOptions()
+        ] + eventData.getExtraOptions()
       )
     } catch(fmtError) {
-      printDebug(fmtError)
+      this.context.printDebug(fmtError)
       this.context.error("ERROR: Terraform fmt command has failed!")
     }
 

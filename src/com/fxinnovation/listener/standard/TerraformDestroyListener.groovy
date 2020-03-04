@@ -29,7 +29,7 @@ class TerraformDestroyListener extends EventListener {
     this.context.terraform.destroy([
         state: eventData.getTestStateFileName(),
         commandTarget: eventData.getCommandTarget()
-      ] + eventData.getTerraformOptions()
+      ] + eventData.getExtraOptions()
     )
 
     return eventData

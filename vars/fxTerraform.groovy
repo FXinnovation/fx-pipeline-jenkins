@@ -1,5 +1,8 @@
 import com.fxinnovation.data.ScmInfo
+import com.fxinnovation.di.IOC
+import com.fxinnovation.event_data.TerraformEventData
 import com.fxinnovation.helper.ClosureHelper
+import com.fxinnovation.listener.standard.TerraformFmtListener
 
 def call(Map config = [:], Map closures = [:]) {
   fxRegisterListeners()
@@ -184,7 +187,11 @@ private fmt(Map config = [:], List commandTargets, ClosureHelper closureHelper) 
 
   printDebug('Global format to workaround a Terraform bug making fmt pass even if some sub-modules are incorrectly formatted.')
 
-  pipelineTerraform.fmt('.', config.commonOptions, closureHelper)
+  // Invoking a listener like this a bad way to do but because the whole purpose of this function should be redesigned
+  // it will stay like this for now. A better way to do it would be to use a pre-pipeline event before the
+  // terraform pipeline to do the global fmt.
+  TerraformFmtListener terraformFmtListener = IOC.get(TerraformFmtListener.class.getName())
+  terraformFmtListener.run(new TerraformEventData('.', config.commonOptions))
 }
 
 private init(Map config = [:], CharSequence commandTarget, Boolean deployFileExists) {

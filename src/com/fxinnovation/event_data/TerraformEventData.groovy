@@ -4,14 +4,14 @@ import com.fxinnovation.observer.EventDataInterface
 
 class TerraformEventData implements EventDataInterface {
   private String commandTarget
-  private Map<String,String> terraformOptions
+  private Map<String,String> extraOptions
   private String stateFileName
   private String testStateFileName
   private String planOutFile
 
-  TerraformEventData(String commandTarget = '.', Map<String, String> terraformOptions = [:], String stateFileName = '', String testStateFileName = '', String planOutFile = '') {
+  TerraformEventData(String commandTarget = '.', Map<String, String> extraOptions = [:], String stateFileName = '', String testStateFileName = '', String planOutFile = '') {
     this.commandTarget = commandTarget
-    this.terraformOptions = terraformOptions
+    this.extraOptions = null != extraOptions ? extraOptions : [:]
     this.stateFileName = stateFileName
     this.testStateFileName = testStateFileName
     this.planOutFile = planOutFile
@@ -21,8 +21,8 @@ class TerraformEventData implements EventDataInterface {
     return commandTarget
   }
 
-  Map<String, String> getTerraformOptions() {
-    return terraformOptions
+  Map<String, String> getExtraOptions() {
+    return extraOptions
   }
 
   String getStateFileName() {
@@ -37,7 +37,7 @@ class TerraformEventData implements EventDataInterface {
     return planOutFile
   }
 
-  void setTerraformOptions(Map<String, String> terraformOptions) {
-    this.terraformOptions = terraformOptions
+  void setExtraOptions(Map<String, String> extraOptions = [:]) {
+    this.extraOptions = null != extraOptions ? extraOptions : [:]
   }
 }

@@ -1,7 +1,6 @@
 import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
 import com.fxinnovation.helper.ClosureHelper
-import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDispatcher
 import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.event_data.TerraformEventData
@@ -19,7 +18,7 @@ def call(Map config = [:], Map closures = [:]){
   closureHelper = new ClosureHelper(this, closures)
 
   stage('init “' + config.commandTarget + '”') {
-    terraformEventData.setTerraformOptions(config.initOptions)
+    terraformEventData.setExtraOptions(config.initOptions)
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_INIT, terraformEventData)
     deprecatedFunction.execute({closureHelper.execute('preInit')}, 'closureHelper.execute(\'preInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.INIT, terraformEventData)
@@ -29,7 +28,7 @@ def call(Map config = [:], Map closures = [:]){
   }
 
   stage('lint “' + config.commandTarget + '”') {
-    terraformEventData.setTerraformOptions(config.validateOptions)
+    terraformEventData.setExtraOptions(config.validateOptions)
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_VALIDATE, terraformEventData)
     deprecatedFunction.execute({closureHelper.execute('preValidate')}, 'closureHelper.execute(\'preValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.VALIDATE, terraformEventData)
@@ -37,7 +36,7 @@ def call(Map config = [:], Map closures = [:]){
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_VALIDATE, terraformEventData)
     deprecatedFunction.execute({closureHelper.execute('postValidate')}, 'closureHelper.execute(\'postValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
 
-    terraformEventData.setTerraformOptions(config.fmtOptions)
+    terraformEventData.setExtraOptions(config.fmtOptions)
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_FMT, terraformEventData)
     deprecatedFunction.execute({closureHelper.execute('preFmt')}, 'closureHelper.execute(\'preFmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.FMT, terraformEventData)
@@ -49,17 +48,17 @@ def call(Map config = [:], Map closures = [:]){
   if (!config.publish) {
     stage('test “' + config.commandTarget + '”') {
       try {
-        terraformEventData.setTerraformOptions(config.testPlanOptions)
+        terraformEventData.setExtraOptions(config.testPlanOptions)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PLAN, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.PLAN, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PLAN, terraformEventData)
 
-        terraformEventData.setTerraformOptions(config.testApplyOptions)
+        terraformEventData.setExtraOptions(config.testApplyOptions)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_APPLY, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.APPLY, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_APPLY, terraformEventData)
 
-        terraformEventData.setTerraformOptions(config.testPlanOptions)
+        terraformEventData.setExtraOptions(config.testPlanOptions)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PLAN_REPLAY, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.PLAN_REPLAY, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PLAN_REPLAY, terraformEventData)
@@ -74,7 +73,7 @@ def call(Map config = [:], Map closures = [:]){
         println(errorApply)
         throw (errorApply)
       } finally {
-        terraformEventData.setTerraformOptions(config.testDestroyOptions)
+        terraformEventData.setExtraOptions(config.testDestroyOptions)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_DESTROY, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.DESTROY, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_DESTROY, terraformEventData)

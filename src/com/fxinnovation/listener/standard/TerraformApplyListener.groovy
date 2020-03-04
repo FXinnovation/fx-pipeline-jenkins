@@ -29,7 +29,7 @@ class TerraformApplyListener extends EventListener {
     this.context.terraform.apply([
         stateOut: eventData.getTestStateFileName(),
         commandTarget: eventData.getPlanOutFile(),
-      ] + config.testApplyOptions
+      ] + eventData.getExtraOptions()
     )
 
     return eventData

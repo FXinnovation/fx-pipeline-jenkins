@@ -30,7 +30,7 @@ class TerraformPlanReplayListener extends EventListener {
         out: eventData.getPlanOutFile(),
         state: eventData.getTestStateFileName(),
         commandTarget: eventData.getCommandTarget(),
-    ] + eventData.getExtraOptions()
+      ] + eventData.getExtraOptions()
     )
 
     if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {

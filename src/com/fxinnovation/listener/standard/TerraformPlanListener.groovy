@@ -30,7 +30,7 @@ class TerraformPlanListener extends EventListener {
         out: eventData.getPlanOutFile(),
         state: eventData.getTestStateFileName(),
         commandTarget: eventData.getCommandTarget(),
-      ] + eventData.getTerraformOptions()
+      ] + eventData.getExtraOptions()
     )
 
     return eventData
