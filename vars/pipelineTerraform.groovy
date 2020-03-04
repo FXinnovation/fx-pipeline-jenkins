@@ -9,119 +9,92 @@ import com.fxinnovation.event_data.TerraformEventData
 def call(Map config = [:], Map closures = [:]){
   registerServices()
 
-  mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
-  mapAttributeCheck(config, 'fmtOptions', Map, [:])
+  mapAttributeCheck(config, 'publish', Boolean, false)
 
+  def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
+  def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.initOptions,  'test.tfstate', 'terraform.tfstate', 'test.out')
+  def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
+
+  // DEPRECATED - To be removed and unuseful before '01-05-2020'
   closureHelper = new ClosureHelper(this, closures)
 
   stage('init “' + config.commandTarget + '”') {
-    init(config, closureHelper)
+    terraformEventData.setTerraformOptions(config.initOptions)
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_INIT, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('preInit')}, 'closureHelper.execute(\'preInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.INIT, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('init')}, 'closureHelper.execute(\'init\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_INIT, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('postInit')}, 'closureHelper.execute(\'postInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
   }
 
-  stage('test “' + config.commandTarget + '”') {
-    validate(config, closureHelper)
-    fmt(config.commandTarget, config.fmtOptions, closureHelper)
-    test(config, closureHelper)
+  stage('lint “' + config.commandTarget + '”') {
+    terraformEventData.setTerraformOptions(config.validateOptions)
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_VALIDATE, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('preValidate')}, 'closureHelper.execute(\'preValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.VALIDATE, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('validate')}, 'closureHelper.execute(\'Validate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_VALIDATE, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('postValidate')}, 'closureHelper.execute(\'postValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
+
+    terraformEventData.setTerraformOptions(config.fmtOptions)
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_FMT, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('preFmt')}, 'closureHelper.execute(\'preFmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.FMT, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('fmt')}, 'closureHelper.execute(\'Fmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
+    terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_FMT, terraformEventData)
+    deprecatedFunction.execute({closureHelper.execute('postFmt')}, 'closureHelper.execute(\'postFmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
   }
 
-  publish(config, closureHelper)
-}
+  if (!config.publish) {
+    stage('test “' + config.commandTarget + '”') {
+      try {
+        terraformEventData.setTerraformOptions(config.testPlanOptions)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PLAN, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PLAN, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PLAN, terraformEventData)
 
-def init(Map config = [:], ClosureHelper closureHelper) {
-  mapAttributeCheck(config, 'initOptions', Map, [:])
+        terraformEventData.setTerraformOptions(config.testApplyOptions)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_APPLY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.APPLY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_APPLY, terraformEventData)
 
-  def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-  def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.initOptions)
-  def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
+        terraformEventData.setTerraformOptions(config.testPlanOptions)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PLAN_REPLAY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PLAN_REPLAY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PLAN_REPLAY, terraformEventData)
 
-  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_INIT, terraformEventData)
-  deprecatedFunction.execute({
-    closureHelper.execute('preInit')
-  }, 'closureHelper.execute(\'preInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
-  terraformEventData = eventDispatcher.dispatch(TerraformEvents.INIT, terraformEventData)
-  deprecatedFunction.execute({
-    closureHelper.execute('init')
-  }, 'closureHelper.execute(\'init\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
-  terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_INIT, terraformEventData)
-  deprecatedFunction.execute({
-    closureHelper.execute('postInit')
-  }, 'closureHelper.execute(\'postInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
-}
+        this.inspec(config, closureHelper)
 
-def validate(Map config = [:], ClosureHelper closureHelper){
-  mapAttributeCheck(config, 'validateOptions', Map, [:])
-
-  def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-  def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.validateOptions)
-  def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
-
-  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_VALIDATE, terraformEventData)
-  deprecatedFunction.execute({
-    closureHelper.execute('preValidate')
-  }, 'closureHelper.execute(\'preValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
-  terraformEventData = eventDispatcher.dispatch(TerraformEvents.VALIDATE, terraformEventData)
-  deprecatedFunction.execute({
-    closureHelper.execute('validate')
-  }, 'closureHelper.execute(\'Validate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
-  terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_VALIDATE, terraformEventData)
-  deprecatedFunction.execute({
-    closureHelper.execute('postValidate')
-  }, 'closureHelper.execute(\'postValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
-}
-
-def fmt(CharSequence commandTarget = '.', Map fmtOptions = [:], ClosureHelper closureHelper){
-  closureHelper.addClosureOnlyIfNotDefined('fmt', {
-      try{
-        terraform.fmt(
-          [
-            check: true,
-            commandTarget: commandTarget,
-          ] + fmtOptions
+      } catch (errorApply) {
+        archiveArtifacts(
+          allowEmptyArchive: true,
+          artifacts: terraformEventData.getTestStateFileName()
         )
-      }catch(errFmt){
-        printDebug(errFmt)
-        error "Terraform fmt command has failed!"
+        println(errorApply)
+        throw (errorApply)
+      } finally {
+        terraformEventData.setTerraformOptions(config.testDestroyOptions)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_DESTROY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.DESTROY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_DESTROY, terraformEventData)
       }
     }
-  )
 
-  closureHelper.execute('preFmt')
-  closureHelper.execute('fmt')
-  closureHelper.execute('postFmt')
+    println('Publish step is skipped because "config.publish" is false.')
+    return
+  }
+
+  stage('publish') {
+    closureHelper.execute('prePublish')
+    closureHelper.execute('publish')
+    closureHelper.execute('postPublish')
+  }
 }
 
-def test(Map config = [:], ClosureHelper closureHelper){
-  mapAttributeCheck(config, 'testPlanOptions', Map, [:])
-  mapAttributeCheck(config, 'testApplyOptions', Map, [:])
-  mapAttributeCheck(config, 'testDestroyOptions', Map, [:])
-  mapAttributeCheck(config, 'publish', Boolean, false)
+def inspec(Map config = [:], ClosureHelper closureHelper) {
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
 
-  closureHelper.addClosureOnlyIfNotDefined('test', {
-      if (config.publish) {
-        return
-      }
-
-      try {
-        terraform.plan([
-            out: 'test.out',
-            state: 'test.tfstate',
-            commandTarget: config.commandTarget,
-          ] + config.testPlanOptions
-        )
-        terraform.apply([
-            stateOut: 'test.tfstate',
-            commandTarget: 'test.out',
-          ] + config.testApplyOptions
-        )
-        replay = terraform.plan([
-            out: 'test.out',
-            state: 'test.tfstate',
-            commandTarget: config.commandTarget,
-          ] + config.testPlanOptions
-        )
-        if (!(replay.stdout =~ /.*(Infrastructure is up-to-date|0 to add, 0 to change, 0 to destroy).*/)) {
-          error('Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
-        }
         inspecPresent = fileExists(
           "${config.commandTarget}/inspec.yml"
         )
@@ -168,64 +141,26 @@ def test(Map config = [:], ClosureHelper closureHelper){
             }
           }
           """
-          writeFile(
-            file: 'inspec-config.json',
-            text: inspecConfig
-          )
-          try{
-            inspec.exec(
-              target: "${config.inspecTarget}://",
-              jsonConfig: 'inspec-config.json',
-              commandTarget: config.commandTarget,
-              dockerEnvironmentVariables: envVariables
-            )
-          }catch(inspecError){
-            throw inspecError
-          }finally{
-            junit(
-              allowEmptyResults: true,
-              testResults: "${config.commandTarget}-inspec-results.xml"
-            )
-          }
-        }else{
-          println 'Did not find inspec tests, skipping them'
-        }
-      } catch (errorApply) {
-        archiveArtifacts(
-          allowEmptyArchive: true,
-          artifacts: 'test.tfstat*'
-        )
-        println(errorApply)
-        throw (errorApply)
-      } finally {
-        terraform.destroy([
-            state: 'test.tfstate',
-            commandTarget: config.commandTarget
-          ] + config.testDestroyOptions
-        )
-        sh 'rm -f test.tfstate'
-        sh 'rm -f test.out'
-      }
+    writeFile(
+      file: 'inspec-config.json',
+      text: inspecConfig
+    )
+    try{
+      inspec.exec(
+        target: "${config.inspecTarget}://",
+        jsonConfig: 'inspec-config.json',
+        commandTarget: config.commandTarget,
+        dockerEnvironmentVariables: envVariables
+      )
+    }catch(inspecError){
+      throw inspecError
+    }finally{
+      junit(
+        allowEmptyResults: true,
+        testResults: "${config.commandTarget}-inspec-results.xml"
+      )
     }
-  )
-
-  closureHelper.execute('preTest')
-  closureHelper.execute('test')
-  closureHelper.execute('postTest')
-}
-
-def publish(Map config = [:], ClosureHelper closureHelper){
-  mapAttributeCheck(config, 'publishPlanOptions', Map, [:])
-  mapAttributeCheck(config, 'publishApplyOptions', Map, [:])
-  mapAttributeCheck(config, 'publish', Boolean, false)
-
-  if (config.publish) {
-    stage('publish') {
-      closureHelper.execute('prePublish')
-      closureHelper.execute('publish')
-      closureHelper.execute('postPublish')
-    }
-  }else{
-    println 'Publish step is skipped because "config.publish" is false.'
+  } else {
+    println('Did not find inspec tests, skipping them')
   }
 }

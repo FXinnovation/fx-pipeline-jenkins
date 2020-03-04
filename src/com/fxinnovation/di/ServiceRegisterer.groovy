@@ -54,6 +54,24 @@ class ServiceRegisterer {
     IOC.registerSingleton(TerraformValidateListener.class.getName(), {
       return new TerraformValidateListener(context)
     })
+    IOC.registerSingleton(TerraformFmtListener.class.getName(), {
+      return new TerraformFmtListener(context)
+    })
+    IOC.registerSingleton(TerraformPlanListener.class.getName(), {
+      return new TerraformPlanListener(context)
+    })
+    IOC.registerSingleton(TerraformApplyListener.class.getName(), {
+      return new TerraformApplyListener(context)
+    })
+    IOC.registerSingleton(TerraformPlanReplayListener.class.getName(), {
+      return new TerraformPlanReplayListener(context)
+    })
+    IOC.registerSingleton(TerraformDestroyListener.class.getName(), {
+      return new TerraformDestroyListener(context)
+    })
+    IOC.registerSingleton(TerraformArtifactCleanerListener.class.getName(), {
+      return new TerraformArtifactCleanerListener(context)
+    })
   }
 
   void registerDeprecation(Script context) {

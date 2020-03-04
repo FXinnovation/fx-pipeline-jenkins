@@ -33,7 +33,7 @@ class TerraformValidateListener extends EventListener {
       )
     }catch(validateError){
       this.context.printDebug(validateError)
-      this.context.error('Terraform validate command has failed!')
+      this.context.error('ERROR: Terraform validate command has failed!')
     }
 
     return eventData

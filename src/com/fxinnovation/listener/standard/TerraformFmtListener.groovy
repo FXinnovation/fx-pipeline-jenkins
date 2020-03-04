@@ -5,16 +5,16 @@ import com.fxinnovation.event_data.TerraformEventData
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 
-class TerraformPlanReplayListener extends EventListener {
+class TerraformFmtListener extends EventListener {
   private Script context
 
-  TerraformPlanReplayListener(Script context) {
+  TerraformFmtListener(Script context) {
     this.context = context
   }
 
   @Override
   String listenTo() {
-    return TerraformEvents.PLAN_REPLAY
+    return TerraformEvents.VALIDATE
   }
 
   /**
@@ -26,15 +26,15 @@ class TerraformPlanReplayListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
-    def replay = this.context.terraform.plan([
-        out: eventData.getPlanOutFile(),
-        state: eventData.getTestStateFileName(),
-        commandTarget: eventData.getCommandTarget(),
-    ] + eventData.getExtraOptions()
-    )
-
-    if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
-      this.context.error('ERROR: Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
+    try {
+      this.context.terraform.fmt([
+          check: true,
+          commandTarget: eventData.getCommandTarget(),
+        ] + eventData.getTerraformOptions()
+      )
+    } catch(fmtError) {
+      printDebug(fmtError)
+      this.context.error("ERROR: Terraform fmt command has failed!")
     }
 
     return eventData
