@@ -12,10 +12,10 @@ class DeprecatedFunction {
   }
 
   public execute(Closure legacyClosure, String oldFunctionName, String newFunctionName, String deprecationDate) {
-    def deprecation = new Date().parse("dd-MM-yyyy", deprecationDate)
-    def curentDate = new Date()
+    def deprecation = Date.parse("dd-MM-yyyy", deprecationDate)
+    def currentDate = new Date()
 
-    if(curentDate.after(deprecation)) {
+    if(currentDate.after(deprecation)) {
       return this.deprecatedMessage.throwErrorDeletedFunction(oldFunctionName, newFunctionName, deprecationDate)
     }
 
