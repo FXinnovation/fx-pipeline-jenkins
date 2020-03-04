@@ -29,37 +29,41 @@ def call(Map config = [:], Map closures = [:]){
 
 def init(Map config = [:], ClosureHelper closureHelper) {
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-  def TerraformEventData terraformEventData = new TerraformEventData([config.commandTarget], config.initOptions)
+  def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.initOptions)
   def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
   terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_INIT, terraformEventData)
-  deprecatedFunction.execute(closureHelper.execute('preInit'), 'closureHelper.execute(\'preInit\')', 'Listen to '+TerraformEvents.PRE_INIT+' event.', '01-05-2020')
+  deprecatedFunction.execute({
+    closureHelper.execute('preInit')
+  }, 'closureHelper.execute(\'preInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
   terraformEventData = eventDispatcher.dispatch(TerraformEvents.INIT, terraformEventData)
-  deprecatedFunction.execute(closureHelper.execute('init'), 'closureHelper.execute(\'init\')', 'Listen to '+TerraformEvents.INIT+' event.', '01-05-2020')
+  deprecatedFunction.execute({
+    closureHelper.execute('init')
+  }, 'closureHelper.execute(\'init\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
   terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_INIT, terraformEventData)
-  deprecatedFunction.execute(closureHelper.execute('init'), 'closureHelper.execute(\'postInit\')', 'Listen to '+TerraformEvents.POST_INIT+' event.', '01-05-2020')
+  deprecatedFunction.execute({
+    closureHelper.execute('postInit')
+  }, 'closureHelper.execute(\'postInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
 }
 
 def validate(Map config = [:], ClosureHelper closureHelper){
-  mapAttributeCheck(config, 'validateOptions', Map, [:])
 
-  closureHelper.addClosureOnlyIfNotDefined('validate', {
-      try {
-        terraform.validate(
-          [
-            commandTarget: config.commandTarget
-          ] + config.validateOptions
-        )
-      }catch(errValidate){
-        printDebug(errValidate)
-        error "Terraform validate command has failed!"
-      }
-    }
-  )
+  def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
+  def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.validateOptions)
+  def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
-  closureHelper.execute('preValidate')
-  closureHelper.execute('validate')
-  closureHelper.execute('postValidate')
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_VALIDATET, terraformEventData)
+  deprecatedFunction.execute({
+    closureHelper.execute('preValidate')
+  }, 'closureHelper.execute(\'preValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-05-2020')
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.VALIDATE, terraformEventData)
+  deprecatedFunction.execute({
+    closureHelper.execute('validate')
+  }, 'closureHelper.execute(\'Validate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_VALIDATE, terraformEventData)
+  deprecatedFunction.execute({
+    closureHelper.execute('postValidate')
+  }, 'closureHelper.execute(\'postValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-05-2020')
 }
 
 def fmt(CharSequence commandTarget = '.', Map fmtOptions = [:], ClosureHelper closureHelper){

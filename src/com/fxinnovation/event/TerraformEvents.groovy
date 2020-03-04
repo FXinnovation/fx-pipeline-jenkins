@@ -28,7 +28,4 @@ class TerraformEvents {
   public final static PRE_DESTROY = 'terraformPreDestroy'
   public final static DESTROY = 'terraformDestroy'
   public final static POST_DESTROY = 'terraformPostDestroy'
-
-  public final static PRE_PIPELINE = 'terraformPrePipeline'
-  public final static POST_PIPELINE = 'terraformPostPipeline'
 }

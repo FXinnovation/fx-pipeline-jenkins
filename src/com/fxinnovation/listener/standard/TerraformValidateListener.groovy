@@ -5,16 +5,16 @@ import com.fxinnovation.event_data.TerraformEventData
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 
-class TerraformInitListener extends EventListener {
+class TerraformValidateListener extends EventListener {
   private Script context
 
-  TerraformInitListener(Script context) {
+  TerraformValidateListener(Script context) {
     this.context = context
   }
 
   @Override
   String listenTo() {
-    return TerraformEvents.INIT
+    return TerraformEvents.VALIDATE
   }
 
   /**
@@ -26,10 +26,16 @@ class TerraformInitListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
-    this.context.terraform.init([
-        commandTarget: eventData.getCommandTarget()
-      ] + eventData.getExtraOptions()
-    )
+    try {
+      this.context.terraform.validate(
+        [
+          commandTarget: eventData.getCommandTarget()
+        ] + eventData.getOptions()
+      )
+    }catch(validateError){
+      this.context.printDebug(validateError)
+      this.context.error('Terraform validate command has failed!')
+    }
 
     return eventData
   }
