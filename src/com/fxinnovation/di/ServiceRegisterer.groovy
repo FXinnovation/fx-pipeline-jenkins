@@ -2,6 +2,7 @@ package com.fxinnovation.di
 
 import com.fxinnovation.di.IOC
 import com.fxinnovation.io.Debugger
+import com.fxinnovation.listener.TerraformInitListener
 import com.fxinnovation.observer.EventDispatcher
 import com.fxinnovation.observer.EventListenerBag
 import com.fxinnovation.factory.OptionStringFactory
@@ -44,6 +45,12 @@ class ServiceRegisterer {
 
     IOC.registerSingleton(EventDispatcher.class.getName(), {
       return new EventListenerBag(IOC.get(EventListenerBag.class.getName()))
+    })
+  }
+
+  void registerListener(Script context) {
+    IOC.register(TerraformInitListener.class.getName(), {
+      return new TerraformInitListener(context)
     })
   }
 
