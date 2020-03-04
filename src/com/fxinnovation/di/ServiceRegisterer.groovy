@@ -1,6 +1,5 @@
 package com.fxinnovation.di
 
-
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.listener.standard.TerraformInitListener
 import com.fxinnovation.observer.EventDispatcher
@@ -18,6 +17,7 @@ class ServiceRegisterer {
     }
 
     this.registerObserver()
+    this.registerListeners(context)
     this.registerDebugger(context)
     this.registerFactories(context)
     this.registerDeprecation(context)
@@ -43,12 +43,12 @@ class ServiceRegisterer {
     })
 
     IOC.registerSingleton(EventDispatcher.class.getName(), {
-      return new EventListenerBag(IOC.get(EventListenerBag.class.getName()))
+      return new EventDispatcher(IOC.get(EventListenerBag.class.getName()))
     })
   }
 
-  void registerListener(Script context) {
-    IOC.register(TerraformInitListener.class.getName(), {
+  void registerListeners(Script context) {
+    IOC.registerSingleton(TerraformInitListener.class.getName(), {
       return new TerraformInitListener(context)
     })
   }
