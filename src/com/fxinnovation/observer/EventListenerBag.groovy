@@ -30,6 +30,10 @@ class EventListenerBag {
    * @param AbstractEventListener eventListener
    */
   void addEventListener(AbstractEventListener eventListener) {
+    if (this.eventListeners.contains(eventListener)) {
+      return
+    }
+
     this.eventListeners.add(eventListener)
   }
 
