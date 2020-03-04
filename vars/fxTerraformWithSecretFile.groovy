@@ -1,5 +1,5 @@
 def call(Map config = [:]) {
-  registerServices()
+  fxRegisterListeners()
 
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '“testEnvironmentCredentialId” parameter is mandatory.')
   mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)

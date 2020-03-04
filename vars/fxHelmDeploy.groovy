@@ -1,6 +1,8 @@
 import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:]) {
+  fxRegisterListeners()
+
   mapAttributeCheck(config, 'release', CharSequence, '', '')
   mapAttributeCheck(config, 'chart', CharSequence, '', '')
   mapAttributeCheck(config, 'version', CharSequence, '', '')

@@ -1,4 +1,6 @@
 def call(Map config = [:]){
+  fxRegisterListeners()
+
   mapAttributeCheck(config, 'image',     CharSequence, '', 'The image key must be defined')
   mapAttributeCheck(config, 'tag',       CharSequence, '', 'This tags key must be defined')
   mapAttributeCheck(config, 'registry',  CharSequence, '')

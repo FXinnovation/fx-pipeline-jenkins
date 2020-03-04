@@ -1,4 +1,5 @@
 def call (Map config = [:]){
+  fxRegisterListeners()
 
   mapAttributeCheck(config, 'directory', CharSequence, '', '“directory” parameter is mandatory.')
   mapAttributeCheck(config, 'credentialsId', CharSequence, '', '“credentialsId” parameter is mandatory.')

@@ -2,7 +2,7 @@ import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
 
 def call(Map config = [:]) {
-  registerServices()
+  fxRegisterListeners()
 
   def legacyFunction = {
     mapAttributeCheck(config, 'testPlanVars', List, [])

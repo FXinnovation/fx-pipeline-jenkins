@@ -1,4 +1,6 @@
 def call(Map config = [:]) {
+  fxRegisterListeners()
+
   mapAttributeCheck(config, 'validateVars', List, [])
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])

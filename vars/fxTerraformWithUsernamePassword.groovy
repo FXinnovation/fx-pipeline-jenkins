@@ -1,7 +1,7 @@
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]) {
-  registerServices()
+  fxRegisterListeners()
 
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '“testEnvironmentCredentialId” parameter is mandatory.')
   mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)

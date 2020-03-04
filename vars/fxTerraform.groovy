@@ -2,7 +2,7 @@ import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]) {
-  registerServices()
+  fxRegisterListeners()
 
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
