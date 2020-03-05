@@ -16,7 +16,9 @@ class EventDispatcher {
    */
   EventDataInterface dispatch(String eventName, EventDataInterface eventData = null) {
     for (eventListener in this.eventListenerBag.findOrderedListenersForEvent(eventName)) {
+      this.debugger.printDebug("\u001b[36m~~~> Running listener: “\033[0;4m\033[0;1m"+ eventListener.class.getName() +"\u001b[0m\u001b[36m”\u001b[0m")
       def runData = eventListener.run(eventData)
+      this.debugger.printDebug("\u001b[36m~~~> End of listener: “\033[0;4m\033[0;1m"+ eventListener.class.getName() +"\u001b[0m\u001b[36m”\u001b[0m")
 
       if (null != runData) {
          eventData = runData
