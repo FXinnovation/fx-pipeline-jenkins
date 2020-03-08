@@ -5,16 +5,16 @@ import com.fxinnovation.observer.EventDispatcher
 import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.event_data.TerraformEventData
 
-def call(Map config = [:], Map closures = [:]){
+def call(Map config = [:], Map closures = [:]) {
   registerServices()
 
   mapAttributeCheck(config, 'publish', Boolean, false)
 
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-  def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, config.initOptions,  'test.tfstate', 'terraform.tfstate', 'test.out')
+  def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget)
   def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
-  // DEPRECATED - To be removed and unuseful before '01-05-2020'
+  // DEPRECATED - To be removed and not useful after '01-05-2020'
   closureHelper = new ClosureHelper(this, closures)
 
   stage('init “' + config.commandTarget + '”') {
