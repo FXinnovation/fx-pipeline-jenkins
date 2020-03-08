@@ -3,8 +3,10 @@
 ## 2.0.0
 
 * feat: (DI component) Only add a listener to the listeners bag when it’s not already inside
-* feat: (terraform) adds listeners for init, fmt, validate, plan, apply & destroy rather than using closure
 * feat: (DI component) shows debug information when env.DEBUG=true when calling a listener
+* feat: (terraform) adds listeners for init, fmt, validate, plan, apply & destroy rather than using closure
+* feat: (terraform) adds FX specific listeners for init, repo naming standard, file naming standard
+* refactor: (terraform) changes fxTerraform to standardTerraform, first being FX specific, the other generic.
 
 ## 1.4.2
 
