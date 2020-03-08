@@ -76,6 +76,9 @@ class ServiceRegisterer {
     IOC.registerSingleton(TerraformInitListener.class.getName(), {
       return new TerraformInitListener(context)
     })
+    IOC.registerSingleton(TerraformRepositoryNameStandardListener.class.getName(), {
+      return new TerraformRepositoryNameStandardListener()
+    })
   }
 
   void registerDeprecation(Script context) {
