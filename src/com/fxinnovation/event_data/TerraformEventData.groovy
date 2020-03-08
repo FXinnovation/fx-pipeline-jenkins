@@ -1,24 +1,33 @@
 package com.fxinnovation.event_data
 
+import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.observer.EventDataInterface
 
 class TerraformEventData implements EventDataInterface {
   private String commandTarget
+  private ScmInfo scmInfo
   private Map<String,String> extraOptions
   private String stateFileName
   private String testStateFileName
   private String planOutFile
+  private Map<String,String> extraData
 
-  TerraformEventData(String commandTarget = '.', Map<String, String> extraOptions = [:], String stateFileName = '', String testStateFileName = '', String planOutFile = '') {
+  TerraformEventData(String commandTarget = '.', ScmInfo scmInfo = new Object(), Map<String, String> extraOptions = [:], String stateFileName = 'state.tfstate', String testStateFileName = 'test.tfstate', String planOutFile = 'out.plan', Map<String, String> extraData = [:]) {
     this.commandTarget = commandTarget
-    this.extraOptions = null != extraOptions ? extraOptions : [:]
+    this.scmInfo = scmInfo
+    this.extraOptions = extraOptions
     this.stateFileName = stateFileName
     this.testStateFileName = testStateFileName
     this.planOutFile = planOutFile
+    this.extraData = extraData
   }
 
   List<String> getCommandTarget() {
     return commandTarget
+  }
+
+  ScmInfo getScmInfo() {
+    return scmInfo
   }
 
   Map<String, String> getExtraOptions() {
@@ -37,7 +46,19 @@ class TerraformEventData implements EventDataInterface {
     return planOutFile
   }
 
+  Map<String, String> getExtraData() {
+    return extraData
+  }
+
+  void setScmInfo(ScmInfo scmInfo) {
+    this.scmInfo = scmInfo
+  }
+
   void setExtraOptions(Map<String, String> extraOptions = [:]) {
     this.extraOptions = null != extraOptions ? extraOptions : [:]
+  }
+
+  void setExtraData(Map<String, String> extraData) {
+    this.extraData = null != extraData ? extraData : [:]
   }
 }
