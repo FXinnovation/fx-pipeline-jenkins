@@ -1,6 +1,7 @@
 package com.fxinnovation.di
 
 import com.fxinnovation.io.Debugger
+import com.fxinnovation.listener.fx.*
 import com.fxinnovation.listener.standard.*
 import com.fxinnovation.observer.EventDispatcher
 import com.fxinnovation.observer.EventListenerBag
@@ -71,6 +72,9 @@ class ServiceRegisterer {
     })
     IOC.registerSingleton(TerraformArtifactCleanerListener.class.getName(), {
       return new TerraformArtifactCleanerListener(context)
+    })
+    IOC.registerSingleton(TerraformInitListener.class.getName(), {
+      return new TerraformInitListener(context)
     })
   }
 
