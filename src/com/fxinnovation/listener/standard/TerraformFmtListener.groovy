@@ -2,10 +2,12 @@ package com.fxinnovation.listener.standard
 
 import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.event_data.TerraformEventData
+import com.fxinnovation.listener.fx.TerraformFileStandardListener
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
+import com.fxinnovation.observer.EventSubscriber
 
-class TerraformFmtListener extends EventListener {
+class TerraformFmtListener extends EventSubscriber {
   private Script context
 
   TerraformFmtListener(Script context) {
@@ -13,8 +15,11 @@ class TerraformFmtListener extends EventListener {
   }
 
   @Override
-  String listenTo() {
-    return TerraformEvents.FMT
+  List<String> getSubscribedEvents() {
+    return [
+      TerraformEvents.FMT,
+      TerraformEvents.PRE_PIPELINE
+    ]
   }
 
   /**

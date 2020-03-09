@@ -3,7 +3,6 @@ import com.fxinnovation.di.IOC
 import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.event_data.TerraformEventData
 import com.fxinnovation.helper.ClosureHelper
-import com.fxinnovation.listener.standard.TerraformFmtListener
 import com.fxinnovation.observer.EventDispatcher
 import com.fxinnovation.util.FileUtils
 
@@ -49,8 +48,6 @@ def call(Map config = [:], Map closures = [:]) {
     } catch (error) {
       commandTargets = ['.']
     }
-
-    fmt(config, commandTargets, closureHelper)
 
     printDebug('commandTargets: ' + commandTargets)
 
@@ -131,22 +128,6 @@ done
     ],
     config
   )
-}
-
-private fmt(Map config = [:], List commandTargets, ClosureHelper closureHelper) {
-  if ('.' == commandTargets[0]) {
-    return
-  }
-
-  printDebug('Global format to workaround a Terraform bug making fmt pass even if some sub-modules are incorrectly formatted.')
-
-  // Invoking a listener like this a bad way to do but because the whole purpose of this function should be redesigned
-  // it will stay like this for now. A better way to do it would be to use a pre-pipeline event before the
-  // terraform pipeline to do the global fmt.
-  TerraformFmtListener terraformFmtListener = IOC.get(TerraformFmtListener.class.getName())
-  TerraformEventData terraformData = new TerraformEventData('.')
-  terraformData.setExtraOptions(config.commonOptions)
-  terraformFmtListener.run(terraformData)
 }
 
 private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists, Map closures = [:]) {
