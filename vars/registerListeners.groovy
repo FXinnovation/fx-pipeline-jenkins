@@ -1,8 +1,6 @@
 import com.fxinnovation.di.IOC
-import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.listener.standard.*
 import com.fxinnovation.observer.EventDispatcher
-import com.fxinnovation.listener.standard.CheckoutListener
 
 def call() {
   registerServices()

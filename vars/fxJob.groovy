@@ -2,6 +2,7 @@ import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
 import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.helper.ClosureHelper
+import com.fxinnovation.observer.EventDispatcher
 import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
@@ -59,8 +60,9 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     config.podVolumes.add(persistentVolumeClaim(claimName: 'jenkins-slave-cache', mountPath: '/cache', readOnly: false))
   }
 
-  closureHelper = new ClosureHelper(this, closures)
+  def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
 
+  closureHelper = new ClosureHelper(this, closures)
   closureHelper.throwErrorIfNotDefined('pipeline')
 
   defaultPropertiesConfig = [
