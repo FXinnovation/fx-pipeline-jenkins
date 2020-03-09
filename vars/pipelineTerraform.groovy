@@ -12,6 +12,7 @@ def call(Map config = [:], Map closures = [:]) {
 
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
   def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget)
+  terraformEventData.
   def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
   // DEPRECATED - To be removed and not useful after '01-05-2020'

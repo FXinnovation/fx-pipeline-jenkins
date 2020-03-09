@@ -12,14 +12,11 @@ class TerraformEventData implements EventDataInterface {
   private String planOutFile
   private Map<String,String> extraData
 
-  TerraformEventData(String commandTarget = '.', ScmInfo scmInfo = new Object(), Map<String, String> extraOptions = [:], String stateFileName = 'state.tfstate', String testStateFileName = 'test.tfstate', String planOutFile = 'out.plan', Map<String, String> extraData = [:]) {
+  TerraformEventData(String commandTarget = '.', String stateFileName = 'state.tfstate', String testStateFileName = 'test.tfstate', String planOutFile = 'out.plan') {
     this.commandTarget = commandTarget
-    this.scmInfo = scmInfo
-    this.extraOptions = extraOptions
     this.stateFileName = stateFileName
     this.testStateFileName = testStateFileName
     this.planOutFile = planOutFile
-    this.extraData = extraData
   }
 
   List<String> getCommandTarget() {
@@ -50,15 +47,18 @@ class TerraformEventData implements EventDataInterface {
     return extraData
   }
 
-  void setScmInfo(ScmInfo scmInfo) {
+  TerraformEventData setScmInfo(ScmInfo scmInfo) {
     this.scmInfo = scmInfo
+    return this
   }
 
-  void setExtraOptions(Map<String, String> extraOptions = [:]) {
+  TerraformEventData setExtraOptions(Map<String, String> extraOptions = [:]) {
     this.extraOptions = null != extraOptions ? extraOptions : [:]
+    return this
   }
 
-  void setExtraData(Map<String, String> extraData) {
+  TerraformEventData setExtraData(Map<String, String> extraData) {
     this.extraData = null != extraData ? extraData : [:]
+    return this
   }
 }

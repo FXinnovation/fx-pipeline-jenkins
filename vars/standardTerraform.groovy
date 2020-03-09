@@ -89,7 +89,8 @@ done
       def dockerNetwork = ['dockerNetwork': terraformNetwork]
 
       def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-      def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget, scmInfo)
+      def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget)
+      terraformEventData.setScmInfo(scmInfo)
       terraformEventData.setExtraData(config.extraData)
 
       terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PIPELINE, terraformEventData)
@@ -142,7 +143,9 @@ private fmt(Map config = [:], List commandTargets, ClosureHelper closureHelper) 
   // it will stay like this for now. A better way to do it would be to use a pre-pipeline event before the
   // terraform pipeline to do the global fmt.
   TerraformFmtListener terraformFmtListener = IOC.get(TerraformFmtListener.class.getName())
-  terraformFmtListener.run(new TerraformEventData('.', config.commonOptions))
+  TerraformEventData terraformData = new TerraformEventData('.')
+  terraformData.setExtraOptions(config.commonOptions)
+  terraformFmtListener.run(terraformData)
 }
 
 private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists, Map closures = [:]) {
