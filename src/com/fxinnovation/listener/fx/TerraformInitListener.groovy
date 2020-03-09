@@ -4,6 +4,7 @@ import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 import com.fxinnovation.event_data.TerraformEventData
+import com.fxinnovation.util.FileUtils
 
 class TerraformInitListener extends EventListener {
   private Script context
@@ -39,7 +40,7 @@ class TerraformInitListener extends EventListener {
         dockerEnvironmentVariables: [
           'SSH_AUTH_SOCK': '/ssh-agent',
         ],
-        backendConfigs: eventData.getExtraData().terraformInitBackendConfig
+        backendConfigs: FileUtils.exists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
       ], eventData.getExtraOptions()))
     }
 
