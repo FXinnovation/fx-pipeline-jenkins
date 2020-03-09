@@ -58,7 +58,7 @@ class TerraformFileStandardListener extends EventListener {
     }
   }
 
-  private void checkContainsFiles(String validFiles) {
+  private void checkContainsFiles(List validFiles) {
     validFiles.each { filename ->
       if (! new File(filename).exists()) {
         throw new Exception("This build does not meet FX standards: a Terraform module MUST contain a “${filename}” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
