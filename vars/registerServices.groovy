@@ -9,11 +9,11 @@ def call() {
     return
   }
 
+  ServiceRegisterer serviceRegisterer = new ServiceRegisterer()
+  serviceRegisterer.registerAllClasses(this)
+
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
   eventDispatcher.dispatch(PipelineEvents.PRE_INIT)
   eventDispatcher.dispatch(PipelineEvents.INIT)
   eventDispatcher.dispatch(PipelineEvents.POST_INIT)
-
-  ServiceRegisterer serviceRegisterer = new ServiceRegisterer()
-  serviceRegisterer.registerAllClasses(this)
 }
