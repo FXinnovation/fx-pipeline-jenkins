@@ -1,4 +1,4 @@
-import com.fxinnovation.service.standard.ServiceRegisterer
+import com.fxinnovation.service.fx.ServiceRegisterer
 
 def call() {
   ServiceRegisterer serviceRegisterer = new ServiceRegisterer()

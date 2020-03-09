@@ -7,6 +7,9 @@ def call() {
 
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
 
+  // ###
+  // Terraform
+  // ###
   eventDispatcher.attach(IOC.get(TerraformApplyListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformArtifactCleanerListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformDestroyListener.class.getName()))
