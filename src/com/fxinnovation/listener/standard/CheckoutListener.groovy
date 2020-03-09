@@ -18,7 +18,7 @@ class CheckoutListener extends EventListener {
 
   @Override
   String listenTo() {
-    return PipelineEvents.INIT
+    return PipelineEvents.PREPARE
   }
 
   /**

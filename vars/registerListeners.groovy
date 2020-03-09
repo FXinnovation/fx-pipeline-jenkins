@@ -25,8 +25,4 @@ def call() {
   eventDispatcher.attach(IOC.get(TerraformPlanListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformPlanReplayListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformValidateListener.class.getName()))
-
-  eventDispatcher.dispatch(PipelineEvents.PRE_INIT)
-  eventDispatcher.dispatch(PipelineEvents.INIT)
-  eventDispatcher.dispatch(PipelineEvents.POST_INIT)
 }

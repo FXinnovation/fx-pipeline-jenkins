@@ -1,10 +1,6 @@
 package com.fxinnovation.event
 
 class PipelineEvents {
-  public final static PRE_INIT = 'preInit'
-  public final static INIT = 'init'
-  public final static POST_INIT = 'postInit'
-
   public final static PRE_PREPARE = 'prePrepare'
   public final static PREPARE = 'prepare'
   public final static POST_PREPARE = 'postPrepare'

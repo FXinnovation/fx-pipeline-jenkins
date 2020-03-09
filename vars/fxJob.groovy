@@ -1,5 +1,6 @@
 import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
+import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.helper.ClosureHelper
 import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 
@@ -235,11 +236,15 @@ spec:
           }
           try{
             ansiColor('xterm') {
-              stage('prepare'){
+              stage('prepare') {
+                eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE)
                 closureHelper.execute('prePrepare')
 
+                eventDispatcher.dispatch(PipelineEvents.PREPARE)
                 DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
-                scmInfo = deprecatedFunction.execute({ fxCheckout() }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-07-2020')
+                scmInfo = deprecatedFunction.execute({
+                  fxCheckout()
+                }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-07-2020')
 
                 if (config.dockerRegistryLogin) {
                   withCredentials([
@@ -255,7 +260,8 @@ spec:
                   }
                 }
 
-                if (closureHelper.isDefined('postPrepare')){
+                eventDispatcher.dispatch(PipelineEvents.POST_PREPARE)
+                if (closureHelper.isDefined('postPrepare')) {
                   closures.postPrepare(scmInfo)
                 }
 
@@ -281,37 +287,37 @@ spec:
 
                 closureHelper.executeWithinStage('postPipeline')
               }
-            } catch (error) {
-              status = 'FAILURE'
-              throw error
-            } finally {
-              stage('notification') {
-                closureHelper.execute('preNotification')
+            }
+          } catch (error) {
+            status = 'FAILURE'
+            throw error
+          } finally {
+            stage('notification') {
+              closureHelper.execute('preNotification')
 
-                // We use notification because notify is a reserved keyword in groovy.
-                if (closureHelper.isDefined('notification')) {
-                  closures.notification(status)
-                } else {
-                  fx_notify(
-                    status: status,
-                    failOnError: false
-                  )
-                }
-
-                closureHelper.execute('postNotification')
-              }
-              stage('cleanup') {
-                closureHelper.execute('preCleanup')
-                cleanWs()
-                closureHelper.execute('postCleanup')
+              // We use notification because notify is a reserved keyword in groovy.
+              if (closureHelper.isDefined('notification')) {
+                closures.notification(status)
+              } else {
+                fx_notify(
+                  status: status,
+                  failOnError: false
+                )
               }
 
-              if (config.runKind && !config.launchLocally) {
-                stage('kindlogs') {
-                  containerLog(
-                    name: 'kind'
-                  )
-                }
+              closureHelper.execute('postNotification')
+            }
+            stage('cleanup') {
+              closureHelper.execute('preCleanup')
+              cleanWs()
+              closureHelper.execute('postCleanup')
+            }
+
+            if (config.runKind && !config.launchLocally) {
+              stage('kindlogs') {
+                containerLog(
+                  name: 'kind'
+                )
               }
             }
           }
