@@ -1,14 +1,15 @@
 import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.helper.ClosureHelper
 
-def call(Map config = [:], Map closures = [:], ScmInfo scmInfo){
+def call(Map config = [:], Map closures = [:]){
   registerServices()
 
   mapAttributeCheck(config, 'disablePublish', Boolean, false)
   mapAttributeCheck(config, 'dockerBuild', Map, [:], 'dockerBuild Map options are needed.')
   mapAttributeCheck(config, 'dockerPublish', Map, [:], 'dockerPublish Map options are needed.')
 
-  closureHelper = new ClosureHelper(this, closures)
+  def scmInfo = IOC.get(ScmInfo.class.getName())
+  def closureHelper = new ClosureHelper(this, closures)
 
   closureHelper.executeWithinStage('preBuild')
 

@@ -1,3 +1,5 @@
+import com.fxinnovation.deprecation.DeprecatedFunction
+import com.fxinnovation.di.IOC
 import com.fxinnovation.helper.ClosureHelper
 import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 
@@ -230,30 +232,31 @@ spec:
                 println config.headerMessage
               }
             }
-            try {
-              ansiColor('xterm') {
-                stage('prepare') {
-                  closureHelper.execute('prePrepare')
+          }
+          try{
+            ansiColor('xterm') {
+              stage('prepare'){
+                closureHelper.execute('prePrepare')
 
-                  scmInfo = fxCheckout()
+                DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
+                scmInfo = deprecatedFunction.execute({ fxCheckout() }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-07-2020')
 
-                  if (config.dockerRegistryLogin) {
-                    withCredentials([
-                      usernamePassword(
-                        credentialsId: config.dockerRegistryCredentialId,
-                        passwordVariable: 'registryPassword',
-                        usernameVariable: 'registryUsername'
-                      )
-                    ]) {
-                      execute(
-                        script: "docker login --username '${registryUsername}' --password '${registryPassword}' ${config.dockerRegistry}",
-                      )
-                    }
+                if (config.dockerRegistryLogin) {
+                  withCredentials([
+                    usernamePassword(
+                      credentialsId: config.dockerRegistryCredentialId,
+                      passwordVariable: 'registryPassword',
+                      usernameVariable: 'registryUsername'
+                    )
+                  ]) {
+                    execute(
+                      script: "docker login --username '${registryUsername}' --password '${registryPassword}' ${config.dockerRegistry}",
+                    )
                   }
+                }
 
-                  if (closureHelper.isDefined('postPrepare')) {
-                    closures.postPrepare(scmInfo)
-                  }
+                if (closureHelper.isDefined('postPrepare')){
+                  closures.postPrepare(scmInfo)
                 }
 
                 if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {

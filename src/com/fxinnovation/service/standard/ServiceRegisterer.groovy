@@ -49,6 +49,10 @@ class ServiceRegisterer {
   }
 
   void registerListeners(Script context) {
+    IOC.registerSingleton(CheckoutListener.class.getName(), {
+      return new CheckoutListener(context, IOC.get(Debugger.class.getName()))
+    })
+
     IOC.registerSingleton(TerraformInitListener.class.getName(), {
       return new TerraformInitListener(context)
     })

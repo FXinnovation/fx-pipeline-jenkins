@@ -1,7 +1,1 @@
-fxCheckout is a helper that allows you to checkout a hudson.plugins.git.GitSCM object and fetch tag and branching information about it.
-
-Usage:
-  scmInfo = fxCheckout(
-    scm: hudson.plugins.git.GitSCM <optionnal>
-  )
-  println scmInfo
+Deprecated
