@@ -1,13 +1,11 @@
 package com.fxinnovation.event_data
 
 import com.fxinnovation.data.ScmInfo
-import com.fxinnovation.di.IOC
 import com.fxinnovation.observer.EventDataInterface
-import com.fxinnovation.observer.EventDispatcher
 
 class TerraformEventData implements EventDataInterface {
   private String commandTarget
-  private ScmInfo scmInfo = IOC.get(EventDispatcher.class.getName())
+  private ScmInfo scmInfo
   private Map<String,String> extraOptions
   private String stateFileName
   private String testStateFileName
@@ -47,6 +45,11 @@ class TerraformEventData implements EventDataInterface {
 
   Map<String, String> getExtraData() {
     return extraData
+  }
+
+  TerraformEventData setScmInfo(ScmInfo scmInfo) {
+    this.scmInfo = scmInfo
+    return this
   }
 
   TerraformEventData setExtraOptions(Map<String, String> extraOptions = [:]) {
