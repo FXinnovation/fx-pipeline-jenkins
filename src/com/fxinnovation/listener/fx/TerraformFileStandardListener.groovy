@@ -41,6 +41,8 @@ class TerraformFileStandardListener extends EventListener {
   }
 
   EventDataInterface run(EventDataInterface eventData = null) {
+    print(this.context.sh('ls'))
+
     if (this.isCurrentCodeTerraformDeployment()) {
       this.checkOnlyHasFiles(this.DEPLOY_ONLY_ALLOWED_FILES)
       this.checkContainsFiles(this.DEPLOY_MANDATORY_FILES)

@@ -1,3 +1,4 @@
+import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
 import com.fxinnovation.event.PipelineEvents
@@ -264,7 +265,7 @@ spec:
 
                 eventDispatcher.dispatch(PipelineEvents.POST_PREPARE)
                 if (closureHelper.isDefined('postPrepare')) {
-                  closures.postPrepare(scmInfo)
+                  closures.postPrepare(IOC.get(ScmInfo.class.getName()))
                 }
 
                 if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
@@ -284,7 +285,7 @@ spec:
                 closureHelper.executeWithinStage('prePipeline')
 
                 stage('pipeline') {
-                  closures.pipeline(scmInfo)
+                  closures.pipeline(IOC.get(ScmInfo.class.getName()))
                 }
 
                 closureHelper.executeWithinStage('postPipeline')
