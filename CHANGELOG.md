@@ -6,7 +6,8 @@
 * feat: (DI component) shows debug information when env.DEBUG=true when calling a listener
 * feat: (terraform) adds listeners for init, fmt, validate, plan, apply & destroy rather than using closure
 * feat: (terraform) adds FX specific listeners for init, repo naming standard, file naming standard
-* refactor: (terraform) changes fxTerraform to standardTerraform, first being FX specific, the other generic.
+* refactor: (terraform) changes fxTerraform to standardTerraform, first being FX specific, the other generic
+* feat: moves fxCheckout() to a listener of INIT event to run it as soon as possible
 
 ## 1.4.2
 
