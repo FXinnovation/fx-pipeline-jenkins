@@ -1,4 +1,4 @@
-package com.fxinnovation.di
+package com.fxinnovation.service.standard
 
 import org.junit.Test
 

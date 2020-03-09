@@ -6,6 +6,7 @@ import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 import com.fxinnovation.io.Debugger
+import hudson.plugins.git.GitSCM
 
 class CheckoutListener extends EventListener {
   private Script context
@@ -37,8 +38,6 @@ class CheckoutListener extends EventListener {
       this.getLatestTag(),
       this.getRepositoryName(this.context.scm)
     )
-
-    this.debugger.printDebug(this.context.scm.getClass())
 
     this.debugger.printDebug(scmInfo.toString())
 
@@ -74,7 +73,7 @@ class CheckoutListener extends EventListener {
     return executeCommand('git describe --tags $(git rev-list --tags --max-count=1)')
   }
 
-  private String getRepositoryName(scm) {
+  private String getRepositoryName(GitSCM scm) {
     if (scm.metaClass.respondsTo(scm, 'getUserRemoteConfigs')) {
       // Only works on specific implementation of the SCM class, forcing us to check if the method exists
       return scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
