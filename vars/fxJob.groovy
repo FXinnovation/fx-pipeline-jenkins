@@ -219,10 +219,10 @@ spec:
                 closures.notification(status)
               }
               else{
-                fx_notify(
-                  status: status,
-                  failOnError: false
-                )
+                // fx_notify(
+                //   status: status,
+                //   failOnError: false
+                // )
               }
 
               closureHelper.execute('postNotification')
