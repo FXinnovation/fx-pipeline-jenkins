@@ -42,7 +42,7 @@ def call(Map config = [:], Map closures = [:]) {
 
     config.inspecUsername = TF_username_test
     config.inspecPassword = TF_password_test
-
+   println config.slaveSize
    fxTerraform(config, closureHelper.getClosures())
   }
 }

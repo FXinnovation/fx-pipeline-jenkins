@@ -75,14 +75,14 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     medium: [
       resourceRequestCpu: '500m',
       resourceLimitCpu: '1',
-      resourceRequestMemory: '1512Mi',
-      resourceLimitMemory: '2048Mi',
+      resourceRequestMemory: '2048Mi',
+      resourceLimitMemory: '3072Mi',
     ],
     large: [
       resourceRequestCpu: '1500m',
       resourceLimitCpu: '2',
-      resourceRequestMemory: '2048Mi',
-      resourceLimitMemory: '3072Mi',
+      resourceRequestMemory: '3072Mi',
+      resourceLimitMemory: '4096Mi',
     ]
   ]
  

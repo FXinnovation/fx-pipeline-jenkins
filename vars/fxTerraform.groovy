@@ -131,6 +131,7 @@ done
       }
     }
   )
+  println config.slaveSize
 
   fxJob(
     closureHelper.getClosures(),
