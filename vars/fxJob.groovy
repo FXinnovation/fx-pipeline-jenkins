@@ -67,10 +67,10 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
 
   def slaveSizes = [
     small: [
-      resourceRequestCpu: '100m',
-      resourceLimitCpu: '500m',
-      resourceRequestMemory: '1024Mi',
-      resourceLimitMemory: '2048Mi',
+      resourceRequestCpu: '500m',
+      resourceLimitCpu: '1',
+      resourceRequestMemory: '2048Mi',
+      resourceLimitMemory: '3072Mi',
     ],
     medium: [
       resourceRequestCpu: '500m',
