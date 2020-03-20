@@ -233,9 +233,9 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
     closures.notification('PENDING')
   }
   else {
-    fx_notify(
-      status: 'PENDING'
-    )
+    // fx_notify(
+    //   status: 'PENDING'
+    // )
   }
 
   timeout(activity: true, time: 20) {
