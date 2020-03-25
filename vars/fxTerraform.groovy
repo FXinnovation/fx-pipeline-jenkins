@@ -240,7 +240,8 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
   }
 
   timeout(activity: true, time: 20) {
-    foolProofValidation()
+    input 'Do you approve the change plan ?'
+    //foolProofValidation()
   }
 
   terraform.apply([
