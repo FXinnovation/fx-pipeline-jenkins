@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.25.1
+
+* fix: Add `resgisterservice` to `fxCheckout` function
+* fix: Bug in `pipelineCookbook` function
+ 
 ## 0.25.0
 
 * fix: Review pod architecture to start a new container
