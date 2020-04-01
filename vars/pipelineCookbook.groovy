@@ -24,7 +24,7 @@ def call(Map config = [:], Map closures = [:]){
   if(config.publish) {
     println "Publish step is skipped!"
   }
-  if(!closureHelper.isDefined) {
+  if(!closureHelper.isDefined('publish')) {
     println "“publish” closure is not defined. Publish step will be skipped!"
   }
 
