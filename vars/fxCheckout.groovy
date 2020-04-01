@@ -1,6 +1,7 @@
 import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:]){
+  registerServices()
   checkout scm
 
   scmInfo = new ScmInfo(
