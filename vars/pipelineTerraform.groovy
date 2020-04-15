@@ -166,6 +166,7 @@ def test(Map config = [:], ClosureHelper closureHelper){
             inspec.exec(
               target: "${config.inspecTarget}://",
               jsonConfig: 'inspec-config.json',
+              dockerImage: 'fxinnovation/inpsec:0.4.0'
               commandTarget: config.commandTarget,
               dockerEnvironmentVariables: envVariables
             )
