@@ -90,16 +90,18 @@ def call(Map config = [:], Map closures =[:]){
                     )
                 }
 
-                printDebug('----- Publishing Maven-----')
                 def prop = readJSON file: 'PowershellDefinition.json'
-                mapAttributeCheck(config, 'applicationName', CharSequence, prop.Name)
+                if(prop.Type == 'PowershellApp'){
+                    printDebug('----- Publishing Maven-----')
+                    mapAttributeCheck(config, 'applicationName', CharSequence, prop.Name)
 
-                def item = mavenrepository.newItem(this, config)
+                    def item = mavenrepository.newItem(this, config)
 
-                def zips = findFiles(glob: '_artefacts/*.zip')
-                if(zips.length != 0){
-                    item.publish(this,zips.path)
-                    currentBuild.description = "Artefact is available at \n${item.getUrl().toLowerCase()}"
+                    def zips = findFiles(glob: '_artefacts/*.zip')
+                    if(zips.length != 0){
+                        item.publish(this,zips.path)
+                        currentBuild.description = "Artefact is available at \n${item.getUrl().toLowerCase()}"
+                    }
                 }
                 printDebug('----- Publishing Done -----')
             }
