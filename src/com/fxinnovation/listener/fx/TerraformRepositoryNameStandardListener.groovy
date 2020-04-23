@@ -8,7 +8,7 @@ import com.fxinnovation.util.FileUtils
 
 class TerraformRepositoryNameStandardListener extends EventListener {
   public static final VALID_DEPLOYMENT_REPOSITORY_NAME_PATTERN = /^terraform\-deployment\-[a-z\d-]{3,}$/
-  public static final VALID_MODULE_REPOSITORY_NAME_PATTERN = /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github|kubernetes|multi)-[a-z\d]{2,}([a-z\d\-]+)?$/
+  public static final VALID_MODULE_REPOSITORY_NAME_PATTERN = /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github|kubernetes|multi)-[a-z\d]{2,}([a-z\d\-]+)?[a-z\d]$/
 
     @Override
   String listenTo() {
