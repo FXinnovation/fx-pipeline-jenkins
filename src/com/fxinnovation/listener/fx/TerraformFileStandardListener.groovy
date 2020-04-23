@@ -1,6 +1,5 @@
 package com.fxinnovation.listener.fx
 
-import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 import com.fxinnovation.util.FileUtils
@@ -56,12 +55,16 @@ class TerraformFileStandardListener extends EventListener {
   private void checkOnlyHasFiles(List validFiles) {
     for (filename in this.context.execute(script: "ls").stdout.split()) {
       if (!validFiles.contains(filename)) {
-        throw new Exception("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with optional “variables.tf”/“outputs.tf”/“providers.tf” files.")
+        throw new Exception("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with optional “${validFiles.join("/")}” files.")
       }
     }
   }
 
   private void checkContainsFiles(List validFiles) {
+    this.context.println(validFiles)
+    this.context.println(this.context.execute(script: "ls").stdout.split())
+    this.context.println(FileUtils.exists('.gitignore'))
+    this.context.println(this.context.fileExists('.gitignore'))
     validFiles.each { filename ->
       if (!FileUtils.exists(filename)) {
         throw new Exception("This build does not meet FX standards: a Terraform module MUST contain a “${filename}” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
