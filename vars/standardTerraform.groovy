@@ -4,7 +4,6 @@ import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.event_data.TerraformEventData
 import com.fxinnovation.helper.ClosureHelper
 import com.fxinnovation.observer.EventDispatcher
-import com.fxinnovation.util.FileUtils
 
 def call(Map config = [:], Map closures = [:]) {
   fxRegisterListeners()
@@ -29,7 +28,7 @@ def call(Map config = [:], Map closures = [:]) {
   }
 
   closureHelper.addClosure('pipeline', { ScmInfo scmInfo ->
-    def deployFileExists = FileUtils.exists('deploy.tf')
+    def deployFileExists = fileExists('deploy.tf')
     def toDeploy = false
 
     if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()){
