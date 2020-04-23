@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.25.2
+
+fix(terraform): Prevent repo names ending with - and allow first element of the name to be 2 digits min, not 3
+
 ## 0.25.1
 
 * fix: Add `resgisterservice` to `fxCheckout` function
