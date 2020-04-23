@@ -3,7 +3,6 @@ package com.fxinnovation.listener.fx
 import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
-import com.fxinnovation.util.FileUtils
 
 class TerraformFileStandardListener extends EventListener {
   public static final DEPLOY_ONLY_ALLOWED_FILES = [
@@ -62,18 +61,14 @@ class TerraformFileStandardListener extends EventListener {
   }
 
   private void checkContainsFiles(List validFiles) {
-    this.context.println(validFiles)
-    this.context.println(this.context.execute(script: "ls").stdout.split())
-    this.context.println(FileUtils.exists('.gitignore'))
-    this.context.println(this.context.fileExists('.gitignore'))
     validFiles.each { filename ->
-      if (!FileUtils.exists(filename)) {
+      if (!this.context.fileExists(filename)) {
         throw new Exception("This build does not meet FX standards: a Terraform module MUST contain a “${filename}” file. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#modules.")
       }
     }
   }
 
   private Boolean isCurrentCodeTerraformDeployment() {
-    return FileUtils.exists('deploy.tf')
+    return this.context.fileExists('deploy.tf')
   }
 }
