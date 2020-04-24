@@ -12,7 +12,7 @@ class TerraformEventData implements EventDataInterface {
   private String planOutFile
   private Map<String,String> extraData
 
-  TerraformEventData(String commandTarget = '.', Map<String,String> extraOptions = [:], String stateFileName = 'state.tfstate', String testStateFileName = 'test.tfstate', String planOutFile = 'out.plan', Map<String,String> extraData) {
+  TerraformEventData(String commandTarget = '.', Map<String,String> extraOptions = [:], String stateFileName = 'state.tfstate', String testStateFileName = 'test.tfstate', String planOutFile = 'out.plan', Map<String,String> extraData = [:]) {
     this.commandTarget = commandTarget
     this.extraOptions = extraOptions
     this.stateFileName = stateFileName
