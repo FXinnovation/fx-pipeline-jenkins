@@ -91,7 +91,7 @@ def call(Map config = [:], Map closures =[:]){
                 }
 
                 def prop = readJSON file: 'PowershellDefinition.json'
-                if(prop.Type == 'PowershellApp'){
+                //if(prop.Type == 'PowershellApp'){
                     printDebug('----- Publishing Maven-----')
                     mapAttributeCheck(config, 'applicationName', CharSequence, prop.Name)
 
@@ -102,7 +102,7 @@ def call(Map config = [:], Map closures =[:]){
                         item.publish(this,zips.path)
                         currentBuild.description = "Artefact is available at \n${item.getUrl().toLowerCase()}"
                     }
-                }
+                //}
                 printDebug('----- Publishing Done -----')
             }
 
