@@ -17,8 +17,8 @@ class ServiceRegisterer {
   }
 
   void registerListeners(Script context) {
-    IOC.registerSingleton(TerraformInitListener.class.getName(), {
-      return new TerraformInitListener(context)
+    IOC.registerSingleton(TerraformPrepareSSHForInitListener.class.getName(), {
+      return new TerraformPrepareSSHForInitListener(context)
     })
     IOC.registerSingleton(TerraformRepositoryNameStandardListener.class.getName(), {
       return new TerraformRepositoryNameStandardListener(context)
