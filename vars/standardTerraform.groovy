@@ -86,31 +86,31 @@ done
       def dockerNetwork = ['dockerNetwork': terraformNetwork]
 
       def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-      def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget)
+      def TerraformEventData terraformEventData = new TerraformEventData()
       terraformEventData.setScmInfo(scmInfo)
       terraformEventData.setExtraData(config.extraData)
+      terraformEventData.setExtraOptions(config.commonOptions)
 
       terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PIPELINE, terraformEventData)
       for(commandTarget in commandTargets) {
         pipelineTerraform(
-          config +
-            [
-              commandTarget     : commandTarget,
-              testPlanOptions   : [
-                vars: config.testPlanVars,
-              ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
-              testApplyOptions : config.commonOptions + dockerAdditionalMounts + dockerNetwork,
-              fmtOptions: config.commonOptions,
-              validateOptions   : [
-                vars: config.validateVars
-              ] + config.commonOptions,
-              testDestroyOptions: [
-                vars: config.testPlanVars,
-              ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
-              publish           : deployFileExists,
-            ], [
-          publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures()) }
-        ]
+          config + [
+            commandTarget     : commandTarget,
+            testPlanOptions   : [
+              vars: config.testPlanVars,
+            ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
+            testApplyOptions : config.commonOptions + dockerAdditionalMounts + dockerNetwork,
+            fmtOptions: config.commonOptions,
+            validateOptions   : [
+              vars: config.validateVars
+            ] + config.commonOptions,
+            testDestroyOptions: [
+              vars: config.testPlanVars,
+            ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
+            publish           : deployFileExists,
+          ], [
+            publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures()) }
+          ]
         )
       }
       terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PIPELINE, terraformEventData)
