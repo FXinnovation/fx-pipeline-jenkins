@@ -17,24 +17,31 @@ class ServiceRegisterer {
       return
     }
 
-    this.registerDeprecation(context)
-    this.registerDebugger(context)
+    this.regiserContext(context)
+    this.registerDeprecation()
+    this.registerDebugger()
     this.registerObserver()
-    this.registerListeners(context)
-    this.registerFactories(context)
+    this.registerListeners()
+    this.registerFactories()
 
     this.alreadyRegistered = true
   }
 
-  void registerDebugger(Script context) {
+  void registerContext(Script context) {
+    IOC.registerSingleton('@context', {
+      return context
+    })
+  }
+
+  void registerDebugger() {
     IOC.registerSingleton(Debugger.class.getName(), {
       return new Debugger(context)
     })
   }
 
-  void registerFactories(Script context) {
+  void registerFactories() {
     IOC.register(OptionStringFactory.class.getName(), {
-      return new OptionStringFactory(context)
+      return new OptionStringFactory(IOC.get('@context'))
     })
   }
 
@@ -48,40 +55,40 @@ class ServiceRegisterer {
     })
   }
 
-  void registerListeners(Script context) {
+  void registerListeners() {
     IOC.registerSingleton(CheckoutListener.class.getName(), {
       return new CheckoutListener(context, IOC.get(Debugger.class.getName()))
     })
 
     IOC.registerSingleton(TerraformInitListener.class.getName(), {
-      return new TerraformInitListener(context)
+      return new TerraformInitListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformValidateListener.class.getName(), {
-      return new TerraformValidateListener(context)
+      return new TerraformValidateListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformFmtListener.class.getName(), {
-      return new TerraformFmtListener(context)
+      return new TerraformFmtListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformPlanListener.class.getName(), {
-      return new TerraformPlanListener(context)
+      return new TerraformPlanListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformApplyListener.class.getName(), {
-      return new TerraformApplyListener(context)
+      return new TerraformApplyListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformPlanReplayListener.class.getName(), {
-      return new TerraformPlanReplayListener(context)
+      return new TerraformPlanReplayListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformDestroyListener.class.getName(), {
-      return new TerraformDestroyListener(context)
+      return new TerraformDestroyListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformArtifactCleanerListener.class.getName(), {
       return new TerraformArtifactCleanerListener(context)
     })
   }
 
-  void registerDeprecation(Script context) {
+  void registerDeprecation() {
     IOC.registerSingleton(DeprecatedMessage.class.getName(), {
-      return new DeprecatedMessage(context)
+      return new DeprecatedMessage(IOC.get('@context'))
     })
 
     IOC.registerSingleton(DeprecatedFunction.class.getName(), {
