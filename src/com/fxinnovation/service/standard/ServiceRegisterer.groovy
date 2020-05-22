@@ -17,7 +17,7 @@ class ServiceRegisterer {
       return
     }
 
-    this.regiserContext(context)
+    this.registerContext(context)
     this.registerDeprecation()
     this.registerDebugger()
     this.registerObserver()
