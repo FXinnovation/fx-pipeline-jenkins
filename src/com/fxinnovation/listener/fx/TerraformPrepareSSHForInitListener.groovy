@@ -26,7 +26,7 @@ class TerraformPrepareSSHForInitListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
-    if (!this.shouldRun()) {
+    if (!this.shouldRun(eventData)) {
       return eventData
     }
 
@@ -67,7 +67,7 @@ class TerraformPrepareSSHForInitListener extends EventListener {
 
   private shouldRun(EventDataInterface eventData = null) {
     return (
-      null != eventData.getExtraOptions().initSSHCredentialId &&
+      null != eventData.getExtraData().initSSHCredentialId &&
       null != eventData.getExtraData().initSSHHostKeys
     )
   }
