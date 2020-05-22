@@ -19,17 +19,6 @@ def call(Map config = [:], Map closures = [:]) {
   closureHelper = new ClosureHelper(this, closures)
 
   stage('init “' + config.commandTarget + '”') {
-    withCredentials([
-        sshUserPrivateKey(
-            credentialsId: 'gitea-fx_administrator-key',
-            keyFileVariable: 'keyFile',
-            passphraseVariable: 'passphrase',
-            usernameVariable: 'username'
-        )
-    ]) {
-      sh('KEYFILE' + keyFile)
-    }
-
     terraformEventData.setExtraOptions(config.initOptions)
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_INIT, terraformEventData)
     deprecatedFunction.execute({closureHelper.execute('preInit')}, 'closureHelper.execute(\'preInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-12-2020')

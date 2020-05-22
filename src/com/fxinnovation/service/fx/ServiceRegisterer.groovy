@@ -6,25 +6,25 @@ import com.fxinnovation.listener.fx.*
 class ServiceRegisterer {
   static alreadyRegistered = false
 
-  void registerAllClasses() {
+  void registerAllClasses(Script context) {
     if (true == this.alreadyRegistered) {
       return
     }
 
-    this.registerListeners()
+    this.registerListeners(context)
 
     this.alreadyRegistered = true
   }
 
-  void registerListeners() {
+  void registerListeners(Script context) {
     IOC.registerSingleton(TerraformPrepareSSHForInitListener.class.getName(), {
-      return new TerraformPrepareSSHForInitListener(IOC.get('@context'))
+      return new TerraformPrepareSSHForInitListener(context)
     })
     IOC.registerSingleton(TerraformRepositoryNameStandardListener.class.getName(), {
-      return new TerraformRepositoryNameStandardListener(IOC.get('@context'))
+      return new TerraformRepositoryNameStandardListener(context)
     })
     IOC.registerSingleton(TerraformFileStandardListener.class.getName(), {
-      return new TerraformFileStandardListener(IOC.get('@context'))
+      return new TerraformFileStandardListener(context)
     })
   }
 }
