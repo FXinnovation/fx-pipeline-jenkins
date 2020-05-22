@@ -61,7 +61,7 @@ class TerraformPrepareSSHForInitListener extends EventListener {
   }
 
   private String getSSHKeyFileName(String keyFile) {
-    return "~/.ssh/id_" + this.context.execute(script: "ssh-keygen -l -f ${keyFile} | rev | cut -d ' ' -f 1 | rev | tr -d ')(' | tr '[:upper:]' '[:lower:]'")
+    return "~/.ssh/id_" + this.context.execute(script: "ssh-keygen -l -f ${keyFile} | rev | cut -d ' ' -f 1 | rev | tr -d ')(' | tr '[:upper:]' '[:lower:]'").stdout
   }
 
   private shouldRun(EventDataInterface eventData = null) {
