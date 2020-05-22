@@ -277,9 +277,9 @@ spec:
                     dataBasepath: config.dockerDataBasepath,
                   )
 
-                  stage('preCommit') {
-                    execute(script: "${preCommitCommand}")
-                  }
+//                  stage('preCommit') {
+//                    execute(script: "${preCommitCommand}")
+//                  }
                 }
 
                 closureHelper.executeWithinStage('prePipeline')
