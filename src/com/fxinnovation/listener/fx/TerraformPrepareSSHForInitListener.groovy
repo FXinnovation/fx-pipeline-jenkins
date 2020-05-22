@@ -34,7 +34,7 @@ class TerraformPrepareSSHForInitListener extends EventListener {
 
     this.context.withCredentials([
         this.context.sshUserPrivateKey(
-          credentialsId: eventData.getExtraOptions().initSSHCredentialId,
+          credentialsId: eventData.getExtraData().initSSHCredentialId,
           keyFileVariable: 'keyFile',
           passphraseVariable: 'passphrase',
           usernameVariable: 'username'
