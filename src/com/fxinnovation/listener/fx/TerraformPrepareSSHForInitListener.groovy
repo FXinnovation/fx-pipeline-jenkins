@@ -34,7 +34,7 @@ class TerraformPrepareSSHForInitListener extends EventListener {
 
     this.context.withCredentials([
         this.context.sshUserPrivateKey(
-          credentialsId: eventData.getExtraData().initSSHCredentialId,
+          credentialsId: 'gitea-fx_administrator-key',
           keyFileVariable: 'keyFile',
           passphraseVariable: 'passphrase',
           usernameVariable: 'username'
