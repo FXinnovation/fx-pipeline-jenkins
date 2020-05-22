@@ -12,9 +12,10 @@ def call(Map config = [:], Map closures = [:]) {
 
   def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
   def TerraformEventData terraformEventData = new TerraformEventData(config.commandTarget)
+  terraformEventData.setExtraData(config)
   def DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
-  // DEPRECATED - To be removed and not useful after '01-05-2020'
+  // DEPRECATED - To be removed and not useful after '01-12-2020'
   closureHelper = new ClosureHelper(this, closures)
 
   stage('init “' + config.commandTarget + '”') {

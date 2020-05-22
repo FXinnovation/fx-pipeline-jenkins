@@ -26,9 +26,19 @@ class TerraformPrepareSSHForInitListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
-    this.context.sshagent([eventData.getExtraData().initSSHCredentialId]) {
-      this.context.sh('ssh-add -l')
-      this.context.sh('mkdir -p ~/.ssh')
+    if (!this.shouldRun()) {
+      return eventData
+    }
+
+    this.context.withCredentials([
+        sshUserPrivateKey(
+          credentialsId: eventData.getExtraOptions().initSSHCredentialId,
+          keyFileVariable: 'keyFile',
+          passphraseVariable: 'passphrase',
+          usernameVariable: 'username'
+        )
+    ]) {
+      this.context.sh("cat ${keyFile} > ${this.getSSHKeyFileName(keyFile)}")
       this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
 
       this.context.println(eventData.getExtraOptions())
@@ -38,10 +48,6 @@ class TerraformPrepareSSHForInitListener extends EventListener {
           [
             dockerAdditionalMounts: [
                 '~/.ssh/': '/root/.ssh/',
-                '\$(readlink -f $SSH_AUTH_SOCK)': '/ssh-agent',
-            ],
-            dockerEnvironmentVariables: [
-                'SSH_AUTH_SOCK': '/ssh-agent',
             ],
             backendConfigs: fileExists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
           ]
@@ -53,6 +59,17 @@ class TerraformPrepareSSHForInitListener extends EventListener {
     }
 
     return eventData
+  }
+
+  private String getSSHKeyFileName(String keyFile) {
+    return "~/.ssh/id_" + this.context.execute(script: "ssh-keygen -l -f ${keyFile} | rev | cut -d ' ' -f 1 | rev | tr -d ')(' | tr '[:upper:]' '[:lower:]'")
+  }
+
+  private shouldRun(EventDataInterface eventData = null) {
+    return (
+      null != eventData.getExtraOptions().initSSHCredentialId &&
+      null != eventData.getExtraData().initSSHHostKeys
+    )
   }
 
   // TODO: https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/issues/54
