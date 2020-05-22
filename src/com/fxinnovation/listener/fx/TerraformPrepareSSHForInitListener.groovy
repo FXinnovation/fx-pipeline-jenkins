@@ -40,26 +40,28 @@ class TerraformPrepareSSHForInitListener extends EventListener {
         usernameVariable: 'username'
       )
     ]) {
-      this.context.println(eventData.getExtraOptions())
-      this.context.println(eventData.getExtraData())
-      this.context.sh('KEYFILE'+ keyFile)
-      this.context.sh('cat '+ keyFile +' > '+ this.getSSHKeyFileName(keyFile))
-      this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-
-      eventData.setExtraOptions(this.additionJoin(
-          eventData.getExtraOptions(),
-          [
-            dockerAdditionalMounts: [
-                '~/.ssh/': '/root/.ssh/',
-            ],
-            backendConfigs: fileExists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
-          ]
-        )
-      )
-      this.context.println('SET EXTRA OPTONS')
-
-      this.context.println(eventData.getExtraOptions())
+      this.context.println('KEYFILE' + keyFile)
     }
+
+//      this.context.println(eventData.getExtraOptions())
+//      this.context.println(eventData.getExtraData())
+//      this.context.sh('cat '+ keyFile +' > '+ this.getSSHKeyFileName(keyFile))
+//      this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
+//
+//      eventData.setExtraOptions(this.additionJoin(
+//          eventData.getExtraOptions(),
+//          [
+//            dockerAdditionalMounts: [
+//                '~/.ssh/': '/root/.ssh/',
+//            ],
+//            backendConfigs: fileExists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
+//          ]
+//        )
+//      )
+//      this.context.println('SET EXTRA OPTONS')
+//
+//      this.context.println(eventData.getExtraOptions())
+//    }
 
     return eventData
   }
