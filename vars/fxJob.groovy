@@ -4,7 +4,6 @@ import com.fxinnovation.di.IOC
 import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.helper.ClosureHelper
 import com.fxinnovation.observer.EventDispatcher
-import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
   fxRegisterListeners()
@@ -55,7 +54,7 @@ You can click on the following link to review you \033[0;4m\033[0;1m\u001b[35mPU
 
 https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&state=open
 \u001B[0m
-  """ )
+  """)
 
   if (env.JENKINS_URL == "https://ci.ops0.fxinnovation.com/") {
     config.podVolumes.add(persistentVolumeClaim(claimName: 'jenkins-slave-cache', mountPath: '/cache', readOnly: false))
@@ -202,7 +201,7 @@ spec:
   def status = 'SUCCESS'
   def label = UUID.randomUUID().toString()
 
-  printDebug("Launch without kube: "+config.launchLocally)
+  printDebug("Launch without kube: " + config.launchLocally)
 
   if (!config.launchLocally) {
     podTemplate(
@@ -237,7 +236,7 @@ spec:
               }
             }
           }
-          try{
+          try {
             ansiColor('xterm') {
               stage('prepare') {
                 eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE)
@@ -277,19 +276,19 @@ spec:
                     dataBasepath: config.dockerDataBasepath,
                   )
 
-//                  stage('preCommit') {
-//                    execute(script: "${preCommitCommand}")
-//                  }
+                  stage('preCommit') {
+                    execute(script: "${preCommitCommand}")
+                  }
                 }
-
-                closureHelper.executeWithinStage('prePipeline')
-
-                stage('pipeline') {
-                  closures.pipeline(IOC.get(ScmInfo.class.getName()))
-                }
-
-                closureHelper.executeWithinStage('postPipeline')
               }
+
+              closureHelper.executeWithinStage('prePipeline')
+
+              stage('pipeline') {
+                closures.pipeline(IOC.get(ScmInfo.class.getName()))
+              }
+
+              closureHelper.executeWithinStage('postPipeline')
             }
           } catch (error) {
             status = 'FAILURE'
@@ -409,7 +408,7 @@ spec:
           }
           stage('cleanup') {
             closureHelper.execute('preCleanup')
-            if ( ! config.launchLocally) {
+            if (!config.launchLocally) {
               cleanWs()
             }
             closureHelper.execute('postCleanup')
