@@ -42,6 +42,7 @@ class TerraformPrepareSSHForInitListener extends EventListener {
         usernameVariable: 'username'
       )
     ]) {
+      this.context.sh('mkdir -p ~/.ssh')
       this.context.sh('cat '+  this.context.keyFile +' > '+ this.getSSHKeyFileName(this.context.keyFile))
       this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
 
