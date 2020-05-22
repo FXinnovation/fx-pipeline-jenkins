@@ -35,7 +35,7 @@ class ServiceRegisterer {
 
   void registerDebugger() {
     IOC.registerSingleton(Debugger.class.getName(), {
-      return new Debugger(context)
+      return new Debugger(IOC.get('@context'))
     })
   }
 
@@ -57,7 +57,7 @@ class ServiceRegisterer {
 
   void registerListeners() {
     IOC.registerSingleton(CheckoutListener.class.getName(), {
-      return new CheckoutListener(context, IOC.get(Debugger.class.getName()))
+      return new CheckoutListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
     })
 
     IOC.registerSingleton(TerraformInitListener.class.getName(), {
@@ -82,7 +82,7 @@ class ServiceRegisterer {
       return new TerraformDestroyListener(IOC.get('@context'))
     })
     IOC.registerSingleton(TerraformArtifactCleanerListener.class.getName(), {
-      return new TerraformArtifactCleanerListener(context)
+      return new TerraformArtifactCleanerListener(IOC.get('@context'))
     })
   }
 
@@ -92,7 +92,7 @@ class ServiceRegisterer {
     })
 
     IOC.registerSingleton(DeprecatedFunction.class.getName(), {
-      return new DeprecatedFunction(context, IOC.get(DeprecatedMessage.class.getName()))
+      return new DeprecatedFunction(IOC.get('@context'), IOC.get(DeprecatedMessage.class.getName()))
     })
   }
 }
