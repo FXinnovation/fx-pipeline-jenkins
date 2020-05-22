@@ -52,7 +52,7 @@ class TerraformPrepareSSHForInitListener extends EventListener {
             dockerAdditionalMounts: [
                 '~/.ssh/': '/root/.ssh/',
             ],
-            backendConfigs: fileExists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
+            backendConfigs: this.context.fileExists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
           ]
         )
       )
