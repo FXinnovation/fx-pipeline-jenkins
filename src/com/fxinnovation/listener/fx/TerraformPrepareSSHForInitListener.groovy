@@ -42,9 +42,8 @@ class TerraformPrepareSSHForInitListener extends EventListener {
     ]) {
       this.context.println(eventData.getExtraOptions())
       this.context.println(eventData.getExtraData())
-      this.context.sh("cat ${keyFile} > ${this.getSSHKeyFileName(keyFile)}")
+      this.context.sh("cat ${keyFile} > " + this.getSSHKeyFileName(keyFile))
       this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-
 
       eventData.setExtraOptions(this.additionJoin(
           eventData.getExtraOptions(),
