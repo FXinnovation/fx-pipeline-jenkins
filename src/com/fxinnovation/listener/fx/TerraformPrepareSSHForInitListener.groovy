@@ -30,6 +30,8 @@ class TerraformPrepareSSHForInitListener extends EventListener {
       return eventData
     }
 
+    this.context.println('BEFORE')
+
     this.context.withCredentials([
         this.context.sshUserPrivateKey(
           credentialsId: eventData.getExtraOptions().initSSHCredentialId,
@@ -38,10 +40,11 @@ class TerraformPrepareSSHForInitListener extends EventListener {
           usernameVariable: 'username'
         )
     ]) {
+      this.context.println(eventData.getExtraOptions())
+      this.context.println(eventData.getExtraData())
       this.context.sh("cat ${keyFile} > ${this.getSSHKeyFileName(keyFile)}")
       this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
 
-      this.context.println(eventData.getExtraOptions())
 
       eventData.setExtraOptions(this.additionJoin(
           eventData.getExtraOptions(),
@@ -53,9 +56,9 @@ class TerraformPrepareSSHForInitListener extends EventListener {
           ]
         )
       )
+      this.context.println('SET EXTRA OPTONS')
 
       this.context.println(eventData.getExtraOptions())
-
     }
 
     return eventData
