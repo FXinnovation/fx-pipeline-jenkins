@@ -4,12 +4,15 @@ import com.fxinnovation.event.TerraformEvents
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 import com.fxinnovation.event_data.TerraformEventData
+import com.fxinnovation.io.Debugger
 
 class TerraformPrepareSSHForInitListener extends EventListener {
   private Script context
+  private Debugger debugger
 
-  TerraformPrepareSSHForInitListener(Script context) {
+  TerraformPrepareSSHForInitListener(Script context, Debugger debugger) {
     this.context = context
+    this.debugger = debugger
   }
 
   @Override
@@ -27,41 +30,32 @@ class TerraformPrepareSSHForInitListener extends EventListener {
 
   private TerraformEventData doRun(TerraformEventData eventData) {
     if (!this.shouldRun(eventData)) {
+      this.debugger.printDebug("Skip ${this.getClass()}: no SSH credentials passed as data.")
       return eventData
     }
 
-    this.context.println('BEFORE')
-
     this.context.withCredentials([
       this.context.sshUserPrivateKey(
-        credentialsId: 'gitea-fx_administrator-key',
+        credentialsId: eventData.getExtraData().initSSHCredentialId,
         keyFileVariable: 'keyFile',
         passphraseVariable: 'passphrase',
         usernameVariable: 'username'
       )
     ]) {
-      this.context.println('KEYFILE' + keyFile)
-    }
+      this.context.sh('cat '+  this.context.keyFile +' > '+ this.getSSHKeyFileName(this.context.keyFile))
+      this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
 
-//      this.context.println(eventData.getExtraOptions())
-//      this.context.println(eventData.getExtraData())
-//      this.context.sh('cat '+ keyFile +' > '+ this.getSSHKeyFileName(keyFile))
-//      this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
-//
-//      eventData.setExtraOptions(this.additionJoin(
-//          eventData.getExtraOptions(),
-//          [
-//            dockerAdditionalMounts: [
-//                '~/.ssh/': '/root/.ssh/',
-//            ],
-//            backendConfigs: fileExists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
-//          ]
-//        )
-//      )
-//      this.context.println('SET EXTRA OPTONS')
-//
-//      this.context.println(eventData.getExtraOptions())
-//    }
+      eventData.setExtraOptions(this.additionJoin(
+          eventData.getExtraOptions(),
+          [
+            dockerAdditionalMounts: [
+                '~/.ssh/': '/root/.ssh/',
+            ],
+            backendConfigs: fileExists('deploy.tf') ? eventData.getExtraData().terraformInitBackendConfigsPublish : eventData.getExtraData().terraformInitBackendConfigsTest
+          ]
+        )
+      )
+    }
 
     return eventData
   }
