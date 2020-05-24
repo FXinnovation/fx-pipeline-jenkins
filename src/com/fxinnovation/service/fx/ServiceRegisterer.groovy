@@ -22,7 +22,7 @@ class ServiceRegisterer {
       return new TerraformPrepareSSHForInitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
     })
     IOC.registerSingleton(TerraformCleanSSHForInitListener.class.getName(), {
-      return new TerraformPrepareSSHForInitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
+      return new TerraformCleanSSHForInitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
     })
     IOC.registerSingleton(TerraformRepositoryNameStandardListener.class.getName(), {
       return new TerraformRepositoryNameStandardListener(IOC.get('@context'))
