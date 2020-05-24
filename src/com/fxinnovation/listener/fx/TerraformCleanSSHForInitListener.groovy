@@ -10,7 +10,7 @@ class TerraformCleanSSHForInitListener extends EventListener {
   private Script context
   private Debugger debugger
 
-  TerraformPrepareSSHForInitListener(Script context, Debugger debugger) {
+  TerraformCleanSSHForInitListener(Script context, Debugger debugger) {
     this.context = context
     this.debugger = debugger
   }
