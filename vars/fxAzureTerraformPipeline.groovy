@@ -5,8 +5,8 @@ def call(Map config = [:]) {
 
   registerServices()
 
-  def subscriptionId = '7c6f67f4-4c27-42ea-bed3-1e4e988172ee'
-  def tenantId = '4475f4e1-e2c3-42ec-9ffa-d341a5292a6a'
+  def subscriptionId = 'e469a261-e6fc-4363-94f1-3d8cdb259ec7'
+  def tenantId = '219647b6-1ea6-409d-b9cc-0893cb535884'
 
   def fxAzureTerraformMandatoryVars = [
     "subscription_id=${subscriptionId}",
@@ -14,7 +14,7 @@ def call(Map config = [:]) {
   ]
 
   standardAzureTerraformPipeline(
-    testEnvironmentCredentialId: 'fxazure-terraformtests-service-principal',
+    testEnvironmentCredentialId: 'fxazure-terraformtests-12K-service-principal',
     initSSHCredentialId: 'gitea-fx_administrator-key',
     validateVars: config.validateVars,
     testPlanVars: fxAzureTerraformMandatoryVars + config.testPlanVars,
