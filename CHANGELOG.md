@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.25.3
+
+feat: Update the credentials for Azureterraform test pipeline.
+
+   * fxAzureTerraformPipeline:
+      * feat: Update the test credentials `fxazure-terraformtests-service-principal` to `fxazure-terraformtests-12K-service-principal` which will use fx 12K subscription.
+      
 ## 0.25.2
 
 fix(terraform): Prevent repo names ending with - and allow first element of the name to be 2 digits min, not 3
