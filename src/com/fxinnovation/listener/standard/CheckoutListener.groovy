@@ -38,8 +38,8 @@ class CheckoutListener extends EventListener {
       this.getLatestTag(),
       this.getRepositoryName(this.context.scm)
     )
-    this.debugger.printDebug(this.context.sh('ls'))
 
+    this.debugger.printDebug(this.context.sh('ls'))
     this.debugger.printDebug(scmInfo.toString())
 
     IOC.registerSingleton(ScmInfo.class.getName(), {
@@ -104,7 +104,4 @@ class CheckoutListener extends EventListener {
       return ''
     }
   }
-
 }
-
-
