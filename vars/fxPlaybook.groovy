@@ -4,7 +4,6 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'ansiblelintOutputFile',  CharSequence, 'ansible-lint.txt')
   mapAttributeCheck(config, 'kitchenAwsCredentialId', CharSequence, 'itoa-application-awscollectors-awscred')
   mapAttributeCheck(config, 'kitchenConcurrency',     Integer,      5)
-  mapAttributeCheck(config, 'kitchenSshCredentialId', CharSequence, 'fxlab_jenkins')
   mapAttributeCheck(config, 'junitReportFileName',    CharSequence, '*_inspec.xml')
   mapAttributeCheck(config, 'scmSshCredentialId',     CharSequence, 'gitea-fx_administrator-key')
   mapAttributeCheck(config, 'publish',                Boolean,      false)
@@ -59,10 +58,8 @@ def call(Map config = [:], Map closures = [:]) {
             [
               galaxySSHHostKeys:     config.initSSHHostKeys,
               galaxyAgentSocket:     '\$(readlink -f $SSH_AUTH_SOCK)',
-              awsSSHKeyId:           "${config.kitchenSshCredentialId}",
               awsAccessKeyId:        "${access_key}",
               awsSecretAccessKey:    "${secret_key}",
-              kitchenPrivateKeyPath: "${kitchenKey}",
               publish:               config.publish,
               lintOptions:           "${config.lintOptions}"
             ],
