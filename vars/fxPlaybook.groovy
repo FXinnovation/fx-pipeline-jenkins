@@ -22,10 +22,6 @@ def call(Map config = [:], Map closures = [:]) {
           credentialsId:   config.scmSshCredentialId,
           keyFileVariable: 'scmKey'
         ),
-        sshUserPrivateKey(
-          credentialsId:   config.kitchenSshCredentialId,
-          keyFileVariable: 'kitchenKey'
-        ),
         usernamePassword(
           credentialsId:    config.kitchenAwsCredentialId,
           usernameVariable: 'access_key',
@@ -38,13 +34,8 @@ def call(Map config = [:], Map closures = [:]) {
               try {
                 kitchen.test(
                   dockerEnvironmentVariables: [
-                    AWS_SSH_KEY_ID:          "${config.kitchenSshCredentialId}",
-                    AWS_SSH_KEY:             '/id_rsa.pem',
                     AWS_ACCESS_KEY_ID:       "${access_key}",
                     AWS_SECRET_ACCESS_KEY:   "${secret_key}"
-                  ],
-                  dockerAdditionalMounts: [
-                    (kitchenKey): '/id_rsa.pem'
                   ],
                   concurrency: config.kitchenConcurrency
                 )
