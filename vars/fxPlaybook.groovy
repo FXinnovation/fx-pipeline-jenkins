@@ -4,7 +4,6 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'ansiblelintOutputFile',  CharSequence, 'ansible-lint.txt')
   mapAttributeCheck(config, 'kitchenAwsCredentialId', CharSequence, 'itoa-application-awscollectors-awscred')
   mapAttributeCheck(config, 'kitchenConcurrency',     Integer,      5)
-  mapAttributeCheck(config, 'kitchenSshCredentialId', CharSequence, 'fxlab_jenkins')
   mapAttributeCheck(config, 'junitReportFileName',    CharSequence, '*_inspec.xml')
   mapAttributeCheck(config, 'scmSshCredentialId',     CharSequence, 'gitea-fx_administrator-key')
   mapAttributeCheck(config, 'publish',                Boolean,      false)
@@ -22,10 +21,6 @@ def call(Map config = [:], Map closures = [:]) {
           credentialsId:   config.scmSshCredentialId,
           keyFileVariable: 'scmKey'
         ),
-        sshUserPrivateKey(
-          credentialsId:   config.kitchenSshCredentialId,
-          keyFileVariable: 'kitchenKey'
-        ),
         usernamePassword(
           credentialsId:    config.kitchenAwsCredentialId,
           usernameVariable: 'access_key',
@@ -38,13 +33,8 @@ def call(Map config = [:], Map closures = [:]) {
               try {
                 kitchen.test(
                   dockerEnvironmentVariables: [
-                    AWS_SSH_KEY_ID:          "${config.kitchenSshCredentialId}",
-                    AWS_SSH_KEY:             '/id_rsa.pem',
                     AWS_ACCESS_KEY_ID:       "${access_key}",
                     AWS_SECRET_ACCESS_KEY:   "${secret_key}"
-                  ],
-                  dockerAdditionalMounts: [
-                    (kitchenKey): '/id_rsa.pem'
                   ],
                   concurrency: config.kitchenConcurrency
                 )
@@ -68,10 +58,8 @@ def call(Map config = [:], Map closures = [:]) {
             [
               galaxySSHHostKeys:     config.initSSHHostKeys,
               galaxyAgentSocket:     '\$(readlink -f $SSH_AUTH_SOCK)',
-              awsSSHKeyId:           "${config.kitchenSshCredentialId}",
               awsAccessKeyId:        "${access_key}",
               awsSecretAccessKey:    "${secret_key}",
-              kitchenPrivateKeyPath: "${kitchenKey}",
               publish:               config.publish,
               lintOptions:           "${config.lintOptions}"
             ],
