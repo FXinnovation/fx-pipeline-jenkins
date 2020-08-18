@@ -2,6 +2,8 @@ import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.helper.ClosureHelper
 
 def call(Map config = [:], Map closures = [:]) {
+  registerServices()
+
   mapAttributeCheck(config, 'awsNukeConfigFileName', CharSequence, '', 'ERROR: “awsNukeConfigFileName” must be defined!')
   mapAttributeCheck(config, 'autoRunCron', CharSequence, '@midnight')
   mapAttributeCheck(config, 'recreateDefaultVpcResources', Boolean, 'true')
@@ -10,7 +12,7 @@ def call(Map config = [:], Map closures = [:]) {
 
   closureHelper.addClosure('pipeline', { ScmInfo scmInfo ->
     def additionalMounts = [
-      config.awsNukeConfigFileName: '/data/aws_nuke_config.yaml'
+      config.awsNukeConfigFileName : '/data/aws_nuke_config.yaml'
     ]
 
      def isDryRun = true
