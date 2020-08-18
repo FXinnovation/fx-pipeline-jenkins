@@ -11,6 +11,7 @@ def call(Map config = [:]){
   
 
   def debugger = new Debugger(this)
+
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString(' ')
 
