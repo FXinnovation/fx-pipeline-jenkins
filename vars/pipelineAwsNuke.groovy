@@ -12,7 +12,7 @@ def call(Map config = [:], Map closures = [:]) {
 
   closureHelper.addClosure('pipeline', { ScmInfo scmInfo ->
     def additionalMounts = [
-      config.awsNukeConfigFileName : '/data/aws_nuke_config.yaml'
+      (config.awsNukeConfigFileName): '/data/aws_nuke_config.yaml'
     ]
 
      def isDryRun = true
@@ -21,14 +21,15 @@ def call(Map config = [:], Map closures = [:]) {
        isDryRun = false
      }
 
-     dockerRunCommand(
-       config: '/data/aws_nuke_config.yaml',
-       additionalMounts: additionalMounts,
-       forceSleep: 3,
-       noDryRun: isDryRun,
-       recreateDefaultVpcResources: config.recreateDefaultVpcResources,
-     ) + config
-  }
+     dockerRunCommand([
+         config: '/data/aws_nuke_config.yaml',
+         additionalMounts: additionalMounts,
+         forceSleep: 3,
+         noDryRun: isDryRun,
+         recreateDefaultVpcResources: config.recreateDefaultVpcResources,
+       ] + config
+     )
+  })
 
   fxJob(
     closureHelper.getClosures(),
