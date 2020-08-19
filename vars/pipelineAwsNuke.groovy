@@ -21,6 +21,12 @@ def call(Map config = [:], Map closures = [:]) {
        isDryRun = false
      }
 
+     def data = [:]
+
+     if(closures.containsKey('preAwsNuke') && Closure.isInstance(closures['preAwsNuke']))
+       data = closures.preAwsNuke(data)
+     }
+
      print(config)
      awsNuke([
          config: '/data/aws_nuke_config.yaml',
@@ -28,8 +34,12 @@ def call(Map config = [:], Map closures = [:]) {
          forceSleep: 3,
          noDryRun: ! isDryRun,
          recreateDefaultVpcResources: config.recreateDefaultVpcResources,
-       ] + config
+       ] + config + data
      )
+     
+     if(closures.containsKey('postAwsNuke') && Closure.isInstance(closures['postAwsNuke']))
+       data = closures.postAwsNuke(data)
+     }
   })
 
   fxJob(
