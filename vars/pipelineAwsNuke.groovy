@@ -44,6 +44,7 @@ def call(Map config = [:], Map closures = [:]) {
   fxJob(
     closureHelper.getClosures(),
     [
+      disableConcurrentBuilds(),
       buildDiscarder(
         logRotator(
           artifactDaysToKeepStr: '',
