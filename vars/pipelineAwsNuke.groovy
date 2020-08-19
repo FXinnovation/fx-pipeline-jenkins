@@ -12,7 +12,7 @@ def call(Map config = [:], Map closures = [:]) {
 
   closureHelper.addClosure('pipeline', { ScmInfo scmInfo ->
     def additionalMounts = [
-      (config.awsNukeConfigFileName): '/data/aws_nuke_config.yaml'
+      "\$(pwd)/${config.awsNukeConfigFileName}": '/data/aws_nuke_config.yaml'
     ]
 
      def isDryRun = true
