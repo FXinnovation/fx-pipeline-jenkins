@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.26.0
+
+* feat: Add `awsNuke` function
+* feat: Add `pipelineAwsNuke` function
+
+NOTE: To use `awsNuke` function, you need to install [MaskPassword pluggin](https://plugins.jenkins.io/mask-passwords)
+
 ## 0.25.3
 
 feat: Update the credentials for Azureterraform test pipeline.
