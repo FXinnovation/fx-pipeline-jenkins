@@ -37,27 +37,27 @@ def call(Map config = [:]){
   }
 
   if(config.containsKey('recreateDefaultVpcResources') && config.recreateDefaultVpcResources){
-    dockerEnvironmentVariables.put('RECREATE_DEFAULT_VPC_RESOURCES', 'true')
+    config.dockerEnvironmentVariables.put('RECREATE_DEFAULT_VPC_RESOURCES', 'true')
   }
   
   if(config.containsKey('accessKeyId') && config.accessKeyId){
-    dockerEnvironmentVariables.put('AWS_ACCESS_KEY_ID', config.accessKeyId)
+    config.dockerEnvironmentVariables.put('AWS_ACCESS_KEY_ID', config.accessKeyId)
   }
   
   if(config.containsKey('secretAccessKey') && config.secretAccessKey){
-    dockerEnvironmentVariables.put('AWS_SECRET_ACCESS_KEY', config.secretAccessKey)
+    config.dockerEnvironmentVariables.put('AWS_SECRET_ACCESS_KEY', config.secretAccessKey)
   }
   
   if(config.containsKey('sessionToken') && config.sessionToken){
-    dockerEnvironmentVariables.put('AWS_SESSION_TOKEN', config.sessionToken)
+    config.dockerEnvironmentVariables.put('AWS_SESSION_TOKEN', config.sessionToken)
   }
   
   if(config.containsKey('defaultRegion') && config.defaultRegion){
-    dockerEnvironmentVariables.put('AWS_DEFAULT_REGION', config.defaultRegion)
+    config.dockerEnvironmentVariables.put('AWS_DEFAULT_REGION', config.defaultRegion)
   }
   
   if(config.containsKey('profile') && config.profile){
-    dockerEnvironmentVariables.put('AWS_PROFILE', config.profile)
+    config.dockerEnvironmentVariables.put('AWS_PROFILE', config.profile)
   }
   
 
