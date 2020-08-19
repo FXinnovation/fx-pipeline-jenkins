@@ -21,6 +21,7 @@ def call(Map config = [:], Map closures = [:]) {
        isDryRun = false
      }
 
+     print(config)
      awsNuke([
          config: '/data/aws_nuke_config.yaml',
          dockerAdditionalMounts: additionalMounts,
