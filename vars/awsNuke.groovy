@@ -60,24 +60,32 @@ def call(Map config = [:]){
     config.dockerEnvironmentVariables.put('AWS_PROFILE', config.profile)
   }
   
-
-  awsNukeCommand = dockerRunCommand(
-    dockerImage: config.dockerImage,
-    fallbackCommand:  'aws-nuke',
-    additionalMounts: config.dockerAdditionalMounts,
-    environmentVariables: config.dockerEnvironmentVariables,
-    network: config.dockerNetwork,
-  )
-
-  if(debugger.debugVarExists()) {
-    execute(
-      script: "${awsNukeCommand} version"
+  wrap([
+     $class: 'MaskPasswordsBuildWrapper', 
+     varPasswordPairs: [
+       [password: config.sessionToken, var: 'SECRET'],
+       [password: config.secretAccessKey, var: 'SECRET'],
+       [password: config.accessKeyId, var: 'SECRET'],
+     ]
+    ]) {
+    awsNukeCommand = dockerRunCommand(
+      dockerImage: config.dockerImage,
+      fallbackCommand:  'aws-nuke',
+      additionalMounts: config.dockerAdditionalMounts,
+      environmentVariables: config.dockerEnvironmentVariables,
+      network: config.dockerNetwork,
     )
-    optionStringFactory.addOption('--verbose')
-  }
 
-  return execute(
-    throwError: config.throwError,
-    script: "${awsNukeCommand} ${optionStringFactory.getOptionString().toString()}"
-  )
+    if(debugger.debugVarExists()) {
+      execute(
+        script: "${awsNukeCommand} version"
+      )
+      optionStringFactory.addOption('--verbose')
+    }
+
+    return execute(
+      throwError: config.throwError,
+      script: "${awsNukeCommand} ${optionStringFactory.getOptionString().toString()}"
+    )
+  }
 }

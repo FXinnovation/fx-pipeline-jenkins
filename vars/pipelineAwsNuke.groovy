@@ -23,11 +23,10 @@ def call(Map config = [:], Map closures = [:]) {
 
      def data = [:]
 
-     if(closures.containsKey('preAwsNuke') && Closure.isInstance(closures['preAwsNuke']))
+     if(closures.containsKey('preAwsNuke') && Closure.isInstance(closures['preAwsNuke'])) {
        data = closures.preAwsNuke(data)
      }
 
-     print(config)
      awsNuke([
          config: '/data/aws_nuke_config.yaml',
          dockerAdditionalMounts: additionalMounts,
@@ -37,7 +36,7 @@ def call(Map config = [:], Map closures = [:]) {
        ] + config + data
      )
      
-     if(closures.containsKey('postAwsNuke') && Closure.isInstance(closures['postAwsNuke']))
+     if(closures.containsKey('postAwsNuke') && Closure.isInstance(closures['postAwsNuke'])) {
        data = closures.postAwsNuke(data)
      }
   })
