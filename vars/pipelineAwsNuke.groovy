@@ -23,9 +23,9 @@ def call(Map config = [:], Map closures = [:]) {
 
      awsNuke([
          config: '/data/aws_nuke_config.yaml',
-         additionalMounts: additionalMounts,
+         dockerAdditionalMounts: additionalMounts,
          forceSleep: 3,
-         noDryRun: isDryRun,
+         noDryRun: ! isDryRun,
          recreateDefaultVpcResources: config.recreateDefaultVpcResources,
        ] + config
      )
