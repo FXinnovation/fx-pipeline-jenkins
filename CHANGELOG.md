@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.27.0
+
+* feat: Add `data.tf` to autorized files on fxTerraform deployments
+
 ## 0.26.0
 
 * feat: Add `awsNuke` function
