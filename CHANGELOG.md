@@ -3,6 +3,7 @@
 ## 0.27.0
 
 * feat: Add `data.tf` to autorized files on fxTerraform deployments
+* feat: Add `versions.tf` to autorized files on fxTerraform deployments
 
 ## 0.26.0
 
