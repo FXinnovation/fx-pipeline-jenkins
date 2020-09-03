@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.28.0
+
+* feat: Add standardAwsNukeWithCredentials
+* feat: Add standardAwsNukeWithAssumeRole
+
 ## 0.27.0
 
 * feat: Add `data.tf` to autorized files on fxTerraform deployments
