@@ -109,7 +109,7 @@ def test(Map config = [:], ClosureHelper closureHelper){
             commandTarget: config.commandTarget,
           ] + config.testPlanOptions
         )
-        if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
+        if (!(replay.stdout =~ /.*(Infrastructure is up-to-date|0 to add, 0 to change, 0 to destroy).*/)) {
           error('Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
         }
         inspecPresent = fileExists(
