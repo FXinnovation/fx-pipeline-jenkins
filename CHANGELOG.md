@@ -1,6 +1,10 @@
 # Changelog
 
-## x.y.z <UNRELEASED>
+## 0.29.1
+
+* fix: Regex for TF deployment repo name
+
+## 0.29.0
 
 * feat: Allow for non empty plan on outputs
 
