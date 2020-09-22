@@ -171,7 +171,7 @@ private preValidate(Boolean deployFileExists, ScmInfo scmInfo) {
       }
     }
 
-    if (!(scmInfo.getRepositoryName() ==~ /^terraform\-deployment\-[a-z\d-]{3,}$/)) {
+    if (!(scmInfo.getRepositoryName() ==~ /^terraform\-deployment\-[a-z\d-]{2,}$/)) {
       error("This build does not meet FX standards: a Terraform deployment MUST be name “terraform-deployment-*name-with-hyphens*”. See https://dokuportal.fxinnovation.com/dokuwiki/doku.php?id=groups:terraform#repositories.")
     }
   }
