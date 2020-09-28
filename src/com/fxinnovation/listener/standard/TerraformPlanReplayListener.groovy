@@ -34,7 +34,13 @@ class TerraformPlanReplayListener extends EventListener {
     )
 
     if (!(replay.stdout =~ /.*Infrastructure is up-to-date.*/)) {
-      this.context.error('ERROR: Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
+      if (replay.stdout =~ /.*0 to add, 0 to change, 0 to destroy.*/) {
+        this.context.warnError('WARNING: Replaying the “plan” contains no changes, but it will modify the state file. This might be lead to issues and it’s recommended you fix the problem.') {
+          throw new Exception("idempotence test warning.")
+        }
+      } else {
+        this.context.error('ERROR: Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
+      }
     }
 
     return eventData
