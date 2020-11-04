@@ -2,6 +2,7 @@
 
 ## 0.30.0
 
+* chore: Update pre-commit config
 * feat: Allow terraform deployment to have multiple data files
 
 ## 0.29.1
