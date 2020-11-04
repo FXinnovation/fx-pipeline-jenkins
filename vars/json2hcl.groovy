@@ -21,7 +21,7 @@ def call( Map config = [:] ){
   if ( !config.containsKey('dockerImage') ) {
     config.dockerImage = 'fxinnovation/json2hcl:latest'
   }
-  
+
   try {
     sh(
       returnStdout: true,
@@ -48,7 +48,7 @@ def call( Map config = [:] ){
     returnStdout: true,
     script:       "echo '${config.input}' | ${terraformCommand} ${optionsString}"
   ).trim()
-  
+
   switch ( config.output ) {
     case 'text':
       return text_output

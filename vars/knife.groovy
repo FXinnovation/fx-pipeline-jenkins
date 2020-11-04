@@ -128,8 +128,8 @@ def environmentShow(Map config = [:]){
 
 def cookbookUpload(Map config = [:]){
   config.subCommand = 'cookbook upload'
-  
-  if (!(config.containsKey('freeze'))){  
+
+  if (!(config.containsKey('freeze'))){
     config.freeze = true
   }
 
@@ -147,7 +147,7 @@ def cookbookUpload(Map config = [:]){
       error("knife - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
-  
+
   madatoryParamaters = [
     'subCommand':'',
     'credentialId': '',
@@ -155,7 +155,7 @@ def cookbookUpload(Map config = [:]){
     'commandTarget':'',
     'cookbookPath': ''
   ]
-   
+
   for ( parameter in madatoryParamaters ) {
     if (!config.containsKey(parameter.key)){
       error("knife - Parameter \"${parameter.key}\" is mandatory for \"${config.subCommand}\" subCommand")
@@ -186,11 +186,11 @@ def call (Map config = [:]){
   if (true == config.freeze){
     optionStringFactory.addOption('--freeze')
   }
-  
+
   if ('' != config.cookbookPath){
     optionStringFactory.addOption('--cookbook-path', config.cookbookPath)
   }
-  
+
   if ('' != config.secret){
     optionStringFactory.addOption('--secret', config.secret)
   }
@@ -211,7 +211,7 @@ def call (Map config = [:]){
   ]) {
     optionStringFactory.addOption('--user', username)
     optionStringFactory.addOption('--key', '/secret/chef')
-    
+
     knifeCommand = dockerRunCommand(
       dockerImage: config.dockerImage,
       fallbackCommand:  '',

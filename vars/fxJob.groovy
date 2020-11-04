@@ -85,7 +85,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
       resourceLimitMemory: '3072Mi',
     ]
   ]
- 
+
   def chosenSlaveSize = slaveSizes[config.slaveSize]
 
   def jnlpContainerTemplate = containerTemplate(
@@ -137,7 +137,7 @@ spec:
       privileged: true
     volumeMounts:
       - mountPath: "/sys"
-        name: "sys" 
+        name: "sys"
   volumes:
   - hostPath:
       path: "/sys"
@@ -181,7 +181,7 @@ spec:
                 closureHelper.execute('prePrepare')
 
                 scmInfo = fxCheckout()
-                
+
                 if (closureHelper.isDefined('postPrepare')){
                   closures.postPrepare(scmInfo)
                 }
@@ -193,7 +193,7 @@ spec:
                   fallbackCommand: 'pre-commit',
                   command: 'run -a --color=always',
                 )
-                
+
                 stage('preCommit') {
                   execute(script: "${preCommitCommand}")
                 }

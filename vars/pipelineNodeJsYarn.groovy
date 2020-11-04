@@ -22,7 +22,7 @@ def call(Map config = [:], Map closures = [:]){
 
   closureHelper.executeWithinStage('postTest')
   closureHelper.executeWithinStage('preAudit')
-  
+
   stage('audit') {
     yarn.audit()
   }

@@ -28,7 +28,7 @@ def call(Map config = [:]){
     request = [
       customHeaders: [
         [ maskValue: true, name: 'Authorization', value: 'token ' + password],
-        [ maskValue: false, name: 'Content-Type', value: 'application/json'], 
+        [ maskValue: false, name: 'Content-Type', value: 'application/json'],
       ],
       timeout: 60,
       httpMode: config.httpMode,

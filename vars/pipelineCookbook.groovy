@@ -17,7 +17,7 @@ def call(Map config = [:], Map closures = [:]){
     foodcritic(config.foodcritic)
     kitchen.test(config.kitchen)
   }
-  
+
   closureHelper.executeWithinStage('postTest')
   closureHelper.executeWithinStage('prePublish')
 

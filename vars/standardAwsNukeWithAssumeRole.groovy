@@ -18,28 +18,28 @@ def call(Map config = [:], Map closures = [:]) {
 
   closureHelper.addClosure('preAwsNuke', { Map data ->
     withAWS(
-      credentials: config.credentialsId, 
-      role: config.roleName, 
-      roleAccount: config.accountId, 
-      duration: config.tokenDuration, 
-      roleSessionName: config.roleSessionName, 
+      credentials: config.credentialsId,
+      role: config.roleName,
+      roleAccount: config.accountId,
+      duration: config.tokenDuration,
+      roleSessionName: config.roleSessionName,
       region: config.region)
     {
        def accessKey = execute(
            hideStdout: true,
            script: 'echo $AWS_ACCESS_KEY_ID'
        )
-       
+
        def secretKey = execute(
            hideStdout: true,
            script: 'echo $AWS_SECRET_ACCESS_KEY'
-       ) 
-       
+       )
+
        def sessionToken = execute(
            hideStdout: true,
            script: 'echo $AWS_SESSION_TOKEN'
        )
-       
+
        def defaultRegion = execute(
            hideStdout: true,
            script: 'echo $AWS_DEFAULT_REGION'

@@ -15,7 +15,7 @@ def call(Map config = [:], Map closures = [:]){
 
   closureHelper.executeWithinStage('postTest')
   closureHelper.executeWithinStage('prePublish')
- 
+
   stage('publish'){
     if (config.publish){
       packer.build(config.buildConfig)

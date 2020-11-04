@@ -12,7 +12,7 @@ Map call(List forbiddenApprovers = []) {
     'nine'
   ]
   Random random = new Random()
-  firstNumber = random.nextInt(10) 
+  firstNumber = random.nextInt(10)
   secondNumber = random.nextInt(10)
   thirdNumber = random.nextInt(10)
   foolProofInput = input(

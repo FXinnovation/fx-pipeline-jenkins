@@ -33,7 +33,7 @@ def call(Map config = [:]){
       file: 'infiniteLoop.sh',
       text: infiniteLoopScript
     )
-    def dockerImage = '' 
+    def dockerImage = ''
     if ('' != config.registry){
       dockerImage += "${config.registry}/"
     }

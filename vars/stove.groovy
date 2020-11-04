@@ -37,4 +37,3 @@ def call(Map config = [:]){
   }
   return output
 }
-

@@ -18,11 +18,11 @@ def call(Map config = [:], Map closures = [:]){
           commandTarget: config.cookbookName,
           cookbookPath: config.cookbookPath,
          ]
-        ) 
-        
+        )
+
         if (cookbookUploadOutput.stderr =~ /ERROR: Could not find cookbook/) {
           error(cookbookUploadOutput.stderr)
-        } 
+        }
       }
     )
   }

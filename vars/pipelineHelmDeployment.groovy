@@ -8,7 +8,7 @@ def call(Map config = [:], Map closures = [:]){
   closureHelper = new ClosureHelper(this, closures)
 
   closureHelper.executeWithinStage('preTest')
-  
+
   stage('test'){
     helmTestConfig = config.helmConfig.clone()
     helmTestConfig.dryRun = true

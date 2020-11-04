@@ -6,11 +6,11 @@ def call(Map config = [:], Map closures = [:]){
   mapAttributeCheck(config, 'knifeConfig', Map, '“knifeConfig” parameter is mandatory.')
   mapAttributeCheck(config.knifeConfig, 'commandTarget', CharSequence, '“knifeConfig.commandTarget” parameter is mandatory.')
   mapAttributeCheck(config, 'secretId', CharSequence, '“knifeConfig.secretId” parameter is mandatory.')
-  
-  closureHelper = new ClosureHelper(this, closures)   
+
+  closureHelper = new ClosureHelper(this, closures)
 
   closureHelper.executeWithinStage('preTest')
-  
+
   stage('test'){
     databag = readJSON(file: config.knifeConfig.commandTarget)
   }
@@ -34,7 +34,7 @@ def call(Map config = [:], Map closures = [:]){
         bagExists = true
       }
     }
-    
+
     if (true == bagExists) {
       databagItemList = readJSON(text: knife.databagShow(
           serverUrl: config.knifeConfig.serverUrl,
@@ -73,7 +73,7 @@ def call(Map config = [:], Map closures = [:]){
           'serverUrl': config.knifeConfig.serverUrl,
           'commandTarget': config.bag,
         ]
-        knife.databagCreateBag(configBag) 
+        knife.databagCreateBag(configBag)
       }
       withCredentials([
         string(

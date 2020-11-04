@@ -13,9 +13,9 @@ class DeprecatedMessage {
     def deprecation = this.createDateFromParsedString(deprecationDate)
     this.context.ansiColor('xterm') {
       this.context.println(
-        "\u001b[35m /!\\ DEPRECATION WARNING /!\\\n" + 
+        "\u001b[35m /!\\ DEPRECATION WARNING /!\\\n" +
         "“\033[0;4m\033[0;1m\u001b[35m${oldFunctionName}\u001b[0m\u001b[35m” is now deprecated and will be remove on \033[0;4m\033[0;1m\u001b[35m" + this.formatToEnglishDate(deprecation) + "\u001b[0m\u001b[35m, replaced by “\033[0;4m\033[0;1m\u001b[35m${newFunctionName}\u001b[0m\u001b[35m”" +
-        "\u001B[0m" 
+        "\u001B[0m"
       )
     }
   }

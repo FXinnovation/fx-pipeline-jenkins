@@ -1,7 +1,7 @@
 The *fxCheckoutTag* method is a helper to clone a git repository to a specific tag.
-This will return an error if the tag doesn't exist. 
+This will return an error if the tag doesn't exist.
 
-Exemple : 
+Exemple :
 ```
  fxCheckoutTag (
     directory: "foo",

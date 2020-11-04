@@ -1,10 +1,10 @@
 def call (Map config = [:]){
-  
+
   mapAttributeCheck(config, 'directory', CharSequence, '', '“directory” parameter is mandatory.')
   mapAttributeCheck(config, 'credentialsId', CharSequence, '', '“credentialsId” parameter is mandatory.')
   mapAttributeCheck(config, 'repoUrl', CharSequence, '', '“repoUrl” parameter is mandatory.')
   mapAttributeCheck(config, 'tag', CharSequence, '', '“tag” parameter is mandatory.')
-  
+
   dir(config.directory) {
     git(
       credentialsId: config.credentialsId,
@@ -25,5 +25,5 @@ def call (Map config = [:]){
     execute (
       script: "git checkout ${config.tag}"
     )
-  } 
+  }
 }

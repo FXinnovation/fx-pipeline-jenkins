@@ -17,7 +17,7 @@ def call(Map config = [:], Map closures = [:]) {
 
      def isDryRun = true
 
-     if('master' == scmInfo.getBranch()) { 
+     if('master' == scmInfo.getBranch()) {
        isDryRun = false
      }
 
@@ -35,7 +35,7 @@ def call(Map config = [:], Map closures = [:]) {
          recreateDefaultVpcResources: config.recreateDefaultVpcResources,
        ] + config + data
      )
-     
+
      if(closures.containsKey('postAwsNuke') && Closure.isInstance(closures['postAwsNuke'])) {
        data = closures.postAwsNuke(data)
      }

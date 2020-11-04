@@ -8,7 +8,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerNetwork', CharSequence, 'bridge')
   mapAttributeCheck(config, 'config', CharSequence, '', 'ERROR: “config” is mandatory!')
   mapAttributeCheck(config, 'throwError', Boolean, true)
-  
+
 
   def debugger = new Debugger(this)
 
@@ -39,29 +39,29 @@ def call(Map config = [:]){
   if(config.containsKey('recreateDefaultVpcResources') && config.recreateDefaultVpcResources){
     config.dockerEnvironmentVariables.put('RECREATE_DEFAULT_VPC_RESOURCES', 'true')
   }
-  
+
   if(config.containsKey('accessKeyId') && config.accessKeyId){
     config.dockerEnvironmentVariables.put('AWS_ACCESS_KEY_ID', config.accessKeyId)
   }
-  
+
   if(config.containsKey('secretAccessKey') && config.secretAccessKey){
     config.dockerEnvironmentVariables.put('AWS_SECRET_ACCESS_KEY', config.secretAccessKey)
   }
-  
+
   if(config.containsKey('sessionToken') && config.sessionToken){
     config.dockerEnvironmentVariables.put('AWS_SESSION_TOKEN', config.sessionToken)
   }
-  
+
   if(config.containsKey('defaultRegion') && config.defaultRegion){
     config.dockerEnvironmentVariables.put('AWS_DEFAULT_REGION', config.defaultRegion)
   }
-  
+
   if(config.containsKey('profile') && config.profile){
     config.dockerEnvironmentVariables.put('AWS_PROFILE', config.profile)
   }
-  
+
   wrap([
-     $class: 'MaskPasswordsBuildWrapper', 
+     $class: 'MaskPasswordsBuildWrapper',
      varPasswordPairs: [
        [password: config.sessionToken, var: 'SECRET'],
        [password: config.secretAccessKey, var: 'SECRET'],

@@ -38,7 +38,7 @@ def call(Map config = [:]) {
 
   def network = ''
 
-  switch(config.network) { 
+  switch(config.network) {
    case 'host':
      network = '--network host'
      break;
@@ -56,7 +56,7 @@ def call(Map config = [:]) {
    default:
      error(config.network + ' is not a valid value for docker network.')
      break;
-  } 
+  }
 
   return "docker run --rm -v \$(pwd):/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
 }

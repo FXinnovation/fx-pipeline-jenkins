@@ -14,4 +14,3 @@ All parameters are optionals.
     sshAgentSocket: CharSequence
   )
 ```
-
