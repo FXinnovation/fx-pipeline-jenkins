@@ -166,7 +166,7 @@ private preValidate(Boolean deployFileExists, ScmInfo scmInfo) {
 
   if (deployFileExists) {
     for (filename in execute(script: "ls").stdout.split()) {
-      if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename && 'outputs.tf' != filename && 'providers.tf' != filename && 'data.tf' != filename && 'versions.tf' != filename && filename =~ /^data_[a-z0-9]+\.tf$/) {
+      if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename && 'outputs.tf' != filename && 'providers.tf' != filename && 'data.tf' != filename && 'versions.tf' != filename && filename =~ /^data_[a-z0-9_]+\.tf$/) {
         error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with optional “variables.tf”/“outputs.tf”/“providers.tf/data.tf/versions.tf/data_<subgroup>.tf” files.")
       }
     }
