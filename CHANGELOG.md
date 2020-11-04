@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.30.0
+
+* feat: Allow terraform deployment to have multiple data files
+
 ## 0.29.1
 
 * fix: Regex for TF deployment repo name

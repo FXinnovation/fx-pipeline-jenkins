@@ -78,9 +78,9 @@ do
   if [[ \$((\$timeout_count % 10)) -eq 0 ]]; then
        echo "Waiting until KIND will be ready... (\$timeout_count s elapsed)"
    fi
-  
+
   sleep 1
-  
+
   timeout_count=\$(( \$timeout_count + 1 ))
 done
 """       )
@@ -88,7 +88,7 @@ done
           kindDockerVolume = [
             '/root/.kube':'/root/.kube',
           ]
-          
+
           terraformNetwork = 'host'
         }
 
@@ -111,7 +111,7 @@ done
               testDestroyOptions: [
                 vars: config.testPlanVars,
               ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
-              publish           : deployFileExists, 
+              publish           : deployFileExists,
             ], [
               preValidate: { preValidate(deployFileExists, scmInfo) },
               init       : { init(config, commandTarget, deployFileExists) },
@@ -166,8 +166,8 @@ private preValidate(Boolean deployFileExists, ScmInfo scmInfo) {
 
   if (deployFileExists) {
     for (filename in execute(script: "ls").stdout.split()) {
-      if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename && 'outputs.tf' != filename && 'providers.tf' != filename && 'data.tf' != filename && 'versions.tf' != filename) {
-        error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with optional “variables.tf”/“outputs.tf”/“providers.tf/data.tf/versions.tf” files.")
+      if (filename =~ /.+\.tf$/ && 'deploy.tf' != filename && 'variables.tf' != filename && 'outputs.tf' != filename && 'providers.tf' != filename && 'data.tf' != filename && 'versions.tf' != filename && filename =~ /^data_[a-z0-9]+\.tf$/) {
+        error("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with optional “variables.tf”/“outputs.tf”/“providers.tf/data.tf/versions.tf/data_<subgroup>.tf” files.")
       }
     }
 
@@ -248,10 +248,10 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
 }
 
 //This is temporary, will be remove soon
-public Map additionJoin(Map firstMap, Map secondMap) {  
-  secondMap.each { key, value ->     
-    if( firstMap[key])     {    
-      firstMap[key] = firstMap[key] + secondMap[key]    
+public Map additionJoin(Map firstMap, Map secondMap) {
+  secondMap.each { key, value ->
+    if( firstMap[key])     {
+      firstMap[key] = firstMap[key] + secondMap[key]
     }
     else {
       firstMap[key] = secondMap[key]
@@ -259,5 +259,4 @@ public Map additionJoin(Map firstMap, Map secondMap) {
   }
 
   return firstMap
-}  
-  
+}
