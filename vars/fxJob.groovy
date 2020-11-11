@@ -188,13 +188,13 @@ spec:
                 if (config.dockerRegistryLogin) {
                   withCredentials([
                     usernamePassword(
-                      credentialsId: dockerRegistryCredentialId,
+                      credentialsId: config.dockerRegistryCredentialId,
                       passwordVariable: 'registryPassword',
                       usernameVariable: 'registryUsername'
                     )
                   ]) {
                     execute(
-                      script: "docker login --username ${registryUsername} --password ${registryPassword} ${dockerRegistry}",
+                      script: "docker login --username ${registryUsername} --password ${registryPassword} ${config.dockerRegistry}",
                     )
                   }
                 }

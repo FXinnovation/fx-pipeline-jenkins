@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+* fix: Some other fixes
+
 ## 1.0.1
 
 * fix: Typo's to be fixed
