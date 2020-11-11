@@ -194,7 +194,7 @@ spec:
                     )
                   ]) {
                     execute(
-                      script: "docker login --username ${registryUsername} --password ${registryPassword} ${config.dockerRegistry}",
+                      script: "docker login --username '${registryUsername}' --password '${registryPassword}' ${config.dockerRegistry}",
                     )
                   }
                 }
