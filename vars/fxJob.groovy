@@ -11,9 +11,9 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'podNodeUsageMode', CharSequence, 'NORMAL')
   mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
   mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
-  mapAttributeCheck(configm 'dockerRegistryCredentialId', CharSequence, 'jenkins-fxinnovation-dockerhub')
-  mapAttributeCheck(configm 'dockerRegistry', CharSequence, '')
-  mapAttributeCheck(configm 'dockerRegistryLogin', Boolean, true)
+  mapAttributeCheck(config, 'dockerRegistryCredentialId', CharSequence, 'jenkins-fxinnovation-dockerhub')
+  mapAttributeCheck(config, 'dockerRegistry', CharSequence, '')
+  mapAttributeCheck(config, 'dockerRegistryLogin', Boolean, true)
   mapAttributeCheck(config, 'podVolumes', List, [])
   mapAttributeCheck(config, 'runKind', Boolean, false)
   mapAttributeCheck(config, 'headerMessage', CharSequence, """

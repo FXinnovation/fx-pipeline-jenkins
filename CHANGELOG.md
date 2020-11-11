@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1
+
+* fix: Typo's to be fixed
+
 ## 1.0.0
 
 * feat: (BREAKING) Add dockerhub login in fxJob()
