@@ -11,6 +11,9 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]){
   mapAttributeCheck(config, 'podNodeUsageMode', CharSequence, 'NORMAL')
   mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
   mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
+  mapAttributeCheck(configm 'dockerRegistryCredentialId', CharSequence, 'jenkins-fxinnovation-dockerhub')
+  mapAttributeCheck(configm 'dockerRegistry', CharSequence, '')
+  mapAttributeCheck(configm 'dockerRegistryLogin', Boolean, true)
   mapAttributeCheck(config, 'podVolumes', List, [])
   mapAttributeCheck(config, 'runKind', Boolean, false)
   mapAttributeCheck(config, 'headerMessage', CharSequence, """
@@ -181,6 +184,20 @@ spec:
                 closureHelper.execute('prePrepare')
 
                 scmInfo = fxCheckout()
+
+                if (config.dockerRegistryLogin) {
+                  withCredentials([
+                    usernamePassword(
+                      credentialsId: dockerRegistryCredentialId,
+                      passwordVariable: 'registryPassword',
+                      usernameVariable: 'registryUsername'
+                    )
+                  ]) {
+                    execute(
+                      script: "docker login --username ${registryUsername} --password ${registryPassword} ${dockerRegistry}",
+                    )
+                  }
+                }
 
                 if (closureHelper.isDefined('postPrepare')){
                   closures.postPrepare(scmInfo)

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.0
+
+* feat: (BREAKING) Add dockerhub login in fxJob()
+
 ## 0.30.0
 
 * chore: Run pre-commit on the whole repository
