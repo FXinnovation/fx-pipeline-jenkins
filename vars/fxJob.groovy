@@ -165,7 +165,13 @@ spec:
     containers: podContainers,
     yaml: podInit,
     yamlMergeStrategy: merge(),
-    volumes: config.podVolumes
+    volumes: config.podVolumes,
+    annotations: [
+      podAnnotation(
+        key: 'cluster-autoscaler.kubernetes.io/safe-to-evict',
+        value: 'false'
+      )
+    ]
   ){
     node(label){
       container('jnlp') {

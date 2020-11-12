@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+* feat: Add pod annotation on slaves
+
 ## 1.0.2
 
 * fix: Some other fixes
