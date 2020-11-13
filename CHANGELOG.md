@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+
+* feat: add cache volume on slaves
+
 ## 1.1.0
 
 * feat: Add pod annotation on slaves

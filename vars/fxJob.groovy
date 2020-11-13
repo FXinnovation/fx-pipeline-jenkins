@@ -48,6 +48,10 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
 \u001B[0m
   """)
 
+  if (env.JENKINS_URL == "https://ci.ops0.fxinnovation.com/") {
+    config.podVolumes.add(persistentVolumeClaim(claimName: 'jenkins-slave-cache', mountPath: '/cache', readOnly: false))
+  }
+
   registerServices()
 
   closureHelper = new ClosureHelper(this, closures)
