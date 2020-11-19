@@ -19,6 +19,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'runKind', Boolean, false)
   mapAttributeCheck(config, 'kindCreationTimeout', Integer, 600)
   mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
+  mapAttributeCheck(config, 'askApproval', Boolean, true)
 
   closureHelper = new ClosureHelper(this, closures)
 
@@ -78,9 +79,9 @@ do
   if [[ \$((\$timeout_count % 10)) -eq 0 ]]; then
        echo "Waiting until KIND will be ready... (\$timeout_count s elapsed)"
    fi
-  
+
   sleep 1
-  
+
   timeout_count=\$(( \$timeout_count + 1 ))
 done
 """       )
@@ -88,7 +89,7 @@ done
           kindDockerVolume = [
             '/root/.kube':'/root/.kube',
           ]
-          
+
           terraformNetwork = 'host'
         }
 
@@ -111,7 +112,7 @@ done
               testDestroyOptions: [
                 vars: config.testPlanVars,
               ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
-              publish           : deployFileExists, 
+              publish           : deployFileExists,
             ], [
               preValidate: { preValidate(deployFileExists, scmInfo) },
               init       : { init(config, commandTarget, deployFileExists) },
@@ -239,9 +240,11 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
     // )
   }
 
-  timeout(activity: true, time: 20) {
-    input 'Do you approve the change plan ?'
-    //foolProofValidation()
+  if (config.askApproval){
+    timeout(activity: true, time: 20) {
+      input 'Do you approve the change plan ?'
+      //foolProofValidation()
+    }
   }
 
   terraform.apply([
@@ -250,10 +253,10 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
 }
 
 //This is temporary, will be remove soon
-public Map additionJoin(Map firstMap, Map secondMap) {  
-  secondMap.each { key, value ->     
-    if( firstMap[key])     {    
-      firstMap[key] = firstMap[key] + secondMap[key]    
+public Map additionJoin(Map firstMap, Map secondMap) {
+  secondMap.each { key, value ->
+    if( firstMap[key])     {
+      firstMap[key] = firstMap[key] + secondMap[key]
     }
     else {
       firstMap[key] = secondMap[key]
@@ -261,5 +264,4 @@ public Map additionJoin(Map firstMap, Map secondMap) {
   }
 
   return firstMap
-}  
-  
+}
