@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.1
+
+* fix: Resolves file name checking on terraform deployments
+
 ## 1.2.0
 
 * feat: add cache volume on slaves
