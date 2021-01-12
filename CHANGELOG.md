@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2
+
+* chore: bump pre-commit hooks
+
 ## 1.2.1
 
 * fix: Resolves file name checking on terraform deployments

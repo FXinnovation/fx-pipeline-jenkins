@@ -1,9 +1,13 @@
 repos:
 - repo: git://github.com/pre-commit/pre-commit-hooks
-  rev: v3.3.0
+  rev: v3.4.0
   hooks:
     - id: check-merge-conflict
     - id: trailing-whitespace
     - id: end-of-file-fixer
     - id: check-added-large-files
     - id: detect-private-key
+- repo: https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pre-commit-afcmf
+  rev: 0.1.1
+  hooks:
+    - id: afcmf_commit_validation
