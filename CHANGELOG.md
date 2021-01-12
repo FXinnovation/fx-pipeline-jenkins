@@ -2,6 +2,7 @@
 
 ## 1.2.2
 
+* fix: fxJob properties (permit override)
 * chore: bump pre-commit hooks
 
 ## 1.2.1

@@ -152,7 +152,7 @@ spec:
 """
   }
 
-  properties(defaultPropertiesConfig + propertiesConfig)
+  properties(propertiesConfig + defaultPropertiesConfig)
 
   def status='SUCCESS'
   def label = UUID.randomUUID().toString()
