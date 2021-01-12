@@ -152,7 +152,24 @@ spec:
 """
   }
 
-  properties(propertiesConfig + defaultPropertiesConfig)
+  printDebug("original properties:" + propertiesConfig)
+  printDebug("default properties:" + defaultPropertiesConfig)
+
+  // Add default configuration to current configuration without overide
+  defaultPropertiesConfig.eachWithIndex {element, index ->
+    if ((element instanceof Set) && (element.containsKey['$class']))  {
+      if (!propertiesConfig.any { it.containsKey('$class') ? it['$class'] == element['$class'] : false }) {
+        propertiesConfig += element.clone()
+      }
+    } else {
+      if (!propertiesConfig.any { it.getSymbol() == element.getSymbol() }) {
+        propertiesConfig += element
+      }
+    }
+  }
+
+  printDebug("computed properties:" + propertiesConfig)
+  properties(propertiesConfig)
 
   def status='SUCCESS'
   def label = UUID.randomUUID().toString()
