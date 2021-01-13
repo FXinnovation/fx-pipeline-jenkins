@@ -155,7 +155,7 @@ spec:
   printDebug("original properties:" + propertiesConfig)
   printDebug("default properties:" + defaultPropertiesConfig)
 
-  // Add default configuration to current configuration without overide
+  // Add default configuration to current configuration without override
   defaultPropertiesConfig.eachWithIndex {element, index ->
     if ((element instanceof Set) && (element.containsKey['$class']))  {
       if (!propertiesConfig.any { it.containsKey('$class') ? it['$class'] == element['$class'] : false }) {
