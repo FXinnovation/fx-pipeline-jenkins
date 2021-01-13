@@ -1,9 +1,13 @@
 # Changelog
 
-## 1.2.2
+## 1.2.3
 
 * fix: fxJob properties (permit override)
 * chore: bump pre-commit hooks
+
+## 1.2.2
+
+* fix: regex for terraform deployment filenames
 
 ## 1.2.1
 
