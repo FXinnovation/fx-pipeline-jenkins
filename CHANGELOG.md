@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+* feat: allows to run fxJob locally
+
 ## 1.2.3
 
 * fix: fxJob properties (permit override)
