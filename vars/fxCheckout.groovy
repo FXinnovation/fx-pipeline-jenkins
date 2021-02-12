@@ -40,6 +40,8 @@ private String getLatestTag() {
 }
 
 private String getRepositoryName(scm) {
+  print('OHOHOH')
+  print(scm.getType())
   return scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
 }
 
