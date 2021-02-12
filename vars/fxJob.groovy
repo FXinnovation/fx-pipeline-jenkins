@@ -376,7 +376,9 @@ spec:
           }
           stage('cleanup') {
             closureHelper.execute('preCleanup')
-            cleanWs()
+            if ( ! config.launchLocally) {
+              cleanWs()
+            }
             closureHelper.execute('postCleanup')
           }
         }
