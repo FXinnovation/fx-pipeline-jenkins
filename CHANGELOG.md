@@ -3,6 +3,7 @@
 ## 1.3.0
 
 * feat: allows to run fxJob locally
+* feat: disables cleanWs when run locally*
 
 ## 1.2.3
 
