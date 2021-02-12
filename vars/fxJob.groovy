@@ -179,6 +179,8 @@ spec:
   def status = 'SUCCESS'
   def label = UUID.randomUUID().toString()
 
+  printDebug("Launch without kube: "+config.launchLocally)
+
   if (!config.launchLocally) {
     podTemplate(
       cloud: config.podCloud,
