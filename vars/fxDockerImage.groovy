@@ -39,6 +39,8 @@ def call(Map config = [:]){
           scmInfo
         )
       }
-    ]
+    ],
+    [],
+    config
   )
 }

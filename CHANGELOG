@@ -1,3 +1,8 @@
+0.2.0
+=====
+
+* feat: (fxDockerImage) pass config to fxJob
+
 
 0.1.0 / 2020-01-15
 ==================
