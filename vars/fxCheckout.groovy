@@ -40,9 +40,7 @@ private String getLatestTag() {
 }
 
 private String getRepositoryName(scm) {
-  print('OHOHOH')
-  print(scm.getType())
-  return scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
+  return executeCommand('basename `git rev-parse --show-toplevel`')
 }
 
 private String getDefaultBranch() {
