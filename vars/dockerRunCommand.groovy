@@ -8,6 +8,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'network', CharSequence, 'bridge')
   mapAttributeCheck(config, 'environmentVariables', Map, [:])
   mapAttributeCheck(config, 'forcePullImage', Boolean, false)
+  mapAttributeCheck(config, 'asDaemon', Boolean, false)
   mapAttributeCheck(config, 'dataBasepath', CharSequence, '$(pwd)')
   mapAttributeCheck(config, 'dataIsCurrentDirectory', Boolean, false)
 
@@ -15,7 +16,12 @@ def call(Map config = [:]) {
 
   if (config.dataIsCurrentDirectory) {
     config.dataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
-    printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
+    debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
+  }
+
+  def deamonParam = '--rm'
+  if (config.asDaemon) {
+    deamonParam = '-d'
   }
 
   if (!this.isDockerInstalled()) {
@@ -65,7 +71,7 @@ def call(Map config = [:]) {
      break;
   }
 
-  return "docker run --rm -v ${config.dataBasepath}:/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
+  return "docker run ${deamonParam} -v ${config.dataBasepath}:/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
 }
 
 private Boolean isDockerInstalled() {
