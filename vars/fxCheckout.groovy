@@ -28,7 +28,10 @@ private String getLastCommitId() {
 }
 
 private String getBranch() {
-  return executeCommand('echo "${BRANCH_NAME}"')
+  branch = executeCommand('echo "${BRANCH_NAME}"')
+  if ('' == branch) {
+    branch = executeCommand('git branch --show-current')
+  }
 }
 
 private String getTag() {

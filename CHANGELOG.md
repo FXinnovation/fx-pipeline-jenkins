@@ -8,6 +8,7 @@
 * feat: (dockerRunCommand) allows to change docker run data basepath
 * feat: (dockerRunCommand) allows to run docker commands as deamon
 * feat: (dockerRunCommand) allows to add name and entrypoint params
+* feat: (fxCheckout) fall back to `git branch` if BRANCH_NAME env var is not set
 
 ## 1.2.3
 
