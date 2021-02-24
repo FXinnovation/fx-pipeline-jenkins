@@ -27,6 +27,8 @@ def call(Map config = [:]){
     environmentVariables: config.dockerEnvironmentVariables,
     additionalMounts: config.dockerAdditionalMounts,
     fallbackCommand:  'pwsh',
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   execute(

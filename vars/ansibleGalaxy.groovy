@@ -34,7 +34,9 @@ def call(Map config = [:]){
     fallbackCommand:      'ansible-galaxy',
     command:              'ansible-galaxy',
     additionalMounts:     additionalMounts,
-    environmentVariables: environmentVariables
+    environmentVariables: environmentVariables,
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   execute(

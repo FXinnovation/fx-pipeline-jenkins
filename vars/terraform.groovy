@@ -606,6 +606,8 @@ def call(Map config = [:]){
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables,
     network: config.dockerNetwork,
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   if (debugger.debugVarExists()) {

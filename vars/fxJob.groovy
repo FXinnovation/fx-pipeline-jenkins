@@ -244,6 +244,8 @@ spec:
                     dockerImage: config.preCommitDockerImageName,
                     fallbackCommand: 'pre-commit',
                     command: 'run -a --color=always',
+                    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+                    dataBasepath: config.dockerDataBasepath,
                   )
 
                   stage('preCommit') {
@@ -340,6 +342,8 @@ spec:
                 dockerImage: config.preCommitDockerImageName,
                 fallbackCommand: 'pre-commit',
                 command: 'run -a --color=always',
+                dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+                dataBasepath: config.dockerDataBasepath,
               )
 
               stage('preCommit') {

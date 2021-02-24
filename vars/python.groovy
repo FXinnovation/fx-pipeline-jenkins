@@ -80,6 +80,8 @@ def call(Map config = [:]){
     fallbackCommand:  'false',
     additionalMounts: config.dockerAdditionalMounts,
     environmentVariables: config.dockerEnvironmentVariables,
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   execute(

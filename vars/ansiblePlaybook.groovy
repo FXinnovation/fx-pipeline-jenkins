@@ -8,7 +8,9 @@ def call(Map config = [:]){
   def ansiblePlaybookCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand: 'ansible-playbook',
-    command: 'ansible-playbook'
+    command: 'ansible-playbook',
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   execute(

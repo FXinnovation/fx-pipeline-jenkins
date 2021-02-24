@@ -103,7 +103,9 @@ def call(Map config = [:]){
     dockerImage: config.dockerImage,
     fallbackCommand: 'packer',
     additionalMounts: config.dockerAdditionalMounts,
-    environmentVariables: config.dockerEnvironmentVariables
+    environmentVariables: config.dockerEnvironmentVariables,
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   execute(

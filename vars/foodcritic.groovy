@@ -11,7 +11,9 @@ def call(Map config = [:]){
 
   def foodcriticCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand:  ''
+    fallbackCommand:  '',
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   return execute(

@@ -6,7 +6,9 @@ def call(Map config = [:]){
 
   def cookstyleCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
-    fallbackCommand:  ''
+    fallbackCommand:  '',
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   execute(

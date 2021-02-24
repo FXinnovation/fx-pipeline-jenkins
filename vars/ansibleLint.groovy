@@ -7,7 +7,9 @@ def call(Map config = [:]){
   def ansibleLintCommand = dockerRunCommand(
     dockerImage: config.dockerImage,
     fallbackCommand: 'ansible-lint',
-    command: 'ansible-lint'
+    command: 'ansible-lint',
+    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+    dataBasepath: config.dockerDataBasepath,
   )
 
   execute(
