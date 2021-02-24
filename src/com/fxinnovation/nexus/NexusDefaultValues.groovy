@@ -1,7 +1,12 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 package com.fxinnovation.nexus
 
 class NexusDefaultValues {
-    
+
     public static final String NexusUrl = "https://artifacts.dazzlingwrench.fxinnovation.com"
 
     public static final String PowershellApplicationReleaseRepository = "powershell-application"

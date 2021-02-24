@@ -1,10 +1,15 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 package com.fxinnovation.nexus
 
 class NexusRepository implements Serializable{
     public String repository
     public String nexusUrl
 
-    public NexusRepository(        
+    public NexusRepository(
         String nexusUrl,
         String repository
     ){

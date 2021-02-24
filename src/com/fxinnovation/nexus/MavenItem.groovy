@@ -1,3 +1,8 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 package com.fxinnovation.nexus
 
 class MavenItem implements Serializable  {
@@ -38,7 +43,7 @@ class MavenItem implements Serializable  {
             httpRequest httpMode: 'HEAD', ignoreSslErrors: true, responseHandle: 'NONE', url: this.getUrl(), validResponseCodes: '200'
             return true
         }
-        catch(ex){            
+        catch(ex){
             println(ex.toString());
             println(ex.getMessage());
             return false
@@ -50,10 +55,10 @@ class MavenItem implements Serializable  {
 
         def destinationFile = "${destinationFolder}/${getFileName()}"
         context.httpRequest(
-            httpMode: 'GET', 
-            ignoreSslErrors: true, 
-            responseHandle: 'NONE', 
-            url: this.getUrl(), 
+            httpMode: 'GET',
+            ignoreSslErrors: true,
+            responseHandle: 'NONE',
+            url: this.getUrl(),
             validResponseCodes: '200',
             outputFile: destinationFile
         )
@@ -71,23 +76,23 @@ class MavenItem implements Serializable  {
             def assets = []
             for(filePath in files){
                 assets += [
-                                classifier: '', 
-                                extension: '', 
+                                classifier: '',
+                                extension: '',
                                 filePath: filePath
                             ]
             }
 
             context.nexusPublisher(
-                nexusInstanceId: this.repository.nexusUrl, 
-                nexusRepositoryId: this.repository.repository, 
+                nexusInstanceId: this.repository.nexusUrl,
+                nexusRepositoryId: this.repository.repository,
                 packages: [
                     [
-                        $class: 'MavenPackage', 
+                        $class: 'MavenPackage',
                         mavenAssetList: assets,
                         mavenCoordinate: [
-                            artifactId: this.artefactId, 
-                            groupId: this.groupId, 
-                            packaging: this.extension, 
+                            artifactId: this.artefactId,
+                            groupId: this.groupId,
+                            packaging: this.extension,
                             version: this.version
                         ]
                     ]

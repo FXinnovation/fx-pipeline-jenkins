@@ -1,3 +1,8 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 package com.fxinnovation.nexus
 
 class PowershellModuleRepository extends NexusRepository {

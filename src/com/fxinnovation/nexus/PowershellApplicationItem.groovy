@@ -1,12 +1,17 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 package com.fxinnovation.nexus
 
 class PowershellApplicationItem extends MavenItem{
-    
+
     public PowershellApplicationItem(
         PowershellApplicationRepository repository,
         String client,
         String applicationName,
-        String version,        
+        String version,
         String asset
     ){
         super(
