@@ -73,6 +73,13 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     )
   ]
 
+  def systemEnv = System.getenv()
+
+  if (systemEnv['JENKINS_LOCAL'] != null) {
+    printDebug('config.launchLocally set to “true” because the JENKINS_LOCAL is not null.')
+    config.launchLocally = true
+  }
+
   def slaveSizes = [
     small : [
       resourceRequestCpu   : '100m',
