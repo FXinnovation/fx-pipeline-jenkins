@@ -7,14 +7,16 @@ def call(Map mapToCheck, String keyToCheck, Class<?> expectedValueType, defaultV
     error(keyUndefinedErrorMessage)
   }
 
+  if (!mapToCheck.containsKey(keyToCheck) || NullObject.isInstance(mapToCheck[keyToCheck])) {
+    mapToCheck[keyToCheck] = defaultValue
+  }
+
   print(keyToCheck)
   print(mapToCheck)
   print(mapToCheck.containsKey(keyToCheck))
   print(defaultValue)
+  print(mapToCheck[keyToCheck])
   print(mapToCheck[keyToCheck].getClass())
-  if (!mapToCheck.containsKey(keyToCheck)) {
-    mapToCheck[keyToCheck] = defaultValue
-  }
 
   if (!(expectedValueType.isInstance(mapToCheck[keyToCheck]))) {
     error("The type of the value for key “${keyToCheck}” is expected to be “${expectedValueType}”, given: “${mapToCheck[keyToCheck].getClass()}”")
