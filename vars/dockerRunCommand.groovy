@@ -9,11 +9,11 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'environmentVariables', Map, [:])
   mapAttributeCheck(config, 'forcePullImage', Boolean, false)
   mapAttributeCheck(config, 'dockerDataBasepath', CharSequence, '$(pwd)')
-  mapAttributeCheck(config, 'dockerDataisCurrentDirectory', Boolean, false)
+  mapAttributeCheck(config, 'dockerDataIsCurrentDirectory', Boolean, false)
 
   def debugger = new Debugger(this)
 
-  if (config.dockerDataisCurrentDirectory) {
+  if (config.dockerDataIsCurrentDirectory) {
     config.dockerDataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
   }
 
