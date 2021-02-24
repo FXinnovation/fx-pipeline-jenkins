@@ -7,6 +7,9 @@ def call(Map mapToCheck, String keyToCheck, Class<?> expectedValueType, defaultV
     error(keyUndefinedErrorMessage)
   }
 
+  print(mapToCheck)
+  print(mapToCheck.containsKey(keyToCheck))
+  print(defaultValue)
   if (!mapToCheck.containsKey(keyToCheck)) {
     mapToCheck[keyToCheck] = defaultValue
   }
