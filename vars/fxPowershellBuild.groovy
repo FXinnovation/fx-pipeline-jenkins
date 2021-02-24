@@ -46,6 +46,7 @@ def call(Map config = [:], Map closures =[:]){
             stage('build'){
                 printDebug('----- Building -----')
 
+<<<<<<< HEAD
                 withCredentials([usernamePassword(credentialsId: config.nexusAPIToken, usernameVariable: 'nexusAPITokenUsername', passwordVariable: 'nexusAPITokenPassword')]){
                     powershellCommand = dockerRunCommand(
                         dockerImage: config.powershellDockerImage,
@@ -59,6 +60,18 @@ def call(Map config = [:], Map closures =[:]){
                         fallbackCommand:  'pwsh',
                     )
                 }
+=======
+                powershellCommand = dockerRunCommand(
+                    dockerImage: config.powershellDockerImage,
+                    environmentVariables:  [
+                                        FXNexusUrl: "${readModuleRepository.getBaseUrl()}/"
+                                    ],
+                    additionalMounts: [:],
+                    fallbackCommand:  'pwsh',
+                    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+                    dataBasepath: config.dockerDataBasepath,
+                )
+>>>>>>> 0dd8a6d (feat: (powershell) passes `config.dataIsCurrentDirectory` for dockerRunCommand)
 
                 execute(
                     script: "${powershellCommand} build '${config.version}'"
@@ -95,6 +108,8 @@ def call(Map config = [:], Map closures =[:]){
                             ],
                             additionalMounts: [:],
                             fallbackCommand:  'pwsh',
+                            dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+                            dataBasepath: config.dockerDataBasepath,
                         )
 
                         execute(
