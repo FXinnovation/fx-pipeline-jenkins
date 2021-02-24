@@ -2,9 +2,11 @@
 
 ## 1.3.0
 
-* feat: allows to run fxJob locally
-* feat: disables cleanWs when run locally*
-* feat: allows to change docker run data basepath
+* feat: (fxJob) allows to run fxJob locally
+* feat: (fxJob) disables cleanWs when run locally
+* feat: (dockerRunCommand) allows to change docker run data basepath
+* feat: (dockerRunCommand) allows to run docker commands as deamon
+* feat: (dockerRunCommand) allows to add name and entrypoint params
 
 ## 1.2.3
 

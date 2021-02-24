@@ -9,6 +9,8 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'environmentVariables', Map, [:])
   mapAttributeCheck(config, 'forcePullImage', Boolean, false)
   mapAttributeCheck(config, 'asDaemon', Boolean, false)
+  mapAttributeCheck(config, 'name', CharSequence, '')
+  mapAttributeCheck(config, 'entrypoint', CharSequence, '')
   mapAttributeCheck(config, 'dataBasepath', CharSequence, '$(pwd)')
   mapAttributeCheck(config, 'dataIsCurrentDirectory', Boolean, false)
 
@@ -19,9 +21,19 @@ def call(Map config = [:]) {
     debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
   }
 
-  def deamonParam = '--rm'
+  def daemonParam = '--rm'
   if (config.asDaemon) {
-    deamonParam = '-d'
+    daemonParam = '-d'
+  }
+
+  def entrypointParam = ''
+  if (config.entrypoint != '') {
+    entrypointParam = "--entrypoint ${config.entrypoint}"
+  }
+
+  def nameParam = ''
+  if (config.name != '') {
+    nameParam = "--name ${config.name}"
   }
 
   if (!this.isDockerInstalled()) {
@@ -71,7 +83,7 @@ def call(Map config = [:]) {
      break;
   }
 
-  return "docker run ${deamonParam} -v ${config.dataBasepath}:/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
+  return "docker run ${daemonParam} ${nameParam} ${entrypointParam} -v ${config.dataBasepath}:/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
 }
 
 private Boolean isDockerInstalled() {
