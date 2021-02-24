@@ -15,6 +15,7 @@ def call(Map config = [:]) {
 
   if (config.dockerDataIsCurrentDirectory) {
     config.dockerDataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
+    printDebug("Set ${config.dockerDataBasepath} as basepath for docker commands.")
   }
 
   if (!this.isDockerInstalled()) {
