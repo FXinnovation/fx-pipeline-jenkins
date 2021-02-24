@@ -3,6 +3,7 @@
 
 * feat: (fxDockerImage) pass config to fxJob
 * feat: (fxDockerImage) uses dockerRunCommand even for the deamon
+* feat: (powershell) passes `config.dataIsCurrentDirectory` for dockerRunCommand
 
 
 0.1.0 / 2020-01-15
