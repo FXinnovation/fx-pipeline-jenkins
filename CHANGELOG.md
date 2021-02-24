@@ -4,6 +4,7 @@
 
 * feat: allows to run fxJob locally
 * feat: disables cleanWs when run locally*
+* feat: allows to change docker run data basepath
 
 ## 1.2.3
 

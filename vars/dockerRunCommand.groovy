@@ -8,8 +8,14 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'network', CharSequence, 'bridge')
   mapAttributeCheck(config, 'environmentVariables', Map, [:])
   mapAttributeCheck(config, 'forcePullImage', Boolean, false)
+  mapAttributeCheck(config, 'dockerDataBasepath', CharSequence, '$(pwd)')
+  mapAttributeCheck(config, 'dockerDataisCurrentDirectory', Boolean, false)
 
   def debugger = new Debugger(this)
+
+  if (config.dockerDataisCurrentDirectory) {
+    config.dockerDataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
+  }
 
   if (!this.isDockerInstalled()) {
     println "Docker is not available, assuming the tool “${config.fallbackCommand}” is installed."
@@ -58,7 +64,7 @@ def call(Map config = [:]) {
      break;
   }
 
-  return "docker run --rm -v \$(pwd):/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
+  return "docker run --rm -v ${config.dockerDataBasepath}:/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
 }
 
 private Boolean isDockerInstalled() {
