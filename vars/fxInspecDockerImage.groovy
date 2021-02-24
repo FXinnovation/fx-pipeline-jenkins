@@ -41,13 +41,14 @@ def call(Map config = [:]){
     }
     dockerImage += "${config.image}:${config.tag}"
     execute(
-      script: "docker run -d \
-        -v \$(pwd):/data \
-        -w /data \
-        --name inspec-test \
-        --entrypoint sh \
-        ${dockerImage} \
-        infiniteLoop.sh"
+      dockerRunCommand(
+        dockerImage: dockerImage,
+        fallbackCommand: 'inspec',
+        command: 'infiniteLoop.sh',
+        asDeamon: true,
+        dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+        dataBasepath: config.dockerDataBasepath,
+      )
     )
     try{
       inspec.exec(
