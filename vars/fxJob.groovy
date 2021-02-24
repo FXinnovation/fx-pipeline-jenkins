@@ -80,6 +80,11 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     config.launchLocally = true
   }
 
+  if (systemEnv['JENKINS_DOCKER_DATA_BASEPATH'] != null) {
+    printDebug('config.dockerDataBasepath set to “true” because the JENKINS_DOCKER_DATA_BASEPATH is not null.')
+    config.dockerDataBasepath = systemEnv['JENKINS_DOCKER_DATA_BASEPATH']
+  }
+
   def slaveSizes = [
     small : [
       resourceRequestCpu   : '100m',

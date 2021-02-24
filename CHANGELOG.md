@@ -4,6 +4,7 @@
 
 * feat: (fxJob) allows to run fxJob locally
 * feat: (fxJob) auto-set launchLocally to true if env var JENKINS_LOCAL exists
+* feat: (fxJob) auto-set dockerDataBasepath to true if env var JENKINS_DOCKER_DATA_BASEPATH exists
 * feat: (fxJob) disables cleanWs when run locally
 * feat: (dockerRunCommand) allows to change docker run data basepath
 * feat: (dockerRunCommand) allows to run docker commands as deamon
