@@ -30,8 +30,10 @@ private String getLastCommitId() {
 private String getBranch() {
   branch = executeCommand('echo "${BRANCH_NAME}"')
   if ('' == branch) {
-    branch = executeCommand('git branch --show-current')
+    branch = executeCommand('git rev-parse --abbrev-ref HEAD')
   }
+
+  return branch
 }
 
 private String getTag() {
