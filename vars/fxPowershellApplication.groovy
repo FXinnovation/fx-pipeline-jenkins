@@ -1,10 +1,15 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 import com.fxinnovation.nexus.PowershellApplicationRepository
 import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:], Map closures =[:]){
   fxJob([
     pipeline: { ScmInfo scmInfo ->
-    
+
       printDebug('----- fxPowershellApplication -----')
 
       mapAttributeCheck(config, 'applicationName', CharSequence, '',  'You need to privide an applicationName')
@@ -26,7 +31,7 @@ def call(Map config = [:], Map closures =[:]){
       config['artefactFolder'] = "_artefacts"
 
       printDebug('----- Configs parsed -----')
-     
+
       if (closures.containsKey('preBuild') && closures.preBuild instanceof Closure){
         stage('preBuild'){
           closures.preBuild()
@@ -42,8 +47,8 @@ def call(Map config = [:], Map closures =[:]){
             printDebug("----- adding dependency '${dependency.applicationName}' version: '${dependency.version}'-----")
             def zipfilePath = item.getFile(this,"_downloads")
             unzip (
-              dir: '_repository', 
-              glob: '', 
+              dir: '_repository',
+              glob: '',
               zipFile: zipfilePath
             )
 

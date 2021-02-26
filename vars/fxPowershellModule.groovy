@@ -1,3 +1,8 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 import com.fxinnovation.nexus.PowershellModuleRepository
 import com.fxinnovation.data.ScmInfo
 
@@ -25,14 +30,14 @@ def call(Map config = [:], Map closures =[:]){
       mapAttributeCheck(config, 'nuGetApiKey', CharSequence, 'FXPowershellModulePublisherNugetApiKey')
 
       printDebug('----- Configs parsed -----')
-     
+
       if (closures.containsKey('preBuild') && closures.preBuild instanceof Closure){
         stage('preBuild'){
           closures.preBuild()
         }
       }
       stage('build'){
-        
+
         printDebug('----- Building -----')
         powershellModule.buildModule(config)
         printDebug('----- Building Done-----')
@@ -58,7 +63,7 @@ def call(Map config = [:], Map closures =[:]){
         stage('postPublish'){
           closures.postPublish()
         }
-      }      
+      }
     }
   ])
 }

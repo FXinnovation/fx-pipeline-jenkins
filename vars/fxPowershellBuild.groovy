@@ -9,30 +9,31 @@ def call(Map config = [:], Map closures =[:]){
             printDebug('----- fxPowershellBuild -----')
 
             mapAttributeCheck(config, 'powershellDockerImage', CharSequence, "fxinnovation/powershell-build:latest",  '') //Fix version when tests are done
-            mapAttributeCheck(config, 'nuGetApiKey', CharSequence, 'FXPowershellModulePublisherNugetApiKey')
 
-            def mavenrepository
-            def publishModuleRepository
+            mapAttributeCheck(config, 'nexusNugetAPIKey', CharSequence, 'FXPowershellModulePublisherNugetApiKey')
+            mapAttributeCheck(config, 'nexusAPIToken', CharSequence, 'FXNexusAPIToken')
+
+            mapAttributeCheck(config, 'nexusBaseUrl', CharSequence, 'https://artefacts.ops0.fxinnovation.com/')
+            mapAttributeCheck(config, 'nexusPowershellModuleRepositoryRead', CharSequence, 'nuget-fxinnovation-powershell-module')
+
+            def ending
             if (  'master' == scmInfo.getBranch() && '' != scmInfo.getTag() ){
                 config['isRelease'] = true
                 config['version'] = scmInfo.getTag()
 
-                publishModuleRepository = PowershellModuleRepository.getReleaseRepository(this,config)
-                mavenrepository = PowershellApplicationRepository.getReleaseRepository(this, config)
+                ending = "-releases"
             }
             else{
                 config['isRelease'] = false
                 config['version'] = "latest-${scmInfo.getBranch().replace("\\", "-").replace("/", "-").replace(" ", "_").toLowerCase()}"
 
-                publishModuleRepository = PowershellModuleRepository.getUnstableRepository(this,config)
-                mavenrepository = PowershellApplicationRepository.getUnstableRepository(this, config)
+                ending = "-featurebranches"
             }
 
-            def readModuleRepository = PowershellModuleRepository.getReadRepository(this,config)
+            mapAttributeCheck(config, 'nexusRawRepositoryPublish', CharSequence, "raw-fxinnovation-powershell-application${ending}")
+            mapAttributeCheck(config, 'nexusPowershellModuleRepositoryPublish', CharSequence, "nuget-fxinnovation-powershell-module${ending}")
 
             currentBuild.displayName = "#${BUILD_NUMBER} - ${config.version}"
-
-            config['artefactFolder'] = "_artefacts"
 
             printDebug('----- Configs parsed -----')
 
@@ -45,14 +46,19 @@ def call(Map config = [:], Map closures =[:]){
             stage('build'){
                 printDebug('----- Building -----')
 
-                powershellCommand = dockerRunCommand(
-                    dockerImage: config.powershellDockerImage,
-                    environmentVariables:  [
-                                        FXNexusUrl: "${readModuleRepository.getBaseUrl()}/"
-                                    ],
-                    additionalMounts: [:],
-                    fallbackCommand:  'pwsh',
-                )
+                withCredentials([usernamePassword(credentialsId: config.nexusAPIToken, usernameVariable: 'nexusAPITokenUsername', passwordVariable: 'nexusAPITokenPassword')]){
+                    powershellCommand = dockerRunCommand(
+                        dockerImage: config.powershellDockerImage,
+                        environmentVariables:  [
+                                            FXNexusBaseUrl: "${config.nexusBaseUrl}",
+                                            FXNexusAPITokenUsername: "${nexusAPITokenUsername}",
+                                            FXNexusAPITokenPassword: "${nexusAPITokenPassword}",
+                                            FXNexusPowershellModuleRepositoryRead: "${config.nexusPowershellModuleRepositoryRead}"
+                                        ],
+                        additionalMounts: [:],
+                        fallbackCommand:  'pwsh',
+                    )
+                }
 
                 execute(
                     script: "${powershellCommand} build '${config.version}'"
@@ -74,35 +80,31 @@ def call(Map config = [:], Map closures =[:]){
 
             stage('publish'){
                 printDebug('----- Publishing from image-----')
-                withCredentials([string(credentialsId: config.nuGetApiKey, variable: 'mysecret')]){
-                    powershellCommand = dockerRunCommand(
-                        dockerImage: config.powershellDockerImage,
-                        environmentVariables:  [
-                            PublishModuleUri: "${publishModuleRepository.getBaseUrl()}/",
-                            NuGetApiKey: "${mysecret}"
-                        ],
-                        additionalMounts: [:],
-                        fallbackCommand:  'pwsh',
-                    )
+                withCredentials([string(credentialsId: config.nexusNugetAPIKey, variable: 'nexusNugetAPIKeySecret')]){
+                    withCredentials([usernamePassword(credentialsId: config.nexusAPIToken, usernameVariable: 'nexusAPITokenUsername', passwordVariable: 'nexusAPITokenPassword')]){
+                        powershellCommand = dockerRunCommand(
+                            dockerImage: config.powershellDockerImage,
+                            environmentVariables:  [
+                                FXNexusBaseUrl: "${config.nexusBaseUrl}",
+                                FXNexusAPITokenUsername: "${nexusAPITokenUsername}",
+                                FXNexusAPITokenPassword: "${nexusAPITokenPassword}",
+                                FXNexusPowershellModuleRepositoryRead: "${config.nexusPowershellModuleRepositoryRead}",
+                                FXNexusRawRepositoryPublish: "${config.nexusRawRepositoryPublish}",
+                                FXNexusPowershellModuleRepositoryPublish: "${config.nexusPowershellModuleRepositoryPublish}",
+                                FXNexusNugetAPIKey: "${nexusNugetAPIKeySecret}"
+                            ],
+                            additionalMounts: [:],
+                            fallbackCommand:  'pwsh',
+                        )
 
-                    execute(
-                        script: "${powershellCommand} publish"
-                    )
+                        execute(
+                            script: "${powershellCommand} publish"
+                        )
+                    }
                 }
 
-                def prop = readJSON file: 'PowershellDefinition.json'
-                //if(prop.Type == 'PowershellApp'){
-                    printDebug('----- Publishing Maven-----')
-                    mapAttributeCheck(config, 'applicationName', CharSequence, prop.Name)
+                currentBuild.description = readFile file: '_artefacts/jobDescription.txt'
 
-                    def item = mavenrepository.newItem(this, config)
-
-                    def zips = findFiles(glob: '_artefacts/*.zip')
-                    if(zips.length != 0){
-                        item.publish(this,zips.path)
-                        currentBuild.description = "Artefact is available at \n${item.getUrl().toLowerCase()}"
-                    }
-                //}
                 printDebug('----- Publishing Done -----')
             }
 

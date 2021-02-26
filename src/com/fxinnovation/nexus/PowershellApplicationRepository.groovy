@@ -1,3 +1,8 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
 package com.fxinnovation.nexus
 
 class PowershellApplicationRepository extends NexusRepository {
@@ -11,21 +16,21 @@ class PowershellApplicationRepository extends NexusRepository {
     public static PowershellApplicationRepository getReleaseRepository(groovy.lang.Script context, config){
         context.mapAttributeCheck(config, 'nexusUrl', CharSequence, NexusDefaultValues.NexusUrl)
         context.mapAttributeCheck(config, 'powershellApplicationReleaseRepository', CharSequence, NexusDefaultValues.PowershellApplicationReleaseRepository)
-    
+
         return new PowershellApplicationRepository(config.nexusUrl,config.powershellApplicationReleaseRepository,true)
     }
 
     public static PowershellApplicationRepository getUnstableRepository(groovy.lang.Script context, config){
         context.mapAttributeCheck(config, 'nexusUrl', CharSequence, NexusDefaultValues.NexusUrl)
         context.mapAttributeCheck(config, 'powershellApplicationUnstableRepository', CharSequence, NexusDefaultValues.PowershellApplicationUnstableRepository)
-    
+
         return new PowershellApplicationRepository(config.nexusUrl,config.powershellApplicationUnstableRepository,false)
     }
 
     public PowershellApplicationItem newItem(groovy.lang.Script context, config){
         context.mapAttributeCheck(config, 'client', CharSequence, NexusDefaultValues.MavenDefaultGroupId)
         context.mapAttributeCheck(config, 'applicationName', CharSequence, '',  'You need to privide an applicationName')
-        context.mapAttributeCheck(config, 'version', CharSequence, '',  'You need to privide a version')        
+        context.mapAttributeCheck(config, 'version', CharSequence, '',  'You need to privide a version')
         context.mapAttributeCheck(config, 'asset', CharSequence, config.applicationName)
 
         return new PowershellApplicationItem(

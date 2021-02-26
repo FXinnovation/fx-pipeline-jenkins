@@ -1,3 +1,9 @@
+/****************************************
+// This file should not be used anymore
+// Obsolete
+*****************************************/
+
+
 import com.fxinnovation.nexus.PowershellModuleRepository
 
 def addFXNexusRepository(Map config = [:]){
