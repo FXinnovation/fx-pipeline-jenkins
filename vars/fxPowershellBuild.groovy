@@ -103,7 +103,7 @@ def call(Map config = [:], Map closures =[:]){
                     }
                 }
 
-                currentBuild.description = readFileJSON file: '_artefacts/jobDescription.txt'
+                currentBuild.description = readFile file: '_artefacts/jobDescription.txt'
 
                 printDebug('----- Publishing Done -----')
             }
