@@ -27,7 +27,7 @@ def call(Map config = [:], Map closures =[:]){
                 config['isRelease'] = false
                 config['version'] = "latest-${scmInfo.getBranch().replace("\\", "-").replace("/", "-").replace(" ", "_").toLowerCase()}"
 
-                ending = "-featuresbranches"
+                ending = "-featurebranches"
             }
 
             mapAttributeCheck(config, 'nexusRawRepositoryPublish', CharSequence, "raw-fxinnovation-powershell-application${ending}")
