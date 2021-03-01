@@ -46,32 +46,21 @@ def call(Map config = [:], Map closures =[:]){
             stage('build'){
                 printDebug('----- Building -----')
 
-<<<<<<< HEAD
                 withCredentials([usernamePassword(credentialsId: config.nexusAPIToken, usernameVariable: 'nexusAPITokenUsername', passwordVariable: 'nexusAPITokenPassword')]){
                     powershellCommand = dockerRunCommand(
                         dockerImage: config.powershellDockerImage,
                         environmentVariables:  [
-                                            FXNexusBaseUrl: "${config.nexusBaseUrl}",
-                                            FXNexusAPITokenUsername: "${nexusAPITokenUsername}",
-                                            FXNexusAPITokenPassword: "${nexusAPITokenPassword}",
-                                            FXNexusPowershellModuleRepositoryRead: "${config.nexusPowershellModuleRepositoryRead}"
-                                        ],
+                            FXNexusBaseUrl: "${config.nexusBaseUrl}",
+                            FXNexusAPITokenUsername: "${nexusAPITokenUsername}",
+                            FXNexusAPITokenPassword: "${nexusAPITokenPassword}",
+                            FXNexusPowershellModuleRepositoryRead: "${config.nexusPowershellModuleRepositoryRead}"
+                        ],
                         additionalMounts: [:],
                         fallbackCommand:  'pwsh',
+                        dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+                        dataBasepath: config.dockerDataBasepath,
                     )
                 }
-=======
-                powershellCommand = dockerRunCommand(
-                    dockerImage: config.powershellDockerImage,
-                    environmentVariables:  [
-                                        FXNexusUrl: "${readModuleRepository.getBaseUrl()}/"
-                                    ],
-                    additionalMounts: [:],
-                    fallbackCommand:  'pwsh',
-                    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
-                    dataBasepath: config.dockerDataBasepath,
-                )
->>>>>>> 0dd8a6d (feat: (powershell) passes `config.dataIsCurrentDirectory` for dockerRunCommand)
 
                 execute(
                     script: "${powershellCommand} build '${config.version}'"

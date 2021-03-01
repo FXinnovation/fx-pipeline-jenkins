@@ -1,4 +1,9 @@
-0.2.0
+1.1.1
+=====
+
+* fix: (fxPowershellBuild) removes conflicts
+
+1.1.0
 =====
 
 * feat: (fxDockerImage) pass config to fxJob
