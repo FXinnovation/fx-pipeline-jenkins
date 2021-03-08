@@ -298,7 +298,7 @@ spec:
                 closureHelper.execute('postCleanup')
               }
 
-              if (config.runKind) {
+              if (config.runKind && !config.launchLocally) {
                 stage('kindlogs') {
                   containerLog(
                     name: 'kind'
