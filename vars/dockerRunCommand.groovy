@@ -22,7 +22,7 @@ def call(Map config = [:]) {
     debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
   }
 
-  optionStringFactory = OptionStringFactory(this)
+  optionStringFactory = new OptionStringFactory(this)
 
   if (config.asDaemon) {
     optionStringFactory.addOption('-d')
