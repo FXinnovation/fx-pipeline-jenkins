@@ -1,4 +1,5 @@
 import com.fxinnovation.helper.ClosureHelper
+import org.jenkinsci.plugins.scriptsecurity.sandbox.RejectedAccessException
 
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
@@ -73,16 +74,19 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     )
   ]
 
-  def systemEnv = System.getenv()
+  try {
+    def systemEnv = System.getenv()
 
-  if (systemEnv['JENKINS_LOCAL'] != null) {
-    printDebug('config.launchLocally set to “true” because the JENKINS_LOCAL is not null.')
-    config.launchLocally = true
-  }
+    if (systemEnv['JENKINS_LOCAL'] != null) {
+      printDebug('config.launchLocally set to “true” because the JENKINS_LOCAL is not null.')
+      config.launchLocally = true
+    }
 
-  if (systemEnv['JENKINS_DOCKER_DATA_BASEPATH'] != null) {
-    printDebug('config.dockerDataBasepath set to “true” because the JENKINS_DOCKER_DATA_BASEPATH is not null.')
-    config.dockerDataBasepath = systemEnv['JENKINS_DOCKER_DATA_BASEPATH']
+    if (systemEnv['JENKINS_DOCKER_DATA_BASEPATH'] != null) {
+      printDebug('config.dockerDataBasepath set to “true” because the JENKINS_DOCKER_DATA_BASEPATH is not null.')
+      config.dockerDataBasepath = systemEnv['JENKINS_DOCKER_DATA_BASEPATH']
+    }
+  } catch (RejectedAccessException) {
   }
 
   def slaveSizes = [
