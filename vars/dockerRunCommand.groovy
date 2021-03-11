@@ -1,3 +1,4 @@
+import com.fxinnovation.factory.OptionStringFactory
 import com.fxinnovation.io.Debugger
 
 def call(Map config = [:]) {
@@ -21,19 +22,18 @@ def call(Map config = [:]) {
     debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
   }
 
-  def daemonParam = '--rm'
+  optionStringFactory = OptionStringFactory(this)
+
   if (config.asDaemon) {
-    daemonParam = '-d'
+    optionStringFactory.addOption('-d')
   }
 
-  def entrypointParam = ''
   if (config.entrypoint != '') {
-    entrypointParam = "--entrypoint ${config.entrypoint}"
+    optionStringFactory.addOption('--entrypoint', config.entrypoint)
   }
 
-  def nameParam = ''
   if (config.name != '') {
-    nameParam = "--name ${config.name}"
+    optionStringFactory.addOption('--name', config.name)
   }
 
   if (!this.isDockerInstalled()) {
@@ -45,14 +45,12 @@ def call(Map config = [:]) {
     execute(script: "docker pull ${config.dockerImage}")
   }
 
-  def additionalMounts = ''
   config.additionalMounts.each{
-    key, value -> additionalMounts += "-v ${key}:\"${value}\" "
+    key, value -> optionStringFactory.addOption('-v', "${key}:\"${value}\"")
   }
 
-  def environmentVariables = ''
   config.environmentVariables.each{
-    key, value -> environmentVariables += "-e ${key}=\"${value}\" "
+    key, value -> optionStringFactory.addOption('-e', "${key}:\"${value}\"")
   }
 
   if (debugger.debugVarExists()){
@@ -61,29 +59,19 @@ def call(Map config = [:]) {
     )
   }
 
-  def network = ''
-
-  switch(config.network) {
-   case 'host':
-     network = '--network host'
-     break;
-   case 'overlay':
-     network = '--network overlay'
-     break;
-   case 'macvlan':
-     network = '--network macvlan'
-     break;
-   case 'none':
-     network = '--network none'
-     break;
-   case 'bridge':
-     break;
-   default:
-     error(config.network + ' is not a valid value for docker network.')
-     break;
+  if (['host', 'overlay', 'macvlan', 'none', 'bridge'].containsValue(config.network)) {
+    optionStringFactory.addOption('--network', config.network)
+  } else {
+    error(config.network + ' is not a valid value for docker network.')
   }
 
-  return "docker run ${daemonParam} ${nameParam} ${entrypointParam} -v ${config.dataBasepath}:/data ${network} ${additionalMounts} ${environmentVariables} -w /data ${config.dockerImage} ${config.command}"
+  optionStringFactory.addOption('--rm')
+  optionStringFactory.addOption('-w', '/data')
+  optionStringFactory.addOption('-v', "${config.dataBasepath}:/data")
+
+  optionStringFactory.createOptionString(' ')
+
+  return "docker run ${optionStringFactory.getOptionString()} ${config.dockerImage} ${config.command}"
 }
 
 private Boolean isDockerInstalled() {

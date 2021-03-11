@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+
+* feat: (dockerRunCommand) build arguments with optionStringFactory instead of manual
+
 ## 1.3.0
 
 * feat: (fxJob) allows to run fxJob locally
