@@ -1,3 +1,8 @@
+1.1.2
+=====
+
+* fix: (dockerImage) disables docker publish when run locally
+
 1.1.1
 =====
 
