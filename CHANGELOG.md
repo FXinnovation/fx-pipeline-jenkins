@@ -3,6 +3,7 @@
 ## 1.4.0
 
 * feat: (dockerRunCommand) build arguments with optionStringFactory instead of manual
+* fix: fixes error on all build due to the access to environment variable
 
 ## 1.3.0
 
