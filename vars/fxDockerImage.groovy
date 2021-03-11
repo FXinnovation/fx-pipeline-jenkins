@@ -16,6 +16,7 @@ def call(Map config = [:]){
       pipeline: { ScmInfo scmInfo ->
         pipelineDocker(
           [
+            disablePublish: config.launchLocally,
             dockerBuild: [
               image: config.image,
               namespace: config.namespace
