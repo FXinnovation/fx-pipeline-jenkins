@@ -15,14 +15,23 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'dataBasepath', CharSequence, '$(pwd)')
   mapAttributeCheck(config, 'dataIsCurrentDirectory', Boolean, false)
 
+  def optionStringFactory = new OptionStringFactory(this)
+  optionStringFactory.createOptionString(' ')
   def debugger = new Debugger(this)
+
+  if (!this.isDockerInstalled()) {
+    println "Docker is not available, assuming the tool “${config.fallbackCommand}” is installed."
+    return config.fallbackCommand
+  }
 
   if (config.dataIsCurrentDirectory) {
     config.dataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
     debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
   }
 
-  optionStringFactory = new OptionStringFactory(this)
+  optionStringFactory.addOption('--rm')
+  optionStringFactory.addOption('-w', '/data')
+  optionStringFactory.addOption('-v', "${config.dataBasepath}:/data")
 
   if (config.asDaemon) {
     optionStringFactory.addOption('-d')
@@ -34,11 +43,6 @@ def call(Map config = [:]) {
 
   if (config.name != '') {
     optionStringFactory.addOption('--name', config.name)
-  }
-
-  if (!this.isDockerInstalled()) {
-    println "Docker is not available, assuming the tool “${config.fallbackCommand}” is installed."
-    return config.fallbackCommand
   }
 
   if (config.forcePullImage) {
@@ -59,19 +63,16 @@ def call(Map config = [:]) {
     )
   }
 
-  if (['host', 'overlay', 'macvlan', 'none', 'bridge'].containsValue(config.network)) {
+  if (['host', 'overlay', 'macvlan', 'none', 'bridge'].contains(config.network)) {
     optionStringFactory.addOption('--network', config.network)
   } else {
     error(config.network + ' is not a valid value for docker network.')
   }
 
-  optionStringFactory.addOption('--rm')
-  optionStringFactory.addOption('-w', '/data')
-  optionStringFactory.addOption('-v', "${config.dataBasepath}:/data")
+  optionStringFactory.addOption(config.dockerImage)
+  optionStringFactory.addOption(config.command)
 
-  optionStringFactory.createOptionString(' ')
-
-  return "docker run ${optionStringFactory.getOptionString()} ${config.dockerImage} ${config.command}"
+  return "docker run ${optionStringFactory.getOptionString().toString()}"
 }
 
 private Boolean isDockerInstalled() {
