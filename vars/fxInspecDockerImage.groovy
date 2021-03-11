@@ -66,7 +66,7 @@ def call(Map config = [:]){
     throw (inspecError)
   }finally{
     execute(
-      script: 'docker kill inspec-test && docker rm inspec-test',
+      script: 'docker kill inspec-test',
       throwError: false
     )
     junit(
