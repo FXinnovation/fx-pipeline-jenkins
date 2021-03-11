@@ -87,6 +87,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
       config.dockerDataBasepath = systemEnv['JENKINS_DOCKER_DATA_BASEPATH']
     }
   } catch (RejectedAccessException) {
+    printDebug('Cannot access to system environment variables.')
   }
 
   def slaveSizes = [
