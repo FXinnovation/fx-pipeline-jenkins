@@ -16,6 +16,8 @@ def call(Map config = [:]){
 
   printDebug(scmInfo.toString())
 
+  error('TEMPORARY SUSPEND')
+
   return scmInfo
 }
 
@@ -45,7 +47,16 @@ private String getLatestTag() {
 }
 
 private String getRepositoryName(scm) {
-  return executeCommand('basename `git rev-parse --show-toplevel`')
+  if (scm.metaClass.respondsTo(scm, 'getUserRemoteConfigs')) {
+    print(scm.getUserRemoteConfigs())
+    print(scm.getUserRemoteConfigs()[0])
+    print(scm.getUserRemoteConfigs()[0].getUrl())
+    return scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
+  } else {
+    print(executeCommand('git rev-parse --show-toplevel'))
+    print(executeCommand('git branch'))
+    return executeCommand('basename `git rev-parse --show-toplevel`')
+  }
 }
 
 private String getDefaultBranch() {
