@@ -50,11 +50,11 @@ def call(Map config = [:]) {
   }
 
   config.additionalMounts.each{
-    key, value -> optionStringFactory.addOption('-v', "${key}:\"${value}\"")
+    key, value -> optionStringFactory.addOption('-v', "${key}=\"${value}\"")
   }
 
   config.environmentVariables.each{
-    key, value -> optionStringFactory.addOption('-e', "${key}:\"${value}\"")
+    key, value -> optionStringFactory.addOption('-e', "${key}=\"${value}\"")
   }
 
   if (debugger.debugVarExists()){
