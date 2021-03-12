@@ -50,7 +50,14 @@ private String getRepositoryName(scm) {
     return scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
   } else {
     // Fallback command to attempt to get repository. Less robust than the scm command above, thus not default.
-    return executeCommand('basename -s .git `git config --get remote.origin.url`')
+    def repository = executeCommand('basename -s .git `git config --get remote.origin.url`')
+
+    if ('' == repository) {
+      // Last attempt to get the repository name. Most unsure method, thus attempted last.
+      repository = executeCommand('basename `git rev-parse --show-toplevel`')
+    }
+
+    return repository
   }
 }
 
