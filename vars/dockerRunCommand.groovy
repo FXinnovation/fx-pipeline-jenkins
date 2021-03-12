@@ -54,7 +54,7 @@ def call(Map config = [:]) {
   }
 
   config.environmentVariables.each{
-    key, value -> optionStringFactory.addOption('-e', "${key}=\"${value}\"")
+    key, value -> optionStringFactory.addOption('-e', "${key}:\"${value}\"")
   }
 
   if (debugger.debugVarExists()){
