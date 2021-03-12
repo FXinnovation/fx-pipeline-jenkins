@@ -16,8 +16,6 @@ def call(Map config = [:]){
 
   printDebug(scmInfo.toString())
 
-  error('TEMPORARY SUSPEND')
-
   return scmInfo
 }
 
@@ -48,14 +46,11 @@ private String getLatestTag() {
 
 private String getRepositoryName(scm) {
   if (scm.metaClass.respondsTo(scm, 'getUserRemoteConfigs')) {
-    print(scm.getUserRemoteConfigs())
-    print(scm.getUserRemoteConfigs()[0])
-    print(scm.getUserRemoteConfigs()[0].getUrl())
+    // Only works on specific implementation of the SCM class, forcing us to check if the method exists
     return scm.getUserRemoteConfigs()[0].getUrl().tokenize('/').last().split("\\.")[0]
   } else {
-    print(executeCommand('git rev-parse --show-toplevel'))
-    print(executeCommand('git branch'))
-    return executeCommand('basename `git rev-parse --show-toplevel`')
+    // Fallback command to attempt to get repository. Less robust than the scm command above, thus not default.
+    return executeCommand('basename -s .git `git config --get remote.origin.url`')
   }
 }
 

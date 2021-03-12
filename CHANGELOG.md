@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2
+
+* fix: (scmInfo) makes sure the correct repository name is returned
+
 ## 1.4.1
 
 * fix: (dockerRunCommand) wrong key value delimiter for environment
