@@ -7,5 +7,5 @@ def call(Map config = [:]) {
   DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
   return deprecatedFunction.execute({
     return IOC.get(ScmInfo.class.getName())
-  }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-07-2020')
+  }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-03-2022')
 }
