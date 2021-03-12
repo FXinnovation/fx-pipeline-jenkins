@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1
+
+* fix: (dockerRunCommand) wrong key value delimiter for environment
+
 ## 1.4.0
 
 * feat: (dockerRunCommand) build arguments with optionStringFactory instead of manual
