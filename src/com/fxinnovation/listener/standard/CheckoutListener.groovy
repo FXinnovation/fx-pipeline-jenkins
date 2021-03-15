@@ -3,9 +3,9 @@ package com.fxinnovation.listener.standard
 import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.di.IOC
 import com.fxinnovation.event.PipelineEvents
+import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
-import com.fxinnovation.io.Debugger
 import hudson.scm.SCM
 
 class CheckoutListener extends EventListener {
@@ -54,7 +54,7 @@ class CheckoutListener extends EventListener {
   }
 
   private String getLastCommitId() {
-    return executeCommand('git rev-parse origin/'+this.getDefaultBranch())
+    return executeCommand('git rev-parse origin/' + this.getDefaultBranch())
   }
 
   private String getBranch() {
@@ -98,11 +98,15 @@ class CheckoutListener extends EventListener {
   }
 
   private String executeCommand(String command) {
-    try{
+    try {
       return this.context.execute(script: command, hideStdout: true).stdout.trim()
-    }catch(error){
+    } catch (error) {
       this.debugger.printDebug(error)
       return ''
     }
+  }
+
+  Integer getOrder() {
+    return 10
   }
 }

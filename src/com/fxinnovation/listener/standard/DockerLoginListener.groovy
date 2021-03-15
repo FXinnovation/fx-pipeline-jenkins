@@ -27,7 +27,7 @@ class DockerLoginListener extends EventListener {
   EventDataInterface run(EventDataInterface eventData = null) {
     if (eventData.shouldLoginToDockerRegistry()) {
 
-      printDebug(this.context.credentials(eventData.getDockerRegistryCredentialId()))
+      this.debugger.printDebug(this.context.credentials(eventData.getDockerRegistryCredentialId()))
 
       this.context.withCredentials([
         this.context.usernamePassword(
@@ -36,9 +36,6 @@ class DockerLoginListener extends EventListener {
           usernameVariable: 'registryUsername'
         )
       ]) {
-          DOCKER_REGISTRY_USERNAME = credentials('example-credentials-id')
-        }
-
         this.context.execute(
           script: "echo '${registryPassword}' | docker login --username \$registryUsername --password-stdin ${eventData.getDockerRegistry()}",
         )
@@ -50,9 +47,5 @@ class DockerLoginListener extends EventListener {
     if ('' == eventData.getDockerRegistryCredentialId()) {
       throw new Exception('Pipeline was configured to login to docker registry but “registryCredentialId” is empty.')
     }
-  }
-
-  Integer getOrder() {
-    return 100
   }
 }

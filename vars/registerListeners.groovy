@@ -11,6 +11,7 @@ def call() {
   // General
   // ###
   eventDispatcher.attach(IOC.get(CheckoutListener.class.getName()))
+  eventDispatcher.attach(IOC.get(DockerLoginListener.class.getName()))
 
   // ###
   // Terraform
