@@ -270,7 +270,7 @@ private def pipeline(Map config, Map closures) {
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE, pipelineEventData)
           closureHelper.execute('prePrepare')
 
-          pipelineEventData = eventDispatcher.dispatch(pipelineEventData, PipelineEvents.PREPARE, pipelineEventData)
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PREPARE, pipelineEventData)
 
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_PREPARE, pipelineEventData)
           if (closureHelper.isDefined('postPrepare')) {
