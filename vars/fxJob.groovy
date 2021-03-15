@@ -60,8 +60,6 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     config.podVolumes.add(persistentVolumeClaim(claimName: 'jenkins-slave-cache', mountPath: '/cache', readOnly: false))
   }
 
-  def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-
   closureHelper = new ClosureHelper(this, closures)
   closureHelper.throwErrorIfNotDefined('pipeline')
 
@@ -198,7 +196,6 @@ spec:
   printDebug("computed properties:" + propertiesConfig)
   properties(propertiesConfig)
 
-  def status = 'SUCCESS'
   def label = UUID.randomUUID().toString()
 
   printDebug("Launch without kube: " + config.launchLocally)
@@ -226,194 +223,116 @@ spec:
     ) {
       node(label) {
         container('jnlp') {
-          timeout(
-            time: config.timeoutTime,
-            unit: config.timeoutUnit
-          ) {
-            if ("" != config.headerMessage) {
-              ansiColor('xterm') {
-                println config.headerMessage
-              }
-            }
-          }
-          try {
-            ansiColor('xterm') {
-              stage('prepare') {
-                eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE)
-                closureHelper.execute('prePrepare')
-
-                eventDispatcher.dispatch(PipelineEvents.PREPARE)
-                DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
-                scmInfo = deprecatedFunction.execute({
-                  fxCheckout()
-                }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-03-2022')
-
-                if (config.dockerRegistryLogin) {
-                  withCredentials([
-                    usernamePassword(
-                      credentialsId: config.dockerRegistryCredentialId,
-                      passwordVariable: 'registryPassword',
-                      usernameVariable: 'registryUsername'
-                    )
-                  ]) {
-                    execute(
-                      script: "docker login --username '${registryUsername}' --password '${registryPassword}' ${config.dockerRegistry}",
-                    )
-                  }
-                }
-
-                eventDispatcher.dispatch(PipelineEvents.POST_PREPARE)
-                if (closureHelper.isDefined('postPrepare')) {
-                  closures.postPrepare(IOC.get(ScmInfo.class.getName()))
-                }
-
-                if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
-                  preCommitCommand = dockerRunCommand(
-                    dockerImage: config.preCommitDockerImageName,
-                    fallbackCommand: 'pre-commit',
-                    command: 'run -a --color=always',
-                    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
-                    dataBasepath: config.dockerDataBasepath,
-                  )
-
-                  stage('preCommit') {
-                    execute(script: "${preCommitCommand}")
-                  }
-                }
-              }
-
-              closureHelper.executeWithinStage('prePipeline')
-
-              stage('pipeline') {
-                closures.pipeline(IOC.get(ScmInfo.class.getName()))
-              }
-
-              closureHelper.executeWithinStage('postPipeline')
-            }
-          } catch (error) {
-            status = 'FAILURE'
-            throw error
-          } finally {
-            stage('notification') {
-              closureHelper.execute('preNotification')
-
-              // We use notification because notify is a reserved keyword in groovy.
-              if (closureHelper.isDefined('notification')) {
-                closures.notification(status)
-              } else {
-                fx_notify(
-                  status: status,
-                  failOnError: false
-                )
-              }
-
-              closureHelper.execute('postNotification')
-            }
-            stage('cleanup') {
-              closureHelper.execute('preCleanup')
-              cleanWs()
-              closureHelper.execute('postCleanup')
-            }
-
-            if (config.runKind && !config.launchLocally) {
-              stage('kindlogs') {
-                containerLog(
-                  name: 'kind'
-                )
-              }
-            }
-          }
+          pipeline(config)
         }
       }
     }
   } else {
     node() {
-      timeout(
-        time: config.timeoutTime,
-        unit: config.timeoutUnit
-      ) {
+      pipeline(config)
+    }
+  }
+}
 
-        if ("" != config.headerMessage) {
-          ansiColor('xterm') {
-            println config.headerMessage
+
+private def pipeline(config) {
+  EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
+  def status = 'SUCCESS'
+
+  timeout(
+    time: config.timeoutTime,
+    unit: config.timeoutUnit
+  ) {
+    if ("" != config.headerMessage) {
+      ansiColor('xterm') {
+        println config.headerMessage
+      }
+    }
+  }
+  try {
+    ansiColor('xterm') {
+      stage('prepare') {
+        eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE)
+        closureHelper.execute('prePrepare')
+
+        eventDispatcher.dispatch(PipelineEvents.PREPARE)
+        DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
+        scmInfo = deprecatedFunction.execute({
+          fxCheckout()
+        }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-03-2022')
+
+        if (config.dockerRegistryLogin) {
+          withCredentials([
+            usernamePassword(
+              credentialsId: config.dockerRegistryCredentialId,
+              passwordVariable: 'registryPassword',
+              usernameVariable: 'registryUsername'
+            )
+          ]) {
+            execute(
+              script: "docker login --username '${registryUsername}' --password '${registryPassword}' ${config.dockerRegistry}",
+            )
           }
         }
 
-        try {
-          ansiColor('xterm') {
-            stage('prepare') {
-              closureHelper.execute('prePrepare')
+        eventDispatcher.dispatch(PipelineEvents.POST_PREPARE)
+        if (closureHelper.isDefined('postPrepare')) {
+          closures.postPrepare(IOC.get(ScmInfo.class.getName()))
+        }
 
-              scmInfo = fxCheckout()
+        if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
+          preCommitCommand = dockerRunCommand(
+            dockerImage: config.preCommitDockerImageName,
+            fallbackCommand: 'pre-commit',
+            command: 'run -a --color=always',
+            dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+            dataBasepath: config.dockerDataBasepath,
+          )
 
-              if (config.dockerRegistryLogin) {
-                withCredentials([
-                  usernamePassword(
-                    credentialsId: config.dockerRegistryCredentialId,
-                    passwordVariable: 'registryPassword',
-                    usernameVariable: 'registryUsername'
-                  )
-                ]) {
-                  execute(
-                    script: "docker login --username '${registryUsername}' --password '${registryPassword}' ${config.dockerRegistry}",
-                  )
-                }
-              }
-
-              if (closureHelper.isDefined('postPrepare')) {
-                closures.postPrepare(scmInfo)
-              }
-            }
-
-            if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
-              preCommitCommand = dockerRunCommand(
-                dockerImage: config.preCommitDockerImageName,
-                fallbackCommand: 'pre-commit',
-                command: 'run -a --color=always',
-                dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
-                dataBasepath: config.dockerDataBasepath,
-              )
-
-              stage('preCommit') {
-                execute(script: "${preCommitCommand}")
-              }
-            }
-
-            closureHelper.executeWithinStage('prePipeline')
-
-            stage('pipeline') {
-              closures.pipeline(scmInfo)
-            }
-
-            closureHelper.executeWithinStage('postPipeline')
-          }
-        } catch (error) {
-          status = 'FAILURE'
-          throw error
-        } finally {
-          stage('notification') {
-            closureHelper.execute('preNotification')
-
-            // We use notification because notify is a reserved keyword in groovy.
-            if (closureHelper.isDefined('notification')) {
-              closures.notification(status)
-            } else {
-              fx_notify(
-                status: status,
-                failOnError: false
-              )
-            }
-
-            closureHelper.execute('postNotification')
-          }
-          stage('cleanup') {
-            closureHelper.execute('preCleanup')
-            if (!config.launchLocally) {
-              cleanWs()
-            }
-            closureHelper.execute('postCleanup')
+          stage('preCommit') {
+            execute(script: "${preCommitCommand}")
           }
         }
+      }
+
+      closureHelper.executeWithinStage('prePipeline')
+
+      stage('pipeline') {
+        closures.pipeline(IOC.get(ScmInfo.class.getName()))
+      }
+
+      closureHelper.executeWithinStage('postPipeline')
+    }
+  } catch (error) {
+    status = 'FAILURE'
+    throw error
+  } finally {
+    stage('notification') {
+      closureHelper.execute('preNotification')
+
+      // We use notification because notify is a reserved keyword in groovy.
+      if (closureHelper.isDefined('notification')) {
+        closures.notification(status)
+      } else {
+        fx_notify(
+          status: status,
+          failOnError: false
+        )
+      }
+
+      closureHelper.execute('postNotification')
+    }
+    stage('cleanup') {
+      closureHelper.execute('preCleanup')
+      cleanWs()
+      closureHelper.execute('postCleanup')
+    }
+
+    if (config.runKind && !config.launchLocally) {
+      stage('kindlogs') {
+        containerLog(
+          name: 'kind'
+        )
       }
     }
   }
