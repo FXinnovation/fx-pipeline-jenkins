@@ -242,18 +242,7 @@ private def pipeline(Map config, Map closures) {
   EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
   def status = 'SUCCESS'
 
-  timeout(
-    time: config.timeoutTime,
-    unit: config.timeoutUnit
-  ) {
-    if ("" != config.headerMessage) {
-      ansiColor('xterm') {
-        println config.headerMessage
-      }
-    }
-  }
-
-  PipelineEventData pipelineEventData = PipelineEventData(
+  PipelineEventData pipelineEventData = new PipelineEventData(
     config.checkoutDirectory,
     config.checkoutCredentialID,
     config.checkoutRepositoryURL,
@@ -263,74 +252,87 @@ private def pipeline(Map config, Map closures) {
     config.dockerRegistryCredentialId,
   )
 
-  try {
+
+  if ("" != config.headerMessage) {
     ansiColor('xterm') {
-      stage('prepare') {
-        pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE, pipelineEventData)
-        closureHelper.execute('prePrepare')
+      println config.headerMessage
+    }
+  }
 
-        eventDispatcher.dispatch(pipelineEventData, PipelineEvents.PREPARE, pipelineEventData)
 
-        eventDispatcher.dispatch(PipelineEvents.POST_PREPARE)
-        if (closureHelper.isDefined('postPrepare')) {
-          closures.postPrepare(IOC.get(ScmInfo.class.getName()))
-        }
+  timeout(
+    time: config.timeoutTime,
+    unit: config.timeoutUnit
+  ) {
+    try {
+      ansiColor('xterm') {
+        stage('prepare') {
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE, pipelineEventData)
+          closureHelper.execute('prePrepare')
 
-        if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
-          preCommitCommand = dockerRunCommand(
-            dockerImage: config.preCommitDockerImageName,
-            fallbackCommand: 'pre-commit',
-            command: 'run -a --color=always',
-            dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
-            dataBasepath: config.dockerDataBasepath,
-          )
+          pipelineEventData = eventDispatcher.dispatch(pipelineEventData, PipelineEvents.PREPARE, pipelineEventData)
 
-          stage('preCommit') {
-            execute(script: "${preCommitCommand}")
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_PREPARE, pipelineEventData)
+          if (closureHelper.isDefined('postPrepare')) {
+            closures.postPrepare(IOC.get(ScmInfo.class.getName()))
+          }
+
+          if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
+            preCommitCommand = dockerRunCommand(
+              dockerImage: config.preCommitDockerImageName,
+              fallbackCommand: 'pre-commit',
+              command: 'run -a --color=always',
+              dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+              dataBasepath: config.dockerDataBasepath,
+            )
+
+            stage('preCommit') {
+              execute(script: "${preCommitCommand}")
+            }
           }
         }
+
+        closureHelper.executeWithinStage('prePipeline')
+
+        stage('pipeline') {
+          closures.pipeline(IOC.get(ScmInfo.class.getName()))
+        }
+
+        closureHelper.executeWithinStage('postPipeline')
+      }
+    } catch (error) {
+      status = 'FAILURE'
+      throw error
+    } finally {
+      stage('notification') {
+        closureHelper.execute('preNotification')
+
+        // We use notification because notify is a reserved keyword in groovy.
+        if (closureHelper.isDefined('notification')) {
+          closures.notification(status)
+        } else {
+          fx_notify(
+            status: status,
+            failOnError: false
+          )
+        }
+
+        closureHelper.execute('postNotification')
+      }
+      stage('cleanup') {
+        closureHelper.execute('preCleanup')
+        if (!config.launchLocally) {
+          cleanWs()
+        }
+        closureHelper.execute('postCleanup')
       }
 
-      closureHelper.executeWithinStage('prePipeline')
-
-      stage('pipeline') {
-        closures.pipeline(IOC.get(ScmInfo.class.getName()))
-      }
-
-      closureHelper.executeWithinStage('postPipeline')
-    }
-  } catch (error) {
-    status = 'FAILURE'
-    throw error
-  } finally {
-    stage('notification') {
-      closureHelper.execute('preNotification')
-
-      // We use notification because notify is a reserved keyword in groovy.
-      if (closureHelper.isDefined('notification')) {
-        closures.notification(status)
-      } else {
-        fx_notify(
-          status: status,
-          failOnError: false
-        )
-      }
-
-      closureHelper.execute('postNotification')
-    }
-    stage('cleanup') {
-      closureHelper.execute('preCleanup')
-      if (!config.launchLocally) {
-        cleanWs()
-      }
-      closureHelper.execute('postCleanup')
-    }
-
-    if (config.runKind && !config.launchLocally) {
-      stage('kindlogs') {
-        containerLog(
-          name: 'kind'
-        )
+      if (config.runKind && !config.launchLocally) {
+        stage('kindlogs') {
+          containerLog(
+            name: 'kind'
+          )
+        }
       }
     }
   }
