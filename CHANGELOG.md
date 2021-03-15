@@ -8,9 +8,12 @@
 * feat: (terraform) adds FX specific listeners for init, repo naming standard, file naming standard
 * refactor: (terraform) changes fxTerraform to standardTerraform, first being FX specific, the other generic
 * feat: moves fxCheckout() to a listener of INIT event to run it as soon as possible
+* feat: (fxCheckout) makes better effort to try to find default branch
 * feat: moves fxCheckoutTag() in the same listener than fxCheckout
 * feat: (fxJob) moves docker login in its own listener
 * feat: (fxJob) moves header display in its own listener
+* feat: (fxDockerImage) move from private pipeline to public
+* feat: (fxDockerImage) create standardDockerImage for standardPipeline
 
 ## 1.4.2
 

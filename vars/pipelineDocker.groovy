@@ -1,7 +1,8 @@
 import com.fxinnovation.data.ScmInfo
+import com.fxinnovation.di.IOC
 import com.fxinnovation.helper.ClosureHelper
 
-def call(Map config = [:], Map closures = [:]){
+def call(Map config = [:], Map closures = [:]) {
   registerServices()
 
   mapAttributeCheck(config, 'disablePublish', Boolean, false)
