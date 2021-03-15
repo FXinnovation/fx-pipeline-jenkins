@@ -3,40 +3,50 @@ package com.fxinnovation.event_data
 import com.fxinnovation.observer.EventDataInterface
 
 class PipelineEventData implements EventDataInterface {
-  private String headerMessage
-  private String checkoutDirectory
+  private Boolean shouldLoginToDockerRegistry
   private String checkoutCredentialID
+  private String checkoutDirectory
   private String checkoutRepositoryURL
   private String checkoutTag
-  private Boolean shouldLoginToDockerRegistry
+  private String dockerDataBasepath
+  private Boolean dockerDataIsCurrentDirectory
   private String dockerRegistry
   private String dockerRegistryCredentialId
+  private String headerMessage
+  private String preCommitDockerImageName
 
-  PipelineEventData(String headerMessage, String checkoutDirectory, String checkoutCredentialID, String checkoutRepositoryURL, String checkoutTag, Boolean shouldLoginToDockerRegistry, String dockerRegistry, String dockerRegistryCredentialId) {
-    this.headerMessage = headerMessage
-    this.checkoutDirectory = checkoutDirectory
+  PipelineEventData(
+    Boolean shouldLoginToDockerRegistry,
+    String checkoutCredentialID,
+    String checkoutDirectory,
+    String checkoutRepositoryURL,
+    String checkoutTag,
+    String dockerDataBasepath,
+    Boolean dockerDataIsCurrentDirectory,
+    String dockerRegistry,
+    String dockerRegistryCredentialId,
+    String headerMessage,
+    String preCommitDockerImageName
+  ) {
+    this.shouldLoginToDockerRegistry = shouldLoginToDockerRegistry
     this.checkoutCredentialID = checkoutCredentialID
+    this.checkoutDirectory = checkoutDirectory
     this.checkoutRepositoryURL = checkoutRepositoryURL
     this.checkoutTag = checkoutTag
-    this.shouldLoginToDockerRegistry = shouldLoginToDockerRegistry
+    this.dockerDataBasepath = dockerDataBasepath
+    this.dockerDataIsCurrentDirectory = dockerDataIsCurrentDirectory
     this.dockerRegistry = dockerRegistry
     this.dockerRegistryCredentialId = dockerRegistryCredentialId
-  }
-
-  String getHeaderMessage() {
-    return headerMessage
-  }
-
-  void setHeaderMessage(String headerMessage) {
     this.headerMessage = headerMessage
+    this.preCommitDockerImageName = preCommitDockerImageName
   }
 
-  String getCheckoutDirectory() {
-    return checkoutDirectory
+  Boolean getShouldLoginToDockerRegistry() {
+    return shouldLoginToDockerRegistry
   }
 
-  void setCheckoutDirectory(String checkoutDirectory) {
-    this.checkoutDirectory = checkoutDirectory
+  void shouldLoginToDockerRegistry(Boolean shouldLoginToDockerRegistry) {
+    this.shouldLoginToDockerRegistry = shouldLoginToDockerRegistry
   }
 
   String getCheckoutCredentialID() {
@@ -45,6 +55,14 @@ class PipelineEventData implements EventDataInterface {
 
   void setCheckoutCredentialID(String checkoutCredentialID) {
     this.checkoutCredentialID = checkoutCredentialID
+  }
+
+  String getCheckoutDirectory() {
+    return checkoutDirectory
+  }
+
+  void setCheckoutDirectory(String checkoutDirectory) {
+    this.checkoutDirectory = checkoutDirectory
   }
 
   String getCheckoutRepositoryURL() {
@@ -63,12 +81,20 @@ class PipelineEventData implements EventDataInterface {
     this.checkoutTag = checkoutTag
   }
 
-  Boolean shouldLoginToDockerRegistry() {
-    return shouldLoginToDockerRegistry
+  String getDockerDataBasepath() {
+    return dockerDataBasepath
   }
 
-  void setShouldLoginToDockerRegistry(Boolean shouldLoginToDockerRegistry) {
-    this.shouldLoginToDockerRegistry = shouldLoginToDockerRegistry
+  void setDockerDataBasepath(String dockerDataBasepath) {
+    this.dockerDataBasepath = dockerDataBasepath
+  }
+
+  Boolean dockerDataIsCurrentDirectory() {
+    return dockerDataIsCurrentDirectory
+  }
+
+  void setDockerDataIsCurrentDirectory(Boolean dockerDataIsCurrentDirectory) {
+    this.dockerDataIsCurrentDirectory = dockerDataIsCurrentDirectory
   }
 
   String getDockerRegistry() {
@@ -85,5 +111,21 @@ class PipelineEventData implements EventDataInterface {
 
   void setDockerRegistryCredentialId(String dockerRegistryCredentialId) {
     this.dockerRegistryCredentialId = dockerRegistryCredentialId
+  }
+
+  String getHeaderMessage() {
+    return headerMessage
+  }
+
+  void setHeaderMessage(String headerMessage) {
+    this.headerMessage = headerMessage
+  }
+
+  String getPreCommitDockerImageName() {
+    return preCommitDockerImageName
+  }
+
+  void setPreCommitDockerImageName(String preCommitDockerImageName) {
+    this.preCommitDockerImageName = preCommitDockerImageName
   }
 }

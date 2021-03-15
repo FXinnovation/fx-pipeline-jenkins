@@ -13,6 +13,7 @@ def call() {
   eventDispatcher.attach(IOC.get(HeaderDisplayerListener.class.getName()))
   eventDispatcher.attach(IOC.get(CheckoutListener.class.getName()))
   eventDispatcher.attach(IOC.get(DockerLoginListener.class.getName()))
+  eventDispatcher.attach(IOC.get(PreCommitListener.class.getName()))
 
   // ###
   // Terraform

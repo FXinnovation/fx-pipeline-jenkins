@@ -12,6 +12,7 @@
 * feat: moves fxCheckoutTag() in the same listener than fxCheckout
 * feat: (fxJob) moves docker login in its own listener
 * feat: (fxJob) moves header display in its own listener
+* feat: (fxJob) moves pre-commit in its own listener
 * feat: (fxDockerImage) move from private pipeline to public
 * feat: (fxDockerImage) create standardDockerImage for standardPipeline
 

@@ -59,12 +59,14 @@ class ServiceRegisterer {
     IOC.registerSingleton(HeaderDisplayerListener.class.getName(), {
       return new HeaderDisplayerListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
     })
-
     IOC.registerSingleton(CheckoutListener.class.getName(), {
       return new CheckoutListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
     })
     IOC.registerSingleton(DockerLoginListener.class.getName(), {
       return new DockerLoginListener(IOC.get('@context'), IOC.get(Debugger.class.getName()), IOC.get(OptionStringFactory.class.getName()))
+    })
+    IOC.registerSingleton(PreCommitListener.class.getName(), {
+      return new PreCommitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
     })
 
     IOC.registerSingleton(TerraformInitListener.class.getName(), {

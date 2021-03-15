@@ -243,14 +243,17 @@ private def pipeline(Map config, Map closures) {
   def status = 'SUCCESS'
 
   PipelineEventData pipelineEventData = new PipelineEventData(
-    config.headerMessage,
-    config.checkoutDirectory,
+    config.dockerRegistryLogin,
     config.checkoutCredentialID,
+    config.checkoutDirectory,
     config.checkoutRepositoryURL,
     config.checkoutTag,
-    config.dockerRegistryLogin,
+    config.dockerDataBasepath,
+    config.dockerDataIsCurrentDirectory,
     config.dockerRegistry,
     config.dockerRegistryCredentialId,
+    config.headerMessage,
+    config.preCommitDockerImageName
   )
 
   timeout(
@@ -269,29 +272,29 @@ private def pipeline(Map config, Map closures) {
           if (closureHelper.isDefined('postPrepare')) {
             closures.postPrepare(IOC.get(ScmInfo.class.getName()))
           }
-
-          if (fileExists('.pre-commit-config.yaml') || fileExists('.pre-commit-config.yml')) {
-            preCommitCommand = dockerRunCommand(
-              dockerImage: config.preCommitDockerImageName,
-              fallbackCommand: 'pre-commit',
-              command: 'run -a --color=always',
-              dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
-              dataBasepath: config.dockerDataBasepath,
-            )
-
-            stage('preCommit') {
-              execute(script: "${preCommitCommand}")
-            }
-          }
         }
 
-        closureHelper.executeWithinStage('prePipeline')
+        stage('build') {
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_BUILD, pipelineEventData)
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.BUILD, pipelineEventData)
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_BUILD, pipelineEventData)
+        }
 
         stage('pipeline') {
-          closures.pipeline(IOC.get(ScmInfo.class.getName()))
-        }
+          closureHelper.executeWithinStage('prePipeline')
 
-        closureHelper.executeWithinStage('postPipeline')
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_TEST, pipelineEventData)
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.TEST, pipelineEventData)
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_TEST, pipelineEventData)
+
+          closures.pipeline(IOC.get(ScmInfo.class.getName()))
+
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_PUBLISH, pipelineEventData)
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PUBLISH, pipelineEventData)
+          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_PUBLISH, pipelineEventData)
+
+          closureHelper.executeWithinStage('postPipeline')
+        }
       }
     } catch (error) {
       status = 'FAILURE'
