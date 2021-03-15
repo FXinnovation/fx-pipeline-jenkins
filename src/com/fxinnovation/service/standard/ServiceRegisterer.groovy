@@ -59,6 +59,9 @@ class ServiceRegisterer {
     IOC.registerSingleton(CheckoutListener.class.getName(), {
       return new CheckoutListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
     })
+    IOC.registerSingleton(DockerLoginListener.class.getName(), {
+      return new CheckoutListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
+    })
 
     IOC.registerSingleton(TerraformInitListener.class.getName(), {
       return new TerraformInitListener(IOC.get('@context'))

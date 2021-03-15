@@ -5,7 +5,6 @@ import com.fxinnovation.event_data.PipelineEventData
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
-import hudson.scm.SCM
 
 class DockerLoginListener extends EventListener {
   private Script context
