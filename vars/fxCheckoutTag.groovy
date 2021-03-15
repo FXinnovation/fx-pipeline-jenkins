@@ -1,30 +1,17 @@
+import com.fxinnovation.data.ScmInfo
+import com.fxinnovation.deprecation.DeprecatedFunction
+import com.fxinnovation.di.IOC
+
 def call (Map config = [:]){
-  fxRegisterListeners()
+  registerServices()
 
-  mapAttributeCheck(config, 'directory', CharSequence, '', '“directory” parameter is mandatory.')
-  mapAttributeCheck(config, 'credentialsId', CharSequence, '', '“credentialsId” parameter is mandatory.')
-  mapAttributeCheck(config, 'repoUrl', CharSequence, '', '“repoUrl” parameter is mandatory.')
-  mapAttributeCheck(config, 'tag', CharSequence, '', '“tag” parameter is mandatory.')
+  DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
-  dir(config.directory) {
-    git(
-      credentialsId: config.credentialsId,
-      changelog: false,
-      poll: false,
-      url: config.repoUrl
-    )
-
-    def tagExist = execute (
-      script: "git rev-parse -q --verify \"refs/tags/${config.tag}\"",
-      throwError: false
-    )
-
-    if ('' == tagExist.stdout) {
-      error("There is no tag \"${config.tag}\" in the repo \"${config.repoUrl}\"")
-    }
-
-    execute (
-      script: "git checkout ${config.tag}"
-    )
-  }
+  return deprecatedFunction.execute({
+      return IOC.get(ScmInfo.class.getName())
+    },
+    'fxCheckoutTag',
+    'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”. Also pass config.checkoutTag to checkout a specific tag.',
+    '01-03-2022'
+  )
 }

@@ -31,9 +31,11 @@ class CheckoutListener extends EventListener {
    * @return PipelineEventData
    */
   EventDataInterface run(EventDataInterface eventData = null) {
-
-    if (eventData.getCheckoutTag())
-    this.context.checkout(this.context.scm)
+    if (this.shouldCheckoutWithTag(eventData)) {
+      this.checkoutWithTag(eventData)
+    } else {
+      this.context.checkout(this.context.scm)
+    }
 
     def scmInfo = new ScmInfo(
       this.getCommitId(),
@@ -59,26 +61,26 @@ class CheckoutListener extends EventListener {
     return '' != eventData.getCheckoutTag()
   }
 
-  private checkoutWithTag() {
-    dir(config.directory) {
-      git(
-        credentialsId: config.credentialsId,
+  private checkoutWithTag(PipelineEventData eventData) {
+    this.context.dir(eventData.getCheckoutDirectory()) {
+      this.context.git(
+        credentialsId: eventData.getCheckoutCredentialID(),
         changelog: false,
         poll: false,
-        url: config.repoUrl
+        url: eventData.getCheckoutRepositoryURL()
       )
 
-      def tagExist = execute (
-        script: "git rev-parse -q --verify \"refs/tags/${config.tag}\"",
+      def tagExist = this.context.execute(
+        script: "git rev-parse -q --verify “refs/tags/${eventData.getCheckoutTag()}”",
         throwError: false
       )
 
       if ('' == tagExist.stdout) {
-        error("There is no tag \"${config.tag}\" in the repo \"${config.repoUrl}\"")
+        throw new Exception("There is no tag “${eventData.getCheckoutTag()}” in the repo “${eventData.getCheckoutRepositoryURL()}“")
       }
 
-      execute (
-        script: "git checkout ${config.tag}"
+      this.context.execute (
+        script: "git checkout ${eventData.getCheckoutTag()}"
       )
     }
   }
@@ -126,9 +128,15 @@ class CheckoutListener extends EventListener {
   }
 
   private String getDefaultBranch() {
-    // This is not robust as “master” might not be the default branch
-    // However Jenkins is unable to get HEAD pointer on remote, thus making it hard to get default branch
-    return 'master'
+    def defaultBranch = executeCommand('git symbolic-ref --short HEAD')
+
+    if ('' == defaultBranch) {
+      // This is not robust as “master” might not be the default branch
+      // However Jenkins is unable to get HEAD pointer on remote, thus making it hard to get default branch
+      return 'master'
+    }
+
+    return defaultBranch
   }
 
   private String executeCommand(String command) {

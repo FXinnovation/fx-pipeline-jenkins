@@ -32,9 +32,7 @@ class HeaderDisplayerListener extends EventListener {
       return eventData
     }
 
-    this.context.ansiColor('xterm') {
-      println eventData.getHeaderMessage()
-    }
+    print(eventData.getHeaderMessage())
 
     return eventData
   }
