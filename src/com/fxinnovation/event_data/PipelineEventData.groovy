@@ -3,6 +3,7 @@ package com.fxinnovation.event_data
 import com.fxinnovation.observer.EventDataInterface
 
 class PipelineEventData implements EventDataInterface {
+  private String headerMessage
   private String checkoutDirectory
   private String checkoutCredentialID
   private String checkoutRepositoryURL
@@ -11,7 +12,8 @@ class PipelineEventData implements EventDataInterface {
   private String dockerRegistry
   private String dockerRegistryCredentialId
 
-  PipelineEventData(String checkoutDirectory, String checkoutCredentialID, String checkoutRepositoryURL, String checkoutTag, Boolean shouldLoginToDockerRegistry, String dockerRegistry, String dockerRegistryCredentialId) {
+  PipelineEventData(String headerMessage, String checkoutDirectory, String checkoutCredentialID, String checkoutRepositoryURL, String checkoutTag, Boolean shouldLoginToDockerRegistry, String dockerRegistry, String dockerRegistryCredentialId) {
+    this.headerMessage = headerMessage
     this.checkoutDirectory = checkoutDirectory
     this.checkoutCredentialID = checkoutCredentialID
     this.checkoutRepositoryURL = checkoutRepositoryURL
@@ -19,6 +21,14 @@ class PipelineEventData implements EventDataInterface {
     this.shouldLoginToDockerRegistry = shouldLoginToDockerRegistry
     this.dockerRegistry = dockerRegistry
     this.dockerRegistryCredentialId = dockerRegistryCredentialId
+  }
+
+  String getHeaderMessage() {
+    return headerMessage
+  }
+
+  void setHeaderMessage(String headerMessage) {
+    this.headerMessage = headerMessage
   }
 
   String getCheckoutDirectory() {

@@ -3,11 +3,15 @@ package com.fxinnovation.listener.standard
 import com.fxinnovation.data.ScmInfo
 import com.fxinnovation.di.IOC
 import com.fxinnovation.event.PipelineEvents
+import com.fxinnovation.event_data.PipelineEventData
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 import hudson.scm.SCM
 
+/**
+ * Handles SCM checkouts
+ */
 class CheckoutListener extends EventListener {
   private Script context
   private Debugger debugger
@@ -27,6 +31,8 @@ class CheckoutListener extends EventListener {
    * @return PipelineEventData
    */
   EventDataInterface run(EventDataInterface eventData = null) {
+
+    if (eventData.getCheckoutTag())
     this.context.checkout(this.context.scm)
 
     def scmInfo = new ScmInfo(
@@ -47,6 +53,34 @@ class CheckoutListener extends EventListener {
     })
 
     return eventData
+  }
+
+  private shouldCheckoutWithTag(PipelineEventData eventData) {
+    return '' != eventData.getCheckoutTag()
+  }
+
+  private checkoutWithTag() {
+    dir(config.directory) {
+      git(
+        credentialsId: config.credentialsId,
+        changelog: false,
+        poll: false,
+        url: config.repoUrl
+      )
+
+      def tagExist = execute (
+        script: "git rev-parse -q --verify \"refs/tags/${config.tag}\"",
+        throwError: false
+      )
+
+      if ('' == tagExist.stdout) {
+        error("There is no tag \"${config.tag}\" in the repo \"${config.repoUrl}\"")
+      }
+
+      execute (
+        script: "git checkout ${config.tag}"
+      )
+    }
   }
 
   private String getCommitId() {

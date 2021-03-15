@@ -243,6 +243,7 @@ private def pipeline(Map config, Map closures) {
   def status = 'SUCCESS'
 
   PipelineEventData pipelineEventData = new PipelineEventData(
+    config.headerMessage,
     config.checkoutDirectory,
     config.checkoutCredentialID,
     config.checkoutRepositoryURL,
@@ -251,14 +252,6 @@ private def pipeline(Map config, Map closures) {
     config.dockerRegistry,
     config.dockerRegistryCredentialId,
   )
-
-
-  if ("" != config.headerMessage) {
-    ansiColor('xterm') {
-      println config.headerMessage
-    }
-  }
-
 
   timeout(
     time: config.timeoutTime,

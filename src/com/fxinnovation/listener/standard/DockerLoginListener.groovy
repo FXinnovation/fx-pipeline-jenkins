@@ -2,17 +2,23 @@ package com.fxinnovation.listener.standard
 
 import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.event_data.PipelineEventData
+import com.fxinnovation.factory.OptionStringFactory
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 
+/**
+ * Logins to a docker registry
+ */
 class DockerLoginListener extends EventListener {
   private Script context
   private Debugger debugger
+  private OptionStringFactory optionStringFactory
 
-  DockerLoginListener(Script context, Debugger debugger) {
+  DockerLoginListener(Script context, Debugger debugger, OptionStringFactory optionStringFactory) {
     this.context = context
     this.debugger = debugger
+    this.optionStringFactory = optionStringFactory
   }
 
   @Override
@@ -25,22 +31,32 @@ class DockerLoginListener extends EventListener {
    * @return PipelineEventData
    */
   EventDataInterface run(EventDataInterface eventData = null) {
-    if (eventData.shouldLoginToDockerRegistry()) {
-
-      this.debugger.printDebug(this.context.credentials(eventData.getDockerRegistryCredentialId()))
-
-      this.context.withCredentials([
-        this.context.usernamePassword(
-          credentialsId: eventData.getDockerRegistryCredentialId(),
-          passwordVariable: 'DOCKER_REGISTRY_PASSWORD',
-          usernameVariable: 'DOCKER_REGISTRY_USERNAME'
-        )
-      ]) {
-        this.context.execute(
-          script: 'echo \'$DOCKER_REGISTRY_PASSWORD\' | docker login --username $DOCKER_REGISTRY_USERNAME --password-stdin ' + eventData.getDockerRegistry(),
-        )
-      }
+    if (!this.shouldRun(eventData)) {
+      return eventData
     }
+
+    this.context.withCredentials([
+      this.context.usernamePassword(
+        credentialsId: eventData.getDockerRegistryCredentialId(),
+        passwordVariable: 'DOCKER_REGISTRY_PASSWORD',
+        usernameVariable: 'DOCKER_REGISTRY_USERNAME'
+      )
+    ]) {
+      this.optionStringFactory.createOptionString(' ')
+      this.optionStringFactory.addOption('--username', '$DOCKER_REGISTRY_USERNAME')
+      this.optionStringFactory.addOption('--password', '$DOCKER_REGISTRY_PASSWORD')
+      this.optionStringFactory.addOption(eventData.getDockerRegistry())
+
+      this.context.execute(
+        script: "docker login ${this.optionStringFactory.getOptionString().toString()}",
+      )
+    }
+
+    return eventData
+  }
+
+  private Boolean shouldRun(PipelineEventData eventData) {
+    return eventData.shouldLoginToDockerRegistry()
   }
 
   private checkDockerRegistry(PipelineEventData eventData = null) {
