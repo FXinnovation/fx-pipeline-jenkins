@@ -1,29 +1,33 @@
 import com.fxinnovation.data.ScmInfo
-import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
 import com.fxinnovation.event.PipelineEvents
+import com.fxinnovation.event_data.PipelineEventData
 import com.fxinnovation.helper.ClosureHelper
 import com.fxinnovation.observer.EventDispatcher
 
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
   fxRegisterListeners()
 
-  mapAttributeCheck(config, 'timeoutTime', Integer, 10)
-  mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
-  mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
-  mapAttributeCheck(config, 'preCommitDockerImageName', CharSequence, 'fxinnovation/pre-commit:latest')
+  mapAttributeCheck(config, 'checkoutCredentialID', CharSequence, '')
+  mapAttributeCheck(config, 'checkoutDirectory', CharSequence, '')
+  mapAttributeCheck(config, 'checkoutRepositoryURL', CharSequence, '')
+  mapAttributeCheck(config, 'checkoutTag', CharSequence, '')
+  mapAttributeCheck(config, 'dockerRegistry', CharSequence, '')
+  mapAttributeCheck(config, 'dockerRegistryCredentialId', CharSequence, 'jenkins-fxinnovation-dockerhub')
+  mapAttributeCheck(config, 'dockerRegistryLogin', Boolean, true)
+  mapAttributeCheck(config, 'launchLocally', Boolean, false)
   mapAttributeCheck(config, 'podCloud', CharSequence, 'kubernetes')
+  mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
+  mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
   mapAttributeCheck(config, 'podName', CharSequence, 'jenkins-slave-linux')
   mapAttributeCheck(config, 'podNamespace', CharSequence, 'default')
   mapAttributeCheck(config, 'podNodeUsageMode', CharSequence, 'NORMAL')
-  mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
-  mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
-  mapAttributeCheck(config, 'dockerRegistryCredentialId', CharSequence, 'jenkins-fxinnovation-dockerhub')
-  mapAttributeCheck(config, 'dockerRegistry', CharSequence, '')
-  mapAttributeCheck(config, 'dockerRegistryLogin', Boolean, true)
   mapAttributeCheck(config, 'podVolumes', List, [])
+  mapAttributeCheck(config, 'preCommitDockerImageName', CharSequence, 'fxinnovation/pre-commit:latest')
   mapAttributeCheck(config, 'runKind', Boolean, false)
-  mapAttributeCheck(config, 'launchLocally', Boolean, false)
+  mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
+  mapAttributeCheck(config, 'timeoutTime', Integer, 10)
+  mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'headerMessage', CharSequence, """
 \u001b[35m
 /!\\ PULL REQUEST /!\\
@@ -223,19 +227,18 @@ spec:
     ) {
       node(label) {
         container('jnlp') {
-          pipeline(config)
+          pipeline(config, closures)
         }
       }
     }
   } else {
     node() {
-      pipeline(config)
+      pipeline(config, closures)
     }
   }
 }
 
-
-private def pipeline(config) {
+private def pipeline(Map config, Map closures) {
   EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
   def status = 'SUCCESS'
 
@@ -249,31 +252,24 @@ private def pipeline(config) {
       }
     }
   }
+
+  PipelineEventData pipelineEventData = PipelineEventData(
+    config.checkoutDirectory,
+    config.checkoutCredentialID,
+    config.checkoutRepositoryURL,
+    config.checkoutTag,
+    config.dockerRegistryLogin,
+    config.dockerRegistry,
+    config.dockerRegistryCredentialId,
+  )
+
   try {
     ansiColor('xterm') {
       stage('prepare') {
-        eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE)
+        pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE, pipelineEventData)
         closureHelper.execute('prePrepare')
 
-        eventDispatcher.dispatch(PipelineEvents.PREPARE)
-        DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
-        scmInfo = deprecatedFunction.execute({
-          fxCheckout()
-        }, 'fxCheckout', 'IOC component to get scmInfo: “ScmInfo scmInfo = IOC.get(ScmInfo.class.getName())”.', '01-03-2022')
-
-        if (config.dockerRegistryLogin) {
-          withCredentials([
-            usernamePassword(
-              credentialsId: config.dockerRegistryCredentialId,
-              passwordVariable: 'registryPassword',
-              usernameVariable: 'registryUsername'
-            )
-          ]) {
-            execute(
-              script: "docker login --username '${registryUsername}' --password '${registryPassword}' ${config.dockerRegistry}",
-            )
-          }
-        }
+        eventDispatcher.dispatch(pipelineEventData, PipelineEvents.PREPARE, pipelineEventData)
 
         eventDispatcher.dispatch(PipelineEvents.POST_PREPARE)
         if (closureHelper.isDefined('postPrepare')) {

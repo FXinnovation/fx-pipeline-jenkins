@@ -23,8 +23,8 @@ class CheckoutListener extends EventListener {
   }
 
   /**
-   * @param TerraformEventData eventData
-   * @return TerraformEventData
+   * @param PipelineEventData eventData
+   * @return PipelineEventData
    */
   EventDataInterface run(EventDataInterface eventData = null) {
     this.context.checkout(this.context.scm)
