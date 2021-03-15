@@ -58,7 +58,7 @@ class CheckoutListener extends EventListener {
   }
 
   private String getBranch() {
-    branch = executeCommand('echo "${BRANCH_NAME}"')
+    def branch = executeCommand('echo "${BRANCH_NAME}"')
     if ('' == branch) {
       branch = executeCommand('git rev-parse --abbrev-ref HEAD')
     }
@@ -101,6 +101,7 @@ class CheckoutListener extends EventListener {
     try{
       return this.context.execute(script: command, hideStdout: true).stdout.trim()
     }catch(error){
+      this.debugger.printDebug(error)
       return ''
     }
   }
