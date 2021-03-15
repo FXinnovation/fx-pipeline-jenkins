@@ -6,7 +6,7 @@ import com.fxinnovation.helper.ClosureHelper
 import com.fxinnovation.observer.EventDispatcher
 
 def call(Map config = [:], Map closures = [:]) {
-  fxRegisterListeners()
+  registerServices()
 
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
