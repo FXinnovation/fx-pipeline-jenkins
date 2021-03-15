@@ -32,12 +32,12 @@ class DockerLoginListener extends EventListener {
       this.context.withCredentials([
         this.context.usernamePassword(
           credentialsId: eventData.getDockerRegistryCredentialId(),
-          passwordVariable: 'registryPassword',
-          usernameVariable: 'registryUsername'
+          passwordVariable: 'DOCKER_REGISTRY_PASSWORD',
+          usernameVariable: 'DOCKER_REGISTRY_USERNAME'
         )
       ]) {
         this.context.execute(
-          script: "echo '${registryPassword}' | docker login --username \$registryUsername --password-stdin ${eventData.getDockerRegistry()}",
+          script: 'echo \'$DOCKER_REGISTRY_PASSWORD\' | docker login --username $DOCKER_REGISTRY_USERNAME --password-stdin ' + eventData.getDockerRegistry(),
         )
       }
     }
