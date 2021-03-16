@@ -1,85 +1,90 @@
+import com.fxinnovation.deprecation.DeprecatedFunction
+import com.fxinnovation.di.IOC
 import com.fxinnovation.factory.OptionStringFactory
 import com.fxinnovation.io.Debugger
 
 def call(Map config = [:]) {
-  mapAttributeCheck(config, 'dockerImage', CharSequence, '', 'dockerRunCommand - "dockerImage" parameter must exists and be a String (implements CharSequence).')
-  mapAttributeCheck(config, 'fallbackCommand', CharSequence, '', 'dockerRunCommand - "fallbackCommand" parameter must exists and be a String (implements CharSequence).')
-  mapAttributeCheck(config, 'additionalMounts', Map, [:])
-  mapAttributeCheck(config, 'command', CharSequence, '')
-  mapAttributeCheck(config, 'network', CharSequence, 'bridge')
-  mapAttributeCheck(config, 'environmentVariables', Map, [:])
-  mapAttributeCheck(config, 'forcePullImage', Boolean, false)
-  mapAttributeCheck(config, 'asDaemon', Boolean, false)
-  mapAttributeCheck(config, 'name', CharSequence, '')
-  mapAttributeCheck(config, 'entrypoint', CharSequence, '')
-  mapAttributeCheck(config, 'dataBasepath', CharSequence, '$(pwd)')
-  mapAttributeCheck(config, 'dataIsCurrentDirectory', Boolean, false)
 
-  def optionStringFactory = new OptionStringFactory(this)
-  optionStringFactory.createOptionString(' ')
-  def debugger = new Debugger(this)
+  DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
 
-  if (!this.isDockerInstalled()) {
-    println "Docker is not available, assuming the tool “${config.fallbackCommand}” is installed."
-    return config.fallbackCommand
-  }
+  return deprecatedFunction.execute({
+    mapAttributeCheck(config, 'dockerImage', CharSequence, '', 'dockerRunCommand - "dockerImage" parameter must exists and be a String (implements CharSequence).')
+    mapAttributeCheck(config, 'fallbackCommand', CharSequence, '', 'dockerRunCommand - "fallbackCommand" parameter must exists and be a String (implements CharSequence).')
+    mapAttributeCheck(config, 'additionalMounts', Map, [:])
+    mapAttributeCheck(config, 'command', CharSequence, '')
+    mapAttributeCheck(config, 'network', CharSequence, 'bridge')
+    mapAttributeCheck(config, 'environmentVariables', Map, [:])
+    mapAttributeCheck(config, 'forcePullImage', Boolean, false)
+    mapAttributeCheck(config, 'asDaemon', Boolean, false)
+    mapAttributeCheck(config, 'name', CharSequence, '')
+    mapAttributeCheck(config, 'entrypoint', CharSequence, '')
+    mapAttributeCheck(config, 'dataBasepath', CharSequence, '$(pwd)')
+    mapAttributeCheck(config, 'dataIsCurrentDirectory', Boolean, false)
 
-  if (config.dataIsCurrentDirectory) {
-    config.dataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
-    debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
-  }
+    def optionStringFactory = new OptionStringFactory(this)
+    optionStringFactory.createOptionString(' ')
+    def debugger = new Debugger(this)
 
-//  optionStringFactory.addOption('--rm')
-  optionStringFactory.addOption('-w', '/data')
-  optionStringFactory.addOption('-v', "${config.dataBasepath}:/data")
+    try {
+      execute(script: 'which docker', hideStdout: true)
+      isDockerInstalled = true
+    } catch(dockerVersionError) {
+      isDockerInstalled = false
+    }
 
-  if (config.asDaemon) {
-    optionStringFactory.addOption('-d')
-  }
+    if (!isDockerInstalled) {
+      println "Docker is not available, assuming the tool “${config.fallbackCommand}” is installed."
+      return config.fallbackCommand
+    }
 
-  if (config.entrypoint != '') {
-    optionStringFactory.addOption('--entrypoint', config.entrypoint)
-  }
+    if (config.dataIsCurrentDirectory) {
+      config.dataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
+      debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
+    }
 
-  if (config.name != '') {
-    optionStringFactory.addOption('--name', config.name)
-  }
+    optionStringFactory.addOption('--rm')
+    optionStringFactory.addOption('-w', '/data')
+    optionStringFactory.addOption('-v', "${config.dataBasepath}:/data")
 
-  if (config.forcePullImage) {
-    execute(script: "docker pull ${config.dockerImage}")
-  }
+    if (config.asDaemon) {
+      optionStringFactory.addOption('-d')
+    }
 
-  config.additionalMounts.each{
-    key, value -> optionStringFactory.addOption('-v', "${key}:\"${value}\"")
-  }
+    if (config.entrypoint != '') {
+      optionStringFactory.addOption('--entrypoint', config.entrypoint)
+    }
 
-  config.environmentVariables.each{
-    key, value -> optionStringFactory.addOption('-e', "${key}=\"${value}\"")
-  }
+    if (config.name != '') {
+      optionStringFactory.addOption('--name', config.name)
+    }
 
-  if (debugger.debugVarExists()){
-    execute(
-      script: 'docker version'
-    )
-  }
+    if (config.forcePullImage) {
+      execute(script: "docker pull ${config.dockerImage}")
+    }
 
-  if (['host', 'overlay', 'macvlan', 'none', 'bridge'].contains(config.network)) {
-    optionStringFactory.addOption('--network', config.network)
-  } else {
-    error(config.network + ' is not a valid value for docker network.')
-  }
+    config.additionalMounts.each{
+      key, value -> optionStringFactory.addOption('-v', "${key}:\"${value}\"")
+    }
 
-  optionStringFactory.addOption(config.dockerImage)
-  optionStringFactory.addOption(config.command)
+    config.environmentVariables.each{
+      key, value -> optionStringFactory.addOption('-e', "${key}=\"${value}\"")
+    }
 
-  return "docker run ${optionStringFactory.getOptionString().toString()}"
-}
+    if (debugger.debugVarExists()){
+      execute(
+        script: 'docker version'
+      )
+    }
 
-private Boolean isDockerInstalled() {
-  try {
-    execute(script: 'which docker', hideStdout: true)
-    return true
-  } catch(dockerVersionError) {
-    return false
-  }
+    if (['host', 'overlay', 'macvlan', 'none', 'bridge'].contains(config.network)) {
+      optionStringFactory.addOption('--network', config.network)
+    } else {
+      error(config.network + ' is not a valid value for docker network.')
+    }
+
+    optionStringFactory.addOption(config.dockerImage)
+    optionStringFactory.addOption(config.command)
+
+    return "docker run ${optionStringFactory.getOptionString().toString()}"
+  }, 'runDockerCommand', 'Use DockerRunnerHelper class. IOC component to get it: “IOC.get(DockerRunnerHelper.class.getName())”.', '01-03-2022')
 }

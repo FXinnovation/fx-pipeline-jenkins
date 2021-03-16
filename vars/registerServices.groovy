@@ -6,5 +6,6 @@ def call() {
   }
 
   ServiceRegisterer serviceRegisterer = new ServiceRegisterer()
+  serviceRegisterer.registerAllGlobals()
   serviceRegisterer.registerAllClasses(this)
 }

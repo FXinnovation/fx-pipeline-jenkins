@@ -12,3 +12,9 @@ For convenience, use https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-pu
 ```bash
 gradle test
 ```
+
+### Refactoring to do
+
+* Everything prefixed `fx` should go into its own repository
+* All deprecated calls should be changed
+* Everything not prefixed `standard` or `pipeline` should go into classes or listeners

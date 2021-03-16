@@ -15,6 +15,7 @@
 * feat: (fxJob) moves pre-commit in its own listener
 * feat: (fxDockerImage) move from private pipeline to public
 * feat: (fxDockerImage) create standardDockerImage for standardPipeline
+* refactor: (runDockerCommand) Adds class to run docker command and deprecates dockerRunCommand
 
 ## 1.4.2
 

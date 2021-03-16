@@ -1,42 +1,15 @@
-def call(Map config = [:]){
-  mapAttributeCheck(config, 'image',     CharSequence, '', 'The image key must be defined')
-  mapAttributeCheck(config, 'tag',       CharSequence, '', 'This tags key must be defined')
-  mapAttributeCheck(config, 'registry',  CharSequence, '')
+def call(Map config = [:]) {
+  mapAttributeCheck(config, 'image', CharSequence, '', 'The image key must be defined')
+  mapAttributeCheck(config, 'tag', CharSequence, '', 'This tags key must be defined')
+  mapAttributeCheck(config, 'registry', CharSequence, '')
   mapAttributeCheck(config, 'namespace', CharSequence, '')
 
-  try{
-    infiniteLoopScript = """
-    while true
-    do
-      sleep 15
-    done
-    """
-    inspecConfig = """
-    {
-      "reporter": {
-        "cli": {
-          "stdout": true
-        },
-        "junit": {
-          "stdout": false,
-          "file": "inspec-results.xml"
-        }
-      }
-    }
-    """
-    writeFile(
-      file: 'inspec-config.json',
-      text: inspecConfig
-    )
-    writeFile(
-      file: 'infiniteLoop.sh',
-      text: infiniteLoopScript
-    )
+  try {
     def dockerImage = ''
-    if ('' != config.registry){
+    if ('' != config.registry) {
       dockerImage += "${config.registry}/"
     }
-    if ('' != config.namespace){
+    if ('' != config.namespace) {
       dockerImage += "${config.namespace}/"
     }
     dockerImage += "${config.image}:${config.tag}"
@@ -44,7 +17,7 @@ def call(Map config = [:]){
       script: dockerRunCommand(
         dockerImage: dockerImage,
         fallbackCommand: 'inspec',
-        command: 'infiniteLoop.sh',
+        command: '-c \'while true; do sleep 15; done\'',
         asDaemon: true,
         name: 'inspec-test',
         entrypoint: 'sh',
@@ -52,23 +25,24 @@ def call(Map config = [:]){
         dataBasepath: config.dockerDataBasepath,
       )
     )
-    try{
+    try {
       inspec.exec(
         target: 'docker://inspec-test',
-        jsonConfig: 'inspec-config.json',
+        reporter: 'cli junit2:inspec-results.xml',
         dockerAdditionalMounts: [
-          '/var/run/docker.sock': '/var/run/docker.sock'
+          '/var/run/docker.sock': '/var/run/docker.sock',
         ],
         commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
       )
-    }catch(inspecExecError){
+    } catch (inspecExecError) {
+      print(inspecExecError)
       println 'Inspec tests have failed, but we\'re still being nice for now'
     }
-  }catch(inspecError){
+  } catch (inspecError) {
     throw (inspecError)
-  }finally{
+  } finally {
     execute(
-      script: 'docker kill inspec-test && docker rm inspec-test',
+      script: 'docker kill inspec-test',
       throwError: false
     )
     junit(

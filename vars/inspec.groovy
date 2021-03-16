@@ -5,6 +5,7 @@ def exec(Map config = [:]){
     'jsonConfig': '',
     'dockerImage':'',
     'subCommand':'',
+    'reporter':'',
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
@@ -37,10 +38,12 @@ def call(Map config = [:]){
   if (config.containsKey('jsonConfig') && config.jsonConfig instanceof CharSequence){
     optionsString += "--json-config=${config.jsonConfig} "
   }
-  // Please leave this option as latest one
-  // if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
-  //   optionsString += "--reporter ${config.reporter} --"
-  // }
+
+  def reporter = ''
+  if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
+    reporter = "--reporter ${config.reporter}"
+  }
+
   if (!config.containsKey('subCommand') || !(config.subCommand instanceof CharSequence)){
     error('subCommand parameter is mandatory')
   }
@@ -52,6 +55,7 @@ def call(Map config = [:]){
     environmentVariables: config.dockerEnvironmentVariables,
     dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
     dataBasepath: config.dockerDataBasepath,
+    entrypoint: ''
   )
 
   execute(
@@ -59,6 +63,6 @@ def call(Map config = [:]){
   )
 
   return execute(
-    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget} --chef-license=accept-silent --no-distinct-exit"
+    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget} ${reporter} --chef-license=accept-silent --no-distinct-exit"
   )
 }

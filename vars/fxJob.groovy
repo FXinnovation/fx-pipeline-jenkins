@@ -15,7 +15,6 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
   mapAttributeCheck(config, 'dockerRegistry', CharSequence, '')
   mapAttributeCheck(config, 'dockerRegistryCredentialId', CharSequence, 'jenkins-fxinnovation-dockerhub')
   mapAttributeCheck(config, 'dockerRegistryLogin', Boolean, true)
-  mapAttributeCheck(config, 'launchLocally', Boolean, false)
   mapAttributeCheck(config, 'podCloud', CharSequence, 'kubernetes')
   mapAttributeCheck(config, 'podImageName', CharSequence, 'fxinnovation/jenkinsk8sslave')
   mapAttributeCheck(config, 'podImageVersion', CharSequence, 'latest')
@@ -81,22 +80,6 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
     )
   ]
 
-  try {
-    def systemEnv = System.getenv()
-
-    if (systemEnv['JENKINS_LOCAL'] != null) {
-      printDebug('config.launchLocally set to “true” because the JENKINS_LOCAL is not null.')
-      config.launchLocally = true
-    }
-
-    if (systemEnv['JENKINS_DOCKER_DATA_BASEPATH'] != null) {
-      printDebug('config.dockerDataBasepath set to “true” because the JENKINS_DOCKER_DATA_BASEPATH is not null.')
-      config.dockerDataBasepath = systemEnv['JENKINS_DOCKER_DATA_BASEPATH']
-    }
-  } catch (RejectedAccessException) {
-    printDebug('Cannot access to system environment variables.')
-  }
-
   def slaveSizes = [
     small : [
       resourceRequestCpu   : '100m',
@@ -152,7 +135,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
   def podContainers = [jnlpContainerTemplate]
   def podInit = ""
 
-  if (config.runKind && !config.launchLocally) {
+  if (config.runKind && !IOC.get('JENKINS_LOCAL')) {
     podContainers << kindContainerTemplate
     podInit = """
 apiVersion: v1
@@ -202,9 +185,9 @@ spec:
 
   def label = UUID.randomUUID().toString()
 
-  printDebug("Launch without kube: " + config.launchLocally)
+  printDebug("Launch without kube: " + IOC.get('JENKINS_LOCAL'))
 
-  if (!config.launchLocally) {
+  if (!IOC.get('JENKINS_LOCAL')) {
     podTemplate(
       cloud: config.podCloud,
       name: config.podName,
@@ -317,13 +300,13 @@ private def pipeline(Map config, Map closures) {
       }
       stage('cleanup') {
         closureHelper.execute('preCleanup')
-        if (!config.launchLocally) {
+        if (!IOC.get('JENKINS_LOCAL')) {
           cleanWs()
         }
         closureHelper.execute('postCleanup')
       }
 
-      if (config.runKind && !config.launchLocally) {
+      if (config.runKind && !IOC.get('JENKINS_LOCAL')) {
         stage('kindlogs') {
           containerLog(
             name: 'kind'

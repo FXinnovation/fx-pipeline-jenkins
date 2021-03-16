@@ -4,6 +4,7 @@ class IOC {
   protected static registry = [:]
   protected static registryForSingleton = [:]
   protected static instances = [:]
+  protected static globals = [:]
 
   static void register(String className, Closure resolve) {
     this.registry[className] = resolve
@@ -13,9 +14,17 @@ class IOC {
     this.registryForSingleton[className] = resolve
   }
 
+  static void registerGlobal(String globalName, value) {
+    this.globals[globalName] = value
+  }
+
   static get(String className, ...args) {
-    if (!this.isRegistered(className) && !this.isRegisteredAsSingleton(className)) {
-      throw new IOCException('No class registered with the name “'+className+'”.')
+    if (!this.isRegistered(className) && !this.isRegisteredAsSingleton(className) && !this.isRegisteredAsGlobal(className)) {
+      throw new IOCException('No class or global registered with the name “'+className+'”.')
+    }
+
+    if (this.isRegisteredAsGlobal(className)) {
+      return this.globals[className]
     }
 
     if (this.isRegisteredAsSingleton(className)) {
@@ -67,6 +76,10 @@ class IOC {
 
   static Boolean isRegisteredAsSingleton(String name) {
     return this.registryForSingleton.containsKey(name)
+  }
+
+  static Boolean isRegisteredAsGlobal(String name) {
+    return this.globals.containsKey(name)
   }
 
   static Boolean isInstanciated(String name) {

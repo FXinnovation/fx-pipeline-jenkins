@@ -1,6 +1,8 @@
 import com.fxinnovation.service.fx.ServiceRegisterer
 
 def call() {
+  registerListeners()
+
   if (ServiceRegisterer.alreadyRegistered) {
     return
   }

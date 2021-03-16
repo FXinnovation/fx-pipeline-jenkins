@@ -4,6 +4,7 @@ import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.deprecation.DeprecatedMessage
 import com.fxinnovation.di.IOC
 import com.fxinnovation.factory.OptionStringFactory
+import com.fxinnovation.helper.DockerRunnerHelper
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.listener.standard.*
 import com.fxinnovation.observer.EventDispatcher
@@ -20,11 +21,39 @@ class ServiceRegisterer {
     this.registerContext(context)
     this.registerDeprecation()
     this.registerDebugger()
+    this.registerHelper()
     this.registerObserver()
     this.registerListeners()
     this.registerFactories()
 
     this.alreadyRegistered = true
+  }
+
+  /**
+   * Register global variables. Avoid this as much as possible. Use them if needed in class constructor only
+   */
+  void registerAllGlobals() {
+    try {
+      def systemEnv = System.getenv()
+
+      def jenkinsLocal = false
+      if (systemEnv['JENKINS_LOCAL'] != null) {
+        jenkinsLocal = true
+      }
+
+      IOC.registerGlobal('JENKINS_LOCAL', jenkinsLocal)
+
+      def dockerDataBasePath = '$(pwd)'
+      if (systemEnv['JENKINS_DOCKER_DATA_BASEPATH'] != null) {
+        dockerDataBasePath = systemEnv['JENKINS_DOCKER_DATA_BASEPATH']
+      }
+
+      IOC.registerGlobal('JENKINS_DOCKER_DATA_BASEPATH', dockerDataBasePath)
+    } catch (RejectedAccessException) {
+      print RejectedAccessException
+      IOC.registerGlobal('JENKINS_LOCAL', false)
+      IOC.registerGlobal('JENKINS_DOCKER_DATA_BASEPATH', '$(pwd)')
+    }
   }
 
   void registerContext(Script context) {
@@ -55,6 +84,17 @@ class ServiceRegisterer {
     })
   }
 
+  void registerHelper() {
+    IOC.register(DockerRunnerHelper.class.getName(), {
+      return new DockerRunnerHelper(
+        IOC.get('@context'),
+        IOC.get(Debugger.class.getName()),
+        IOC.get(OptionStringFactory.class.getName()),
+        IOC.get('JENKINS_DOCKER_DATA_BASEPATH')
+      )
+    })
+  }
+
   void registerListeners() {
     IOC.registerSingleton(HeaderDisplayerListener.class.getName(), {
       return new HeaderDisplayerListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
@@ -66,7 +106,7 @@ class ServiceRegisterer {
       return new DockerLoginListener(IOC.get('@context'), IOC.get(Debugger.class.getName()), IOC.get(OptionStringFactory.class.getName()))
     })
     IOC.registerSingleton(PreCommitListener.class.getName(), {
-      return new PreCommitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
+      return new PreCommitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()), IOC.get(DockerRunnerHelper.class.getName()))
     })
 
     IOC.registerSingleton(TerraformInitListener.class.getName(), {

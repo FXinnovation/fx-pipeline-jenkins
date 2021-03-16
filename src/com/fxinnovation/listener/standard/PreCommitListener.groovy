@@ -3,6 +3,7 @@ package com.fxinnovation.listener.standard
 import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.event_data.PipelineEventData
 import com.fxinnovation.factory.OptionStringFactory
+import com.fxinnovation.helper.DockerRunnerHelper
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
@@ -13,11 +14,12 @@ import com.fxinnovation.observer.EventListener
 class PreCommitListener extends EventListener {
   private Script context
   private Debugger debugger
-  private OptionStringFactory optionStringFactory
+  private DockerRunnerHelper dockerRunnerHelper
 
-  PreCommitListener(Script context, Debugger debugger) {
+  PreCommitListener(Script context, Debugger debugger, DockerRunnerHelper dockerRunnerHelper) {
     this.context = context
     this.debugger = debugger
+    this.dockerRunnerHelper = dockerRunnerHelper
   }
 
   @Override
@@ -34,13 +36,15 @@ class PreCommitListener extends EventListener {
       return eventData
     }
 
-    this.context.execute(script: this.context.dockerRunCommand(
-      dockerImage: eventData.getPreCommitDockerImageName(),
-      fallbackCommand: 'pre-commit',
-      command: 'run -a --color=always',
-      dataIsCurrentDirectory: eventData.dockerDataIsCurrentDirectory(),
-      dataBasepath: eventData.getDockerDataBasepath(),
-    ))
+    this.dockerRunnerHelper.prepareRunCommand(
+      eventData.getPreCommitDockerImageName(),
+      'pre-commit',
+      [:],
+      [:],
+      'run -a --color=always',
+    )
+
+    this.dockerRunnerHelper.run()
 
     return eventData
   }
