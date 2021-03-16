@@ -23,10 +23,10 @@ class DockerRunnerHelper {
   String prepareRunCommand(
     String image,
     String fallbackCommand,
+    String command = '',
     Map additionalMounts = [:],
     Map environmentVariables = [:],
-    String command = '',
-    String network = 'bridge',
+    String network = '',
     Boolean asDaemon = false,
     String name = '',
     String entrypoint = '',

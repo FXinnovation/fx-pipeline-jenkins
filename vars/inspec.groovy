@@ -1,3 +1,7 @@
+import com.fxinnovation.di.IOC
+import com.fxinnovation.factory.OptionStringFactory
+import com.fxinnovation.helper.DockerRunnerHelper
+
 def exec(Map config = [:]){
   config.subCommand = 'exec'
     validParameters = [
@@ -19,50 +23,53 @@ def exec(Map config = [:]){
 }
 
 def call(Map config = [:]){
-  optionsString = ''
-  if (!config.containsKey('commandTarget') || !(config.commandTarget instanceof CharSequence)){
-    error('commandTarget parameter is mandatory')
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '', 'commandTarget parameter is mandatory')
+  mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
+  mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/inspec:latest')
+  mapAttributeCheck(config, 'subCommand', CharSequence, '', 'subCommand parameter is mandatory')
+
+  def dockerRunnerHelper = IOC.get(DockerRunnerHelper.class.getName())
+  def debugger = IOC.get(Debugger.class.getName())
+
+  if (debugger.debugVarExists()) {
+    dockerRunnerHelper.prepareRunCommand(
+      config.dockerImage,
+      'inspec',
+      '--version',
+    )
+    dockerRunnerHelper.run()
   }
-  if (!config.containsKey('dockerAdditionalMounts') || !(config.dockerAdditionalMounts instanceof Map)){
-    config.dockerAdditionalMounts = [:]
-  }
-  if (!config.containsKey('dockerEnvironmentVariables') || !(config.dockerEnvironmentVariables instanceof Map)){
-    config.dockerEnvironmentVariables = [:]
-  }
-  if (!config.containsKey('dockerImage') || !(config.dockerImage instanceof CharSequence)){
-    config.dockerImage = 'fxinnovation/inspec:latest'
-  }
+
+  dockerRunnerHelper.prepareRunCommand(
+    config.dockerImage,
+    'inspec',
+    this.getInspecSubCommand(config),
+    config.dockerAdditionalMounts,
+    config.dockerEnvironmentVariables
+  )
+
+  dockerRunnerHelper.run()
+}
+
+private String getInspecSubCommand(Map config = [:]) {
+  def optionStringFactory = new OptionStringFactory(this)
+  optionStringFactory.createOptionString('=')
+
   if (config.containsKey('target') && config.target instanceof CharSequence){
-    optionsString += "--target=${config.target} "
+    optionStringFactory.addOption('--target', config.target)
   }
   if (config.containsKey('jsonConfig') && config.jsonConfig instanceof CharSequence){
-    optionsString += "--json-config=${config.jsonConfig} "
+    optionStringFactory.addOption('--json-config', config.jsonConfig)
   }
 
-  def reporter = ''
+  optionStringFactory.addOption(config.commandTarget)
+
   if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
-    reporter = "--reporter ${config.reporter}"
+    optionStringFactory.addOption('--reporter', config.reporter)
   }
+  optionStringFactory.addOption('--chef-license', 'accept-silent')
+  optionStringFactory.addOption('--no-distinct-exit')
 
-  if (!config.containsKey('subCommand') || !(config.subCommand instanceof CharSequence)){
-    error('subCommand parameter is mandatory')
-  }
-
-  inspecCommand = dockerRunCommand(
-    dockerImage: config.dockerImage,
-    fallbackCommand: 'inspec',
-    additionalMounts: config.dockerAdditionalMounts,
-    environmentVariables: config.dockerEnvironmentVariables,
-    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
-    dataBasepath: config.dockerDataBasepath,
-    entrypoint: ''
-  )
-
-  execute(
-    script: "${inspecCommand} --version"
-  )
-
-  return execute(
-    script: "${inspecCommand} ${config.subCommand} ${optionsString} ${config.commandTarget} ${reporter} --chef-license=accept-silent --no-distinct-exit"
-  )
+  return "${config.subCommand} ${optionStringFactory.getOptionString().toString()}"
 }

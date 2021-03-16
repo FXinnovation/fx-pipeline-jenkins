@@ -39,8 +39,6 @@ class PreCommitListener extends EventListener {
     this.dockerRunnerHelper.prepareRunCommand(
       eventData.getPreCommitDockerImageName(),
       'pre-commit',
-      [:],
-      [:],
       'run -a --color=always',
     )
 

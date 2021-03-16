@@ -128,27 +128,10 @@ def inspec(Map config = [:], ClosureHelper closureHelper) {
               error('inspecTarget must be one of (gcp|azure|aws)')
               break
           }
-          inspecConfig = """
-          {
-            "reporter": {
-              "cli": {
-                "stdout": true
-              },
-              "junit": {
-                "stdout": false,
-                "file": "${config.commandTarget}-inspec-results.xml"
-              }
-            }
-          }
-          """
-    writeFile(
-      file: 'inspec-config.json',
-      text: inspecConfig
-    )
     try{
       inspec.exec(
         target: "${config.inspecTarget}://",
-        jsonConfig: 'inspec-config.json',
+        reporter: "cli junit2:${config.commandTarget}-inspec-results.xml",
         commandTarget: config.commandTarget,
         dockerEnvironmentVariables: envVariables
       )

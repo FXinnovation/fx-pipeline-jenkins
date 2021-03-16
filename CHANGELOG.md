@@ -16,6 +16,7 @@
 * feat: (fxDockerImage) move from private pipeline to public
 * feat: (fxDockerImage) create standardDockerImage for standardPipeline
 * refactor: (runDockerCommand) Adds class to run docker command and deprecates dockerRunCommand
+* refactor: (inspec) Rewrite function: allow --reporter option, use OptionStringFactory and DockerRunnerHelper
 
 ## 1.4.2
 
