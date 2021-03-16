@@ -1,11 +1,8 @@
 def call(Map config = [:]){
-  fxRegisterListeners()
-
   mapAttributeCheck(config, 'image',     CharSequence, '', 'The image key must be defined')
   mapAttributeCheck(config, 'tag',       CharSequence, '', 'This tags key must be defined')
   mapAttributeCheck(config, 'registry',  CharSequence, '')
   mapAttributeCheck(config, 'namespace', CharSequence, '')
-  mapAttributeCheck(config, 'baseline', CharSequence, 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz')
 
   try{
     infiniteLoopScript = """
@@ -44,13 +41,16 @@ def call(Map config = [:]){
     }
     dockerImage += "${config.image}:${config.tag}"
     execute(
-      script: "docker run -d \
-        -v \$(pwd):/data \
-        -w /data \
-        --name inspec-test \
-        --entrypoint sh \
-        ${dockerImage} \
-        infiniteLoop.sh"
+      script: dockerRunCommand(
+        dockerImage: dockerImage,
+        fallbackCommand: 'inspec',
+        command: 'infiniteLoop.sh',
+        asDaemon: true,
+        name: 'inspec-test',
+        entrypoint: 'sh',
+        dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
+        dataBasepath: config.dockerDataBasepath,
+      )
     )
     try{
       inspec.exec(
@@ -59,7 +59,7 @@ def call(Map config = [:]){
         dockerAdditionalMounts: [
           '/var/run/docker.sock': '/var/run/docker.sock'
         ],
-        commandTarget: config.baseline
+        commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
       )
     }catch(inspecExecError){
       println 'Inspec tests have failed, but we\'re still being nice for now'
@@ -68,7 +68,7 @@ def call(Map config = [:]){
     throw (inspecError)
   }finally{
     execute(
-      script: 'docker kill inspec-test',
+      script: 'docker kill inspec-test && docker rm inspec-test',
       throwError: false
     )
     junit(

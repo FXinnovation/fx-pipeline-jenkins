@@ -29,7 +29,7 @@ def call(Map config = [:]) {
     debugger.printDebug("Set ${config.dataBasepath} as basepath for docker commands.")
   }
 
-  optionStringFactory.addOption('--rm')
+//  optionStringFactory.addOption('--rm')
   optionStringFactory.addOption('-w', '/data')
   optionStringFactory.addOption('-v', "${config.dataBasepath}:/data")
 
