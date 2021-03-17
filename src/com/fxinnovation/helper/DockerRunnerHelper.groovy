@@ -39,11 +39,6 @@ class DockerRunnerHelper {
       return fallbackCommand
     }
 
-//    if (dataIsCurrentDirectory) {
-//      dataBasepath = new File(getClass().protectionDomain.codeSource.location.path).parent
-//      this.debugger.printDebug("Set ${this.dataBasepath} as basepath for docker commands.")
-//    }
-
     this.optionStringFactory.addOption('-w', this.DEFAULT_SHARE_PATH)
     this.optionStringFactory.addOption('-v', "${this.dataBasepath}:${this.DEFAULT_SHARE_PATH}")
 
@@ -73,7 +68,7 @@ class DockerRunnerHelper {
 
     if (['host', 'overlay', 'macvlan', 'none', 'bridge'].contains(network)) {
       this.optionStringFactory.addOption('--network', network)
-    } else {
+    } else if ('' != network) {
       throw new Exception(network + ' is not a valid value for docker network.')
     }
 

@@ -2,7 +2,6 @@ package com.fxinnovation.listener.standard
 
 import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.event_data.PipelineEventData
-import com.fxinnovation.factory.OptionStringFactory
 import com.fxinnovation.helper.DockerRunnerHelper
 import com.fxinnovation.io.Debugger
 import com.fxinnovation.observer.EventDataInterface
@@ -50,7 +49,7 @@ class PreCommitListener extends EventListener {
   private Boolean shouldRun(PipelineEventData eventData) {
     return (
       this.context.fileExists('.pre-commit-config.yaml') ||
-        this.context.fileExists('.pre-commit-config.yml')
+      this.context.fileExists('.pre-commit-config.yml')
     )
   }
 }

@@ -1,4 +1,5 @@
 import com.fxinnovation.data.ScmInfo
+import com.fxinnovation.deprecation.DeprecatedFunction
 import com.fxinnovation.di.IOC
 import com.fxinnovation.event.PipelineEvents
 import com.fxinnovation.event_data.PipelineEventData
@@ -244,16 +245,23 @@ private def pipeline(Map config, Map closures) {
     unit: config.timeoutUnit
   ) {
     try {
+      DeprecatedFunction deprecatedFunction = IOC.get(DeprecatedFunction.class.getName())
+
       ansiColor('xterm') {
         stage('prepare') {
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_PREPARE, pipelineEventData)
-          closureHelper.execute('prePrepare')
-
+          if (closureHelper.isDefined('prePrepare')) {
+            return deprecatedFunction.execute({
+              closureHelper.execute('prePrepare')
+            }, 'closure:prePrepare', 'Use Observer system. Create listener listening to PipelineEvents.PRE_PREPARE”.', '01-03-2022')
+          }
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PREPARE, pipelineEventData)
 
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_PREPARE, pipelineEventData)
           if (closureHelper.isDefined('postPrepare')) {
-            closures.postPrepare(IOC.get(ScmInfo.class.getName()))
+            return deprecatedFunction.execute({
+              closures.postPrepare(IOC.get(ScmInfo.class.getName()))
+            }, 'closure:postPrepare', 'Use Observer system. Create listener listening to PipelineEvents.POST_PREPARE”.', '01-03-2022')
           }
         }
 
@@ -264,7 +272,11 @@ private def pipeline(Map config, Map closures) {
         }
 
         stage('pipeline') {
-          closureHelper.executeWithinStage('prePipeline')
+          if (closureHelper.isDefined('prePipeline')) {
+            return deprecatedFunction.execute({
+              closureHelper.executeWithinStage('prePipeline')
+            }, 'closure:prePipeline', 'Use Observer system. Create listener listening to PipelineEvents.PRE_PIPELINE”.', '01-03-2022')
+          }
 
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_TEST, pipelineEventData)
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.TEST, pipelineEventData)
@@ -276,7 +288,11 @@ private def pipeline(Map config, Map closures) {
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PUBLISH, pipelineEventData)
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_PUBLISH, pipelineEventData)
 
-          closureHelper.executeWithinStage('postPipeline')
+          if (closureHelper.isDefined('postPipeline')) {
+            return deprecatedFunction.execute({
+              closureHelper.executeWithinStage('postPipeline')
+            }, 'closure:postPipeline', 'Use Observer system. Create listener listening to PipelineEvents.POST_PIPELINE”.', '01-03-2022')
+          }
         }
       }
     } catch (error) {

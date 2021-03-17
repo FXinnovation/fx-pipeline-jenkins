@@ -1,28 +1,29 @@
 import com.fxinnovation.di.IOC
 import com.fxinnovation.factory.OptionStringFactory
 import com.fxinnovation.helper.DockerRunnerHelper
+import com.fxinnovation.io.Debugger
 
-def exec(Map config = [:]){
+def exec(Map config = [:]) {
   config.subCommand = 'exec'
-    validParameters = [
-    'target': '',
-    'jsonConfig': '',
-    'dockerImage':'',
-    'subCommand':'',
-    'reporter':'',
-    'dockerAdditionalMounts':'',
-    'dockerEnvironmentVariables':'',
-    'commandTarget':'',
+  validParameters = [
+    'target'                    : '',
+    'jsonConfig'                : '',
+    'dockerImage'               : '',
+    'subCommand'                : '',
+    'reporter'                  : '',
+    'dockerAdditionalMounts'    : '',
+    'dockerEnvironmentVariables': '',
+    'commandTarget'             : '',
   ]
-  for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
+  for (parameter in config) {
+    if (!validParameters.containsKey(parameter.key)) {
       error("inspec - Parameter \"${parameter.key}\" is not valid for \"exec\", please remove it!")
     }
   }
   inspec(config)
 }
 
-def call(Map config = [:]){
+def call(Map config = [:]) {
   mapAttributeCheck(config, 'commandTarget', CharSequence, '', 'commandTarget parameter is mandatory')
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
@@ -56,16 +57,16 @@ private String getInspecSubCommand(Map config = [:]) {
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString('=')
 
-  if (config.containsKey('target') && config.target instanceof CharSequence){
+  if (config.containsKey('target') && config.target instanceof CharSequence) {
     optionStringFactory.addOption('--target', config.target)
   }
-  if (config.containsKey('jsonConfig') && config.jsonConfig instanceof CharSequence){
+  if (config.containsKey('jsonConfig') && config.jsonConfig instanceof CharSequence) {
     optionStringFactory.addOption('--json-config', config.jsonConfig)
   }
 
   optionStringFactory.addOption(config.commandTarget)
 
-  if (config.containsKey('reporter') && config.reporter instanceof CharSequence){
+  if (config.containsKey('reporter') && config.reporter instanceof CharSequence) {
     optionStringFactory.addOption('--reporter', config.reporter)
   }
   optionStringFactory.addOption('--chef-license', 'accept-silent')
