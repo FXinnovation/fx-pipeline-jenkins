@@ -80,7 +80,7 @@ class DockerRunnerHelper {
     return this.runCommand
   }
 
-  void run(CharSequence image = '', Boolean forcePullImage = false) {
+  void run(CharSequence image = '', throwError = true, Boolean forcePullImage = false) {
     if ('' ==  this.runCommand) {
       throw new Exception('Cannot run a docker command that was not prepared. Please call “prepareRunCommand”.')
     }
@@ -98,6 +98,7 @@ class DockerRunnerHelper {
     }
 
     this.context.execute(
+      throwError: throwError,
       script: this.runCommand
     )
 

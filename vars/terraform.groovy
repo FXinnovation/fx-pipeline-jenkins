@@ -1,4 +1,6 @@
+import com.fxinnovation.di.IOC
 import com.fxinnovation.factory.OptionStringFactory
+import com.fxinnovation.helper.DockerRunnerHelper
 import com.fxinnovation.io.Debugger
 
 Map getShowValidParameters() {
@@ -487,9 +489,10 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
 
-  def debugger = new Debugger(this)
-  def optionStringFactory = new OptionStringFactory(this)
+  Debugger debugger = IOC.get(Debugger.class.getName())
+  OptionStringFactory optionStringFactory = IOC.get(OptionStringFactory.class.getName())
   optionStringFactory.createOptionString('=')
+  DockerRunnerHelper dockerRunnerHelper = IOC.get(DockerRunnerHelper.class.getName())
 
   if ( config.containsKey('backend') ){
     optionStringFactory.addOption('-backend', config.backend, Boolean)
@@ -600,24 +603,27 @@ def call(Map config = [:]){
   // local-exec with terraform.
   config.dockerAdditionalMounts.put('/var/run/docker.sock', '/var/run/docker.sock')
 
-  terraformCommand = dockerRunCommand(
-    dockerImage: config.dockerImage,
-    fallbackCommand:  'terraform',
-    additionalMounts: config.dockerAdditionalMounts,
-    environmentVariables: config.dockerEnvironmentVariables,
-    network: config.dockerNetwork,
-    dataIsCurrentDirectory: config.dockerDataIsCurrentDirectory,
-    dataBasepath: config.dockerDataBasepath,
-  )
-
   if (debugger.debugVarExists()) {
-    execute(
-      script: "${terraformCommand} version"
+    dockerRunnerHelper.prepareRunCommand(
+      config.dockerImage,
+      'terraform',
+      "version",
+      config.dockerAdditionalMounts,
+      config.dockerEnvironmentVariables,
+      config.dockerNetwork
     )
+
+    dockerRunnerHelper.run()
   }
 
-  return execute(
-    throwError: config.throwError,
-    script: "${terraformCommand} ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}"
+  dockerRunnerHelper.prepareRunCommand(
+    config.dockerImage,
+    'terraform',
+    "${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}",
+    config.dockerAdditionalMounts,
+    config.dockerEnvironmentVariables,
+    config.dockerNetwork
   )
+
+  dockerRunnerHelper.run(config.dockerImage,  config.throwError)
 }

@@ -19,7 +19,7 @@ def call(Map config = [:], Map closures = [:]) {
 
   closureHelper = new ClosureHelper(this, closures)
 
-  if(config.runKind) {
+  if (config.runKind) {
     config.podVolumes = [
       hostPathVolume(mountPath: '/lib/modules', hostPath: '/lib/modules'),
       hostPathVolume(mountPath: '/sys/fs/cgroup', hostPath: '/sys/fs/cgroup'),
@@ -27,11 +27,11 @@ def call(Map config = [:], Map closures = [:]) {
     ]
   }
 
-  closureHelper.addClosure('pipeline', { ScmInfo scmInfo ->
+  closureHelper.addClosure('pipeline', {ScmInfo scmInfo ->
     def deployFileExists = fileExists('deploy.tf')
     def toDeploy = false
 
-    if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()){
+    if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()) {
       toDeploy = true
     }
 
@@ -53,7 +53,7 @@ def call(Map config = [:], Map closures = [:]) {
     def kindDockerVolume = [:]
     def terraformNetwork = 'bridge'
     try {
-      if(config.runKind) {
+      if (config.runKind) {
         execute(
           script: """
 set -e
@@ -73,10 +73,10 @@ do
   
   timeout_count=\$(( \$timeout_count + 1 ))
 done
-"""       )
+""")
 
         kindDockerVolume = [
-          '/root/.kube':'/root/.kube',
+          '/root/.kube': '/root/.kube',
         ]
 
         terraformNetwork = 'host'
@@ -85,22 +85,22 @@ done
       def dockerAdditionalMounts = ['dockerAdditionalMounts': (kindDockerVolume + config.commonOptions.dockerAdditionalMounts)]
       def dockerNetwork = ['dockerNetwork': terraformNetwork]
 
-      def EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
-      def TerraformEventData terraformEventData = new TerraformEventData()
+      EventDispatcher eventDispatcher = IOC.get(EventDispatcher.class.getName())
+      TerraformEventData terraformEventData = new TerraformEventData()
       terraformEventData.setScmInfo(scmInfo)
       terraformEventData.setExtraData(config.extraData)
       terraformEventData.setExtraOptions(config.commonOptions)
 
       terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PIPELINE, terraformEventData)
-      for(commandTarget in commandTargets) {
+      for (commandTarget in commandTargets) {
         pipelineTerraform(
           config + [
             commandTarget     : commandTarget,
             testPlanOptions   : [
               vars: config.testPlanVars,
             ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
-            testApplyOptions : config.commonOptions + dockerAdditionalMounts + dockerNetwork,
-            fmtOptions: config.commonOptions,
+            testApplyOptions  : config.commonOptions + dockerAdditionalMounts + dockerNetwork,
+            fmtOptions        : config.commonOptions,
             validateOptions   : [
               vars: config.validateVars
             ] + config.commonOptions,
@@ -109,12 +109,14 @@ done
             ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
             publish           : deployFileExists,
           ], [
-            publish    : { publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures()) }
-          ]
+          publish: {
+            publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures())
+          }
+        ]
         )
       }
       terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PIPELINE, terraformEventData)
-    } catch(error) {
+    } catch (error) {
       throw new Exception(error)
     }
   }
@@ -132,8 +134,8 @@ done
 private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists, Map closures = [:]) {
   plan = terraform.plan([
     commandTarget: commandTarget,
-    out: 'plan.out',
-    vars: config.publishPlanVars
+    out          : 'plan.out',
+    vars         : config.publishPlanVars
   ] + config.commonOptions)
 
   if (deployFileExists) {
@@ -154,8 +156,7 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
 
   if (closures.containsKey("notification")) {
     closures.notification('PENDING')
-  }
-  else {
+  } else {
     fx_notify(
       status: 'PENDING'
     )
