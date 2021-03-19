@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1
+
+* fix: (terraform) allows Jenkinsfile in deployments
+
 ## 2.0.0
 
 * feat: (DI component) Only add a listener to the listeners bag when it’s not already inside

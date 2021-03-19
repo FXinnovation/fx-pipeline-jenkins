@@ -12,7 +12,8 @@ class TerraformFileStandardListener extends EventListener {
     'providers.tf',
     '.gitignore',
     '.pre-commit-config.yaml',
-    'README.md'
+    'README.md',
+    'Jenkinsfile',
   ]
   public static final DEPLOY_MANDATORY_FILES = [
     'deploy.tf',
