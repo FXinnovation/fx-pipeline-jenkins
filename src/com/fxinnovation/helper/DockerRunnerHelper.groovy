@@ -80,7 +80,7 @@ class DockerRunnerHelper {
     return this.runCommand
   }
 
-  void run(CharSequence image = '', throwError = true, Boolean forcePullImage = false) {
+  Map run(CharSequence image = '', throwError = true, Boolean forcePullImage = false) {
     if ('' ==  this.runCommand) {
       throw new Exception('Cannot run a docker command that was not prepared. Please call “prepareRunCommand”.')
     }
@@ -97,12 +97,14 @@ class DockerRunnerHelper {
       this.context.execute(script: "docker pull ${image}")
     }
 
-    this.context.execute(
+    def result = this.context.execute(
       throwError: throwError,
       script: this.runCommand
     )
 
     this.runCommand = ''
+
+    return result
   }
 
   private Boolean isDockerInstalled() {

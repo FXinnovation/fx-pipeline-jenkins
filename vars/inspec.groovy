@@ -50,7 +50,7 @@ def call(Map config = [:]) {
     config.dockerEnvironmentVariables
   )
 
-  dockerRunnerHelper.run()
+  return dockerRunnerHelper.run()
 }
 
 private String getInspecSubCommand(Map config = [:]) {

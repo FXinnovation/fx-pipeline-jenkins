@@ -625,5 +625,5 @@ def call(Map config = [:]){
     config.dockerNetwork
   )
 
-  dockerRunnerHelper.run(config.dockerImage,  config.throwError)
+  return dockerRunnerHelper.run(config.dockerImage,  config.throwError)
 }

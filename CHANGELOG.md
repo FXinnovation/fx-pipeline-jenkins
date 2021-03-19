@@ -4,6 +4,7 @@
 
 * fix: (terraform) allows Jenkinsfile in deployments
 * fix: (terraform) allows versions.tf in deployments
+* fix: (DockerRunnerHelper) makes sure DockerRunnerHelper.run returns its execute results
 
 ## 2.0.0
 
