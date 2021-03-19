@@ -6,14 +6,15 @@ import com.fxinnovation.observer.EventListener
 
 class TerraformFileStandardListener extends EventListener {
   public static final DEPLOY_ONLY_ALLOWED_FILES = [
-    'deploy.tf',
-    'variables.tf',
-    'outputs.tf',
-    'providers.tf',
     '.gitignore',
     '.pre-commit-config.yaml',
-    'README.md',
+    'deploy.tf',
     'Jenkinsfile',
+    'outputs.tf',
+    'providers.tf',
+    'README.md',
+    'variables.tf',
+    'versions.tf',
   ]
   public static final DEPLOY_MANDATORY_FILES = [
     'deploy.tf',

@@ -3,6 +3,7 @@
 ## 2.0.1
 
 * fix: (terraform) allows Jenkinsfile in deployments
+* fix: (terraform) allows versions.tf in deployments
 
 ## 2.0.0
 
