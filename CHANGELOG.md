@@ -1,11 +1,12 @@
 # Changelog
 
+## 2.1.0
+
+* feat: support non master branch as default branch
+
 ## 2.0.3
 
 * fix: (terraform) allows files and templates folders in deployments
-
-## 2.0.2
-
 
 ## 2.0.1
 
