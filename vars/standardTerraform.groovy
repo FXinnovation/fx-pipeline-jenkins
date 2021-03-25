@@ -68,9 +68,9 @@ do
   if [[ \$((\$timeout_count % 10)) -eq 0 ]]; then
        echo "Waiting until KIND will be ready... (\$timeout_count s elapsed)"
    fi
-  
+
   sleep 1
-  
+
   timeout_count=\$(( \$timeout_count + 1 ))
 done
 """)
@@ -170,4 +170,3 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
     commandTarget: 'plan.out'
   ] + config.commonOptions)
 }
-
