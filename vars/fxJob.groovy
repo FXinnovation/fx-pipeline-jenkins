@@ -13,6 +13,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
   mapAttributeCheck(config, 'checkoutDirectory', CharSequence, '')
   mapAttributeCheck(config, 'checkoutRepositoryURL', CharSequence, '')
   mapAttributeCheck(config, 'checkoutTag', CharSequence, '')
+  mapAttributeCheck(config, 'defaultBranchName', CharSequence, 'master')
   mapAttributeCheck(config, 'dockerRegistry', CharSequence, '')
   mapAttributeCheck(config, 'dockerRegistryCredentialId', CharSequence, 'jenkins-fxinnovation-dockerhub')
   mapAttributeCheck(config, 'dockerRegistryLogin', Boolean, true)
@@ -237,7 +238,8 @@ private def pipeline(Map config, Map closures) {
     config.dockerRegistry,
     config.dockerRegistryCredentialId,
     config.headerMessage,
-    config.preCommitDockerImageName
+    config.preCommitDockerImageName,
+    config.defaultBranchName
   )
 
   timeout(

@@ -39,9 +39,9 @@ class CheckoutListener extends EventListener {
 
     def scmInfo = new ScmInfo(
       this.getCommitId(),
-      this.getLastCommitId(),
+      this.getLastCommitId(eventData),
       this.getBranch(),
-      this.getDefaultBranch(),
+      this.getDefaultBranch(eventData),
       this.getTag(),
       this.getLatestTag(),
       this.getRepositoryName(this.context.scm)
@@ -89,8 +89,8 @@ class CheckoutListener extends EventListener {
     return executeCommand('git rev-parse HEAD')
   }
 
-  private String getLastCommitId() {
-    return executeCommand('git rev-parse origin/' + this.getDefaultBranch())
+  private String getLastCommitId(PipelineEventData eventData) {
+    return executeCommand('git rev-parse origin/' + this.getDefaultBranch(eventData))
   }
 
   private String getBranch() {
@@ -127,13 +127,13 @@ class CheckoutListener extends EventListener {
     }
   }
 
-  private String getDefaultBranch() {
+  private String getDefaultBranch(PipelineEventData eventData) {
     def defaultBranch = executeCommand('git symbolic-ref --short HEAD')
 
     if ('' == defaultBranch) {
-      // This is not robust as “master” might not be the default branch
+      // This is not robust
       // However Jenkins is unable to get HEAD pointer on remote, thus making it hard to get default branch
-      return 'master'
+      return eventData.getDefaultBranchName()
     }
 
     return defaultBranch
