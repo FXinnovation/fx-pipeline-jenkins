@@ -15,6 +15,8 @@ class TerraformFileStandardListener extends EventListener {
     'README.md',
     'variables.tf',
     'versions.tf',
+    'files',
+    'templates',
   ]
   public static final DEPLOY_MANDATORY_FILES = [
     'deploy.tf',
