@@ -461,10 +461,14 @@ def fmt(Map config = [:]){
     'throwError':'',
   ]
   for ( parameter in config ) {
+    println("Handling ${parameter.key} with ${parameter.value}")
     if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+      config.remove(parameter.key)
+      println("Since ${parameter.key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+  println("Call terraform with config: ${config}")
   terraform(config)
 }
 
@@ -481,6 +485,9 @@ Map getCommonValidParameters() {
 }
 
 def call(Map config = [:]){
+  Debugger debugger = IOC.get(Debugger.class.getName())
+  debugger.printDebug("Terraform ${config.subCommand}: Starting checking config.")
+
   mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/terraform:latest')
   mapAttributeCheck(config, 'subCommand', CharSequence, '', 'ERROR: The subcommand must be defined!')
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
@@ -489,112 +496,149 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
 
-  Debugger debugger = IOC.get(Debugger.class.getName())
+  debugger.printDebug("Terraform ${config.subCommand}: Initializing Classes.")
+
   OptionStringFactory optionStringFactory = IOC.get(OptionStringFactory.class.getName())
   optionStringFactory.createOptionString('=')
   DockerRunnerHelper dockerRunnerHelper = IOC.get(DockerRunnerHelper.class.getName())
 
+  debugger.printDebug("Terraform ${config.subCommand}: Starting input validation.")
+
+  debugger.printDebug("Terraform ${config.subCommand}: Validing backend configuration.")
   if ( config.containsKey('backend') ){
     optionStringFactory.addOption('-backend', config.backend, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing check configuration.")
   if ( config.containsKey('check') ){
     optionStringFactory.addOption('-check', config.check, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing list configuration.")
   if ( config.containsKey('list') ){
     optionStringFactory.addOption('-list', config.list, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing diff configuration.")
   if ( config.containsKey('diff') ){
     optionStringFactory.addOption('-diff', config.diff, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing write configuration.")
   if ( config.containsKey('write') ){
     optionStringFactory.addOption('-write', config.write, Boolean)
   }
-  if ( config.containsKey('backendConfigs') && config.backendConfigs ){
+  debugger.printDebug("Terraform ${config.subCommand}: Validing backendConfigs configuration.")
+  if ( config.containsKey('backendConfigs') && config.backendConfigs && [] != config.backendConfigs ){
     optionStringFactory.addOption('-backend-config', config.backendConfigs, ArrayList)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing backup configuration.")
   if ( config.containsKey('backup') ){
     optionStringFactory.addOption('-backup', config.backup)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing backupOut configuration.")
   if ( config.containsKey('backupOut') ){
     optionStringFactory.addOption('-backend-out', config.backupOut)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing checkVariables configuration.")
   if ( config.containsKey('checkVariables') ){
     optionStringFactory.addOption('-check-variables', config.checkVariables, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing force configuration.")
   if ( config.containsKey('force') && config.force ){
     optionStringFactory.addOption('-force')
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing forceCopy configuration.")
   if ( config.containsKey('forceCopy') && config.forceCopy ){
     optionStringFactory.addOption('-force-copy')
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing fromModule configuration.")
   if ( config.containsKey('fromModule') && config.fromModule ){
     optionStringFactory.addOption('-from-module', config.fromModule)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing get configuration.")
   if ( config.containsKey('get') ){
     optionStringFactory.addOption('-get', config.get, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing getPlugins configuration.")
   if ( config.containsKey('getPlugins') ){
     optionStringFactory.addOption('-get-plugins', config.getPlugins, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing input configuration.")
   if ( config.containsKey('input') ){
     // NOTE: Since this is jenkins executing it, if input has been set, it must
     // be forced set to false.
     optionStringFactory.addOption('-input', 'false')
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing lock configuration.")
   if ( config.containsKey('lock') ){
     optionStringFactory.addOption('-lock', config.lock, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing lockTimeout configuration.")
   if ( config.containsKey('lockTimeout') && config.lockTimeout){
     optionStringFactory.addOption('-lock-timeout', config.lockTimeout)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing moduleDepth configuration.")
   if ( config.containsKey('moduleDepth') && config.moduleDepth ){
     optionStringFactory.addOption('-module-depth', config.moduleDepth, Integer)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing noColor configuration.")
   if ( config.containsKey('noColor') && config.noColor ){
     optionStringFactory.addOption('-no-color')
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing out configuration.")
   if ( config.containsKey('out') && config.out ){
     optionStringFactory.addOption('-out', config.out)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing parallelism configuration.")
   if ( config.containsKey('parallelism') && config.parallelism ){
     optionStringFactory.addOption('-parallelism', config.parallelism, Integer)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing pluginDirs configuration.")
   if ( config.containsKey('pluginDirs') && config.pluginDirs ){
     optionStringFactory.addOption('-plugin-dir', config.pluginDirs, ArrayList)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing reconfiure configuration.")
   if ( config.containsKey('reconfigure') && config.reconfigure ){
     optionStringFactory.addOption('-reconfigure')
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing refresh configuration.")
   if ( config.containsKey('refresh') ){
     optionStringFactory.addOption('-refresh', config.refresh, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing state configuration.")
   if ( config.containsKey('state') && config.state ){
     optionStringFactory.addOption('-state', config.state)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing stateOut configuration.")
   if ( config.containsKey('stateOut') ){
     optionStringFactory.addOption('-state-out', config.stateOut)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing targets configuration.")
   if ( config.containsKey('targets') && config.targets ){
     optionStringFactory.addOption('-target', config.targets, ArrayList)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing upgrade configuration.")
   if ( config.containsKey('upgrade') ){
     optionStringFactory.addOption('-upgrade', config.upgrade, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing varFile configuration.")
   if ( config.containsKey('varFile') && config.varFile ){
     optionStringFactory.addOption('-var-file', config.varFile)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing vars configuration.")
   if ( config.containsKey('vars') && config.vars ){
     optionStringFactory.addOption('-var', config.vars, ArrayList)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing verifyPlugins configuration.")
   if ( config.containsKey('verifyPlugins') ){
     optionStringFactory.addOption('-verify-plugins', config.verifyPlugins, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing json configuration.")
   if ( config.containsKey('json') ){
     optionStringFactory.addOption('-json', config.json, Boolean)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing module configuration.")
   if ( config.containsKey('module') && config.module ){
     optionStringFactory.addOption('-module', config.module)
   }
+  debugger.printDebug("Terraform ${config.subCommand}: Validing moduleDepth configuration.")
   if ( config.containsKey('moduleDepth') && config.moduleDepth ){
     optionStringFactory.addOption('module-depth', config.moduleDepth, Integer)
   }
@@ -602,6 +646,8 @@ def call(Map config = [:]){
   // We're bind mounting the docker socket as well to support doing
   // local-exec with terraform.
   config.dockerAdditionalMounts.put('/var/run/docker.sock', '/var/run/docker.sock')
+
+  debugger.printDebug("Terraform ${config.subCommand}: Validated all inputs.")
 
   if (debugger.debugVarExists()) {
     dockerRunnerHelper.prepareRunCommand(
@@ -616,6 +662,8 @@ def call(Map config = [:]){
     dockerRunnerHelper.run()
   }
 
+  debugger.printDebug("Going to run terrafrom ${config.subCommand} with the following configuration: ${config}")
+
   dockerRunnerHelper.prepareRunCommand(
     config.dockerImage,
     'terraform',
@@ -625,5 +673,7 @@ def call(Map config = [:]){
     config.dockerNetwork
   )
 
+  debugger.printDebug("Terraform ${config.subCommand}: Prepared command with dockerRunnerHelper.")
   return dockerRunnerHelper.run(config.dockerImage,  config.throwError)
+  debugger.printDebug("Terraform ${config.subCommand}: Ran command with dockerRunnerHelper.")
 }

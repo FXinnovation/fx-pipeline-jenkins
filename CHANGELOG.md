@@ -1,6 +1,12 @@
 # Changelog
 
-## 2.1.0
+## 2.0.4
+
+* fix: (terraform) add a lot of debug messages
+* fix: (terraform) allows data files in deployments
+* fix: (terraform) pass commonOption to init as well
+
+## 2.0.3
 
 * feat: support non master branch as default branch
 

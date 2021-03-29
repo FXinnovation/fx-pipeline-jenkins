@@ -38,8 +38,8 @@ class TerraformFmtListener extends EventSubscriber {
         ] + eventData.getExtraOptions()
       )
     } catch(Exception fmtError) {
-      this.context.printDebug(fmtError.getMessage())
-      this.context.error("ERROR: Terraform fmt command has failed!")
+      this.context.printDebug(eventData.getExtraOptions())
+      this.context.error("ERROR: Terraform fmt command has failed:" + fmtError.getMessage())
     }
 
     return eventData

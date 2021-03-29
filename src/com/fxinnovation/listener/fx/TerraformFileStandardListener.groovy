@@ -5,19 +5,7 @@ import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 
 class TerraformFileStandardListener extends EventListener {
-  public static final DEPLOY_ONLY_ALLOWED_FILES = [
-    '.gitignore',
-    '.pre-commit-config.yaml',
-    'deploy.tf',
-    'Jenkinsfile',
-    'outputs.tf',
-    'providers.tf',
-    'README.md',
-    'variables.tf',
-    'versions.tf',
-    'files',
-    'templates',
-  ]
+  public static final DEPLOY_ONLY_ALLOWED_PATTERN = /(\.gitignore|\.pre-commit-config\.yaml|data(_[a-z0-9_-]+)?\.tf|deploy\.tf|Jenkinsfile|outputs\.tf|providers\.tf|README\.md|variables\.tf|versions\.tf|files|templates)/
   public static final DEPLOY_MANDATORY_FILES = [
     'deploy.tf',
     '.gitignore',
@@ -45,7 +33,7 @@ class TerraformFileStandardListener extends EventListener {
 
   EventDataInterface run(EventDataInterface eventData = null) {
     if (this.isCurrentCodeTerraformDeployment()) {
-      this.checkOnlyHasFiles(this.DEPLOY_ONLY_ALLOWED_FILES)
+      this.checkOnlyHasFiles(this.DEPLOY_ONLY_ALLOWED_PATTERN)
       this.checkContainsFiles(this.DEPLOY_MANDATORY_FILES)
     } else {
       this.checkContainsFiles(this.MODULE_MANDATORY_FILES)
@@ -54,10 +42,10 @@ class TerraformFileStandardListener extends EventListener {
     return eventData
   }
 
-  private void checkOnlyHasFiles(List validFiles) {
+  private void checkOnlyHasFiles(String validPattern) {
     for (filename in this.context.execute(script: "ls").stdout.split()) {
-      if (!validFiles.contains(filename)) {
-        throw new Exception("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, create a single “deploy.tf” with optional “${validFiles.join("/")}” files.")
+      if (!(filename =~ validPattern)) {
+        throw new Exception("The current build is a candidate to publish but it contains a “${filename}” file. This does not comply with FX standard. For deployments, only the following file patterns are allowed: ${this.DEPLOY_ONLY_ALLOWED_PATTERN}")
       }
     }
   }
