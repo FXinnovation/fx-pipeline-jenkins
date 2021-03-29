@@ -334,12 +334,18 @@ def plan(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
   ]
-  for ( parameter in config ) {
-    if ( !(validParameters.containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!(validParameters.containsKey(key) || getCommonValidParameters().containsKey(key))) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+
   config.input=false
+  println("Configuration: ${config}")
   terraform(config)
 }
 
@@ -460,11 +466,12 @@ def fmt(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
   ]
-  for ( parameter in config ) {
-    println("Handling ${parameter.key} with ${parameter.value}")
-    if ( !validParameters.containsKey(parameter.key)){
-      config.remove(parameter.key)
-      println("Since ${parameter.key} is not valid for ${config.subCommand}, we removed it. :)")
+
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!validParameters.containsKey(key)){
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
       println("Configuration: ${config}")
     }
   }

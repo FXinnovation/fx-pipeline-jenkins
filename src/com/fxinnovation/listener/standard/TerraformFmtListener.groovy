@@ -17,8 +17,7 @@ class TerraformFmtListener extends EventSubscriber {
   @Override
   List<String> getSubscribedEvents() {
     return [
-      TerraformEvents.FMT,
-      TerraformEvents.PRE_PIPELINE
+      TerraformEvents.FMT
     ]
   }
 
