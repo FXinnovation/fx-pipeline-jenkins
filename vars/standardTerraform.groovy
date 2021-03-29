@@ -101,6 +101,7 @@ done
             ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
             testApplyOptions  : config.commonOptions + dockerAdditionalMounts + dockerNetwork,
             fmtOptions        : config.commonOptions,
+            initOptions       : config.commonOptions,
             validateOptions   : [
               vars: config.validateVars
             ] + config.commonOptions,
