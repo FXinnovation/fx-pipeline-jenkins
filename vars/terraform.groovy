@@ -20,11 +20,15 @@ Map getShowValidParameters() {
 
 def show(Map config = [:]){
   config.subCommand = 'show'
-  for ( parameter in config ) {
-    if ( !(getShowValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!(getShowValidParameters().containsKey(key) || getCommonValidParameters().containsKey(key))) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+
   // NOTE: This has been commented out becasue of https://github.com/hashicorp/terraform/issues/23377
   // it can be activated again when the bug is resolved. (not too long I hope)
   // terraform(config)
