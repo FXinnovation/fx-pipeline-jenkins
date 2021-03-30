@@ -48,11 +48,16 @@ def output(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
   ]
-  for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!validParameters.containsKey(key)) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+
+  println("Configuration: ${config}")
   terraform(config)
 }
 
@@ -70,11 +75,16 @@ def validate(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
   ]
-  for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!validParameters.containsKey(key)) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+
+  println("Configuration: ${config}")
   terraform(config)
 }
 
@@ -116,11 +126,16 @@ Map getStateMvValidParameters() {
 
 def stateMv(Map config = [:]){
   config.subCommand = 'state mv'
-  for ( parameter in config ) {
-    if ( !(getStateValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!(getStateValidParameters().containsKey(key) || getCommonValidParameters().containsKey(key))) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+
+  println("Configuration: ${config}")
   terraform(config)
 }
 
@@ -181,11 +196,16 @@ Map getRefreshValidParameters() {
 
 def refresh(Map config = [:]){
   config.subCommand = 'refresh'
-  for ( parameter in config ) {
-    if ( !(getRefreshValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!(getRefreshValidParameters().containsKey(key) || getCommonValidParameters().containsKey(key))) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+
+  println("Configuration: ${config}")
   terraform(config)
 }
 
@@ -208,11 +228,15 @@ def slowRefresh(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
   ]
-  for ( parameter in config ) {
-    if ( !validParameters.containsKey(parameter.key)){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!validParameters.containsKey(key)){
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
     }
   }
+
   terraformFiles = findFiles(glob: '*.tf')
   config.targets = []
   for ( terraformFile in terraformFiles ) {
@@ -232,6 +256,8 @@ def slowRefresh(Map config = [:]){
         }
       }
     }
+
+    println("Call terraform with config: ${config}")
     terraform(config)
   }
 }
@@ -374,15 +400,19 @@ def apply(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
   ]
-  for ( parameter in config ) {
-    if ( !(validParameters.containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!(validParameters.containsKey(key) || getCommonValidParameters().containsKey(key))) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
+      println("Configuration: ${config}")
     }
   }
+
   config.autoApprove=true
   config.input=false
+  println("Configuration: ${config}")
   terraform(config)
-
 }
 
 Map getDestroyValidParameters() {
@@ -447,12 +477,17 @@ Map getDestroyValidParameters() {
 
 def destroy(Map config = [:]){
   config.subCommand = 'destroy'
-  for ( parameter in config ) {
-    if ( !(getDestroyValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
-      error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
+
+  for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
+    key = iterator.next();
+    if (!(getDestroyValidParameters().containsKey(key) || getCommonValidParameters().containsKey(key))) {
+      config.remove(key)
+      println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
     }
   }
+
   config.force = true
+  println("Configuration: ${config}")
   terraform(config)
 }
 
@@ -476,7 +511,6 @@ def fmt(Map config = [:]){
     if (!validParameters.containsKey(key)){
       config.remove(key)
       println("Since ${key} is not valid for ${config.subCommand}, we removed it. :)")
-      println("Configuration: ${config}")
     }
   }
   println("Call terraform with config: ${config}")
