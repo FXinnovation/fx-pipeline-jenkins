@@ -5,7 +5,7 @@ import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 
 class TerraformFileStandardListener extends EventListener {
-  public static final DEPLOY_ONLY_ALLOWED_PATTERN = /(\.gitignore|\.pre-commit-config\.yaml|data(_[a-z0-9_-]+)?\.tf|deploy\.tf|Jenkinsfile|outputs\.tf|providers\.tf|README\.md|variables\.tf|versions\.tf|files|templates)/
+  public static final DEPLOY_ONLY_ALLOWED_PATTERN = /(\.gitignore|\.pre-commit-config\.yaml|data(_[a-z0-9_-]+)?\.tf|deploy\.tf|Jenkinsfile|outputs\.tf|providers\.tf|README\.md|CHANGELOG\.md|variables\.tf|versions\.tf|files|templates)/
   public static final DEPLOY_MANDATORY_FILES = [
     'deploy.tf',
     '.gitignore',
