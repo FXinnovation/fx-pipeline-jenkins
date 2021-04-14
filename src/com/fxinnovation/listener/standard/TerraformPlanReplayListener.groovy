@@ -26,15 +26,17 @@ class TerraformPlanReplayListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
-    def replay = this.context.terraform.plan([
-        out: eventData.getPlanOutFile(),
-        state: eventData.getTestStateFileName(),
-        commandTarget: eventData.getCommandTarget(),
-      ] + eventData.getExtraOptions()
-    )
+    this.context.ansiColor('xterm') {
+      def replay = this.context.terraform.plan([
+          out: eventData.getPlanOutFile(),
+          state: eventData.getTestStateFileName(),
+          commandTarget: eventData.getCommandTarget(),
+        ] + eventData.getExtraOptions()
+      )
 
-    if (!(replay.stdout =~ /.*(Infrastructure is up-to-date|0 to add, 0 to change, 0 to destroy).*/)) {
-      this.context.error('ERROR: Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
+      if (!(replay.stdout =~ /.*(Infrastructure is up-to-date|0 to add, 0 to change, 0 to destroy).*/)) {
+        this.context.error('ERROR: Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
+      }
     }
 
     return eventData

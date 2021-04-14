@@ -26,12 +26,13 @@ class TerraformApplyListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
-    this.context.terraform.apply([
-        stateOut: eventData.getTestStateFileName(),
-        commandTarget: eventData.getPlanOutFile(),
-      ] + eventData.getExtraOptions()
-    )
-
+    this.context.ansiColor('xterm') {
+      this.context.terraform.apply([
+          stateOut: eventData.getTestStateFileName(),
+          commandTarget: eventData.getPlanOutFile(),
+        ] + eventData.getExtraOptions()
+      )
+    }
     return eventData
   }
 }

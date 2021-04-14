@@ -31,11 +31,13 @@ class TerraformFmtListener extends EventSubscriber {
 
   private TerraformEventData doRun(TerraformEventData eventData) {
     try {
-      this.context.terraform.fmt([
-          check: true,
-          commandTarget: eventData.getCommandTarget(),
-        ] + eventData.getExtraOptions()
-      )
+      this.context.ansiColor('xterm') {
+        this.context.terraform.fmt([
+            check: true,
+            commandTarget: eventData.getCommandTarget(),
+          ] + eventData.getExtraOptions()
+        )
+      }
     } catch(Exception fmtError) {
       this.context.printDebug(eventData.getExtraOptions())
       this.context.error("ERROR: Terraform fmt command has failed:" + fmtError.getMessage())

@@ -26,11 +26,13 @@ class TerraformDestroyListener extends EventListener {
   }
 
   private TerraformEventData doRun(TerraformEventData eventData) {
-    this.context.terraform.destroy([
-        state: eventData.getTestStateFileName(),
-        commandTarget: eventData.getCommandTarget()
-      ] + eventData.getExtraOptions()
-    )
+    this.context.ansiColor('xterm') {
+      this.context.terraform.destroy([
+          state: eventData.getTestStateFileName(),
+          commandTarget: eventData.getCommandTarget()
+        ] + eventData.getExtraOptions()
+      )
+    }
 
     return eventData
   }

@@ -27,10 +27,12 @@ class TerraformValidateListener extends EventListener {
 
   private TerraformEventData doRun(TerraformEventData eventData) {
     try {
-      this.context.terraform.validate([
-          commandTarget: eventData.getCommandTarget()
-        ] + eventData.getExtraOptions()
-      )
+      this.context.ansiColor('xterm') {
+        this.context.terraform.validate([
+            commandTarget: eventData.getCommandTarget()
+          ] + eventData.getExtraOptions()
+        )
+      }
     }catch(validateError){
       this.context.printDebug(validateError)
       this.context.error('ERROR: Terraform validate command has failed!')
