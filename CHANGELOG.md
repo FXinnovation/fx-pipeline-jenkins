@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2
+
+* fix: (terraform) add color for terraform actions
+
 ## 2.1.1
 
 * fix: (terraform) add a lot of debug messages
