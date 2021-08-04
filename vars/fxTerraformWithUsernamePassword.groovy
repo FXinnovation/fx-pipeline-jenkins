@@ -9,6 +9,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'providerPasswordVariableName', CharSequence, 'secret_key')
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])
+  mapAttributeCheck(config, 'validateVars', List, [])
 
   closureHelper = new ClosureHelper(this, closures)
 
@@ -28,6 +29,11 @@ def call(Map config = [:], Map closures = [:]) {
       "${config.providerUsernameVariableName}=${TF_username_test}",
       "${config.providerPasswordVariableName}=${TF_password_test}",
     ] + config.testPlanVars
+
+    config.validateVars = [
+      "${config.providerUsernameVariableName}=${TF_username_test}",
+      "${config.providerPasswordVariableName}=${TF_password_test}",
+    ] + config.validateVars
 
     config.publishPlanVars = [
       "${config.providerUsernameVariableName}=${TF_username_publish}",

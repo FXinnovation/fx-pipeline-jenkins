@@ -106,7 +106,9 @@ done
               ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
               testApplyOptions : config.commonOptions + dockerAdditionalMounts + dockerNetwork,
               fmtOptions: config.commonOptions,
-              validateOptions   : [:] + config.commonOptions,
+              validateOptions   : [
+                vars: config.validateVars
+              ] + config.commonOptions,
               testDestroyOptions: [
                 vars: config.testPlanVars,
               ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,

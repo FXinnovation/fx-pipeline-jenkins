@@ -55,6 +55,7 @@ def validate(Map config = [:]){
   validParameters = [
     'checkVariables':'',
     'noColor':'',
+    'vars':'',
     'varFile':'',
     'dockerImage':'',
     'subCommand':'',
