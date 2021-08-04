@@ -712,7 +712,7 @@ def call(Map config = [:]){
   dockerRunnerHelper.prepareRunCommand(
     config.dockerImage,
     'terraform',
-    "${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}",
+    "-chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()}",
     config.dockerAdditionalMounts,
     config.dockerEnvironmentVariables,
     config.dockerNetwork
