@@ -439,7 +439,7 @@ def destroy(Map config = [:]){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
     }
   }
-  config.autoApprove = true
+  config.force = true
   terraform(config)
 }
 
@@ -499,12 +499,6 @@ def call(Map config = [:]){
   else {
     planFile = ""
   }
-  if ( config.containsKey('commandTarget') && config.commandTarget != '' ){
-    chdir = "-chdir=\"${config.commandTarget}\""
-  }
-  else {
-    chdir = ""
-  }
   if ( config.containsKey('backend') ){
     optionStringFactory.addOption('-backend', config.backend, Boolean)
   }
@@ -532,8 +526,8 @@ def call(Map config = [:]){
   if ( config.containsKey('checkVariables') ){
     optionStringFactory.addOption('-check-variables', config.checkVariables, Boolean)
   }
-  if ( config.containsKey('autoApprove') && config.autoApprove ){
-    optionStringFactory.addOption('-auto-approve')
+  if ( config.containsKey('force') && config.force ){
+    optionStringFactory.addOption('-force')
   }
   if ( config.containsKey('forceCopy') && config.forceCopy ){
     optionStringFactory.addOption('-force-copy')
@@ -628,11 +622,8 @@ def call(Map config = [:]){
     )
   }
 
-  execute(
-    script: "ls -la"
-  )
   return execute(
     throwError: config.throwError,
-    script: "${terraformCommand} ${chdir} ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${optionStringFactoryVars.getOptionString().toString()} ${planFile}"
+    script: "${terraformCommand} -chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${optionStringFactoryVars.getOptionString().toString()} ${planFile}"
   )
 }
