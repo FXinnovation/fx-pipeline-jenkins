@@ -616,6 +616,6 @@ def call(Map config = [:]){
 
   return execute(
     throwError: config.throwError,
-    script: "${terraformCommand} -chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} "
+    script: "${terraformCommand} ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}"
   )
 }
