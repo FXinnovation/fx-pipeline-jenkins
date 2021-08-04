@@ -490,9 +490,6 @@ def call(Map config = [:]){
   def debugger = new Debugger(this)
   def optionStringFactory = new OptionStringFactory(this)
   optionStringFactory.createOptionString('=')
-  
-  def optionStringFactoryVars = new OptionStringFactory(this)
-  optionStringFactoryVars.createOptionString(' ')
 
   if ( config.containsKey('backend') ){
     optionStringFactory.addOption('-backend', config.backend, Boolean)
@@ -584,7 +581,7 @@ def call(Map config = [:]){
     optionStringFactory.addOption('-var-file', config.varFile)
   }
   if ( config.containsKey('vars') && config.vars ){
-    optionStringFactoryVars.addOption('-var', config.vars, ArrayList)
+    optionStringFactory.addOption('-var', config.vars, ArrayList)
   }
   if ( config.containsKey('verifyPlugins') ){
     optionStringFactory.addOption('-verify-plugins', config.verifyPlugins, Boolean)
@@ -619,6 +616,6 @@ def call(Map config = [:]){
 
   return execute(
     throwError: config.throwError,
-    script: "${terraformCommand} -chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${optionStringFactoryVars.getOptionString().toString()} "
+    script: "${terraformCommand} -chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} "
   )
 }
