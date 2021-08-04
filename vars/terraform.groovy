@@ -358,7 +358,7 @@ def apply(Map config = [:]){
     'subCommand':'',
     'dockerAdditionalMounts':'',
     'dockerEnvironmentVariables':'',
-    'commandTarget':'',
+    'planFile':'',
     'throwError':'',
   ]
   for ( parameter in config ) {
@@ -493,6 +493,12 @@ def call(Map config = [:]){
   def optionStringFactoryVars = new OptionStringFactory(this)
   optionStringFactoryVars.createOptionString(' ')
 
+  if ( config.containsKey('planFile') ){
+    planFile = config.planFile
+  }
+  else {
+    planFile = ""
+  }
   if ( config.containsKey('backend') ){
     optionStringFactory.addOption('-backend', config.backend, Boolean)
   }
@@ -618,6 +624,6 @@ def call(Map config = [:]){
 
   return execute(
     throwError: config.throwError,
-    script: "${terraformCommand} -chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${optionStringFactoryVars.getOptionString().toString()} "
+    script: "${terraformCommand} -chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${optionStringFactoryVars.getOptionString().toString()} ${planFile}"
   )
 }
