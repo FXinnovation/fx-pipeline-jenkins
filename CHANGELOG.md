@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.0
+
+* fix: `commandTarget` must need to be set inside a `-chir` flag since TF 0.14.x and later
+
 ## 2.1.2
 
 * fix: (terraform) add color for terraform actions
