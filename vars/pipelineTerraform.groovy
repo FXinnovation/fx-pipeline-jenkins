@@ -100,7 +100,7 @@ def test(Map config = [:], ClosureHelper closureHelper){
         )
         terraform.apply([
             stateOut: 'test.tfstate',
-            planFile: 'test.out',
+            commandTarget: 'test.out',
           ] + config.testApplyOptions
         )
         replay = terraform.plan([

@@ -246,7 +246,7 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
   }
 
   terraform.apply([
-    planFile: 'plan.out'
+    commandTarget: 'plan.out'
   ] + config.commonOptions)
 }
 
