@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.1
+
+* fix: (dockerLoginListener) wrong method call for dockerLoginListener
+* feat: (dockerLoginListener) add more debug output when not call
+
 ## 2.2.0
 
 * fix: `commandTarget` must need to be set inside a `-chir` flag since TF 0.14.x and later
