@@ -32,6 +32,7 @@ class DockerLoginListener extends EventListener {
    */
   EventDataInterface run(EventDataInterface eventData = null) {
     if (!this.shouldRun(eventData)) {
+      debugger.printDebug("All requirements aren't satisfied to run it")
       return eventData
     }
 
@@ -56,7 +57,7 @@ class DockerLoginListener extends EventListener {
   }
 
   private Boolean shouldRun(PipelineEventData eventData) {
-    return eventData.shouldLoginToDockerRegistry()
+    return eventData.getShouldLoginToDockerRegistry()
   }
 
   private checkDockerRegistry(PipelineEventData eventData = null) {
