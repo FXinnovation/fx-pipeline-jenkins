@@ -120,7 +120,7 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
 
   def kindContainerTemplate = containerTemplate(
     name: 'kind',
-    image: "fxinnovation/kind:0.2.0",
+    image: "fxinnovation/kind:1.0.0",
     privileged: true,
     alwaysPullImage: true,
     workingDir: '/data',
