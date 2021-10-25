@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.
+
+* feat: (standardJob) rename former function fxJob() into standardJob()
+
 ## 2.2.1
 
 * fix: (dockerLoginListener) wrong method call for dockerLoginListener

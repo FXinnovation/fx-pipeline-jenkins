@@ -1,4 +1,4 @@
-fxJob()
+standardJob()
 
 This is a skeleton to be used in all FX pipelines.
 

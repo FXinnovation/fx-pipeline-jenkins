@@ -5,7 +5,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(closures, 'selectCommandOptions', Closure, {}, 'Please define a “selectCommandOptions” closure.')
   mapAttributeCheck(closures, 'executeCommand', Closure, {}, 'Please define a “executeCommand” closure.')
 
-  fxJob([
+  standardJob([
     pipeline: { Map scmInfo ->
       pipelineTask(config, closures)
     }

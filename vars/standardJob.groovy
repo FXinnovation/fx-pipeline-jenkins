@@ -7,7 +7,6 @@ import com.fxinnovation.helper.ClosureHelper
 import com.fxinnovation.observer.EventDispatcher
 
 def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
-  fxRegisterListeners()
 
   mapAttributeCheck(config, 'checkoutCredentialID', CharSequence, '')
   mapAttributeCheck(config, 'checkoutDirectory', CharSequence, '')
