@@ -123,7 +123,7 @@ done
   }
   )
 
-  standardJob(
+  fxJob(
     closureHelper.getClosures(),
     [
       disableConcurrentBuilds()
