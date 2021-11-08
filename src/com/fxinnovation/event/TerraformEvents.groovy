@@ -31,4 +31,6 @@ class TerraformEvents {
 
   public final static PRE_PIPELINE = 'terraformPrePipeline'
   public final static POST_PIPELINE = 'terraformPostPipeline'
+
+  public final static FOOL_PROOF_VALIDATION = 'terraformFoolProofValidation'
 }

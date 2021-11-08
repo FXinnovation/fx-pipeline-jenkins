@@ -64,14 +64,14 @@ def call(Map config = [:], Map closures = [:]) {
     }, 'closureHelper.execute(\'postFmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
   }
 
+  terraformEventData.setExtraOptions(config.testPlanOptions)
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PLAN, terraformEventData)
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.PLAN, terraformEventData)
+  terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PLAN, terraformEventData)
+
   if (!config.publish) {
     stage('test “' + config.commandTarget + '”') {
       try {
-        terraformEventData.setExtraOptions(config.testPlanOptions)
-        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_PLAN, terraformEventData)
-        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PLAN, terraformEventData)
-        terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PLAN, terraformEventData)
-
         terraformEventData.setExtraOptions(config.testApplyOptions)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_APPLY, terraformEventData)
         terraformEventData = eventDispatcher.dispatch(TerraformEvents.APPLY, terraformEventData)
@@ -101,12 +101,23 @@ def call(Map config = [:], Map closures = [:]) {
 
     println('Publish step is skipped because "config.publish" is false.')
     return
-  }
-
-  stage('publish') {
-    closureHelper.execute('prePublish')
-    closureHelper.execute('publish')
-    closureHelper.execute('postPublish')
+  } else {
+    stage('test “' + config.commandTarget + '”') {
+      try {
+        terraformEventData.setExtraOptions(config.testApplyOptions)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.FOOL_PROOF_VALIDATION, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_APPLY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.APPLY, terraformEventData)
+        terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_APPLY, terraformEventData)
+      } catch (errorApply) {
+        archiveArtifacts(
+          allowEmptyArchive: true,
+          artifacts: terraformEventData.getTestStateFileName()
+        )
+        println(errorApply)
+        throw (errorApply)
+      }
+    }
   }
 }
 

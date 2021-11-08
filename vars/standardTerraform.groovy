@@ -109,11 +109,7 @@ done
               vars: config.testPlanVars,
             ] + config.commonOptions + dockerAdditionalMounts + dockerNetwork,
             publish           : deployFileExists,
-          ], [
-          publish: {
-            publish(config, commandTarget, toDeploy, deployFileExists, closureHelper.getClosures())
-          }
-        ]
+          ]
         )
       }
       terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_PIPELINE, terraformEventData)
@@ -130,44 +126,4 @@ done
     ],
     config
   )
-}
-
-private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, Boolean deployFileExists, Map closures = [:]) {
-  plan = terraform.plan([
-    commandTarget: commandTarget,
-    out          : 'plan.out',
-    vars         : config.publishPlanVars
-  ] + config.commonOptions)
-
-  if (deployFileExists) {
-    terraform.show([
-      commandTarget: 'plan.out',
-    ] + config.commonOptions)
-  }
-
-  if (plan.stdout =~ /.*Infrastructure is up-to-date.*/) {
-    println('The “plan” does not contain new changes. Infrastructure is up-to-date.')
-    return
-  }
-
-  if (!toDeploy) {
-    println('The code is either not tagged or the pipeline was triggered automatically. Skipping deployment.')
-    return
-  }
-
-  if (closures.containsKey("notification")) {
-    closures.notification('PENDING')
-  } else {
-    fx_notify(
-      status: 'PENDING'
-    )
-  }
-
-  timeout(activity: true, time: 20) {
-    foolProofValidation()
-  }
-
-  terraform.apply([
-    commandTarget: 'plan.out'
-  ] + config.commonOptions)
 }
