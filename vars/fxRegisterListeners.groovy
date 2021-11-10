@@ -11,7 +11,6 @@ def call() {
   // ###
   // Terraform
   // ###
-  eventDispatcher.attach(IOC.get(FoolProofValidationListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformPrepareSSHForInitListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformCleanSSHForInitListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformRepositoryNameStandardListener.class.getName()))

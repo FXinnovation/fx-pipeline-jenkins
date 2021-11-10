@@ -30,8 +30,5 @@ class ServiceRegisterer {
     IOC.registerSingleton(TerraformFileStandardListener.class.getName(), {
       return new TerraformFileStandardListener(IOC.get('@context'))
     })
-    IOC.registerSingleton(FoolProofValidationListener.class.getName(), {
-      return new FoolProofValidationListener(IOC.get('@context'))
-    })
   }
 }
