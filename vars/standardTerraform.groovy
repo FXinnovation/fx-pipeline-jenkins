@@ -16,6 +16,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'runKind', Boolean, false)
   mapAttributeCheck(config, 'kindCreationTimeout', Integer, 600)
   mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
+  mapAttributeCheck(config, 'askApproval', Boolean, true)
 
   closureHelper = new ClosureHelper(this, closures)
 
@@ -163,8 +164,10 @@ private publish(Map config = [:], CharSequence commandTarget, Boolean toDeploy, 
     )
   }
 
-  timeout(activity: true, time: 20) {
-    foolProofValidation()
+  if (config.askApproval) {
+    timeout(activity: true, time: 20) {
+      foolProofValidation()
+    }
   }
 
   terraform.apply([
