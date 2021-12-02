@@ -1,0 +1,28 @@
+fxTerraformWithUsernamePassword()
+
+Will execute test & deploy terraform modules/deploy repositories.
+
+It will take a username and password as input to be used as credentials for the remote system.
+
+This pipeline works with AWS.
+
+The function takes a Map as input that follows the following pattern:
+
+*testEnvironmentCredentialId*:
+
+*publishEnvironmentCredentialId*:
+
+*providerUsernameVariableName*: 'access_key'
+
+*providerPasswordVariableName*: 'secret_key'
+
+*testPlanVars*: []
+
+*publishPlanVars*: []
+
+*validateVars*: []
+
+*Look at fxTerraform() function for other possible config arguments*
+
+Output:
+String
