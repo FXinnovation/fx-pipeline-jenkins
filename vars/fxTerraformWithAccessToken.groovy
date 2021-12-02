@@ -15,24 +15,27 @@ def call(Map config = [:], Map closures = [:]) {
   withCredentials([
     usernamePassword(
       credentialsId: config.testEnvironmentCredentialId,
-      usernameVariable: 'TF_user_test',
+      usernameVariable: 'TF_owner_test',
       passwordVariable: 'TF_token_test'
     ),
     usernamePassword(
       credentialsId: config.publishEnvironmentCredentialId,
-      usernameVariable: 'TF_user_publish',
+      usernameVariable: 'TF_owner_publish',
       passwordVariable: 'TF_token_publish'
     ),
   ]) {
     config.testPlanVars = [
+      "GITHUB_OWNER=FXinnovation",
       "${config.providerAccessTokenVariableName}=${TF_token_test}",
     ] + config.testPlanVars
 
     config.validateVars = [
+      "GITHUB_OWNER=FXinnovation",
       "${config.providerAccessTokenVariableName}=${TF_token_test}",
     ] + config.validateVars
 
     config.publishPlanVars = [
+      "GITHUB_OWNER=FXinnovation",
       "${config.providerAccessTokenVariableName}=${TF_token_publish}",
     ] + config.publishPlanVars
 
