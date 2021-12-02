@@ -75,7 +75,7 @@ class DockerRunnerHelper {
     this.optionStringFactory.addOption(image)
     this.optionStringFactory.addOption(command)
 
-    this.runCommand = "docker run ${this.optionStringFactory.getOptionString().toString()}"
+    this.runCommand = "docker run -m 2GB ${this.optionStringFactory.getOptionString().toString()}"
 
     return this.runCommand
   }
