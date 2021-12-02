@@ -12,10 +12,18 @@ def call(Map config = [:], Map closures = [:]) {
 
   closureHelper = new ClosureHelper(this, closures)
 
-  withCredentials(
-    [string(credentialsId: config.testEnvironmentCredentialId, variable: 'TF_token_test')],
-    [string(credentialsId: config.publishEnvironmentCredentialId, variable: 'TF_token_publish')],
-  ) {
+  withCredentials([
+    usernamePassword(
+      credentialsId: config.testEnvironmentCredentialId,
+      usernameVariable: 'TF_user_test',
+      passwordVariable: 'TF_token_test'
+    ),
+    usernamePassword(
+      credentialsId: config.publishEnvironmentCredentialId,
+      usernameVariable: 'TF_user_publish',
+      passwordVariable: 'TF_token_publish'
+    ),
+  ]) {
     config.testPlanVars = [
       "${config.providerAccessTokenVariableName}=${TF_token_test}",
     ] + config.testPlanVars
