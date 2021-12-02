@@ -5,7 +5,8 @@ def call(Map config = [:], Map closures = [:]) {
 
   mapAttributeCheck(config, 'testEnvironmentCredentialId', CharSequence, '', '"testEnvironmentCredentialId" parameter is mandatory.')
   mapAttributeCheck(config, 'publishEnvironmentCredentialId', CharSequence, config.testEnvironmentCredentialId)
-  mapAttributeCheck(config, 'providerAccessTokenVariableName', CharSequence, 'access_token')
+  mapAttributeCheck(config, 'providerOwnerVariableName', CharSequence, 'owner')
+  mapAttributeCheck(config, 'providerAccessTokenVariableName', CharSequence, 'token')
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
@@ -25,17 +26,17 @@ def call(Map config = [:], Map closures = [:]) {
     ),
   ]) {
     config.testPlanVars = [
-      "GITHUB_OWNER=FXinnovation",
+      "${config.providerOwnerVariableName}=${TF_owner_test}",
       "${config.providerAccessTokenVariableName}=${TF_token_test}",
     ] + config.testPlanVars
 
     config.validateVars = [
-      "GITHUB_OWNER=FXinnovation",
+      "${config.providerOwnerVariableName}=${TF_owner_test}",
       "${config.providerAccessTokenVariableName}=${TF_token_test}",
     ] + config.validateVars
 
     config.publishPlanVars = [
-      "GITHUB_OWNER=FXinnovation",
+      "${config.providerOwnerVariableName}=${TF_owner_publish}",
       "${config.providerAccessTokenVariableName}=${TF_token_publish}",
     ] + config.publishPlanVars
 
