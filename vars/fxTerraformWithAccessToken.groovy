@@ -44,6 +44,7 @@ def call(Map config = [:], Map closures = [:]) {
       "${config.providerPasswordVariableName}=${TF_password_test}",
       "${config.providerOwnerVariableName}=${TF_owner_test}",
       "${config.providerAccessTokenVariableName}=${TF_token_test}",
+      "GITHUB_OWNER=FXinnovation",
     ] + config.testPlanVars
 
     config.validateVars = [
@@ -51,6 +52,7 @@ def call(Map config = [:], Map closures = [:]) {
       "${config.providerAccessTokenVariableName}=${TF_token_test}",
       "${config.providerUsernameVariableName}=${TF_username_test}",
       "${config.providerPasswordVariableName}=${TF_password_test}",
+      "GITHUB_OWNER=FXinnovation",
     ] + config.validateVars
 
     config.publishPlanVars = [
@@ -58,6 +60,7 @@ def call(Map config = [:], Map closures = [:]) {
       "${config.providerAccessTokenVariableName}=${TF_token_publish}",
       "${config.providerUsernameVariableName}=${TF_username_publish}",
       "${config.providerPasswordVariableName}=${TF_password_publish}",
+      "GITHUB_OWNER=FXinnovation",
     ] + config.publishPlanVars
 
     config.inspecUsername = TF_username_test
