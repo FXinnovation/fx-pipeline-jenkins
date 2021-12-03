@@ -5,7 +5,7 @@ def call(Map config = [:]) {
 
   mapAttributeCheck(config, 'version', CharSequence, '3')
 
-  standardJob([
+  fxJob([
     pipeline: { ScmInfo scmInfo ->
       def MakefileFileExists = fileExists 'Makefile'
       def toDeploy = false

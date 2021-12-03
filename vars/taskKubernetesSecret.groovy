@@ -1,5 +1,5 @@
 def call(){
-  standardJob(
+  fxJob(
     [
       pipeline: {
         timeout(20){

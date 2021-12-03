@@ -7,7 +7,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'pushLatest', Boolean, false)
   mapAttributeCheck(config, 'namespace', CharSequence, 'fxinnovation')
 
-  standardJob(
+  fxJob(
     [
       pipeline: { ScmInfo scmInfo ->
         pipelineDocker(

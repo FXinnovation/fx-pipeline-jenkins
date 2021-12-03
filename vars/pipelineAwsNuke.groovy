@@ -41,7 +41,7 @@ def call(Map config = [:], Map closures = [:]) {
      }
   })
 
-  standardJob(
+  fxJob(
     closureHelper.getClosures(),
     [
       disableConcurrentBuilds(),

@@ -9,7 +9,7 @@ def call(Map config = [:]) {
   mapAttributeCheck(config, 'repo', CharSequence, 'https://kubernetes-charts.storage.googleapis.com/')
   mapAttributeCheck(config, 'valuesFile', CharSequence, 'values.yaml')
 
-  standardJob(
+  fxJob(
     [
       pipeline: { ScmInfo scmInfo ->
         pipelineHelmDeployment(

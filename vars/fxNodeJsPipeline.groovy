@@ -3,7 +3,7 @@ import com.fxinnovation.data.ScmInfo
 def call(Map config = [:]){
   fxRegisterListeners()
 
-  standardJob([
+  fxJob([
     pipeline: {
       ScmInfo scmInfo ->
       pipelineNodeJsYarn(
