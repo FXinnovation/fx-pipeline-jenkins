@@ -42,11 +42,6 @@ def call(Map config = [:], Map closures = [:]) {
 
     config.inspecUsername = TF_username_test
     config.inspecPassword = TF_password_test
-  
-  println("TEST ENV GITHUB ${TF_username_test}")
-  sh("echo $GITHUB_OWNER")
-  // sh("eport GITHUB_OWNER='${TF_username_test}'")
-  // sh("export GITHUB_TOKEN='${TF_password_test}'")
 
    fxTerraform(config, closureHelper.getClosures())
   }
