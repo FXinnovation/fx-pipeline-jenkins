@@ -100,6 +100,12 @@ https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&sta
       resourceLimitCpu     : '2',
       resourceRequestMemory: '2048Mi',
       resourceLimitMemory  : '3072Mi',
+    ],
+    xlarge : [
+      resourceRequestCpu   : '2000m',
+      resourceLimitCpu     : '3',
+      resourceRequestMemory: '4096Mi',
+      resourceLimitMemory  : '5120Mi',
     ]
   ]
 
