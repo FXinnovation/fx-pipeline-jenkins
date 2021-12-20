@@ -6,8 +6,8 @@ import com.fxinnovation.observer.EventDataInterface
 import com.fxinnovation.observer.EventListener
 
 class TerraformRepositoryNameStandardListener extends EventListener {
-  public static final VALID_DEPLOYMENT_REPOSITORY_NAME_PATTERN = /^terraform\-deployment\-[a-z\d-]{2,}$/
-  public static final VALID_MODULE_REPOSITORY_NAME_PATTERN = /^terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github|kubernetes|multi)-[a-z\d]{1,}([a-z\d\-]+)?[a-z\d]$/
+  public static final VALID_DEPLOYMENT_REPOSITORY_NAME_PATTERN = /^([a-z\d-]+)?terraform\-deployment\-[a-z\d-]{2,}$/
+  public static final VALID_MODULE_REPOSITORY_NAME_PATTERN = /^([a-z\d-]+)?terraform\-(module|ecosystem)\-(aws|azurerm|azuread|google|bitbucket|gitlab|github|kubernetes|multi)-[a-z\d]{1,}([a-z\d\-]+)?[a-z\d]$/
 
   private Script context
 
