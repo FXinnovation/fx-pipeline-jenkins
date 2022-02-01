@@ -40,13 +40,26 @@ class TerraformPrepareSSHForInitListener extends EventListener {
         keyFileVariable: 'keyFile',
         passphraseVariable: 'passphrase',
         usernameVariable: 'username'
+      ),
+      this.context.sshUserPrivateKey(
+        credentialsId: eventData.getExtraData().initSSHGithubCredentialId,
+        keyFileVariable: 'keyFileGithub',
+        passphraseVariable: 'passphrase',
+        usernameVariable: 'username'
       )
     ]) {
       this.context.sh('mkdir -p ~/.ssh')
       this.context.sh('cat '+  this.context.keyFile +' > '+ this.getSSHKeyFileName(this.context.keyFile))
       this.context.sh('chmod 600 '+ this.getSSHKeyFileName(this.context.keyFile))
+      this.context.sh('cat '+  this.context.keyFileGithub +' > ~/.ssh/github_id_rsa')
+      this.context.sh('chmod 600 ~/.ssh/github_id_rsa')
       this.context.sh('echo "' + eventData.getExtraData().initSSHHostKeys.join('" >> ~/.ssh/known_hosts && echo "') + '" >> ~/.ssh/known_hosts')
       this.context.sh('ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts')
+      this.context.sh('echo "Host github.com" >> ~/.ssh/config')
+      this.context.sh('echo "  HostName github.com" >> ~/.ssh/config')
+      this.context.sh('echo "  User gladavius" >> ~/.ssh/config')
+      this.context.sh('echo "  IdentityFile ~/.ssh/github_id_rsa" >> ~/.ssh/config')
+      this.context.sh('echo "  IdentitiesOnly yes" >> ~/.ssh/config')
 
       eventData.setExtraOptions(this.additionJoin(
           eventData.getExtraOptions(),
