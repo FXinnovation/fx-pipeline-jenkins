@@ -30,5 +30,8 @@ class ServiceRegisterer {
     IOC.registerSingleton(TerraformFileStandardListener.class.getName(), {
       return new TerraformFileStandardListener(IOC.get('@context'))
     })
+    IOC.registerSingleton(TerraformPrepareGithubForInitListener.class.getName(), {
+      return new TerraformPrepareGithubForInitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
+    })
   }
 }
