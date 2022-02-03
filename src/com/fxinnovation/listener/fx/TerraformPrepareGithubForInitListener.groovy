@@ -41,11 +41,8 @@ class TerraformPrepareGithubForInitListener extends EventListener {
         usernameVariable: 'github_username'
       )
     ]) {
-      this.context.sh('''
-        ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-        git config --global credential.helper "store --file ~/.ssh/.credentials"
-      ''')
-      this.context.sh('echo "https://' + this.context.github_username + ':' + this.context.github_password + '@github.com" >> ~/.ssh/.credentials')
+      this.context.sh('ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts')
+      this.context.sh('git config --global url."https://' + this.context.github_username + ':' + this.context.github_password + '@github.com".insteadOf https://github.com')
     }
 
     return eventData
