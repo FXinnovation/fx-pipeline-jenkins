@@ -15,4 +15,5 @@ def call() {
   eventDispatcher.attach(IOC.get(TerraformCleanSSHForInitListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformRepositoryNameStandardListener.class.getName()))
   eventDispatcher.attach(IOC.get(TerraformFileStandardListener.class.getName()))
+  eventDispatcher.attach(IOC.get(TerraformPrepareGithubForInitListener.class.getName()))
 }
