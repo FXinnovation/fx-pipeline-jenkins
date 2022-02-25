@@ -538,7 +538,7 @@ def call(Map config = [:]){
   Debugger debugger = IOC.get(Debugger.class.getName())
   debugger.printDebug("Terraform ${config.subCommand}: Starting checking config.")
 
-  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/terraform:latest')
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/terraform:3.16.1')
   mapAttributeCheck(config, 'terraformVersion1', Boolean, false)
   mapAttributeCheck(config, 'subCommand', CharSequence, '', 'ERROR: The subcommand must be defined!')
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
