@@ -66,8 +66,6 @@ def validate(Map config = [:]){
   validParameters = [
     'checkVariables':'',
     'noColor':'',
-    'vars':'',
-    'varFile':'',
     'dockerImage':'',
     'subCommand':'',
     'dockerAdditionalMounts':'',
@@ -329,6 +327,11 @@ Map getInitValidParameters() {
       default: true,
       description: 'Verify the authenticity and integrity of automatically downloaded plugins.',
     ],
+    'terraformVersion1': [
+      type: Boolean,
+      default: false,
+      description: 'Indicate if we are running a version of terraform >= 1.',
+    ],
   ]
 }
 
@@ -363,6 +366,7 @@ def plan(Map config = [:]){
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
     'throwError':'',
+    'terraformVersion1':'',
   ]
 
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
@@ -399,6 +403,7 @@ def apply(Map config = [:]){
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
     'throwError':'',
+    'terraformVersion1':'',
   ]
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
     key = iterator.next();
@@ -533,7 +538,8 @@ def call(Map config = [:]){
   Debugger debugger = IOC.get(Debugger.class.getName())
   debugger.printDebug("Terraform ${config.subCommand}: Starting checking config.")
 
-  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/terraform:latest')
+  mapAttributeCheck(config, 'dockerImage', CharSequence, 'fxinnovation/terraform:3.16.1')
+  mapAttributeCheck(config, 'terraformVersion1', Boolean, false)
   mapAttributeCheck(config, 'subCommand', CharSequence, '', 'ERROR: The subcommand must be defined!')
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
@@ -709,14 +715,25 @@ def call(Map config = [:]){
 
   debugger.printDebug("Going to run terrafrom ${config.subCommand} with the following configuration: ${config}")
 
-  dockerRunnerHelper.prepareRunCommand(
-    config.dockerImage,
-    'terraform',
-    "${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}",
-    config.dockerAdditionalMounts,
-    config.dockerEnvironmentVariables,
-    config.dockerNetwork
-  )
+  if ( config.terraformVersion1.toBoolean() ) {
+    dockerRunnerHelper.prepareRunCommand(
+      config.dockerImage,
+      'terraform',
+      "-chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()}",
+      config.dockerAdditionalMounts,
+      config.dockerEnvironmentVariables,
+      config.dockerNetwork
+    )
+  } else {
+    dockerRunnerHelper.prepareRunCommand(
+      config.dockerImage,
+      'terraform',
+      "${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}",
+      config.dockerAdditionalMounts,
+      config.dockerEnvironmentVariables,
+      config.dockerNetwork
+    )
+  }
 
   debugger.printDebug("Terraform ${config.subCommand}: Prepared command with dockerRunnerHelper.")
   return dockerRunnerHelper.run(config.dockerImage,  config.throwError)
