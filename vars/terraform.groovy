@@ -72,6 +72,7 @@ def validate(Map config = [:]){
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
     'throwError':'',
+    'terraformVersion1':'',
   ]
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
     key = iterator.next();
