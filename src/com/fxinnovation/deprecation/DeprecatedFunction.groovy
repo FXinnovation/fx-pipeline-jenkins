@@ -15,10 +15,6 @@ class DeprecatedFunction {
     def deprecation = Date.parse("dd-MM-yyyy", deprecationDate)
     def currentDate = new Date()
 
-    if(currentDate.after(deprecation)) {
-      return this.deprecatedMessage.throwErrorDeletedFunction(oldFunctionName, newFunctionName, deprecationDate)
-    }
-
     this.deprecatedMessage.displayWarningDeprecatedFunction(oldFunctionName, newFunctionName, deprecationDate)
 
     return legacyClosure()
