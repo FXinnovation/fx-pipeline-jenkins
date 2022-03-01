@@ -16,7 +16,7 @@ class DeprecatedFunction {
     def currentDate = new Date()
 
     if(currentDate.after(deprecation)) {
-      return this.deprecatedMessage.throwErrorDeletedFunction(oldFunctionName, newFunctionName, deprecationDate)
+      //return this.deprecatedMessage.throwErrorDeletedFunction(oldFunctionName, newFunctionName, deprecationDate)
     }
 
     this.deprecatedMessage.displayWarningDeprecatedFunction(oldFunctionName, newFunctionName, deprecationDate)
