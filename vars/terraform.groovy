@@ -556,6 +556,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerNetwork', CharSequence, 'bridge')
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
+  mapAttributeCheck(config, 'planFile', CharSequence, '')
 
   debugger.printDebug("Terraform ${config.subCommand}: Initializing Classes.")
 
@@ -726,7 +727,6 @@ def call(Map config = [:]){
   debugger.printDebug("Going to run terrafrom ${config.subCommand} with the following configuration: ${config}")
 
   if ( config.terraformVersion1.toBoolean() ) {
-    if ( config.planFile == null ) { config.planFile = "" }
     dockerRunnerHelper.prepareRunCommand(
       config.dockerImage,
       'terraform',
