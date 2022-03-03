@@ -385,6 +385,8 @@ def plan(Map config = [:]){
 }
 
 def apply(Map config = [:]){
+  mapAttributeCheck(config, 'terraformVersion1', Boolean, false)
+
   config.subCommand = 'apply'
   validParameters = [
     'backup':'',
@@ -404,11 +406,7 @@ def apply(Map config = [:]){
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
     'throwError':'',
-    'terraformVersion1': [
-      type: Boolean,
-      default: false,
-      description: 'Indicate if we are running a version of terraform >= 1.',
-    ],
+    'terraformVersion1':'',
     'planFile':'',
   ]
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
