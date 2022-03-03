@@ -405,6 +405,7 @@ def apply(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
     'terraformVersion1':'',
+    'planFile':'',
   ]
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
     key = iterator.next();
@@ -418,6 +419,7 @@ def apply(Map config = [:]){
   config.autoApprove=true
   config.input=false
   println("Configuration: ${config}")
+  if ( !config.terraformVersion1.toBoolean() ) { config.commandTarget = config.planFile }
   terraform(config)
 }
 
@@ -477,6 +479,11 @@ Map getDestroyValidParameters() {
       type: CharSequence,
       default: '',
       description: 'Set variables in the Terraform configuration from a file. If "terraform.tfvars" or any ".auto.tfvars" files are present, they will be automatically loaded.',
+    ],
+    'terraformVersion1': [
+      type: Boolean,
+      default: false,
+      description: 'Indicate if we are running a version of terraform >= 1.',
     ]
   ]
 }
@@ -492,7 +499,7 @@ def destroy(Map config = [:]){
     }
   }
 
-  config.force = true
+  if ( config.terraformVersion1.toBoolean() ) { config.force = false } else { config.force = true }
   println("Configuration: ${config}")
   terraform(config)
 }
@@ -717,10 +724,11 @@ def call(Map config = [:]){
   debugger.printDebug("Going to run terrafrom ${config.subCommand} with the following configuration: ${config}")
 
   if ( config.terraformVersion1.toBoolean() ) {
+    if ( config.planFile == null ) { config.planFile = "" }
     dockerRunnerHelper.prepareRunCommand(
       config.dockerImage,
       'terraform',
-      "-chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()}",
+      "-chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.planFile}",
       config.dockerAdditionalMounts,
       config.dockerEnvironmentVariables,
       config.dockerNetwork

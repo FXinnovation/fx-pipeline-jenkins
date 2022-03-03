@@ -29,7 +29,8 @@ class TerraformApplyListener extends EventListener {
     this.context.ansiColor('xterm') {
       this.context.terraform.apply([
           stateOut: eventData.getTestStateFileName(),
-          commandTarget: eventData.getPlanOutFile(),
+          planFile: eventData.getPlanOutFile(),
+          commandTarget: eventData.getCommandTarget(),
         ] + eventData.getExtraOptions()
       )
     }
