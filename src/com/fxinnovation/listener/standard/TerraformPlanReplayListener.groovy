@@ -34,7 +34,7 @@ class TerraformPlanReplayListener extends EventListener {
         ] + eventData.getExtraOptions()
       )
 
-      if (!(replay.stdout =~ /.*(Infrastructure is up-to-date|0 to add, 0 to change, 0 to destroy).*/)) {
+      if (!(replay.stdout =~ /.*(Your infrastructure matches the configuration|Infrastructure is up-to-date|0 to add, 0 to change, 0 to destroy).*/)) {
         this.context.error('ERROR: Replaying the “plan” contains new changes. It is important to make sure terraform consecutive runs make no changes.')
       }
     }
