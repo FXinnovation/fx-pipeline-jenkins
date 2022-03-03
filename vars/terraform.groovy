@@ -499,7 +499,7 @@ def destroy(Map config = [:]){
     }
   }
 
-  if ( config.terraformVersion1.toBoolean() ) { config.force = false } else { config.force = true }
+  config.force = true
   println("Configuration: ${config}")
   terraform(config)
 }
@@ -601,7 +601,7 @@ def call(Map config = [:]){
   }
   debugger.printDebug("Terraform ${config.subCommand}: Validing force configuration.")
   if ( config.containsKey('force') && config.force ){
-    optionStringFactory.addOption('-force')
+    optionStringFactory.addOption('-auto-approve')
   }
   debugger.printDebug("Terraform ${config.subCommand}: Validing forceCopy configuration.")
   if ( config.containsKey('forceCopy') && config.forceCopy ){
