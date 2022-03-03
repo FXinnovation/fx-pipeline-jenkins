@@ -404,7 +404,11 @@ def apply(Map config = [:]){
     'dockerEnvironmentVariables':'',
     'commandTarget':'',
     'throwError':'',
-    'terraformVersion1':'',
+    'terraformVersion1': [
+      type: Boolean,
+      default: false,
+      description: 'Indicate if we are running a version of terraform >= 1.',
+    ],
     'planFile':'',
   ]
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
