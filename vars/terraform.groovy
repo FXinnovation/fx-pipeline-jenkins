@@ -385,6 +385,8 @@ def plan(Map config = [:]){
 }
 
 def apply(Map config = [:]){
+  mapAttributeCheck(config, 'terraformVersion1', Boolean, false)
+
   config.subCommand = 'apply'
   validParameters = [
     'backup':'',
@@ -405,6 +407,7 @@ def apply(Map config = [:]){
     'commandTarget':'',
     'throwError':'',
     'terraformVersion1':'',
+    'planFile':'',
   ]
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
     key = iterator.next();
@@ -418,6 +421,7 @@ def apply(Map config = [:]){
   config.autoApprove=true
   config.input=false
   println("Configuration: ${config}")
+  if ( !config.terraformVersion1.toBoolean() ) { config.commandTarget = config.planFile }
   terraform(config)
 }
 
@@ -477,6 +481,11 @@ Map getDestroyValidParameters() {
       type: CharSequence,
       default: '',
       description: 'Set variables in the Terraform configuration from a file. If "terraform.tfvars" or any ".auto.tfvars" files are present, they will be automatically loaded.',
+    ],
+    'terraformVersion1': [
+      type: Boolean,
+      default: false,
+      description: 'Indicate if we are running a version of terraform >= 1.',
     ]
   ]
 }
@@ -547,6 +556,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerNetwork', CharSequence, 'bridge')
   mapAttributeCheck(config, 'commandTarget', CharSequence, '')
   mapAttributeCheck(config, 'throwError', Boolean, true)
+  mapAttributeCheck(config, 'planFile', CharSequence, '')
 
   debugger.printDebug("Terraform ${config.subCommand}: Initializing Classes.")
 
@@ -594,7 +604,7 @@ def call(Map config = [:]){
   }
   debugger.printDebug("Terraform ${config.subCommand}: Validing force configuration.")
   if ( config.containsKey('force') && config.force ){
-    optionStringFactory.addOption('-force')
+    optionStringFactory.addOption('-auto-approve')
   }
   debugger.printDebug("Terraform ${config.subCommand}: Validing forceCopy configuration.")
   if ( config.containsKey('forceCopy') && config.forceCopy ){
@@ -720,7 +730,7 @@ def call(Map config = [:]){
     dockerRunnerHelper.prepareRunCommand(
       config.dockerImage,
       'terraform',
-      "-chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()}",
+      "-chdir=\"${config.commandTarget}\" ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.planFile}",
       config.dockerAdditionalMounts,
       config.dockerEnvironmentVariables,
       config.dockerNetwork
