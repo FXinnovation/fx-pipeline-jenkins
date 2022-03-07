@@ -554,7 +554,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'dockerEnvironmentVariables', Map, [:])
   mapAttributeCheck(config, 'dockerNetwork', CharSequence, 'bridge')
-  mapAttributeCheck(config, 'commandTarget', CharSequence, '')
+  mapAttributeCheck(config, 'commandTarget', CharSequence, '.')
   mapAttributeCheck(config, 'throwError', Boolean, true)
   mapAttributeCheck(config, 'planFile', CharSequence, '')
 
