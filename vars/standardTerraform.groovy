@@ -17,6 +17,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'kindCreationTimeout', Integer, 600)
   mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'askApproval', Boolean, true)
+  mapAttributeCheck(config, 'commandTarget', List, ['.'])
 
   closureHelper = new ClosureHelper(this, closures)
 
@@ -46,7 +47,7 @@ def call(Map config = [:], Map closures = [:]) {
         commandTargets += commandTarget
       }
     } catch (error) {
-      commandTargets = ['.']
+      commandTargets = config.commandTarget
     }
 
     printDebug('commandTargets: ' + commandTargets)
