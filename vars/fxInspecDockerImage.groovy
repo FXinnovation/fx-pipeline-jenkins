@@ -3,7 +3,7 @@ def call(Map config = [:]){
   mapAttributeCheck(config, 'tag',       CharSequence, '', 'This tags key must be defined')
   mapAttributeCheck(config, 'registry',  CharSequence, '')
   mapAttributeCheck(config, 'namespace', CharSequence, '')
-  mapAttributeCheck(config, 'baseline', CharSequence, 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz')
+  mapAttributeCheck(config, 'baseline', CharSequence, 'https://github.com/FXinnovation/fx-inspec-docker-baseline/archive/master.tar.gz')
 
   try{
     infiniteLoopScript = """
