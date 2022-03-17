@@ -23,15 +23,15 @@ def call(Map config = [:], Map closures = [:]) {
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_INIT, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('preInit')
-    }, 'closureHelper.execute(\'preInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-03-2022')
+    }, 'closureHelper.execute(\'preInit\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component)', '01-03-2022')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.INIT, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('init')
-    }, 'closureHelper.execute(\'init\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
+    }, 'closureHelper.execute(\'init\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_INIT, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('postInit')
-    }, 'closureHelper.execute(\'postInit\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
+    }, 'closureHelper.execute(\'postInit\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
   }
 
   stage('lint “' + config.commandTarget + '”') {
@@ -39,29 +39,29 @@ def call(Map config = [:], Map closures = [:]) {
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_VALIDATE, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('preValidate')
-    }, 'closureHelper.execute(\'preValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-03-2022')
+    }, 'closureHelper.execute(\'preValidate\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component)', '01-03-2022')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.VALIDATE, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('validate')
-    }, 'closureHelper.execute(\'Validate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
+    }, 'closureHelper.execute(\'Validate\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_VALIDATE, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('postValidate')
-    }, 'closureHelper.execute(\'postValidate\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
+    }, 'closureHelper.execute(\'postValidate\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
 
     terraformEventData.setExtraOptions(config.fmtOptions)
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.PRE_FMT, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('preFmt')
-    }, 'closureHelper.execute(\'preFmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component)', '01-03-2022')
+    }, 'closureHelper.execute(\'preFmt\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component)', '01-03-2022')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.FMT, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('fmt')
-    }, 'closureHelper.execute(\'Fmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
+    }, 'closureHelper.execute(\'Fmt\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
     terraformEventData = eventDispatcher.dispatch(TerraformEvents.POST_FMT, terraformEventData)
     deprecatedFunction.execute({
       closureHelper.execute('postFmt')
-    }, 'closureHelper.execute(\'postFmt\')', 'observer system (https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
+    }, 'closureHelper.execute(\'postFmt\')', 'observer system (https://github.com/FXinnovation/fx-pipeline-jenkins/wiki#user-content-observer-component).', '01-03-2022')
   }
 
   if (!config.publish) {
