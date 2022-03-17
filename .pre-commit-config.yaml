@@ -7,7 +7,7 @@ repos:
     - id: end-of-file-fixer
     - id: check-added-large-files
     - id: detect-private-key
-- repo: https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pre-commit-afcmf
+- repo: https://github.com/FXinnovation/fx-pre-commit-afcmf
   rev: 0.1.1
   hooks:
     - id: afcmf_commit_validation
