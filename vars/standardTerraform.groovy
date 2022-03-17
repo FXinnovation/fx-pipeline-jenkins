@@ -64,7 +64,7 @@ def call(Map config = [:], Map closures = [:]) {
         commandTargets += commandTarget
       }
     } catch (error) {
-      commandTargets = config.commandTarget
+      commandTargets = [input1.directory]
     }
 
     printDebug('commandTargets: ' + commandTargets)
