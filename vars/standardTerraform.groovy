@@ -39,9 +39,13 @@ def call(Map config = [:], Map closures = [:]) {
 
     printDebug("isPublishable: ${scmInfo.isPublishable()} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
 
+    defaultCommandTargets = ['.']
     if (config.monoRepo) {
+      defaultCommandTargets = []
       timeout(activity: true, time: 10){
-        for (filename in execute(script: "ls clients/").stdout) { listOfDirs << it.name }
+        for (filename in execute(script: "ls clients/").stdout.split()) {
+          defaultCommandTargets += filename
+        }
         input1 = input(
           id:      'selected_client_directory',
           message: 'Please fill in required information:',
@@ -64,7 +68,7 @@ def call(Map config = [:], Map closures = [:]) {
         commandTargets += commandTarget
       }
     } catch (error) {
-      commandTargets = [input1.directory]
+      commandTargets = defaultCommandTargets
     }
 
     printDebug('commandTargets: ' + commandTargets)
