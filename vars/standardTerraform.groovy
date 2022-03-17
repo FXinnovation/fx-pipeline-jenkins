@@ -17,7 +17,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'kindCreationTimeout', Integer, 600)
   mapAttributeCheck(config.commonOptions, 'dockerAdditionalMounts', Map, [:])
   mapAttributeCheck(config, 'askApproval', Boolean, true)
-  mapAttributeCheck(config, 'commandTarget', List, ['.'])
+  mapAttributeCheck(config, 'monoRepo', Boolean, false)
 
   closureHelper = new ClosureHelper(this, closures)
 
@@ -39,6 +39,23 @@ def call(Map config = [:], Map closures = [:]) {
 
     printDebug("isPublishable: ${scmInfo.isPublishable()} | deployFileExists: ${deployFileExists} | manuallyTriggered: ${jobInfo.isManuallyTriggered()} | toDeploy: ${toDeploy}")
 
+    if (config.monoRepo) {
+      timeout(activity: true, time: 10){
+        for (filename in execute(script: "ls clients/").stdout) { listOfDirs << it.name }
+        input1 = input(
+          id:      'selected_client_directory',
+          message: 'Please fill in required information:',
+          ok:      'Confirm',
+          parameters: [
+            choice(
+              choices:     listOfDirs,
+              description: 'Client directory.',
+              name:        'directory'
+            )
+          ]
+        )
+      }
+    }
     commandTargets = []
     try {
       execute(script: "[ -d examples ]")
