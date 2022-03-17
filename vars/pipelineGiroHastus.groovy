@@ -79,7 +79,7 @@ def call(Map config = [:]) {
       fxCheckoutTag (
         directory: 'cookbook-hastus',
         credentialsId: 'gitea-administrator',
-        repoUrl: 'https://scm.dazzlingwrench.fxinnovation.com/giro/cookbook-hastus.git',
+        repoUrl: 'https://github.com/FXinnovation/giro-cookbook-hastus.git',
         tag: versions['cookbook-hastus']
       )
       execute (
