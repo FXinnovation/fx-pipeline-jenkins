@@ -64,7 +64,7 @@ class TerraformPrepareGithubForInitListener extends EventListener {
     )
   }
 
-  // TODO: https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/pipeline-jenkins/issues/54
+  // TODO: https://github.com/FXinnovation/fx-pipeline-jenkins/issues/54
   private Map additionJoin(Map firstMap, Map secondMap) {
     secondMap.each { key, value ->
       if(firstMap[key])     {
