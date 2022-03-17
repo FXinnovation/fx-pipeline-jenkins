@@ -59,7 +59,7 @@ def call(Map config = [:]){
         dockerAdditionalMounts: [
           '/var/run/docker.sock': '/var/run/docker.sock'
         ],
-        commandTarget: 'https://scm.dazzlingwrench.fxinnovation.com/fxinnovation-public/inspec-docker-baseline/archive/master.tar.gz'
+        commandTarget: 'https://github.com/FXinnovation/fx-inspec-docker-baseline/archive/master.tar.gz'
       )
     }catch(inspecExecError){
       println 'Inspec tests have failed, but we\'re still being nice for now'
