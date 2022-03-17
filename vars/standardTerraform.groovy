@@ -41,10 +41,10 @@ def call(Map config = [:], Map closures = [:]) {
 
     defaultCommandTargets = ['.']
     if (config.monoRepo) {
-      defaultCommandTargets = []
+      listOfDirs = []
       timeout(activity: true, time: 10){
         for (filename in execute(script: "ls clients/").stdout.split()) {
-          defaultCommandTargets += filename
+          listOfDirs += filename
         }
         input1 = input(
           id:      'selected_client_directory',
@@ -59,6 +59,7 @@ def call(Map config = [:], Map closures = [:]) {
           ]
         )
       }
+      defaultCommandTargets = [input1.directory]
     }
     commandTargets = []
     try {
