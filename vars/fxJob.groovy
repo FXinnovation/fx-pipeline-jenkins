@@ -46,7 +46,7 @@ Because he's a bear, Tedi doesn't need to review \033[0;4m\033[0;1m\u001b[35mPUL
 Please, do not be like Tedi, don't stay here to watch logs scrolling. He will take care of that for you.
 You can click on the following link to review you \033[0;4m\033[0;1m\u001b[35mPULL REQUESTS\u001b[0m\u001b[35m assigned while tedi watch logs for you.
 
-https://scm.dazzlingwrench.fxinnovation.com/pulls?type=assigned&repo=0&sort=&state=open
+https://github.com/pulls?q=is%3Apr+created%3A%3E%3D2022-03-06+user%3AFXinnovation+is%3Aopen
 \u001B[0m
   """ )
 
