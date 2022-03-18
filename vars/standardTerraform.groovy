@@ -54,13 +54,13 @@ def call(Map config = [:], Map closures = [:]) {
             choice(
               choices:     listOfDirs,
               description: 'Client directory.',
-              name:        'directory'
+              name:        'client'
             )
           ]
         )
       }
-      println "Will execute terraform in directory ${input1.directory}"
-      defaultCommandTargets = [input1.directory.toString()]
+      println "Will execute terraform in directory ${input1}"
+      defaultCommandTargets = [input1]
     }
     commandTargets = []
     try {
