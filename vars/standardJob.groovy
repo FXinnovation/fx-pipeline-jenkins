@@ -291,7 +291,7 @@ private def pipeline(Map config, Map closures) {
             }, 'closure:prePipeline', 'Use Observer system. Create listener listening to PipelineEvents.PRE_PIPELINE”.', '01-03-2022')
           }
 
-          pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_TEST, pipelineEventData)
+          //pipelineEventData = eventDispatcher.dispatch(PipelineEvents.PRE_TEST, pipelineEventData)
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.TEST, pipelineEventData)
           pipelineEventData = eventDispatcher.dispatch(PipelineEvents.POST_TEST, pipelineEventData)
 
