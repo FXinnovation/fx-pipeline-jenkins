@@ -59,7 +59,7 @@ def call(Map config = [:], Map closures = [:]) {
           ]
         )
       }
-      defaultCommandTargets = [input1.directory]
+      defaultCommandTargets = [input1.directory.toString()]
     }
     commandTargets = []
     try {
