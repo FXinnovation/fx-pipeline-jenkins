@@ -43,7 +43,7 @@ def call(Map config = [:], Map closures = [:]) {
     if (config.monoRepo) {
       listOfDirs = []
       timeout(activity: true, time: 10){
-        for (filename in execute(script: "ls clients/").stdout.split()) {
+        for (filename in execute(script: "ls files/").stdout.split()) {
           listOfDirs += filename
         }
         input1 = input(
