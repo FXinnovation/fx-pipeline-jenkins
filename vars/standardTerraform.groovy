@@ -59,6 +59,7 @@ def call(Map config = [:], Map closures = [:]) {
           ]
         )
       }
+      println "Will execute terraform in directory ${input1.directory}"
       defaultCommandTargets = [input1.directory.toString()]
     }
     commandTargets = []
