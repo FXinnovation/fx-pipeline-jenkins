@@ -26,7 +26,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
   mapAttributeCheck(config, 'podVolumes', List, [])
   mapAttributeCheck(config, 'preCommitDockerImageName', CharSequence, 'fxinnovation/pre-commit:latest')
   mapAttributeCheck(config, 'runKind', Boolean, false)
-  mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
+  mapAttributeCheck(config, 'slaveSize', CharSequence, 'large')
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
   mapAttributeCheck(config, 'headerMessage', CharSequence, """
@@ -76,9 +76,6 @@ https://github.com/pulls?q=is%3Apr+created%3A%3E%3D2022-03-06+user%3AFXinnovatio
         daysToKeepStr: '',
         numToKeepStr: '10'
       )
-    ),
-    pipelineTriggers(
-      [cron('@weekly')]
     )
   ]
 
