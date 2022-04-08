@@ -19,7 +19,7 @@ Map getShowValidParameters() {
 }
 
 def show(Map config = [:]){
-  config.subCommand = 'show'
+  config.subCommand = 'show -no-color'
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
     key = iterator.next();
     if (!(getShowValidParameters().containsKey(key) || getCommonValidParameters().containsKey(key))) {
@@ -35,7 +35,7 @@ def show(Map config = [:]){
 }
 
 def output(Map config = [:]){
-  config.subCommand = 'output'
+  config.subCommand = 'output -no-color'
   validParameters = [
     'noColor':'',
     'json':'',
@@ -62,7 +62,7 @@ def output(Map config = [:]){
 }
 
 def validate(Map config = [:]){
-  config.subCommand = 'validate'
+  config.subCommand = 'validate -no-color'
   validParameters = [
     'checkVariables':'',
     'noColor':'',
@@ -194,7 +194,7 @@ Map getRefreshValidParameters() {
 }
 
 def refresh(Map config = [:]){
-  config.subCommand = 'refresh'
+  config.subCommand = 'refresh -no-color'
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
     key = iterator.next();
     if (!(getRefreshValidParameters().containsKey(key) || getCommonValidParameters().containsKey(key))) {
@@ -209,7 +209,7 @@ def refresh(Map config = [:]){
 }
 
 def slowRefresh(Map config = [:]){
-  config.subCommand = 'refresh'
+  config.subCommand = 'refresh -no-color'
   validParameters = [
     'backup':'',
     'lock':'',
@@ -337,7 +337,7 @@ Map getInitValidParameters() {
 }
 
 def init(Map config = [:]){
-  config.subCommand = 'init'
+  config.subCommand = 'init -no-color'
   for ( parameter in config ) {
     if ( !(getInitValidParameters().containsKey(parameter.key) || getCommonValidParameters().containsKey(parameter.key))){
       error("terraform - Parameter \"${parameter.key}\" is not valid for \"${config.subCommand}\", please remove it!")
@@ -347,7 +347,7 @@ def init(Map config = [:]){
 }
 
 def plan(Map config = [:]){
-  config.subCommand = 'plan'
+  config.subCommand = 'plan -no-color'
   validParameters = [
     'destroy':'',
     'lock':'',
@@ -387,7 +387,7 @@ def plan(Map config = [:]){
 def apply(Map config = [:]){
   mapAttributeCheck(config, 'terraformVersion1', Boolean, false)
 
-  config.subCommand = 'apply'
+  config.subCommand = 'apply -no-color'
   validParameters = [
     'backup':'',
     'lock':'',
@@ -491,7 +491,7 @@ Map getDestroyValidParameters() {
 }
 
 def destroy(Map config = [:]){
-  config.subCommand = 'destroy'
+  config.subCommand = 'destroy -no-color'
 
   for(Iterator<Integer> iterator = config.keySet().iterator(); iterator.hasNext(); ) {
     key = iterator.next();
@@ -507,7 +507,7 @@ def destroy(Map config = [:]){
 }
 
 def fmt(Map config = [:]){
-  config.subCommand = 'fmt'
+  config.subCommand = 'fmt -no-color'
   validParameters = [
     'list':'',
     'write':'',
