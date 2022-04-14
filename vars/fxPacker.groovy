@@ -20,7 +20,8 @@ def call(Map config = [:]){
             commandTarget: 'configuration.pkr.hcl',
             dockerEnvironmentVariables: [
               AWS_ACCESS_KEY_ID:     client_id,
-              AWS_SECRET_ACCESS_KEY: client_secret
+              AWS_SECRET_ACCESS_KEY: client_secret,
+              PACKER_PLUGIN_PATH: "."
             ]
           ]
           pipelinePacker(
