@@ -17,7 +17,7 @@ def call(Map config = [:]){
           ]
         ){
           def packerConfiguration = [
-            commandTarget: 'configuration.json',
+            commandTarget: 'configuration.pkr.hcl',
             dockerEnvironmentVariables: [
               AWS_ACCESS_KEY_ID:     client_id,
               AWS_SECRET_ACCESS_KEY: client_secret
