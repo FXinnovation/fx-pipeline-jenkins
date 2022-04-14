@@ -111,7 +111,7 @@ https://github.com/pulls?q=is%3Apr+created%3A%3E%3D2022-03-06+user%3AFXinnovatio
       resourceLimitCpu     : '4',
       resourceRequestMemory: '8192Mi',
       resourceLimitMemory  : '10240Mi',
-    ] 
+    ]
   ]
 
   def chosenSlaveSize = slaveSizes[config.slaveSize]
