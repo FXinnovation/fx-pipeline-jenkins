@@ -10,7 +10,7 @@ def call(Map config = [:]){
         withCredentials(
           [
             usernamePassword(
-              credentialsId: 'jenkins-test-account',
+              credentialsId: 'itoa-application-awscollectors-awscred',
               passwordVariable: 'client_secret',
               usernameVariable: 'client_id'
             )
