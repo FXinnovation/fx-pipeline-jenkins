@@ -3,8 +3,6 @@ import com.fxinnovation.helper.ClosureHelper
 def call(Map config = [:], Map closures = [:]){
   registerServices()
 
-  mapAttributeCheck(config, 'publish', Boolean, false)
-
   closureHelper = new ClosureHelper(this, closures)
 
   closureHelper.executeWithinStage('preTest')
@@ -17,11 +15,7 @@ def call(Map config = [:], Map closures = [:]){
   closureHelper.executeWithinStage('prePublish')
 
   stage('publish'){
-    if (config.publish){
-      packer.build(config.buildConfig)
-    }else{
-      println "Publish step is skipped"
-    }
+    packer.build(config.buildConfig)
   }
 
   closureHelper.executeWithinStage('postPublish')

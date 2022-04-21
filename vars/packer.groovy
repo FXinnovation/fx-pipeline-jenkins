@@ -112,6 +112,10 @@ def call(Map config = [:]){
     script: "${packerCommand} --version"
   )
 
+  execute(
+    script: "${packerCommand} init ."
+  )
+
   return execute(
     script: "${packerCommand} ${config.subCommand} ${optionStringFactory.getOptionString().toString()} ${config.commandTarget}"
   )
