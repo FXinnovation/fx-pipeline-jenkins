@@ -53,6 +53,15 @@ def call(Map config = [:], Map closures = [:]) {
 
     def kindDockerVolume = [:]
     def terraformNetwork = 'bridge'
+
+    try {
+      if (config.runLocalstack) {
+        execute(
+          script: "docker run --rm -it -p 4566:4566 -p 4510-4559:4510-4559 localstack/localstack"
+        )
+      }
+    }
+
     try {
       if (config.runKind) {
         execute(
