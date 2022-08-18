@@ -25,6 +25,7 @@ def call(Map closures = [:], List propertiesConfig = [], Map config = [:]) {
   mapAttributeCheck(config, 'podVolumes', List, [])
   mapAttributeCheck(config, 'preCommitDockerImageName', CharSequence, 'fxinnovation/pre-commit:latest')
   mapAttributeCheck(config, 'runKind', Boolean, false)
+  mapAttributeCheck(config, 'runLocalstack', Boolean, false)
   mapAttributeCheck(config, 'slaveSize', CharSequence, 'small')
   mapAttributeCheck(config, 'timeoutTime', Integer, 10)
   mapAttributeCheck(config, 'timeoutUnit', CharSequence, 'HOURS')
@@ -145,11 +146,32 @@ https://github.com/pulls?q=is%3Apr+created%3A%3E%3D2022-03-06+user%3AFXinnovatio
     resourceLimitMemory: slaveSizes.large.resourceLimitMemory,
   )
 
+  def localstackContainerTemplate = containerTemplate(
+    name: 'localstack',
+    image: "localstack/localstack:latest",
+    envVars: [
+      envVar(key: 'DOCKER_HOST', value: 'unix:///var/run/docker.sock'),
+    ],
+    command: '/bin/bash -c "cd /opt/code/localstack; docker-entrypoint.sh"',
+    ports: [portMapping(name: 'localstack', containerPort: 4566)],
+    resourceRequestCpu: slaveSizes.small.resourceRequestCpu,
+    resourceLimitCpu: slaveSizes.small.resourceLimitCpu,
+    resourceRequestMemory: slaveSizes.small.resourceRequestMemory,
+    resourceLimitMemory: slaveSizes.small.resourceLimitMemory,
+  )
+
   def podContainers = [jnlpContainerTemplate]
   def podInit = ""
 
   if (config.runKind && !IOC.get('JENKINS_LOCAL')) {
     podContainers << kindContainerTemplate
+  }
+
+  if (config.runLocalstack && !IOC.get('JENKINS_LOCAL')) {
+    podContainers << localstackContainerTemplate
+  }
+
+  if (!IOC.get('JENKINS_LOCAL') && (config.runLocalstack || config.runKind)) {
     podInit = """
 apiVersion: v1
 kind: Pod
@@ -339,6 +361,14 @@ private def pipeline(Map config, Map closures) {
         stage('kindlogs') {
           containerLog(
             name: 'kind'
+          )
+        }
+      }
+
+      if (config.runLocalstack && !IOC.get('JENKINS_LOCAL')) {
+        stage('localstacklogs') {
+          containerLog(
+            name: 'localstack'
           )
         }
       }

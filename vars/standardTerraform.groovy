@@ -53,6 +53,7 @@ def call(Map config = [:], Map closures = [:]) {
 
     def kindDockerVolume = [:]
     def terraformNetwork = 'bridge'
+
     try {
       if (config.runKind) {
         execute(
