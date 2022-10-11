@@ -32,6 +32,8 @@ def call(Map config = [:], Map closures = [:]) {
     def deployFileExists = fileExists('deploy.tf')
     def toDeploy = false
 
+    printDebug(scmInfo.toString())
+
     if (scmInfo.isPublishable() && deployFileExists && jobInfo.isManuallyTriggered()) {
       toDeploy = true
     }
