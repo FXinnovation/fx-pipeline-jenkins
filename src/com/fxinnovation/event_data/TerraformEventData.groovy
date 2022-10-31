@@ -63,4 +63,5 @@ class TerraformEventData implements EventDataInterface {
     this.extraData = null != extraData ? extraData : [:]
     return this
   }
+
 }

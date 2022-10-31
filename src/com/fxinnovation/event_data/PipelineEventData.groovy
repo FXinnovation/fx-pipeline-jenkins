@@ -15,6 +15,7 @@ class PipelineEventData implements EventDataInterface {
   private String headerMessage
   private String preCommitDockerImageName
   private String defaultBranchName
+  private String workingDirectory
 
   PipelineEventData(
     Boolean shouldLoginToDockerRegistry,
@@ -28,7 +29,8 @@ class PipelineEventData implements EventDataInterface {
     String dockerRegistryCredentialId,
     String headerMessage,
     String preCommitDockerImageName,
-    String defaultBranchName
+    String defaultBranchName,
+    String workingDirectory
   ) {
     this.shouldLoginToDockerRegistry = shouldLoginToDockerRegistry
     this.checkoutCredentialID = checkoutCredentialID
@@ -42,6 +44,7 @@ class PipelineEventData implements EventDataInterface {
     this.headerMessage = headerMessage
     this.preCommitDockerImageName = preCommitDockerImageName
     this.defaultBranchName = defaultBranchName
+    this.workingDirectory = workingDirectory
   }
 
   Boolean getShouldLoginToDockerRegistry() {
@@ -134,5 +137,9 @@ class PipelineEventData implements EventDataInterface {
 
   String getDefaultBranchName() {
     return defaultBranchName
+  }
+
+  String getWorkingDirectory() {
+    return workingDirectory
   }
 }

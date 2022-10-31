@@ -14,6 +14,7 @@ def call() {
   eventDispatcher.attach(IOC.get(CheckoutListener.class.getName()))
   eventDispatcher.attach(IOC.get(DockerLoginListener.class.getName()))
   eventDispatcher.attach(IOC.get(PreCommitListener.class.getName()))
+  eventDispatcher.attach(IOC.get(MoveFilesListener.class.getName()))
 
   // ###
   // Terraform
