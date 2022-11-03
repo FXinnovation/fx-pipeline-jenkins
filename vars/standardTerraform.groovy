@@ -8,6 +8,7 @@ import com.fxinnovation.observer.EventDispatcher
 def call(Map config = [:], Map closures = [:]) {
   registerServices()
 
+  mapAttributeCheck(config, 'workingDirectory', CharSequence, '')
   mapAttributeCheck(config, 'testPlanVars', List, [])
   mapAttributeCheck(config, 'validateVars', List, [])
   mapAttributeCheck(config, 'publishPlanVars', List, [])

@@ -108,6 +108,9 @@ class ServiceRegisterer {
     IOC.registerSingleton(PreCommitListener.class.getName(), {
       return new PreCommitListener(IOC.get('@context'), IOC.get(Debugger.class.getName()), IOC.get(DockerRunnerHelper.class.getName()))
     })
+    IOC.registerSingleton(MoveFilesListener.class.getName(), {
+      return new MoveFilesListener(IOC.get('@context'), IOC.get(Debugger.class.getName()))
+    })
 
     IOC.registerSingleton(TerraformInitListener.class.getName(), {
       return new TerraformInitListener(IOC.get('@context'))
