@@ -31,7 +31,7 @@ class MoveFilesListener extends EventListener {
    * @return PipelineEventData
    */
   EventDataInterface run(EventDataInterface eventData = null) {
-    if (eventData.getWorkingDirectory() != '') {
+    if (eventData.getWorkingDirectory() != null && eventData.getWorkingDirectory() != '') {
       this.context.sh('mv ' + eventData.getWorkingDirectory() + '/* .')
       this.context.sh('ls -alrt')
     }
