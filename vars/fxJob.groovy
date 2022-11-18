@@ -270,7 +270,8 @@ private def pipeline(Map config, Map closures) {
     config.dockerRegistryCredentialId,
     config.headerMessage,
     config.preCommitDockerImageName,
-    config.defaultBranchName
+    config.defaultBranchName,
+    config.workingDirectory
   )
 
   timeout(
