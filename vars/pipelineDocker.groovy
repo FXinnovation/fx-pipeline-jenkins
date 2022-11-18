@@ -8,6 +8,7 @@ def call(Map config = [:], Map closures = [:]) {
   mapAttributeCheck(config, 'disablePublish', Boolean, false)
   mapAttributeCheck(config, 'dockerBuild', Map, [:], 'dockerBuild Map options are needed.')
   mapAttributeCheck(config, 'dockerPublish', Map, [:], 'dockerPublish Map options are needed.')
+  mapAttributeCheck(config, 'workingDirectory', CharSequence, '')
 
   def scmInfo = IOC.get(ScmInfo.class.getName())
   def closureHelper = new ClosureHelper(this, closures)
