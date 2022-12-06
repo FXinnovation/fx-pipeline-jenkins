@@ -2,6 +2,7 @@ import com.fxinnovation.data.ScmInfo
 
 def call(Map config = [:]){
   mapAttributeCheck(config, 'dockerRegistryLogin', Boolean, false)
+  mapAttributeCheck(config, 'credentialId', CharSequence, 'itoa-application-awscollectors-awscred')
 
   registerListeners()
   standardJob([
@@ -10,7 +11,7 @@ def call(Map config = [:]){
         withCredentials(
           [
             usernamePassword(
-              credentialsId: 'itoa-application-awscollectors-awscred',
+              credentialsId: config.credentialId,
               passwordVariable: 'client_secret',
               usernameVariable: 'client_id'
             )
